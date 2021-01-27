@@ -1,14 +1,20 @@
+import os
 import uuid
+import json
 import random
 import secrets
 from hashlib import md5
 from typing import Optional
 from dataclasses import dataclass
 
+from cai.storage import Storage
+from cai.utils.dataclass import JsonableDataclass
+
 
 @dataclass(init=True, eq=False)
-class Version:
+class Version(JsonableDataclass):
     __slots__ = ("incremental", "release", "codename", "sdk")
+    __json_fields__ = __slots__
 
     incremental: str
     release: str = "10"
@@ -17,7 +23,17 @@ class Version:
 
 
 @dataclass(init=True, eq=False)
-class DeviceInfo:
+class DeviceInfo(JsonableDataclass):
+    __slots__ = ("product", "device", "board", "model", "bootloader", "boot_id",
+                 "proc_version", "baseband", "mac_address", "ip_address",
+                 "wifi_ssid", "imei", "android_id", "version", "sim", "os_type",
+                 "apn", "imsi", "tgtgt", "display", "fingerprint", "wifi_bssid")
+    __json_fields__ = ("product", "device", "board", "model", "bootloader",
+                       "boot_id", "proc_version", "baseband", "mac_address",
+                       "ip_address", "wifi_ssid", "imei", "android_id",
+                       "version", "sim", "os_type", "apn", "_imsi_md5",
+                       "_tgtgt_md5")
+
     product: str
     device: str
     board: str
@@ -139,3 +155,15 @@ def new_device(product: Optional[str] = None,
                       imei=imei or new_imei(),
                       android_id=android_id or new_android_id(),
                       version=version or new_version())
+
+
+def get_device() -> DeviceInfo:
+    device: DeviceInfo
+    if not os.path.exists(Storage.device_file):
+        device = new_device()
+        with open(Storage.device_file, "w") as f:
+            json.dump(device, f)
+    else:
+        with open(Storage.device_file, "r") as f:
+            device = json.load(f)
+    return device

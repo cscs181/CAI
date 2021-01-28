@@ -4,8 +4,9 @@ This code was taken from https://github.com/python-poetry/poetry/blob/master/poe
 import os
 import sys
 
-WINDOWS = sys.platform.startswith("win") or (sys.platform == "cli" and
-                                             os.name == "nt")
+WINDOWS = sys.platform.startswith("win") or (
+    sys.platform == "cli" and os.name == "nt"
+)
 
 
 def expanduser(path):
@@ -86,11 +87,13 @@ def user_data_dir(appname, roaming=False):
         const = "CSIDL_APPDATA" if roaming else "CSIDL_LOCAL_APPDATA"
         path = os.path.join(os.path.normpath(_get_win_folder(const)), appname)
     elif sys.platform == "darwin":
-        path = os.path.join(expanduser("~/Library/Application Support/"),
-                            appname)
+        path = os.path.join(
+            expanduser("~/Library/Application Support/"), appname
+        )
     else:
         path = os.path.join(
-            os.getenv("XDG_DATA_HOME", expanduser("~/.local/share")), appname)
+            os.getenv("XDG_DATA_HOME", expanduser("~/.local/share")), appname
+        )
 
     return path
 

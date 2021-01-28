@@ -13,7 +13,8 @@ class Storage:
         os.mkdir(app_dir)
     if not os.path.isdir(app_dir):
         raise RuntimeError(
-            f"Application directory {app_dir} is not a directory!")
+            f"Application directory {app_dir} is not a directory!"
+        )
 
     default_cache_dir: str = user_cache_dir(app_name)
     cache_dir: str = os.getenv(f"{app_name}_CACHE_DIR", default_cache_dir)
@@ -21,7 +22,8 @@ class Storage:
         os.mkdir(cache_dir)
     if not os.path.isdir(cache_dir):
         raise RuntimeError(
-            f"Application Cache directory {cache_dir} is not a directory!")
+            f"Application Cache directory {cache_dir} is not a directory!"
+        )
 
     device_file: str = os.path.join(app_dir, "device.json")
 

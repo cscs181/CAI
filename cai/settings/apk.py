@@ -82,3 +82,10 @@ MACOS = ApkInfo(
     sigmap=1970400,
     sub_sigmap=66560
 )
+
+
+def get_apk_info(type_: int = 0) -> ApkInfo:
+    info = {0: IPAD, 1: ANDROID_PHONE, 2: ANDROID_WATCH, 3: MACOS}
+    if type_ not in info:
+        raise ValueError(f"Invalid Protocol Type: {type_}")
+    return info[type_]

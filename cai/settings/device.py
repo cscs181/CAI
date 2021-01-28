@@ -13,8 +13,9 @@ from cai.utils.dataclass import JsonableDataclass
 
 @dataclass(init=True, eq=False)
 class Version(JsonableDataclass):
-    __slots__ = ("incremental", "release", "codename", "sdk")
-    __json_fields__ = __slots__
+    # __slots__ not work with dataclass
+    # __slots__ = ("incremental", "release", "codename", "sdk")
+    __json_fields__ = ("incremental", "release", "codename", "sdk")
 
     incremental: str
     release: str = "10"
@@ -24,15 +25,15 @@ class Version(JsonableDataclass):
 
 @dataclass(init=True, eq=False)
 class DeviceInfo(JsonableDataclass):
-    __slots__ = ("product", "device", "board", "model", "bootloader", "boot_id",
-                 "proc_version", "baseband", "mac_address", "ip_address",
-                 "wifi_ssid", "imei", "android_id", "version", "sim", "os_type",
-                 "apn", "imsi", "tgtgt", "display", "fingerprint", "wifi_bssid")
-    __json_fields__ = ("product", "device", "board", "model", "bootloader",
-                       "boot_id", "proc_version", "baseband", "mac_address",
-                       "ip_address", "wifi_ssid", "imei", "android_id",
-                       "version", "sim", "os_type", "apn", "_imsi_md5",
-                       "_tgtgt_md5")
+    # __slots__ = ("product", "device", "board", "model", "bootloader", "boot_id",
+    #              "proc_version", "baseband", "mac_address", "ip_address",
+    #              "wifi_ssid", "imei", "android_id", "version", "sim", "os_type",
+    #              "apn", "imsi", "tgtgt", "display", "fingerprint", "wifi_bssid")
+    __json_fields__ = ("product", "device", "board", "brand", "model",
+                       "bootloader", "boot_id", "proc_version", "baseband",
+                       "mac_address", "ip_address", "wifi_ssid", "imei",
+                       "android_id", "version", "sim", "os_type", "apn",
+                       "_imsi_md5", "_tgtgt_md5")
 
     product: str
     device: str

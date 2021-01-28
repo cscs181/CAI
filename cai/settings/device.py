@@ -162,8 +162,8 @@ def get_device() -> DeviceInfo:
     if not os.path.exists(Storage.device_file):
         device = new_device()
         with open(Storage.device_file, "w") as f:
-            json.dump(device, f)
+            device.to_file(f)
     else:
         with open(Storage.device_file, "r") as f:
-            device = json.load(f)
+            device = DeviceInfo.from_file(f)
     return device

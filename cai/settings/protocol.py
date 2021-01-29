@@ -1,4 +1,9 @@
+import os
 from typing import NamedTuple
+
+from cai.storage import Storage
+
+MISSING = "MISSING"
 
 
 class ApkInfo(NamedTuple):
@@ -84,8 +89,20 @@ MACOS = ApkInfo(
 )
 
 
-def get_apk_info(type_: int = 0) -> ApkInfo:
-    info = {0: IPAD, 1: ANDROID_PHONE, 2: ANDROID_WATCH, 3: MACOS}
+def get_apk_info(type_: str = "0") -> ApkInfo:
+    info = {"0": IPAD, "1": ANDROID_PHONE, "2": ANDROID_WATCH, "3": MACOS}
     if type_ not in info:
         raise ValueError(f"Invalid Protocol Type: {type_}")
     return info[type_]
+
+
+def get_protocol() -> ApkInfo:
+    type_ = os.getenv(Storage.protocol_env_name, MISSING)
+    if type_ is MISSING and os.path.exists(Storage.protocol_file):
+        with open(Storage.protocol_file, "r") as f:
+            type_ = f.read()
+    elif type_ is MISSING:
+        type_ = "0"
+        with open(Storage.protocol_file, "w") as f:
+            f.write("0")
+    return get_apk_info(type_)

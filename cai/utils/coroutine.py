@@ -1,5 +1,5 @@
 from collections.abc import Coroutine
-from typing import Generic, TypeVar, Optional, AsyncContextManager
+from typing import Generic, TypeVar, Optional, AsyncContextManager, Coroutine as CoroutineGeneric
 
 TY = TypeVar("TY")
 TS = TypeVar("TS")
@@ -10,7 +10,7 @@ class _ContextManager(Coroutine, Generic[TY, TS, TR]):
 
     __slots__ = ("_coro", "_obj")
 
-    def __init__(self, coro: Coroutine[TY, TS, TR]):
+    def __init__(self, coro: CoroutineGeneric[TY, TS, TR]):
         self._coro = coro
         self._obj: Optional[TR] = None
 

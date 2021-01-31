@@ -1,10 +1,24 @@
-from rtea import qqtea_encrypt
+import time
+import http.client
+from io import BytesIO
+
 from jce import JceStruct, JceField, types
+from rtea import qqtea_encrypt, qqtea_decrypt
 
 from cai.connection import connect
 from cai.settings.device import get_device
+from cai.exceptions import SsoServerException
 from cai.settings.protocol import get_protocol
 from cai.utils.jce import RequestPacketVersion3
+
+
+class _FakeSocket:
+
+    def __init__(self, response: bytes):
+        self._file = BytesIO(response)
+
+    def makefile(self, *args, **kwargs):
+        return self._file
 
 
 # com/tencent/msf/service/protocol/serverconfig/C32504d.java
@@ -12,7 +26,7 @@ from cai.utils.jce import RequestPacketVersion3
 class SsoServerRequest(JceStruct):
     uin: types.INT64 = JceField(0, jce_id=1)  # uin or 0
     timeout: types.INT64 = JceField(
-        60, jce_id=2
+        0, jce_id=2
     )  # may be timeout (s), default is 60
 
     f172842c: types.BYTE = JceField(bytes([1]), jce_id=3)  # always 1
@@ -40,6 +54,12 @@ class SsoServerRequest(JceStruct):
     f172852m: types.INT64 = JceField(0, jce_id=13)
 
 
+# com/tencent/msf/service/protocol/serverconfig/C32505e.java
+# renamed from: com.tencent.msf.service.protocol.serverconfig.e
+class SsoServerResponse(JceStruct):
+    pass
+
+
 # com/tencent/mobileqq/msf/core/p205a/C25979f.java
 async def get_sso_address():
     device = get_device()
@@ -53,7 +73,7 @@ async def get_sso_address():
     payload = SsoServerRequest.to_bytes(
         0, SsoServerRequest(app_id=protocol.app_id, imei=device.imei)
     )
-    packet = RequestPacketVersion3(
+    req_packet = RequestPacketVersion3(
         req_id=0,
         servant_name="HttpServerListReq",
         func_name="HttpServerListReq",
@@ -61,15 +81,35 @@ async def get_sso_address():
             {types.STRING("HttpServerListReq"): types.BYTES(payload)}
         )
     ).encode(with_length=True)
-    buffer = qqtea_encrypt(packet, key)
+    buffer: bytes = qqtea_encrypt(req_packet, key)
     async with connect("configsvr.msf.3g.qq.com", 443, ssl=True) as conn:
         query = (
             b"POST /configsvr/serverlist.jsp HTTP/1.1\r\n"
-            b"User-Agent: QQ/8.2.0.1296 CFNetwork/1126\r\n"
+            b"Host: configsvr.msf.3g.qq.com\r\n"
+            b"User-Agent: QQ/8.4.1.2703 CFNetwork/1126\r\n"
             b"Net-Type: Wifi\r\n"
+            b"Accept: */*\r\n"
+            b"Connection: close\r\n"
+            b"Content-Type: application/octet-stream\r\n"
             b"Content-Length: " + str(len(buffer)).encode() + b"\r\n"
             b"\r\n" + buffer
         )
-        await conn._write_bytes(query)
-        response = await conn._read_all()
-        print(response)
+        conn._write_bytes(query)
+        conn._write_eof()
+        resp_bytes = await conn._read_all()
+        response = http.client.HTTPResponse(
+            _FakeSocket(resp_bytes)  # type: ignore
+        )
+        response.begin()
+
+    if response.status != 200:
+        raise SsoServerException(
+            f"Get sso server list failed with response code {response.status}"
+        )
+    data: bytes = qqtea_decrypt(response.read(), key)
+    resp_packet = RequestPacketVersion3.decode(data)
+    print(resp_packet.data["HttpServerListRes"][1:-1])
+    server_info = SsoServerResponse.decode(
+        resp_packet.data["HttpServerListRes"][1:-1]
+    )
+    print(server_info)

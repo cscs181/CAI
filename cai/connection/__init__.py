@@ -76,6 +76,15 @@ class Connection:
             ) from e
         return data
 
+    async def _read_line(self):
+        try:
+            data = await self._reader.readline()
+        except (asyncio.IncompleteReadError, IOError, OSError) as e:
+            raise ConnectionAbortedError(
+                f"Lost connection to {self._host}:{self._port}"
+            ) from e
+        return data
+
     async def _read_all(self):
         try:
             data = await self._reader.read(-1)
@@ -85,9 +94,12 @@ class Connection:
             ) from e
         return data
 
-    async def _write_bytes(self, data: bytes):
-        await self._writer.drain()
+    def _write_bytes(self, data: bytes):
         return self._writer.write(data)
+
+    def _write_eof(self):
+        if self._writer.can_write_eof():
+            self._writer.write_eof()
 
 
 def connect(

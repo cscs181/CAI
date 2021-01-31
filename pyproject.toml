@@ -14,8 +14,8 @@ include = ["cai/py.typed"]
 
 [tool.poetry.dependencies]
 python = "^3.7"
-jcestruct = "^0.1.0"
 rtea = "^0.2.0"
+jcestruct = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"

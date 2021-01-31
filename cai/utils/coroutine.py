@@ -1,15 +1,20 @@
 from collections.abc import Coroutine
+from typing import Generic, TypeVar, Optional, AsyncContextManager
+
+TY = TypeVar("TY")
+TS = TypeVar("TS")
+TR = TypeVar("TR", bound=AsyncContextManager)
 
 
-class _ContextManager(Coroutine):
+class _ContextManager(Coroutine, Generic[TY, TS, TR]):
 
     __slots__ = ("_coro", "_obj")
 
-    def __init__(self, coro: Coroutine):
+    def __init__(self, coro: Coroutine[TY, TS, TR]):
         self._coro = coro
-        self._obj = None
+        self._obj: Optional[TR] = None
 
-    def send(self, value):
+    def send(self, value: TS) -> TY:
         return self._coro.send(value)
 
     def throw(self, typ, val=None, tb=None):
@@ -32,7 +37,7 @@ class _ContextManager(Coroutine):
     def __await__(self):
         return self._coro.__await__()
 
-    async def __aenter__(self):
+    async def __aenter__(self) -> TR:
         self._obj = await self._coro
         return self._obj
 

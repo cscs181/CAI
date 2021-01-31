@@ -1,5 +1,5 @@
 import asyncio
-from typing import Optional
+from typing import Any, Optional, Coroutine
 
 from cai.utils.coroutine import _ContextManager
 
@@ -7,10 +7,15 @@ from cai.utils.coroutine import _ContextManager
 class Connection:
 
     def __init__(
-        self, host: str, port: int, timeout: Optional[float] = None
+        self,
+        host: str,
+        port: int,
+        ssl: bool = False,
+        timeout: Optional[float] = None
     ) -> None:
         self._host = host
         self._port = port
+        self._ssl = ssl
         self.timeout = timeout
 
         self._reader: Optional[asyncio.StreamReader] = None
@@ -25,6 +30,10 @@ class Connection:
         return self._port
 
     @property
+    def ssl(self) -> bool:
+        return self._ssl
+
+    @property
     def closed(self) -> bool:
         return self._writer is None
 
@@ -33,13 +42,14 @@ class Connection:
         return self
 
     async def __aexit__(self, exc_type, exc_val, exc_tb):
-        self.close()
+        await self.close()
         return
 
     async def _connect(self):
         try:
             self._reader, self._writer = await asyncio.wait_for(
-                asyncio.open_connection(self._host, self._port), self.timeout
+                asyncio.open_connection(self._host, self._port, ssl=self._ssl),
+                self.timeout
             )
         except Exception as e:
             if self._writer:
@@ -50,9 +60,10 @@ class Connection:
                 f"Open connection to {self._host}:{self._port} failed"
             ) from e
 
-    def close(self):
+    async def close(self):
         if self._writer:
-            self._writer.transport.close()
+            self._writer.close()
+            await self._writer.wait_closed()
         self._writer = None
         self._reader = None
 
@@ -65,12 +76,27 @@ class Connection:
             ) from e
         return data
 
-    def _write_bytes(self, data: bytes):
+    async def _read_all(self):
+        try:
+            data = await self._reader.read(-1)
+        except (asyncio.IncompleteReadError, IOError, OSError) as e:
+            raise ConnectionAbortedError(
+                f"Lost connection to {self._host}:{self._port}"
+            ) from e
+        return data
+
+    async def _write_bytes(self, data: bytes):
+        await self._writer.drain()
         return self._writer.write(data)
 
 
-def connect(host: str, port: int, timeout: Optional[float] = None):
-    coro = _connect(host, port, timeout)
+def connect(
+    host: str,
+    port: int,
+    ssl: bool = False,
+    timeout: Optional[float] = None
+) -> _ContextManager[Any, Any, Connection]:
+    coro = _connect(host, port, ssl=ssl, timeout=timeout)
     return _ContextManager(coro)
 
 

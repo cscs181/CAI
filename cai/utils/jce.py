@@ -1,4 +1,6 @@
+import struct
 from typing import Optional
+
 from jce import JceStruct, JceField, types
 
 
@@ -12,17 +14,23 @@ class RequestPacket(JceStruct):
     func_name: types.STRING = JceField(jce_id=6)
     buffer: Optional[types.BYTES] = JceField(None, jce_id=7)
     timeout: types.INT32 = JceField(0, jce_id=8)
-    context: types.MAP = JceField(jce_id=9)
-    status: types.MAP = JceField(jce_id=10)
+    context: types.MAP = JceField({}, jce_id=9)
+    status: types.MAP = JceField({}, jce_id=10)
 
+
+class RequestPacketVersion3(RequestPacket):
+    version: types.INT16 = JceField(3, jce_id=1)
     # raw data for buffer field
-    data: Optional[JceStruct] = None
+    data: Optional[types.MAP[types.STRING, types.JceType]] = None
 
     def _prepare_buffer(self):
         if not self.data:
             raise RuntimeError("No data available")
-        self.buffer = types.BYTES.validate(self.data.to_bytes(0, self.data))
+        self.buffer = types.BYTES.validate(types.MAP.to_bytes(0, self.data))
 
-    def encode(self) -> bytes:
+    def encode(self, with_length: bool = False) -> bytes:
         self._prepare_buffer()
-        return super().encode()
+        buffer = super().encode()
+        if with_length:
+            return struct.pack(">I", len(buffer) + 4) + buffer
+        return buffer

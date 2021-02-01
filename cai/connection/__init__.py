@@ -1,5 +1,5 @@
 import asyncio
-from typing import Any, Optional, Coroutine
+from typing import Any, Optional
 
 from cai.utils.coroutine import _ContextManager
 

@@ -1,6 +1,7 @@
-import time
+import asyncio
 import http.client
 from io import BytesIO
+from typing import Set, List, Union, Tuple, Iterable, Optional
 
 from jce import JceStruct, JceField, types
 from rtea import qqtea_encrypt, qqtea_decrypt
@@ -10,6 +11,10 @@ from cai.settings.device import get_device
 from cai.exceptions import SsoServerException
 from cai.settings.protocol import get_protocol
 from cai.utils.jce import RequestPacketVersion3
+from cai.connection.utils import tcp_latency_test
+
+_cached_server: Optional["SsoServer"] = None
+_cached_servers: Set["SsoServer"] = set()
 
 
 class _FakeSocket:
@@ -54,14 +59,63 @@ class SsoServerRequest(JceStruct):
     f172852m: types.INT64 = JceField(0, jce_id=13)
 
 
+# com/tencent/msf/service/protocol/serverconfig/C32509i.java
+# renamed from: com.tencent.msf.service.protocol.serverconfig.i
+class SsoServer(JceStruct):
+    host: types.STRING = JceField(jce_id=1)
+    port: types.INT32 = JceField(jce_id=2)
+    # f172901c: types.BYTE = JceField(jce_id=3)
+    # f172902d: types.BYTE = JceField(jce_id=4)
+    protocol: types.BYTE = JceField(jce_id=5)  # 0,1: socket; 2,3: http
+    # f172904f: types.INT32 = JceField(jce_id=6)
+    # f172905g: types.BYTE = JceField(jce_id=7)
+    city: types.STRING = JceField(jce_id=8)
+    country: types.STRING = JceField(jce_id=9)
+
+
 # com/tencent/msf/service/protocol/serverconfig/C32505e.java
 # renamed from: com.tencent.msf.service.protocol.serverconfig.e
 class SsoServerResponse(JceStruct):
-    pass
+    # f172861a: types.INT32 = JceField(0, jce_id=1)
+    socket_v4_mobile: types.LIST[SsoServer] = JceField(
+        jce_id=2
+    )  # socket, ipv4, mobile
+    socket_v4_wifi: types.LIST[SsoServer] = JceField(
+        jce_id=3
+    )  # socket, ipv4, wifi
+    # f172864d: types.INT32 = JceField(0, jce_id=4)
+    # f172865e: types.INT32 = JceField(86400, jce_id=5)
+    # f172866f: types.BYTE = JceField(bytes(1), jce_id=6)
+    # f172867g: types.BYTE = JceField(bytes(1), jce_id=7)
+    # f172868h: types.INT32 = JceField(1, jce_id=8)
+    # f172869i: types.INT32 = JceField(5, jce_id=9)
+    # f172870j: types.INT64 = JceField(0, jce_id=10)
+    # f172871k: types.INT32 = JceField(0, jce_id=11)
+    http_v4_mobile: types.LIST[SsoServer] = JceField(
+        jce_id=12
+    )  # http, ipv4, mobile
+    http_v4_wifi: types.LIST[SsoServer] = JceField(
+        jce_id=13
+    )  # http, ipv4, wifi
+    speed_info: types.BYTES = JceField(
+        jce_id=14
+    )  # vCesuInfo, PacketVersion3(QualityTest)
+    socket_v6: types.LIST[SsoServer] = JceField(
+        jce_id=15
+    )  # socket, ipv6, (wifi and nettype & 1 == 1) | (mobile and nettype & 2 == 2)
+    http_v6: types.LIST[SsoServer] = JceField(
+        jce_id=16
+    )  # http, ipv6, (wifi and nettype & 1 == 1) | (mobile and nettype & 2 == 2)
+    udp_v6: types.LIST[SsoServer] = JceField(
+        jce_id=17
+    )  # quic, ipv6, (wifi and nettype & 1 == 1) | (mobile and nettype & 2 == 2)
+    nettype: types.BYTE = JceField(bytes(1), jce_id=18)
+    delay_threshold: types.INT32 = JceField(0, jce_id=19)
+    policy_id: types.STRING = JceField("", jce_id=20)
 
 
 # com/tencent/mobileqq/msf/core/p205a/C25979f.java
-async def get_sso_address():
+async def get_sso_list() -> SsoServerResponse:
     device = get_device()
     protocol = get_protocol()
     key = bytes(
@@ -108,8 +162,39 @@ async def get_sso_address():
         )
     data: bytes = qqtea_decrypt(response.read(), key)
     resp_packet = RequestPacketVersion3.decode(data)
-    print(resp_packet.data["HttpServerListRes"][1:-1])
     server_info = SsoServerResponse.decode(
         resp_packet.data["HttpServerListRes"][1:-1]
     )
-    print(server_info)
+    return server_info
+
+
+async def quality_test(
+    servers: Iterable[SsoServer],
+    threshold: float = 500.
+) -> List[Tuple[SsoServer, float]]:
+    tasks = [tcp_latency_test(server.host, server.port) for server in servers]
+    result: List[Union[float, Exception]
+                ] = await asyncio.gather(*tasks, return_exceptions=True)
+    success_servers = [
+        (server, latency)
+        for server, latency in zip(servers, result)
+        if isinstance(latency, float) and latency < threshold
+    ]
+    return success_servers
+
+
+async def get_sso_server(cache: bool = True) -> SsoServer:
+    global _cached_server
+    if cache and _cached_server:
+        return _cached_server
+    if cache and _cached_servers:
+        servers = _cached_servers
+    else:
+        sso_list = await get_sso_list()
+        servers = set([*sso_list.socket_v4_mobile, *sso_list.socket_v4_wifi])
+        _cached_servers.clear()
+        _cached_servers.update(servers)
+    success_servers = await quality_test(servers)
+    success_servers.sort(key=lambda x: x[1])
+    _cached_server = success_servers[0][0]
+    return _cached_server

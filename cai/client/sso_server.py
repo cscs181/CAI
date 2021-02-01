@@ -1,7 +1,7 @@
 import asyncio
 import http.client
 from io import BytesIO
-from typing import Set, List, Union, Tuple, Iterable, Optional
+from typing import List, Union, Tuple, Iterable, Optional
 
 from jce import JceStruct, JceField, types
 from rtea import qqtea_encrypt, qqtea_decrypt
@@ -14,7 +14,7 @@ from cai.utils.jce import RequestPacketVersion3
 from cai.connection.utils import tcp_latency_test
 
 _cached_server: Optional["SsoServer"] = None
-_cached_servers: Set["SsoServer"] = set()
+_cached_servers: List["SsoServer"] = []
 
 
 class _FakeSocket:
@@ -191,9 +191,9 @@ async def get_sso_server(cache: bool = True) -> SsoServer:
         servers = _cached_servers
     else:
         sso_list = await get_sso_list()
-        servers = set([*sso_list.socket_v4_mobile, *sso_list.socket_v4_wifi])
+        servers = [*sso_list.socket_v4_mobile, *sso_list.socket_v4_wifi]
         _cached_servers.clear()
-        _cached_servers.update(servers)
+        _cached_servers.extend(servers)
     success_servers = await quality_test(servers)
     success_servers.sort(key=lambda x: x[1])
     _cached_server = success_servers[0][0]

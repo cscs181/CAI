@@ -10,6 +10,8 @@ from dataclasses import dataclass
 from cai.storage import Storage
 from cai.utils.dataclass import JsonableDataclass
 
+_device: Optional["DeviceInfo"] = None
+
 
 @dataclass(init=True, eq=False)
 class Version(JsonableDataclass):
@@ -171,7 +173,11 @@ def new_device(
     )
 
 
-def get_device() -> DeviceInfo:
+def get_device(cache: bool = True) -> DeviceInfo:
+    global _device
+    if cache and _device:
+        return _device
+
     device: DeviceInfo
     if not os.path.exists(Storage.device_file):
         device = new_device()
@@ -180,4 +186,6 @@ def get_device() -> DeviceInfo:
     else:
         with open(Storage.device_file, "r") as f:
             device = DeviceInfo.from_file(f)
+
+    _device = device
     return device

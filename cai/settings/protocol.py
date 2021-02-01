@@ -1,9 +1,11 @@
 import os
-from typing import NamedTuple
+from typing import Optional, NamedTuple
 
 from cai.storage import Storage
 
 MISSING = "MISSING"
+
+_protocol: Optional["ApkInfo"] = None
 
 
 class ApkInfo(NamedTuple):
@@ -96,7 +98,11 @@ def get_apk_info(type_: str = "0") -> ApkInfo:
     return info[type_]
 
 
-def get_protocol() -> ApkInfo:
+def get_protocol(cache: bool = True) -> ApkInfo:
+    global _protocol
+    if cache and _protocol:
+        return _protocol
+
     type_ = os.getenv(Storage.protocol_env_name, MISSING)
     if type_ is MISSING and os.path.exists(Storage.protocol_file):
         with open(Storage.protocol_file, "r") as f:
@@ -105,4 +111,5 @@ def get_protocol() -> ApkInfo:
         type_ = "0"
         with open(Storage.protocol_file, "w") as f:
             f.write("0")
-    return get_apk_info(type_)
+    _protocol = get_apk_info(type_)
+    return _protocol

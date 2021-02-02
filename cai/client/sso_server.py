@@ -26,7 +26,6 @@ class _FakeSocket:
         return self._file
 
 
-# com/tencent/msf/service/protocol/serverconfig/C32504d.java
 # renamed from: com.tencent.msf.service.protocol.serverconfig.d
 class SsoServerRequest(JceStruct):
     uin: types.INT64 = JceField(0, jce_id=1)  # uin or 0
@@ -59,7 +58,6 @@ class SsoServerRequest(JceStruct):
     f172852m: types.INT64 = JceField(0, jce_id=13)
 
 
-# com/tencent/msf/service/protocol/serverconfig/C32509i.java
 # renamed from: com.tencent.msf.service.protocol.serverconfig.i
 class SsoServer(JceStruct):
     host: types.STRING = JceField(jce_id=1)
@@ -73,7 +71,6 @@ class SsoServer(JceStruct):
     country: types.STRING = JceField(jce_id=9)
 
 
-# com/tencent/msf/service/protocol/serverconfig/C32505e.java
 # renamed from: com.tencent.msf.service.protocol.serverconfig.e
 class SsoServerResponse(JceStruct):
     # f172861a: types.INT32 = JceField(0, jce_id=1)

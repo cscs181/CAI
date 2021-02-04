@@ -1,3 +1,14 @@
+"""SSO Server SDK
+
+This module is used to get server list and choose the best on.
+
+Copyright (C) 2021-2021  yanyongyu
+
+License AGPL-3.0 or later. See `LICENSE`_ for detail.
+
+.. _LICENSE:
+    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+"""
 import asyncio
 import http.client
 from io import BytesIO

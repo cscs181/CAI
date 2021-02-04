@@ -15,18 +15,18 @@ _device: Optional["DeviceInfo"] = None
 
 @dataclass(init=True, eq=False)
 class Version(JsonableDataclass):
-    # __slots__ not work with dataclass
-    # __slots__ = ("incremental", "release", "codename", "sdk")
+    __slots__ = ("incremental", "release", "codename", "sdk")
     __json_fields__ = ("incremental", "release", "codename", "sdk")
 
     incremental: str
-    release: str = "10"
-    codename: str = "REL"
-    sdk: int = 29
+    release: str
+    codename: str
+    sdk: int
 
 
 @dataclass(init=True, eq=False)
 class DeviceInfo(JsonableDataclass):
+    # __slots__ not work with dataclass default value
     # __slots__ = ("product", "device", "board", "model", "bootloader", "boot_id",
     #              "proc_version", "baseband", "mac_address", "ip_address",
     #              "wifi_ssid", "imei", "android_id", "version", "sim", "os_type",
@@ -66,7 +66,11 @@ class DeviceInfo(JsonableDataclass):
 
     @property
     def fingerprint(self) -> str:
-        return f"{self.brand}/{self.product}/{self.device}:10/{self.android_id}/{self.version.incremental}:user/release-keys"
+        return (
+            f"{self.brand}/{self.product}/{self.device}:"
+            f"{self.version.release}/{self.android_id}/"
+            f"{self.version.incremental}:user/release-keys"
+        )
 
     @property
     def wifi_bssid(self) -> str:
@@ -129,12 +133,18 @@ def new_ip_address() -> str:
     return f"10.0.{random.randint(0,99)}.{random.randint(0,99)}"
 
 
-def new_incremental() -> str:
-    return str(random.randint(1000000, 9999999))
-
-
-def new_version() -> Version:
-    return Version(incremental=new_incremental())
+def new_version(
+    incremental: Optional[str] = None,
+    release: Optional[str] = None,
+    codename: Optional[str] = None,
+    sdk: Optional[int] = None
+) -> Version:
+    return Version(
+        incremental=incremental or "V12.0.19.0.RKBCNXM",
+        release=release or "11",
+        codename=codename or "REL",
+        sdk=sdk or 30
+    )
 
 
 def new_device(
@@ -155,12 +165,12 @@ def new_device(
     version: Optional[Version] = None
 ) -> DeviceInfo:
     return DeviceInfo(
-        product=product or "iarim",
-        device=device or "sagit",
-        board=board or "eomam",
+        product=product or "missi",
+        device=device or "venus",
+        board=board or "venus",
         brand=brand or "Xiaomi",
-        model=model or "MI 10",
-        bootloader=bootloader or "U-boot",
+        model=model or "MI 11",
+        bootloader=bootloader or "unknown",
         boot_id=boot_id or new_boot_id(),
         proc_version=proc_version or new_proc_version(),
         baseband=baseband or "",

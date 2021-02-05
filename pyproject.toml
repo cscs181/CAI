@@ -19,6 +19,8 @@ jcestruct = "^0.1.0"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"
+sphinx = "^3.4.3"
+sphinxcontrib-napoleon = "^0.7"
 
 [[tool.poetry.source]]
 name = "aliyun"

@@ -1,6 +1,6 @@
 """TLV Tools
 
-This module is used to build and handle tlv bytes
+This module is used to build and handle tlv bytes.
 
 Copyright (C) 2021-2021  yanyongyu
 
@@ -26,7 +26,7 @@ class Packet(bytearray):
         return self
 
 
-class Tlv:
+class TlvBuilder:
 
     # oicq/wlogin_sdk/tlv_type/tlv_t.java
     @classmethod

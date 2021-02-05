@@ -1,3 +1,16 @@
+"""Application Protocol setting
+
+This module is used to get or new the application protocol setting.
+Protocol settings will be stored in APP_DIR provided by storage manager.
+Once the protocol setting is loaded, it will be cached until application shut down.
+
+Copyright (C) 2021-2021  yanyongyu
+
+License AGPL-3.0 or later. See `LICENSE`_ for detail.
+
+.. _LICENSE:
+    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+"""
 import os
 from typing import Optional, NamedTuple
 

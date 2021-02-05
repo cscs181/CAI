@@ -1,6 +1,6 @@
 """SSO Server SDK
 
-This module is used to get server list and choose the best on.
+This module is used to get server list and choose the best one.
 
 Copyright (C) 2021-2021  yanyongyu
 

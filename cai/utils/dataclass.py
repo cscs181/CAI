@@ -1,3 +1,14 @@
+"""Dataclass Related Tools
+
+This module is used to build dataclass related tools.
+
+Copyright (C) 2021-2021  yanyongyu
+
+License AGPL-3.0 or later. See `LICENSE`_ for detail.
+
+.. _LICENSE:
+    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+"""
 import json
 import copy
 from dataclasses import _is_dataclass_instance, fields, MISSING, is_dataclass

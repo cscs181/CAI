@@ -3,7 +3,6 @@
 This module is used to build and handle tlv bytes.
 
 :Copyright: Copyright (C) 2021-2021  yanyongyu
-
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
@@ -17,13 +16,7 @@ from typing import List, Union
 
 from rtea import qqtea_encrypt
 
-
-class Packet(bytearray):
-
-    def write(self, *data: Union[bytes, "Packet"]) -> "Packet":
-        for i in data:
-            self.extend(i)
-        return self
+from cai.utils.binary import Packet
 
 
 class TlvBuilder:
@@ -70,9 +63,18 @@ class TlvBuilder:
         return cls._pack_tlv(0x8, struct.pack(">HIH", i, localId, i2))
 
     @classmethod
-    def t18(cls, app_id: int, i: int, uin: int, i2: int) -> Packet:
+    def t18(
+        cls,
+        app_id: int,
+        app_client_version: int,
+        uin: int,
+        unknown: int = 0
+    ) -> Packet:
         return cls._pack_tlv(
-            0x18, struct.pack(">HIIIIHH", 1, 1536, app_id, i, uin, i2, 0)
+            0x18,
+            struct.pack(
+                ">HIIIIHH", 1, 1536, app_id, app_client_version, uin, unknown, 0
+            )
         )
 
     @classmethod
@@ -92,7 +94,7 @@ class TlvBuilder:
     def t106(
         cls, sso_version: int, app_id: int, app_client_version: int, uin: int,
         salt: int, ip: bytes, password_md5: bytes, guid_available: bool,
-        guid: bytes, tgtgt_key: bytes, wtf: int
+        guid: bytes, tgtgt_key: bytes
     ) -> Packet:
         key = md5(
             Packet().write(
@@ -102,14 +104,20 @@ class TlvBuilder:
 
         body = Packet().write(
             struct.pack(
-                ">HIIIIQ", 4, cls._random_int32(), sso_version, app_id,
-                app_client_version, uin or salt
+                ">HIIIIQ",
+                4,  # tgtgt version
+                cls._random_int32(),
+                sso_version,
+                app_id,
+                app_client_version,
+                uin or salt
             ),
-            struct.pack(
-                ">I4sc16s", int(time.time() * 1000), ip, 1, password_md5
-            ),
+            struct.pack(">I", int(time.time() * 1000)),
+            ip,
+            struct.pack(">c", 1),  # save password,
+            struct.pack(">16s", password_md5),
             tgtgt_key,
-            struct.pack(">I?", wtf, guid_available),
+            struct.pack(">I?", 0, guid_available),
             guid or struct.pack(
                 ">IIII", cls._random_int32(), cls._random_int32(),
                 cls._random_int32(), cls._random_int32()

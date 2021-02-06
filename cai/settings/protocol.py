@@ -5,7 +5,6 @@ Protocol settings will be stored in APP_DIR provided by storage manager.
 Once the protocol setting is loaded, it will be cached until application shut down.
 
 :Copyright: Copyright (C) 2021-2021  yanyongyu
-
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
@@ -23,12 +22,12 @@ _protocol: Optional["ApkInfo"] = None
 
 class ApkInfo(NamedTuple):
     apk_id: str
-    app_id: int
+    app_id: int  # com.tencent.common.config.AppSetting.f
     version: str
     build_time: int
     apk_sign: bytes
-    sdk_version: str
-    sso_version: int
+    sdk_version: str  # oicq.wlogin_sdk.tools.util.SDK_VERSION
+    sso_version: int  # oicq.wlogin_sdk.tools.util.SSO_VERSION
     bitmap: int
     sigmap: int
     sub_sigmap: int

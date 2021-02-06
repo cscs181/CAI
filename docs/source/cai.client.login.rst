@@ -9,6 +9,14 @@ cai.client.login package
 Submodules
 ----------
 
+cai.client.login.packet module
+------------------------------
+
+.. automodule:: cai.client.login.packet
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cai.client.login.tlv module
 ---------------------------
 

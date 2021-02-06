@@ -5,7 +5,6 @@ Device settings will be stored in APP_DIR provided by storage manager.
 Once the device setting is loaded, it will be cached until application shut down.
 
 :Copyright: Copyright (C) 2021-2021  yanyongyu
-
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
@@ -46,8 +45,7 @@ class DeviceInfo(JsonableDataclass):
     __json_fields__ = (
         "product", "device", "board", "brand", "model", "bootloader", "boot_id",
         "proc_version", "baseband", "mac_address", "ip_address", "wifi_ssid",
-        "imei", "android_id", "version", "sim", "os_type", "apn", "_imsi_md5",
-        "_tgtgt_md5"
+        "imei", "android_id", "version", "sim", "os_type", "apn"
     )
 
     product: str

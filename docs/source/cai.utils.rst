@@ -9,6 +9,14 @@ cai.utils package
 Submodules
 ----------
 
+cai.utils.binary module
+-----------------------
+
+.. automodule:: cai.utils.binary
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cai.utils.coroutine module
 --------------------------
 

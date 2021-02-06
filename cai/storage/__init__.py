@@ -3,7 +3,6 @@
 This module is used to manage application storage.
 
 :Copyright: Copyright (C) 2021-2021  yanyongyu
-
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:

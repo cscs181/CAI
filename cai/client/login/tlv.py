@@ -16,6 +16,7 @@ from typing import List, Union
 
 from rtea import qqtea_encrypt
 
+from .data_pb2 import DeviceInfo
 from cai.utils.binary import Packet
 
 
@@ -96,9 +97,9 @@ class TlvBuilder:
 
     @classmethod
     def t106(
-        cls, sso_version: int, sub_app_id: int, app_client_version: int,
-        uin: int, salt: int, ip: bytes, password_md5: bytes,
-        guid_available: bool, guid: bytes, tgtgt_key: bytes
+        cls, sso_version: int, app_id: int, sub_app_id: int,
+        app_client_version: int, uin: int, salt: int, ip: bytes,
+        password_md5: bytes, guid_available: bool, guid: bytes, tgtgt_key: bytes
     ) -> Packet:
         key = md5(
             Packet().write(
@@ -112,7 +113,7 @@ class TlvBuilder:
                 4,  # tgtgt version
                 cls._random_int32(),
                 sso_version,
-                sub_app_id,
+                app_id,
                 app_client_version,
                 uin or salt
             ),
@@ -128,7 +129,7 @@ class TlvBuilder:
             ),
             struct.pack(
                 ">II",
-                app_id,
+                sub_app_id,
                 1  # password login
             ),
             cls._pack_lv(str(uin).encode()),
@@ -220,7 +221,9 @@ class TlvBuilder:
 
     @classmethod
     def t144(
-        cls, imei: bytes, dev_info: bytes, os_type: bytes, os_version: bytes,
+        cls, imei: bytes, bootloader: str, proc_version: str, codename: str,
+        incremental: str, fingerprint: str, boot_id: str, android_id: str,
+        baseband: str, inner_version: str, os_type: bytes, os_version: bytes,
         sim_info: bytes, apn: bytes, is_guid_from_file_null: bool,
         is_guid_available: bool, is_guid_changed: bool, guid_flag: int,
         build_model: bytes, guid: bytes, build_brand: bytes, tgtgt_key: bytes
@@ -229,8 +232,12 @@ class TlvBuilder:
             0x144,
             qqtea_encrypt(
                 Packet().write(
-                    struct.pack(">H", 5), cls.t109(imei), cls.t52d(dev_info),
-                    cls.t124(os_type, os_version, sim_info, apn),
+                    struct.pack(">H", 5), cls.t109(imei),
+                    cls.t52d(
+                        bootloader, proc_version, codename, incremental,
+                        fingerprint, boot_id, android_id, baseband,
+                        inner_version
+                    ), cls.t124(os_type, os_version, sim_info, apn),
                     cls.t128(
                         is_guid_from_file_null, is_guid_available,
                         is_guid_changed, guid_flag, build_model, guid,
@@ -246,7 +253,7 @@ class TlvBuilder:
 
     @classmethod
     def t147(
-        cls, app_id: bytes, apk_version_name: bytes, apk_signature_md5: bytes
+        cls, app_id: int, apk_version_name: bytes, apk_signature_md5: bytes
     ) -> Packet:
         return cls._pack_tlv(
             0x147, struct.pack(">I", app_id),
@@ -377,8 +384,23 @@ class TlvBuilder:
         return cls._pack_tlv(0x525, struct.pack(">H", 1), t536)
 
     @classmethod
-    def t52d(cls, dev_info: bytes) -> Packet:
-        return cls._pack_tlv(0x52D, dev_info)
+    def t52d(
+        cls, bootloader: str, proc_version: str, codename: str,
+        incremental: str, fingerprint: str, boot_id: str, android_id: str,
+        baseband: str, inner_version: str
+    ) -> Packet:
+        device_info = DeviceInfo(
+            bootloader=bootloader,
+            proc_version=proc_version,
+            codename=codename,
+            incremental=incremental,
+            fingerprint=fingerprint,
+            boot_id=boot_id,
+            android_id=android_id,
+            base_band=baseband,
+            inner_version=inner_version
+        )
+        return cls._pack_tlv(0x52D, device_info.SerializeToString())
 
     @classmethod
     def t536(cls, login_extra_data: bytes) -> Packet:

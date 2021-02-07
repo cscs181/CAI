@@ -79,11 +79,15 @@ class TlvBuilder:
 
     @classmethod
     def t100(
-        cls, sso_version: int, j: int, protocol: int, i: int, sigmap: int
+        cls, sso_version: int, app_id: int, sub_app_id: int,
+        app_client_version: int, sigmap: int
     ) -> Packet:
         return cls._pack_tlv(
             0x100,
-            struct.pack(">HIIIII", 1, sso_version, j, protocol, i, sigmap)
+            struct.pack(
+                ">HIIIII", 1, sso_version, app_id, sub_app_id,
+                app_client_version, sigmap
+            )
         )
 
     @classmethod
@@ -92,9 +96,9 @@ class TlvBuilder:
 
     @classmethod
     def t106(
-        cls, sso_version: int, app_id: int, app_client_version: int, uin: int,
-        salt: int, ip: bytes, password_md5: bytes, guid_available: bool,
-        guid: bytes, tgtgt_key: bytes
+        cls, sso_version: int, sub_app_id: int, app_client_version: int,
+        uin: int, salt: int, ip: bytes, password_md5: bytes,
+        guid_available: bool, guid: bytes, tgtgt_key: bytes
     ) -> Packet:
         key = md5(
             Packet().write(
@@ -108,7 +112,7 @@ class TlvBuilder:
                 4,  # tgtgt version
                 cls._random_int32(),
                 sso_version,
-                app_id,
+                sub_app_id,
                 app_client_version,
                 uin or salt
             ),
@@ -128,19 +132,25 @@ class TlvBuilder:
                 1  # password login
             ),
             cls._pack_lv(str(uin).encode()),
-            struct.pack(">H", 0)
+            # struct.pack(">H", 0)  # not found in source
         )
 
         data = qqtea_encrypt(body, key)
         return cls._pack_tlv(0x106, data)
 
     @classmethod
-    def t107(cls, pic_type: int) -> Packet:
-        return cls._pack_tlv(0x107, struct.pack(">HcHc", pic_type, 0, 0, 1))
+    def t107(
+        cls,
+        pic_type: int = 0,
+        i1: int = 0,
+        i2: int = 0,
+        i3: int = 1
+    ) -> Packet:
+        return cls._pack_tlv(0x107, struct.pack(">HcHc", pic_type, i1, i2, i3))
 
     @classmethod
-    def t108(cls, imei: str) -> Packet:
-        return cls._pack_tlv(0x108, imei.encode())
+    def t108(cls, ksid: str) -> Packet:
+        return cls._pack_tlv(0x108, ksid.encode())
 
     @classmethod
     def t109(cls, android_id: bytes) -> Packet:
@@ -151,9 +161,16 @@ class TlvBuilder:
         return cls._pack_tlv(0x10A, arr)
 
     @classmethod
-    def t116(cls, bitmap: int, sub_sigmap: int) -> Packet:
+    def t116(
+        cls,
+        bitmap: int,
+        sub_sigmap: int,
+        sub_app_id_list: List[int] = [1600000226]
+    ) -> Packet:
         return cls._pack_tlv(
-            0x116, struct.pack(">cIIcI", 0, bitmap, sub_sigmap, 1, 1600000226)
+            0x116,
+            struct.pack(">cIIc", 0, bitmap, sub_sigmap, len(sub_app_id_list)),
+            *[struct.pack(">I", id) for id in sub_app_id_list]
         )
 
     @classmethod

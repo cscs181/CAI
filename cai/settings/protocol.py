@@ -22,20 +22,22 @@ _protocol: Optional["ApkInfo"] = None
 
 class ApkInfo(NamedTuple):
     apk_id: str
-    app_id: int  # com.tencent.common.config.AppSetting.f
+    app_id: int
+    sub_app_id: int  # com.tencent.common.config.AppSetting.f
     version: str
     build_time: int
     apk_sign: bytes
     sdk_version: str  # oicq.wlogin_sdk.tools.util.SDK_VERSION
     sso_version: int  # oicq.wlogin_sdk.tools.util.SSO_VERSION
-    bitmap: int
-    sigmap: int
-    sub_sigmap: int
+    bitmap: int  # oicq.wlogin_sdk.request.WtloginHelper.mMiscBitmap | 33554432
+    main_sigmap: int  # com.tencent.mobileqq.msf.core.auth.n.f
+    sub_sigmap: int  # oicq.wlogin_sdk.request.WtloginHelper.mSubSigMap
 
 
 ANDROID_PHONE = ApkInfo(
     apk_id="com.tencent.mobileqq",
-    app_id=537066738,
+    app_id=16,
+    sub_app_id=537066738,
     version="8.5.0",
     build_time=1607689988,
     apk_sign=bytes(
@@ -47,12 +49,13 @@ ANDROID_PHONE = ApkInfo(
     sdk_version="6.0.0.2454",
     sso_version=15,
     bitmap=184024956,
-    sigmap=34869472,
+    main_sigmap=34869472,
     sub_sigmap=0x10400
 )
 ANDROID_WATCH = ApkInfo(
     apk_id="com.tencent.mobileqq",
-    app_id=537061176,
+    app_id=16,
+    sub_app_id=537061176,
     version="8.2.7",
     build_time=1571193922,
     apk_sign=bytes(
@@ -64,12 +67,13 @@ ANDROID_WATCH = ApkInfo(
     sdk_version="6.0.0.2413",
     sso_version=5,
     bitmap=184024956,
-    sigmap=34869472,
+    main_sigmap=34869472,
     sub_sigmap=0x10400
 )
 IPAD = ApkInfo(
     apk_id="com.tencent.minihd.qq",
-    app_id=537065739,
+    app_id=16,
+    sub_app_id=537065739,
     version="5.8.9",
     build_time=1595836208,
     apk_sign=bytes(
@@ -81,12 +85,13 @@ IPAD = ApkInfo(
     sdk_version="6.0.0.2433",
     sso_version=12,
     bitmap=150470524,
-    sigmap=1970400,
+    main_sigmap=1970400,
     sub_sigmap=66560
 )
 MACOS = ApkInfo(
     apk_id="com.tencent.minihd.qq",
-    app_id=537064315,
+    app_id=16,
+    sub_app_id=537064315,
     version="5.8.9",
     build_time=1595836208,
     apk_sign=bytes(
@@ -98,7 +103,7 @@ MACOS = ApkInfo(
     sdk_version="6.0.0.2433",
     sso_version=12,
     bitmap=150470524,
-    sigmap=1970400,
+    main_sigmap=1970400,
     sub_sigmap=66560
 )
 

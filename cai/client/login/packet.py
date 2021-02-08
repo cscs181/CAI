@@ -19,10 +19,12 @@ class OICQRequest:
     """
 
     @classmethod
-    def build(cls, uin: int, command_id: int, data: bytes, id: int) -> Packet:
+    def build(
+        cls, uin: int, command_id: int, encoded: bytes, id: int
+    ) -> Packet:
         return Packet().write(
             struct.pack(
-                ">BHHHHIBBBIII", 2, 27 + 2 + len(data), 8001, command_id, 1,
+                ">BHHHHIBBBIII", 2, 27 + 2 + len(encoded), 8001, command_id, 1,
                 uin, 3, id, 0, 2, 0, 0
-            ), data, bytes([3])
+            ), encoded, bytes([3])
         )

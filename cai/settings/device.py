@@ -41,11 +41,11 @@ class DeviceInfo(JsonableDataclass):
     # __slots__ = ("product", "device", "board", "model", "bootloader", "boot_id",
     #              "proc_version", "baseband", "mac_address", "ip_address",
     #              "wifi_ssid", "imei", "android_id", "version", "sim", "os_type",
-    #              "apn", "imsi", "tgtgt", "display", "fingerprint", "wifi_bssid")
+    #              "apn", "imsi_md5", "tgtgt", "display", "fingerprint", "wifi_bssid")
     __json_fields__ = (
         "product", "device", "board", "brand", "model", "bootloader", "boot_id",
         "proc_version", "baseband", "mac_address", "ip_address", "wifi_ssid",
-        "imei", "android_id", "version", "sim", "os_type", "apn"
+        "imei", "android_id", "version", "sim", "os_type", "apn", "_imsi_md5"
     )
 
     product: str
@@ -87,7 +87,7 @@ class DeviceInfo(JsonableDataclass):
         return self.mac_address
 
     @property
-    def imsi(self) -> bytes:
+    def imsi_md5(self) -> bytes:
         return bytes.fromhex(self._imsi_md5)
 
     @property

@@ -60,8 +60,8 @@ class TlvBuilder:
         )
 
     @classmethod
-    def t8(cls, i: int, localId: int, i2: int) -> Packet:
-        return cls._pack_tlv(0x8, struct.pack(">HIH", i, localId, i2))
+    def t8(cls, local_id: int, i: int = 0, i2: int = 0) -> Packet:
+        return cls._pack_tlv(0x8, struct.pack(">HIH", i, local_id, i2))
 
     @classmethod
     def t18(
@@ -119,7 +119,7 @@ class TlvBuilder:
             ),
             struct.pack(">I", int(time.time() * 1000)),
             ip,
-            struct.pack(">c", 1),  # save password,
+            struct.pack(">B", 1),  # save password,
             struct.pack(">16s", password_md5),
             tgtgt_key,
             struct.pack(">I?", 0, guid_available),
@@ -147,7 +147,7 @@ class TlvBuilder:
         i2: int = 0,
         i3: int = 1
     ) -> Packet:
-        return cls._pack_tlv(0x107, struct.pack(">HcHc", pic_type, i1, i2, i3))
+        return cls._pack_tlv(0x107, struct.pack(">HBHB", pic_type, i1, i2, i3))
 
     @classmethod
     def t108(cls, ksid: str) -> Packet:
@@ -170,18 +170,19 @@ class TlvBuilder:
     ) -> Packet:
         return cls._pack_tlv(
             0x116,
-            struct.pack(">cIIc", 0, bitmap, sub_sigmap, len(sub_app_id_list)),
+            struct.pack(">BIIB", 0, bitmap, sub_sigmap, len(sub_app_id_list)),
             *[struct.pack(">I", id) for id in sub_app_id_list]
         )
 
     @classmethod
     def t124(
-        cls, os_type: bytes, os_version: bytes, sim_info: bytes, apn: bytes
+        cls, os_type: bytes, os_version: bytes, network_type: int,
+        sim_info: bytes, apn: bytes
     ) -> Packet:
         return cls._pack_tlv(
             0x124, cls._pack_lv_limited(os_type, 16),
-            cls._pack_lv_limited(os_version, 16), struct.pack(">H", 2),
-            cls._pack_lv_limited(sim_info, 16),
+            cls._pack_lv_limited(os_version, 16),
+            struct.pack(">H", network_type), cls._pack_lv_limited(sim_info, 16),
             cls._pack_lv_limited(bytes(0), 16), cls._pack_lv_limited(apn, 16)
         )
 
@@ -202,10 +203,10 @@ class TlvBuilder:
         )
 
     @classmethod
-    def t141(cls, sim_info: bytes, apn: bytes) -> Packet:
+    def t141(cls, sim_info: bytes, network_type: int, apn: bytes) -> Packet:
         return cls._pack_tlv(
             0x141, struct.pack(">H", 1), cls._pack_lv(sim_info),
-            struct.pack(">H", 2), cls._pack_lv(apn)
+            struct.pack(">H", network_type), cls._pack_lv(apn)
         )
 
     @classmethod
@@ -224,9 +225,10 @@ class TlvBuilder:
         cls, imei: bytes, bootloader: str, proc_version: str, codename: str,
         incremental: str, fingerprint: str, boot_id: str, android_id: str,
         baseband: str, inner_version: str, os_type: bytes, os_version: bytes,
-        sim_info: bytes, apn: bytes, is_guid_from_file_null: bool,
-        is_guid_available: bool, is_guid_changed: bool, guid_flag: int,
-        build_model: bytes, guid: bytes, build_brand: bytes, tgtgt_key: bytes
+        network_type: int, sim_info: bytes, apn: bytes,
+        is_guid_from_file_null: bool, is_guid_available: bool,
+        is_guid_changed: bool, guid_flag: int, build_model: bytes, guid: bytes,
+        build_brand: bytes, tgtgt_key: bytes
     ) -> Packet:
         return cls._pack_tlv(
             0x144,
@@ -237,7 +239,8 @@ class TlvBuilder:
                         bootloader, proc_version, codename, incremental,
                         fingerprint, boot_id, android_id, baseband,
                         inner_version
-                    ), cls.t124(os_type, os_version, sim_info, apn),
+                    ),
+                    cls.t124(os_type, os_version, network_type, sim_info, apn),
                     cls.t128(
                         is_guid_from_file_null, is_guid_available,
                         is_guid_changed, guid_flag, build_model, guid,
@@ -284,7 +287,7 @@ class TlvBuilder:
     @classmethod
     def t177(cls, build_time: int, sdk_version: str) -> Packet:
         return cls._pack_tlv(
-            0x177, struct.pack(">cI", 1, build_time),
+            0x177, struct.pack(">BI", 1, build_time),
             cls._pack_lv(sdk_version.encode())
         )
 
@@ -305,8 +308,8 @@ class TlvBuilder:
         return cls._pack_tlv(0x188, md5(android_id).digest())
 
     @classmethod
-    def t191(cls, k: bytes) -> Packet:
-        return cls._pack_tlv(0x191, struct.pack(">c", k))
+    def t191(cls, k: int) -> Packet:
+        return cls._pack_tlv(0x191, struct.pack(">B", k))
 
     @classmethod
     def t193(cls, ticket: str) -> Packet:
@@ -363,7 +366,7 @@ class TlvBuilder:
                     data.append(
                         struct.pack(
                             ">B",
-                            (((i & 134217728) > 0) << 1) | (1048576 & i) > 0
+                            (((i & 134217728) > 0) << 1) | ((1048576 & i) > 0)
                         )
                     )
                     data.append(domain[index2 + 1:].encode())
@@ -376,11 +379,11 @@ class TlvBuilder:
         return cls._pack_tlv(0x516, struct.pack(">I", 0))
 
     @classmethod
-    def t521(cls) -> Packet:
-        return cls._pack_tlv(0x521, struct.pack(">IH", 0, 0))
+    def t521(cls, product_type: int = 0) -> Packet:
+        return cls._pack_tlv(0x521, struct.pack(">IH", product_type, 0))
 
     @classmethod
-    def t525(cls, t536: bytes) -> Packet:
+    def t525(cls, t536: Packet) -> Packet:
         return cls._pack_tlv(0x525, struct.pack(">H", 1), t536)
 
     @classmethod

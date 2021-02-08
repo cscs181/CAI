@@ -17,6 +17,7 @@ python = "^3.7"
 # rtea = "^0.2.0"
 jcestruct = "^0.1.0"
 protobuf = "^3.14.0"
+cryptography = "^3.4.1"
 
 [tool.poetry.dev-dependencies]
 yapf = "^0.30.0"

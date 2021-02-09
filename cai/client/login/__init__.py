@@ -17,15 +17,17 @@ from .tlv import TlvBuilder
 from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
 from .oicq_packet import OICQRequest
+from cai.client.packet import SsoPacket
 from cai.settings.device import get_device
-from cai.client.sso_packet import SsoPacket
 from cai.settings.protocol import get_protocol
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
 
 
-async def login(seq: int, key: bytes, uin: int, password_md5: bytes):
+async def login(
+    seq: int, key: bytes, session_id: bytes, uin: int, password_md5: bytes
+):
     """Build login request packet.
 
     command id: `0x810 = 2064`,
@@ -38,6 +40,7 @@ async def login(seq: int, key: bytes, uin: int, password_md5: bytes):
     Args:
         seq (int): Packet sequence.
         key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID
         uin (int): User QQ number.
         password_md5 (bytes): User QQ password md5 hash.
 
@@ -68,7 +71,7 @@ async def login(seq: int, key: bytes, uin: int, password_md5: bytes):
     LOCAL_ID = 2052  # com.tencent.qqmini.minigame.GameConst.GAME_RUNTIME_MSG_GAME_ON_HIDE
     IP_BYTES = ipaddress.ip_address(DEVICE.ip_address).packed
     NETWORK_TYPE = (DEVICE.apn == "wifi") + 1
-    # KSID = f"|{DEVICE.imei}|{APK_INFO.version}"
+    KSID = f"|{DEVICE.imei}|A8.2.7.27f6ea96".encode()
 
     data = Packet.build(
         struct.pack(">HH", SUB_COMMAND_ID, 23),  # packet num
@@ -99,7 +102,7 @@ async def login(seq: int, key: bytes, uin: int, password_md5: bytes):
         ),
         TlvBuilder.t145(DEVICE.guid),
         TlvBuilder.t147(APP_ID, APK_VERSION.encode(), APK_SIGN),
-        # TlvBuilder.t166(),
+        # TlvBuilder.t166(1),
         # TlvBuilder.t16a(),
         TlvBuilder.t154(seq),
         TlvBuilder.t141(DEVICE.sim.encode(), NETWORK_TYPE, DEVICE.apn.encode()),
@@ -115,7 +118,7 @@ async def login(seq: int, key: bytes, uin: int, password_md5: bytes):
         ),  # com.tencent.mobileqq.msf.core.auth.l
         # TlvBuilder.t172(),
         # TlvBuilder.t185(1),  # when sms login, is_password_login == 3
-        # TlvBuilder.t400(),
+        # TlvBuilder.t400(),  # null when first time login
         TlvBuilder.t187(DEVICE.mac_address.encode()),
         TlvBuilder.t188(DEVICE.android_id.encode()),
         TlvBuilder.t194(DEVICE.imsi_md5) if DEVICE.imsi_md5 else b"",
@@ -126,8 +129,12 @@ async def login(seq: int, key: bytes, uin: int, password_md5: bytes):
         TlvBuilder.t516(),
         TlvBuilder.t521(),
         TlvBuilder.t525(TlvBuilder.t536(bytes([1, 0]))),  # 1, length
+        # TlvBuilder.t318()  # not login in by qr
     )
     oicq_packet = OICQRequest.build_encoded(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
     )
-    sso_packet = SsoPacket.build()
+    sso_packet = SsoPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, KSID,
+        oicq_packet
+    )

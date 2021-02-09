@@ -102,12 +102,12 @@ class TlvBuilder:
         password_md5: bytes, guid_available: bool, guid: bytes, tgtgt_key: bytes
     ) -> Packet:
         key = md5(
-            Packet().write(
+            Packet.build(
                 password_md5, bytes(4), struct.pack(">I", salt or uin)
             )
         ).digest()
 
-        body = Packet().write(
+        body = Packet.build(
             struct.pack(
                 ">HIIIIQ",
                 4,  # tgtgt version
@@ -233,7 +233,7 @@ class TlvBuilder:
         return cls._pack_tlv(
             0x144,
             qqtea_encrypt(
-                Packet().write(
+                Packet.build(
                     struct.pack(">H", 5), cls.t109(imei),
                     cls.t52d(
                         bootloader, proc_version, codename, incremental,
@@ -339,7 +339,7 @@ class TlvBuilder:
         cls, g: bytes, uin: int, guid: bytes, dpwd: bytes, j2: int, j3: int,
         rand_seed: bytes
     ) -> Packet:
-        data = Packet().write(
+        data = Packet.build(
             struct.pack(">HQ", 1, uin), guid, dpwd,
             struct.pack(">III", j2, j3, int(time.time())), rand_seed
         )

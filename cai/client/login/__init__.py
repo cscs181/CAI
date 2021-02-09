@@ -14,15 +14,18 @@ import ipaddress
 from hashlib import md5
 
 from .tlv import TlvBuilder
+from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
+from .oicq_packet import OICQRequest
 from cai.settings.device import get_device
+from cai.client.sso_packet import SsoPacket
 from cai.settings.protocol import get_protocol
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
 
 
-async def login(seq: int, uin: int, password: str):
+async def login(seq: int, key: bytes, uin: int, password_md5: bytes):
     """Build login request packet.
 
     command id: `0x810 = 2064`,
@@ -34,12 +37,17 @@ async def login(seq: int, uin: int, password: str):
 
     Args:
         seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
         uin (int): User QQ number.
-        password (int): User QQ password.
+        password_md5 (bytes): User QQ password md5 hash.
 
     Returns:
         Packet: Login packet.
     """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 9
+    COMMAND_NAME = "wtlogin.login"
+
     APK_ID = APK_INFO.apk_id
     APK_VERSION = APK_INFO.version
     APK_SIGN = APK_INFO.apk_sign
@@ -53,22 +61,22 @@ async def login(seq: int, uin: int, password: str):
     MAIN_SIGMAP = APK_INFO.main_sigmap
     SUB_SIGMAP = APK_INFO.sub_sigmap
 
-    # KSID = f"|{DEVICE.imei}|{APK_INFO.version}"
     GUID_FLAG = 0
     GUID_FLAG |= 1 << 24 & 0xFF000000
     GUID_FLAG |= 0 << 8 & 0xFF00
+    CAN_WEB_VERIFY = 130  # oicq.wlogin_sdk.request.k.K
     LOCAL_ID = 2052  # com.tencent.qqmini.minigame.GameConst.GAME_RUNTIME_MSG_GAME_ON_HIDE
     IP_BYTES = ipaddress.ip_address(DEVICE.ip_address).packed
     NETWORK_TYPE = (DEVICE.apn == "wifi") + 1
+    # KSID = f"|{DEVICE.imei}|{APK_INFO.version}"
 
-    data = Packet().write(
-        struct.pack(">HH", 9, 23),  # sub command id, packet num
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 23),  # packet num
         TlvBuilder.t18(APP_ID, APP_CLIENT_VERSION, uin),
         TlvBuilder.t1(uin, int(time.time()), IP_BYTES),
         TlvBuilder.t106(
             SSO_VERSION, APP_ID, SUB_APP_ID, APP_CLIENT_VERSION, uin, 0,
-            IP_BYTES,
-            md5(password.encode()).digest(), True, DEVICE.guid, DEVICE.tgtgt
+            IP_BYTES, password_md5, True, DEVICE.guid, DEVICE.tgtgt
         ),
         TlvBuilder.t116(BITMAP, SUB_SIGMAP),
         TlvBuilder.t100(
@@ -104,14 +112,14 @@ async def login(seq: int, uin: int, password: str):
                 "qqweb.qq.com", "office.qq.com", "ti.qq.com", "mail.qq.com",
                 "mma.qq.com"
             ]
-        ),
+        ),  # com.tencent.mobileqq.msf.core.auth.l
         # TlvBuilder.t172(),
         # TlvBuilder.t185(1),  # when sms login, is_password_login == 3
         # TlvBuilder.t400(),
         TlvBuilder.t187(DEVICE.mac_address.encode()),
         TlvBuilder.t188(DEVICE.android_id.encode()),
         TlvBuilder.t194(DEVICE.imsi_md5) if DEVICE.imsi_md5 else b"",
-        TlvBuilder.t191(0x82),  # allow slider
+        TlvBuilder.t191(CAN_WEB_VERIFY),
         # TlvBuilder.t201(),
         TlvBuilder.t202(DEVICE.wifi_bssid.encode(), DEVICE.wifi_ssid.encode()),
         TlvBuilder.t177(APK_BUILD_TIME, SDK_VERSION),
@@ -119,3 +127,7 @@ async def login(seq: int, uin: int, password: str):
         TlvBuilder.t521(),
         TlvBuilder.t525(TlvBuilder.t536(bytes([1, 0]))),  # 1, length
     )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = SsoPacket.build()

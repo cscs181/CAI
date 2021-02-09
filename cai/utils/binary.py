@@ -8,7 +8,9 @@ This module is used to build Binary tools.
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
-from typing import Union
+from typing import Type, Union, TypeVar
+
+P = TypeVar("P", bound="Packet")
 
 
 class Packet(bytearray):
@@ -17,7 +19,19 @@ class Packet(bytearray):
     Inherit from :class:`bytearray`
     """
 
-    def write(self, *data: Union[bytes, "Packet"]) -> "Packet":
+    @classmethod
+    def build(cls: Type[P], *data: Union[bytes, "Packet"]) -> P:
+        """Build new packet and write data into it.
+
+        Args:
+            *data (Union[:obj:`bytes`, :obj:`Packet`]): Data to write
+
+        Returns:
+            :obj:`.Packet`: Current Packet
+        """
+        return cls().write(*data)
+
+    def write(self: P, *data: Union[bytes, "Packet"]) -> P:
         """Write data into current packet.
 
         Args:

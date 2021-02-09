@@ -7,11 +7,12 @@
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
 import struct
+from typing import Type, Union
 
 from cai.utils.binary import Packet
 
 
-class OICQRequest:
+class OICQRequest(Packet):
     """Build OICQ Request Packet
 
     Note:
@@ -19,12 +20,13 @@ class OICQRequest:
     """
 
     @classmethod
-    def build(
-        cls, uin: int, command_id: int, encoded: bytes, id: int
-    ) -> Packet:
-        return Packet().write(
+    def build_encoded(
+        cls, uin: int, command_id: int, encoded: Union[bytes, Packet],
+        encoder_id: int
+    ) -> "OICQRequest":
+        return cls().write(
             struct.pack(
                 ">BHHHHIBBBIII", 2, 27 + 2 + len(encoded), 8001, command_id, 1,
-                uin, 3, id, 0, 2, 0, 0
+                uin, 3, encoder_id, 0, 2, 0, 0
             ), encoded, bytes([3])
         )

@@ -33,6 +33,14 @@ cai.utils.dataclass module
    :undoc-members:
    :show-inheritance:
 
+cai.utils.ecdh module
+---------------------
+
+.. automodule:: cai.utils.ecdh
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cai.utils.jce module
 --------------------
 

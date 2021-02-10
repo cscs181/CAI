@@ -17,6 +17,22 @@ Subpackages
 Submodules
 ----------
 
+cai.client.client module
+------------------------
+
+.. automodule:: cai.client.client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cai.client.packet module
+------------------------
+
+.. automodule:: cai.client.packet
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cai.client.sso\_server module
 -----------------------------
 

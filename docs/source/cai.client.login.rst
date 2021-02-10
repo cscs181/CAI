@@ -9,10 +9,18 @@ cai.client.login package
 Submodules
 ----------
 
-cai.client.login.packet module
-------------------------------
+cai.client.login.data\_pb2 module
+---------------------------------
 
-.. automodule:: cai.client.login.packet
+.. automodule:: cai.client.login.data_pb2
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cai.client.login.oicq\_packet module
+------------------------------------
+
+.. automodule:: cai.client.login.oicq_packet
    :members:
    :undoc-members:
    :show-inheritance:

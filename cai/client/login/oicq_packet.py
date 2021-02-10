@@ -1,5 +1,7 @@
 """OICQ Packet Builder
 
+This module is used to build and handle OICQ packets.
+
 :Copyright: Copyright (C) 2021-2021  yanyongyu
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 

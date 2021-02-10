@@ -1,0 +1,56 @@
+"""Coroutine Related Tools
+
+This module is used to build coroutine related tools.
+
+:Copyright: Copyright (C) 2021-2021  yanyongyu
+:License: AGPL-3.0 or later. See `LICENSE`_ for detail.
+
+.. _LICENSE:
+    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+"""
+from collections.abc import Coroutine
+from typing import Generic, TypeVar, Optional, AsyncContextManager, Coroutine as CoroutineGeneric
+
+TY = TypeVar("TY")
+TS = TypeVar("TS")
+TR = TypeVar("TR", bound=AsyncContextManager)
+
+
+class _ContextManager(Coroutine, Generic[TY, TS, TR]):
+
+    __slots__ = ("_coro", "_obj")
+
+    def __init__(self, coro: CoroutineGeneric[TY, TS, TR]):
+        self._coro = coro
+        self._obj: Optional[TR] = None
+
+    def send(self, value: TS) -> TY:
+        return self._coro.send(value)
+
+    def throw(self, typ, val=None, tb=None):
+        if val is None:
+            return self._coro.throw(typ)
+        elif tb is None:
+            return self._coro.throw(typ, val)
+        else:
+            return self._coro.throw(typ, val, tb)
+
+    def close(self):
+        return self._coro.close()
+
+    def __next__(self):
+        return self.send(None)
+
+    def __iter__(self):
+        return self._coro.__await__()
+
+    def __await__(self):
+        return self._coro.__await__()
+
+    async def __aenter__(self) -> TR:
+        self._obj = await self._coro
+        return self._obj
+
+    async def __aexit__(self, exc_type, exc_val, exc_tb):
+        await self._obj.__aexit__(exc_type, exc_val, exc_tb)
+        self._obj = None

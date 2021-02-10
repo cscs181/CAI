@@ -8,6 +8,7 @@ This module is used to build Binary tools.
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
+import struct
 from typing import Type, Union, TypeVar
 
 P = TypeVar("P", bound="Packet")
@@ -43,3 +44,18 @@ class Packet(bytearray):
         for i in data:
             self.extend(i)
         return self
+
+    def write_with_length(
+        self: P, *data: Union[bytes, "Packet"], offset: int = 0
+    ) -> P:
+        """Write data into current packet with 4-byte length.
+
+        Args:
+            *data (Union[:obj:`bytes`, :obj:`Packet`]): Data to write
+            offset (int): Length offset
+
+        Returns:
+            :obj:`.Packet`: Current Packet
+        """
+        self.extend(struct.pack(">I", sum(map(len, data)) + offset))
+        return self.write(*data)

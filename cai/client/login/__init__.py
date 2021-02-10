@@ -17,9 +17,9 @@ from .tlv import TlvBuilder
 from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
 from .oicq_packet import OICQRequest
-from cai.client.packet import SsoPacket
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
+from cai.client.packet import SsoPacket, LoginPacket
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
@@ -138,3 +138,5 @@ async def login(
         seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, KSID,
         oicq_packet
     )
+    packet = LoginPacket.build(uin, 2, sso_packet, bytes(16))
+    return packet

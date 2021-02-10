@@ -28,7 +28,20 @@ class OICQRequest(Packet):
     ) -> "OICQRequest":
         return cls().write(
             struct.pack(
-                ">BHHHHIBBBIII", 2, 27 + 2 + len(encoded), 8001, command_id, 1,
-                uin, 3, encoder_id, 0, 2, 0, 0
-            ), encoded, bytes([3])
+                ">BHHHHIBBBIII",
+                2,
+                27 + 2 + len(encoded),
+                8001,  # oicq.wlogin_sdk.request.oicq_request.i
+                command_id,
+                1,
+                uin,
+                3,
+                encoder_id,
+                0,  # oicq.wlogin_sdk.request.oicq_request.m
+                2,
+                0,
+                0
+            ),
+            encoded,
+            bytes([3])
         )

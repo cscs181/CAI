@@ -208,4 +208,4 @@ def get_device(cache: bool = True) -> DeviceInfo:
             device = DeviceInfo.from_file(f)
 
     _device = device
-    return device
+    return _device

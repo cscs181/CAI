@@ -8,6 +8,9 @@ This module is used to build application logger.
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
+import sys
 import logging
 
 logger = logging.getLogger("cai")
+logger.setLevel(logging.DEBUG)
+logger.addHandler(logging.StreamHandler(sys.stdout))

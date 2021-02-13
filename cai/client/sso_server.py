@@ -229,9 +229,9 @@ async def get_sso_list() -> SsoServerResponse:
             b"Content-Length: " + str(len(buffer)).encode() + b"\r\n"
             b"\r\n" + buffer
         )
-        conn._write_bytes(query)
-        conn._write_eof()
-        resp_bytes = await conn._read_all()
+        conn.write_bytes(query)
+        conn.write_eof()
+        resp_bytes = await conn.read_all()
         response = http.client.HTTPResponse(
             _FakeSocket(resp_bytes)  # type: ignore
         )

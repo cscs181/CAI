@@ -9,7 +9,8 @@ This module is used to build a async TCP connection to target.
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
 import asyncio
-from typing import Any, Optional
+from types import TracebackType
+from typing import Any, Type, Optional
 
 from cai.utils.coroutine import _ContextManager
 
@@ -51,7 +52,10 @@ class Connection:
         await self._connect()
         return self
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self, exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+    ) -> None:
         await self.close()
         return
 
@@ -77,7 +81,7 @@ class Connection:
         self._writer = None
         self._reader = None
 
-    async def _read_bytes(self, num_bytes: int):
+    async def read_bytes(self, num_bytes: int):
         try:
             data = await self._reader.readexactly(num_bytes)
         except (asyncio.IncompleteReadError, IOError, OSError) as e:
@@ -86,7 +90,7 @@ class Connection:
             ) from e
         return data
 
-    async def _read_line(self):
+    async def read_line(self):
         try:
             data = await self._reader.readline()
         except (asyncio.IncompleteReadError, IOError, OSError) as e:
@@ -95,7 +99,7 @@ class Connection:
             ) from e
         return data
 
-    async def _read_all(self):
+    async def read_all(self):
         try:
             data = await self._reader.read(-1)
         except (asyncio.IncompleteReadError, IOError, OSError) as e:
@@ -104,10 +108,10 @@ class Connection:
             ) from e
         return data
 
-    def _write_bytes(self, data: bytes):
+    def write_bytes(self, data: bytes):
         return self._writer.write(data)
 
-    def _write_eof(self):
+    def write_eof(self):
         if self._writer.can_write_eof():
             self._writer.write_eof()
 

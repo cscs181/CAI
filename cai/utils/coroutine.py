@@ -8,8 +8,9 @@ This module is used to build coroutine related tools.
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
+from types import TracebackType
 from collections.abc import Coroutine
-from typing import Generic, TypeVar, Optional, AsyncContextManager, Coroutine as CoroutineGeneric
+from typing import Type, Generic, TypeVar, Optional, AsyncContextManager, Coroutine as CoroutineGeneric
 
 TY = TypeVar("TY")
 TS = TypeVar("TS")
@@ -51,6 +52,9 @@ class _ContextManager(Coroutine, Generic[TY, TS, TR]):
         self._obj = await self._coro
         return self._obj
 
-    async def __aexit__(self, exc_type, exc_val, exc_tb):
+    async def __aexit__(
+        self, exc_type: Optional[Type[BaseException]],
+        exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+    ):
         await self._obj.__aexit__(exc_type, exc_val, exc_tb)
         self._obj = None

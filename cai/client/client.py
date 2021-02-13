@@ -30,7 +30,7 @@ class Client:
             raise ConnectionError("Lost Connection")
         return self._connection
 
-    async def connect(self, server: Optional[SsoServer] = None):
+    async def connect(self, server: Optional[SsoServer] = None) -> None:
         _server = server or await get_sso_server()
         try:
             self._connection = await connect(
@@ -41,9 +41,9 @@ class Client:
         except Exception as e:
             raise ConnectionError(
                 "An error occurred while connecting to "
-                f"server({server.host}:{server.port}): " + repr(e)
+                f"server({_server.host}:{_server.port}): " + repr(e)
             )
 
-    async def disconnect(self):
+    async def disconnect(self) -> None:
         if self._connection:
             await self._connection.close()

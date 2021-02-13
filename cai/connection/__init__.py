@@ -10,8 +10,9 @@ This module is used to build a async TCP connection to target.
 """
 import asyncio
 from types import TracebackType
-from typing import Any, Type, Optional
+from typing import Any, Type, Union, Optional
 
+from cai.utils.binary import Packet
 from cai.utils.coroutine import _ContextManager
 
 
@@ -81,6 +82,10 @@ class Connection:
         self._writer = None
         self._reader = None
 
+    async def reconnect(self) -> None:
+        await self.close()
+        await self._connect()
+
     async def read_bytes(self, num_bytes: int):
         try:
             data = await self._reader.readexactly(num_bytes)
@@ -108,8 +113,8 @@ class Connection:
             ) from e
         return data
 
-    def write_bytes(self, data: bytes):
-        return self._writer.write(data)
+    def write_bytes(self, data: Union[bytes, Packet]):
+        return self._writer.write(data)  # type: ignore
 
     def write_eof(self):
         if self._writer.can_write_eof():

@@ -25,7 +25,7 @@ DEVICE = get_device()
 APK_INFO = get_protocol()
 
 
-async def login(
+def login(
     seq: int, key: bytes, session_id: bytes, uin: int, password_md5: bytes
 ):
     """Build login request packet.

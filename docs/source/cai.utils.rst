@@ -41,6 +41,14 @@ cai.utils.ecdh module
    :undoc-members:
    :show-inheritance:
 
+cai.utils.future module
+-----------------------
+
+.. automodule:: cai.utils.future
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cai.utils.jce module
 --------------------
 

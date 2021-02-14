@@ -11,7 +11,7 @@ This module is used to control client actions.
 import struct
 import secrets
 import asyncio
-from typing import Union, Optional
+from typing import Any, List, Union, Optional
 
 from .login import login
 from cai.utils.binary import Packet
@@ -28,8 +28,15 @@ APK_INFO = get_protocol()
 class Client:
 
     def __init__(self, uin: int, password_md5: bytes):
-        self._uin = uin
-        self._password_md5 = password_md5
+        # account info
+        self._uin: int = uin
+        self._password_md5: bytes = password_md5
+        self._age: Optional[int] = None
+        self._gender: Optional[int] = None
+        # TODO
+        self._friend_list: List[Any] = []
+        self._group_list: List[Any] = []
+        self._other_clients: List[Any] = []
 
         self._seq: int = 0x3635
         self._key: bytes = secrets.token_bytes(16)
@@ -40,6 +47,14 @@ class Client:
     @property
     def uin(self) -> int:
         return self._uin
+
+    @property
+    def age(self) -> Optional[int]:
+        return self._age
+
+    @property
+    def gender(self) -> Optional[int]:
+        return self._gender
 
     @property
     def connection(self) -> Connection:
@@ -112,12 +127,19 @@ class Client:
         return await self._receive_store.fetch(seq, timeout)
 
     async def receive(self):
+        """Receive data from connection reader and store it in sequence future.
+
+        Note:
+            Source: com.tencent.mobileqq.msf.core.auth.n.a
+        """
         # TODO
         while self.connected:
             try:
-                length = struct.unpack(
+                length: int = struct.unpack(
                     ">i", await self.connection.read_bytes(4)
-                )
+                )[0] - 4
+                # FIXME: length < 0 ?
+                data = await self.connection.read_bytes(length)
             except Exception as e:
                 pass
 

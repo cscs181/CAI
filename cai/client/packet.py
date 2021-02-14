@@ -11,7 +11,7 @@ This module is used to packet data into outgoing format.
 import struct
 from typing import Union, Optional
 
-from rtea import qqtea_encrypt
+from rtea import qqtea_encrypt, qqtea_decrypt
 
 from cai.utils.binary import Packet
 
@@ -130,3 +130,10 @@ class UniPacket(Packet):
                         len(str(uin)) + 4),
             str(uin).encode(), qqtea_encrypt(data, key)
         )
+
+
+class IncomingPacket:
+
+    @classmethod
+    def parse(cls, data: bytes, d2key: bytes) -> "IncomingPacket":
+        flag1, flag2, flag3 = struct.unpack_from(">IBB", data)

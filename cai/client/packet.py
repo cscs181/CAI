@@ -17,6 +17,8 @@ from cai.utils.binary import Packet
 
 
 class SsoPacket(Packet):
+    """SSO Packet building class.
+    """
 
     @classmethod
     def build(
@@ -74,6 +76,16 @@ class SsoPacket(Packet):
 
 
 class LoginPacket(Packet):
+    """CSSOData Packet
+
+    Note:
+        Source:
+            com.tencent.qphone.base.util.CodecWarpper
+
+            /data/data/com.tencent.mobileqq/lib/libcodecwrapperV2.so
+
+            `CSSOHead::serialize_verFull`
+    """
 
     @classmethod
     def build(

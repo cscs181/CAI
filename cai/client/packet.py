@@ -16,8 +16,16 @@ from rtea import qqtea_encrypt, qqtea_decrypt
 from cai.utils.binary import Packet
 
 
-class SsoPacket(Packet):
-    """SSO Packet building class.
+class CSsoBodyPacket(Packet):
+    """CSSOBody Packet.
+
+    Note:
+        Source:
+            com.tencent.qphone.base.util.CodecWarpper
+
+            /data/data/com.tencent.mobileqq/lib/libcodecwrapperV2.so
+
+            `CSSOReqHead::serialize_verFull`
     """
 
     @classmethod
@@ -37,7 +45,12 @@ class SsoPacket(Packet):
                 0x01, 0x00
             ]
         )
-    ) -> "SsoPacket":
+    ) -> "CSsoBodyPacket":
+        """Build CSSOBody head and append body.
+
+        Note:
+            Source: `CSSOReqHead::serialize_verFull`
+        """
         extra = extra_data and (len(extra_data) != 4)
         packet = cls().write_with_length(
             struct.pack(">III", seq, sub_app_id, sub_app_id),
@@ -48,26 +61,17 @@ class SsoPacket(Packet):
                 len(extra_data) + 4,
             ) if extra else b"",
             extra_data if extra else b"",
-            struct.pack(
-                ">I",
-                len(command_name) + 4,
-            ),
+            struct.pack(">I",
+                        len(command_name) + 4),
             command_name.encode(),
-            struct.pack(
-                ">I",
-                len(session_id) + 4,
-            ),
+            struct.pack(">I",
+                        len(session_id) + 4),
             session_id,
-            struct.pack(
-                ">I",
-                len(imei) + 4,
-            ),
+            struct.pack(">I",
+                        len(imei) + 4),
             imei.encode(),
-            struct.pack(
-                ">IH",
-                4,
-                len(ksid) + 2,
-            ),
+            struct.pack(">IH", 4,
+                        len(ksid) + 2),
             ksid,
             struct.pack(">I", 4),
             offset=4
@@ -75,8 +79,10 @@ class SsoPacket(Packet):
         return packet.write_with_length(body, offset=4)
 
 
-class LoginPacket(Packet):
-    """CSSOData Packet
+class CSsoDataPacket(Packet):
+    """CSSOData Packet.
+
+    `KSSOVersion`: `Full: 0xA` `Simple: 0xB`.
 
     Note:
         Source:
@@ -84,7 +90,7 @@ class LoginPacket(Packet):
 
             /data/data/com.tencent.mobileqq/lib/libcodecwrapperV2.so
 
-            `CSSOHead::serialize_verFull`
+            `CSSOData::serialize`
     """
 
     @classmethod
@@ -93,12 +99,20 @@ class LoginPacket(Packet):
         uin: int,
         body_type: int,
         body: Union[bytes, Packet],
+        ksso_version: int = 0xA,
         key: Optional[bytes] = None,
         extra_data: bytes = b""
-    ) -> "LoginPacket":
+    ) -> "CSsoDataPacket":
+        """Build CSSOPacket head and append body.
+
+        Packet body was encrypted in `CSSOData::serialize`.
+
+        Note:
+            Source: `CSSOHead::serialize_verFull`
+        """
         return cls().write_with_length(
             Packet.build(
-                struct.pack(">IB", 0xA, body_type),
+                struct.pack(">IB", ksso_version, body_type),
                 struct.pack(">I",
                             len(extra_data) + 4), extra_data, bytes([0]),
                 struct.pack(">I",
@@ -128,7 +142,8 @@ class UniPacket(Packet):
             struct.pack(">I",
                         len(command_name) + 4),
             command_name.encode(),
-            struct.pack(">I", 8),
+            struct.pack(">I",
+                        len(session_id) + 4),
             session_id,
             struct.pack(">I",
                         len(extra_data) + 4),

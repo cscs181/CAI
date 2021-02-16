@@ -19,7 +19,7 @@ from cai.utils.binary import Packet
 from .oicq_packet import OICQRequest
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
-from cai.client.packet import SsoPacket, LoginPacket
+from cai.client.packet import CSsoBodyPacket, CSsoDataPacket
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
@@ -134,9 +134,10 @@ def login(
     oicq_packet = OICQRequest.build_encoded(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
     )
-    sso_packet = SsoPacket.build(
+    sso_packet = CSsoBodyPacket.build(
         seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, KSID,
         oicq_packet
     )
-    packet = LoginPacket.build(uin, 2, sso_packet, bytes(16))
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
     return packet

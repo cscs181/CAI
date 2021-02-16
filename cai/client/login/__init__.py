@@ -11,14 +11,13 @@ This module is used to build and handle login related packet.
 import time
 import struct
 import ipaddress
-from hashlib import md5
 
 from .tlv import TlvBuilder
 from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
-from .oicq_packet import OICQRequest
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
+from .oicq_packet import OICQRequest, OICQResponse
 from cai.client.packet import CSsoBodyPacket, CSsoDataPacket
 
 DEVICE = get_device()
@@ -30,8 +29,10 @@ def login(
 ):
     """Build login request packet.
 
-    command id: `0x810 = 2064`,
+    command id: `0x810 = 2064`
+
     sub command id: `9`
+
     command name: `wtlogin.login`
 
     Note:
@@ -141,3 +142,6 @@ def login(
     # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
     return packet
+
+
+__all__ = ["login", "OICQResponse"]

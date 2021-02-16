@@ -14,6 +14,10 @@ import asyncio
 from typing import Any, List, Union, Optional
 
 from .login import login
+
+from .parser import PARSERS
+from .siginfo import SigInfo
+from .packet import IncomingPacket
 from cai.utils.binary import Packet
 from cai.utils.future import FutureStore
 from cai.settings.device import get_device
@@ -40,9 +44,10 @@ class Client:
 
         self._seq: int = 0x3635
         self._key: bytes = secrets.token_bytes(16)
+        self._siginfo: SigInfo = SigInfo()
         self._session_id: bytes = bytes([0x02, 0xB0, 0x5B, 0x8B])
         self._connection: Optional[Connection] = None
-        self._receive_store: FutureStore[int] = FutureStore()
+        self._receive_store: FutureStore[int, Packet] = FutureStore()
 
     @property
     def uin(self) -> int:
@@ -122,7 +127,7 @@ class Client:
         seq: int,
         packet: Union[bytes, Packet],
         timeout: Optional[float] = None
-    ) -> bytes:
+    ) -> Packet:
         self.send(packet)
         return await self._receive_store.fetch(seq, timeout)
 
@@ -140,6 +145,7 @@ class Client:
                 )[0] - 4
                 # FIXME: length < 0 ?
                 data = await self.connection.read_bytes(length)
+                packet = IncomingPacket.parse(data, self._siginfo.d2key)
             except Exception as e:
                 pass
 

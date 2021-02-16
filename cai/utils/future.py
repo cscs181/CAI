@@ -2,14 +2,16 @@ import asyncio
 from typing import Any, Dict, Generic, TypeVar, Optional, Callable
 
 KT = TypeVar("KT")
+VT = TypeVar("VT")
 
 
-class FutureStore(Generic[KT]):
+class FutureStore(Generic[KT, VT]):
 
     def __init__(self):
-        self._futures: Dict[KT, asyncio.Future] = {}
+        # Generic Future is supported since py3.9
+        self._futures: Dict[KT, "asyncio.Future[VT]"] = {}
 
-    def store_seq(self, seq: KT) -> asyncio.Future:
+    def store_seq(self, seq: KT) -> "asyncio.Future[VT]":
         if seq in self._futures:
             raise KeyError(f"Sequence {seq} already exists!")
 
@@ -17,25 +19,27 @@ class FutureStore(Generic[KT]):
         self._futures[seq] = future
         return future
 
-    def store_result(self, seq: KT, result: Any):
+    def store_result(self, seq: KT, result: VT):
         future = self._futures.get(seq)
         if future and not future.cancelled():
             future.set_result(result)
 
-    def pop_seq(self, seq: KT) -> asyncio.Future:
+    def pop_seq(self, seq: KT) -> "asyncio.Future[VT]":
         return self._futures.pop(seq)
 
-    def add_callback(self, seq: KT, callback: Callable[[asyncio.Future], Any]):
+    def add_callback(
+        self, seq: KT, callback: Callable[["asyncio.Future[VT]"], Any]
+    ):
         future = self._futures[seq]
         future.add_done_callback(callback)
 
     def remove_callback(
-        self, seq: KT, callback: Callable[[asyncio.Future], Any]
+        self, seq: KT, callback: Callable[["asyncio.Future[VT]"], Any]
     ) -> int:
         future = self._futures[seq]
         return future.remove_done_callback(callback)
 
-    def result(self, seq: KT) -> Any:
+    def result(self, seq: KT) -> VT:
         return self._futures[seq].result()
 
     def cancel(self, seq: KT) -> bool:
@@ -44,7 +48,7 @@ class FutureStore(Generic[KT]):
     def exception(self, seq: KT):
         return self._futures[seq].exception()
 
-    async def fetch(self, seq: KT, timeout: Optional[float] = None) -> Any:
+    async def fetch(self, seq: KT, timeout: Optional[float] = None) -> VT:
         future = self.store_seq(
             seq
         ) if seq not in self._futures else self._futures[seq]

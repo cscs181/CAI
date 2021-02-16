@@ -9,7 +9,7 @@ This module is used to build Binary tools.
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
 import struct
-from typing import Type, Union, TypeVar
+from typing import Any, Type, Tuple, Union, TypeVar, Optional
 
 P = TypeVar("P", bound="Packet")
 
@@ -59,3 +59,45 @@ class Packet(bytearray):
         """
         self.extend(struct.pack(">I", sum(map(len, data)) + offset))
         return self.write(*data)
+
+    def unpack(self, format: Union[bytes, str]) -> Tuple[Any, ...]:
+        return struct.unpack(format, self)
+
+    def unpack_from(self,
+                    format: Union[bytes, str],
+                    offset: int = 0) -> Tuple[Any, ...]:
+        return struct.unpack_from(format, self, offset)
+
+    def read_int8(self, offset: int = 0) -> int:
+        return struct.unpack_from(">b", self, offset)[0]
+
+    def read_uint8(self, offset: int = 0) -> int:
+        return struct.unpack_from(">B", self, offset)[0]
+
+    def read_int16(self, offset: int = 0) -> int:
+        return struct.unpack_from(">h", self, offset)[0]
+
+    def read_uint16(self, offset: int = 0) -> int:
+        return struct.unpack_from(">H", self, offset)[0]
+
+    def read_int32(self, offset: int = 0) -> int:
+        return struct.unpack_from(">i", self, offset)[0]
+
+    def read_uint32(self, offset: int = 0) -> int:
+        return struct.unpack_from(">I", self, offset)[0]
+
+    def read_int64(self, offset: int = 0) -> int:
+        return struct.unpack_from(">q", self, offset)[0]
+
+    def read_uint64(self, offset: int = 0) -> int:
+        return struct.unpack_from(">Q", self, offset)[0]
+
+    def read_byte(self, offset: int = 0) -> bytes:
+        return struct.unpack_from(">c", self, offset)[0]
+
+    def read_bytes(self, n: int, offset: int = 0) -> bytes:
+        return struct.unpack_from(f">{n}s", self, offset)[0]
+
+    def read_string(self, offset: int = 0) -> str:
+        length = self.read_int32(offset) - 4
+        return self.read_bytes(length, offset + 4).decode()

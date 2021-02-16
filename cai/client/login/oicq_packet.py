@@ -45,3 +45,7 @@ class OICQRequest(Packet):
             encoded,
             bytes([3])
         )
+
+
+class OICQResponse(Packet):
+    pass

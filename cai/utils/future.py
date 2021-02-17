@@ -11,6 +11,9 @@ class FutureStore(Generic[KT, VT]):
         # Generic Future is supported since py3.9
         self._futures: Dict[KT, "asyncio.Future[VT]"] = {}
 
+    def __contains__(self, seq: KT) -> bool:
+        return seq in self._futures
+
     def store_seq(self, seq: KT) -> "asyncio.Future[VT]":
         if seq in self._futures:
             raise KeyError(f"Sequence {seq} already exists!")

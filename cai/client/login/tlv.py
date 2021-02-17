@@ -12,15 +12,16 @@ import time
 import struct
 import random
 from hashlib import md5
-from typing import List, Union
+from typing import List, Dict, Union
 
 from rtea import qqtea_encrypt
 
+from cai.log import logger
 from .data_pb2 import DeviceInfo
 from cai.utils.binary import Packet
 
 
-class TlvBuilder:
+class TlvEncoder:
 
     # oicq/wlogin_sdk/tlv_type/tlv_t.java
     @classmethod
@@ -408,3 +409,62 @@ class TlvBuilder:
     @classmethod
     def t536(cls, login_extra_data: bytes) -> Packet:
         return cls._pack_tlv(0x536, login_extra_data)
+
+
+class TlvDecoder:
+
+    @classmethod
+    def decode(
+        cls,
+        data: Union[bytes, Packet],
+        offset: int = 0,
+        tag_size: int = 2
+    ) -> Dict[int, bytes]:
+        if not isinstance(data, Packet):
+            data = Packet(data)
+
+        result: Dict[int, bytes] = {}
+        while offset + tag_size <= len(data):
+            tag: int
+            if tag_size == 1:
+                tag = data.read_int8(offset)
+                offset += 1
+            elif tag_size == 2:
+                tag = data.read_int16(offset)
+                offset += 2
+            elif tag_size == 4:
+                tag = data.read_int32(offset)
+                offset += 4
+            else:
+                raise ValueError(
+                    f"Invalid tag size. Expected 1 / 2 / 4, got {tag_size}."
+                )
+
+            if tag == 255:
+                return result
+
+            length = data.read_uint16(offset)
+            offset += 2
+            value = data.read_bytes(length, offset)
+            result[tag] = value
+
+            futher_decode = getattr(cls, f"t{tag:x}", None)
+            if futher_decode:
+                futher_result: Dict[int, bytes] = futher_decode(cls, value)
+                conflict = set(result.keys()) & set(futher_result.keys())
+                if conflict:
+                    logger.warning(
+                        f"Conflict key when decoding tlv: {conflict}"
+                    )
+                result.update(futher_result)
+        return result
+
+    @classmethod
+    def t161(cls, data: Union[bytes, Packet]) -> Dict[int, bytes]:
+        result = cls.decode(data)
+        return result
+
+    @classmethod
+    def t173(cls, data: Union[bytes, Packet]) -> Dict[int, bytes]:
+        # TODO
+        pass

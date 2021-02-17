@@ -15,6 +15,7 @@ from typing import Union, Optional
 
 from rtea import qqtea_encrypt, qqtea_decrypt
 
+from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
 
 
@@ -173,7 +174,8 @@ class IncomingPacket:
 
     @classmethod
     def parse(
-        cls, data: Union[bytes, Packet], d2key: bytes
+        cls, data: Union[bytes, Packet], key: bytes, d2key: bytes,
+        session_key: bytes
     ) -> "IncomingPacket":
         if not isinstance(data, Packet):
             data = Packet(data)
@@ -212,11 +214,14 @@ class IncomingPacket:
         offset += 4
         sso_frame = payload.read_bytes(sso_frame_length, offset)
 
-        return cls.parse_sso_frame(sso_frame, uin=uin)
+        return cls.parse_sso_frame(
+            sso_frame, encrypt_type, key, session_key, uin=uin
+        )
 
     @classmethod
     def parse_sso_frame(
-        cls, sso_frame: Union[bytes, Packet], **kwargs
+        cls, sso_frame: Union[bytes, Packet], encrypt_type: int, key: bytes,
+        session_key: bytes, **kwargs
     ) -> "IncomingPacket":
         if not isinstance(sso_frame, Packet):
             sso_frame = Packet(sso_frame)
@@ -259,6 +264,11 @@ class IncomingPacket:
         else:
             raise ValueError(f"Unknown compression type, got {compress_type}.")
 
+        if encrypt_type == 2:
+            decompressed_data = cls.parse_oicq_body(
+                decompressed_data, key, session_key
+            )
+
         return cls(
             seq=seq,
             ret_code=ret_code,
@@ -268,3 +278,36 @@ class IncomingPacket:
             data=decompressed_data,
             **kwargs
         )
+
+    @classmethod
+    def parse_oicq_body(
+        cls, data: Union[bytes, Packet], key: bytes, session_key: bytes
+    ) -> bytes:
+        if not isinstance(data, Packet):
+            data = Packet(data)
+
+        flag = data.read_uint8()
+        if not flag != 2:
+            raise ValueError(
+                f"Invalid OICQ response flag. Expected 2, got {flag}."
+            )
+
+        offset = 13
+        encrypt_type = data.read_uint16(offset)
+        offset += 2 + 1
+
+        body = data[offset:-1]
+        if encrypt_type == 0:
+            try:
+                return qqtea_decrypt(body, ECDH.share_key)
+            except Exception:
+                return qqtea_decrypt(body, key)
+        elif encrypt_type == 3:
+            return qqtea_decrypt(body, session_key)
+        elif encrypt_type == 4:
+            # seems not used
+            # data = qqtea_decrypt(body, ECDH.share_key)
+            # ...
+            raise NotImplementedError
+        else:
+            raise ValueError(f"Unknown encrypt type: {encrypt_type}")

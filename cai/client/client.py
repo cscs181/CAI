@@ -11,11 +11,11 @@ This module is used to control client actions.
 import struct
 import secrets
 import asyncio
-from typing import Any, List, Union, Optional
+from typing import Any, List, Dict, Union, Optional, Callable
 
-from .login import login
+from .login import encode_login_request, decode_login_response, OICQResponse
 
-from .parser import PARSERS
+from cai.log import logger
 from .siginfo import SigInfo
 from .packet import IncomingPacket
 from cai.utils.binary import Packet
@@ -27,6 +27,9 @@ from .sso_server import get_sso_server, SsoServer
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
+HANDLERS: Dict[str, Callable[[IncomingPacket], IncomingPacket]] = {
+    "wtlogin.login": decode_login_response
+}
 
 
 class Client:
@@ -47,7 +50,7 @@ class Client:
         self._siginfo: SigInfo = SigInfo()
         self._session_id: bytes = bytes([0x02, 0xB0, 0x5B, 0x8B])
         self._connection: Optional[Connection] = None
-        self._receive_store: FutureStore[int, Packet] = FutureStore()
+        self._receive_store: FutureStore[int, IncomingPacket] = FutureStore()
 
     @property
     def uin(self) -> int:
@@ -119,16 +122,18 @@ class Client:
         self._seq = (self._seq + 1) % 0x7FFF
         return self._seq
 
-    def send(self, packet: Union[bytes, Packet]) -> None:
+    def _send(self, packet: Union[bytes, Packet]) -> None:
         self.connection.write_bytes(packet)
 
     async def send_and_wait(
         self,
         seq: int,
+        command_name: str,
         packet: Union[bytes, Packet],
         timeout: Optional[float] = None
-    ) -> Packet:
-        self.send(packet)
+    ) -> IncomingPacket:
+        logger.debug(f"--> {seq}: {command_name}")
+        self._send(packet)
         return await self._receive_store.fetch(seq, timeout)
 
     async def receive(self):
@@ -137,7 +142,6 @@ class Client:
         Note:
             Source: com.tencent.mobileqq.msf.core.auth.n.a
         """
-        # TODO
         while self.connected:
             try:
                 length: int = struct.unpack(
@@ -145,13 +149,25 @@ class Client:
                 )[0] - 4
                 # FIXME: length < 0 ?
                 data = await self.connection.read_bytes(length)
-                packet = IncomingPacket.parse(data, self._siginfo.d2key)
+                packet = IncomingPacket.parse(
+                    data, self._key, self._siginfo.d2key,
+                    self._siginfo.wt_session_ticket_key
+                )
+                logger.debug(f"<-- {packet.seq}: {packet.command_name}")
+                handler = HANDLERS.get(packet.command_name)
+                if handler:
+                    packet = handler(packet)
+                self._receive_store.store_result(packet.seq, packet)
+                # TODO: broadcast packet
             except Exception as e:
+                # TODO: handle exception
                 pass
 
     async def login(self):
         seq = self.next_seq()
-        packet = login(
+        packet = encode_login_request(
             seq, self._key, self._session_id, self.uin, self._password_md5
         )
-        response = await self.send_and_wait(seq, packet)
+        response = await self.send_and_wait(seq, "wtlogin.login", packet)
+        if not isinstance(response, OICQResponse):
+            raise RuntimeError("Invalid login response type!")

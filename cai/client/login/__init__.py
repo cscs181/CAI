@@ -12,19 +12,19 @@ import time
 import struct
 import ipaddress
 
-from .tlv import TlvBuilder
+from .tlv import TlvEncoder
 from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from .oicq_packet import OICQRequest, OICQResponse
-from cai.client.packet import CSsoBodyPacket, CSsoDataPacket
+from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
 
 
-def login(
+def encode_login_request(
     seq: int, key: bytes, session_id: bytes, uin: int, password_md5: bytes
 ):
     """Build login request packet.
@@ -76,21 +76,21 @@ def login(
 
     data = Packet.build(
         struct.pack(">HH", SUB_COMMAND_ID, 23),  # packet num
-        TlvBuilder.t18(APP_ID, APP_CLIENT_VERSION, uin),
-        TlvBuilder.t1(uin, int(time.time()), IP_BYTES),
-        TlvBuilder.t106(
+        TlvEncoder.t18(APP_ID, APP_CLIENT_VERSION, uin),
+        TlvEncoder.t1(uin, int(time.time()), IP_BYTES),
+        TlvEncoder.t106(
             SSO_VERSION, APP_ID, SUB_APP_ID, APP_CLIENT_VERSION, uin, 0,
             IP_BYTES, password_md5, True, DEVICE.guid, DEVICE.tgtgt
         ),
-        TlvBuilder.t116(BITMAP, SUB_SIGMAP),
-        TlvBuilder.t100(
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
+        TlvEncoder.t100(
             SSO_VERSION, APP_ID, SUB_APP_ID, APP_CLIENT_VERSION, MAIN_SIGMAP
         ),
-        TlvBuilder.t107(),
+        TlvEncoder.t107(),
         # TlvBuilder.t108(KSID),  # null when first time login
         # TlvBuilder.t104(),
-        TlvBuilder.t142(APK_ID),
-        TlvBuilder.t144(
+        TlvEncoder.t142(APK_ID),
+        TlvEncoder.t144(
             DEVICE.imei.encode(), DEVICE.bootloader, DEVICE.proc_version,
             DEVICE.version.codename, DEVICE.version.incremental,
             DEVICE.fingerprint, DEVICE.boot_id,
@@ -101,14 +101,14 @@ def login(
             DEVICE.model.encode(), DEVICE.guid, DEVICE.brand.encode(),
             DEVICE.tgtgt
         ),
-        TlvBuilder.t145(DEVICE.guid),
-        TlvBuilder.t147(APP_ID, APK_VERSION.encode(), APK_SIGN),
+        TlvEncoder.t145(DEVICE.guid),
+        TlvEncoder.t147(APP_ID, APK_VERSION.encode(), APK_SIGN),
         # TlvBuilder.t166(1),
         # TlvBuilder.t16a(),
-        TlvBuilder.t154(seq),
-        TlvBuilder.t141(DEVICE.sim.encode(), NETWORK_TYPE, DEVICE.apn.encode()),
-        TlvBuilder.t8(LOCAL_ID),
-        TlvBuilder.t511(
+        TlvEncoder.t154(seq),
+        TlvEncoder.t141(DEVICE.sim.encode(), NETWORK_TYPE, DEVICE.apn.encode()),
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t511(
             [
                 "tenpay.com", "openmobile.qq.com", "docs.qq.com",
                 "connect.qq.com", "qzone.qq.com", "vip.qq.com",
@@ -120,16 +120,16 @@ def login(
         # TlvBuilder.t172(),
         # TlvBuilder.t185(1),  # when sms login, is_password_login == 3
         # TlvBuilder.t400(),  # null when first time login
-        TlvBuilder.t187(DEVICE.mac_address.encode()),
-        TlvBuilder.t188(DEVICE.android_id.encode()),
-        TlvBuilder.t194(DEVICE.imsi_md5) if DEVICE.imsi_md5 else b"",
-        TlvBuilder.t191(CAN_WEB_VERIFY),
+        TlvEncoder.t187(DEVICE.mac_address.encode()),
+        TlvEncoder.t188(DEVICE.android_id.encode()),
+        TlvEncoder.t194(DEVICE.imsi_md5) if DEVICE.imsi_md5 else b"",
+        TlvEncoder.t191(CAN_WEB_VERIFY),
         # TlvBuilder.t201(),
-        TlvBuilder.t202(DEVICE.wifi_bssid.encode(), DEVICE.wifi_ssid.encode()),
-        TlvBuilder.t177(APK_BUILD_TIME, SDK_VERSION),
-        TlvBuilder.t516(),
-        TlvBuilder.t521(),
-        TlvBuilder.t525(TlvBuilder.t536(bytes([1, 0]))),  # 1, length
+        TlvEncoder.t202(DEVICE.wifi_bssid.encode(), DEVICE.wifi_ssid.encode()),
+        TlvEncoder.t177(APK_BUILD_TIME, SDK_VERSION),
+        TlvEncoder.t516(),
+        TlvEncoder.t521(),
+        TlvEncoder.t525(TlvEncoder.t536(bytes([1, 0]))),  # 1, length
         # TlvBuilder.t318()  # not login in by qr
     )
     oicq_packet = OICQRequest.build_encoded(
@@ -144,4 +144,11 @@ def login(
     return packet
 
 
-__all__ = ["login", "OICQResponse"]
+def decode_login_response(packet: IncomingPacket) -> OICQResponse:
+    return OICQResponse(
+        packet.uin, packet.seq, packet.ret_code, packet.extra,
+        packet.command_name, packet.session_id, packet.data
+    )
+
+
+__all__ = ["encode_login_request", "decode_login_response", "OICQResponse"]

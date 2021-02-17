@@ -63,16 +63,12 @@ class OICQResponse(IncomingPacket):
         super().__init__(
             uin, seq, ret_code, extra, command_name, session_id, data
         )
-        self.parse(data)
-
-    def parse(self, data: Union[bytes, Packet]):
-        if not isinstance(data, Packet):
-            data = Packet(data)
+        data_ = Packet(data)
 
         offset = 0
-        self.sub_command = data.read_uint16(offset)
+        self.sub_command = data_.read_uint16(offset)
         offset += 2
-        self.status = data.read_uint8(offset)
+        self.status = data_.read_uint8(offset)
         offset += 1 + 2
 
-        self.tlv_map = TlvDecoder.decode(data, offset)
+        self.tlv_map = TlvDecoder.decode(data_, offset)

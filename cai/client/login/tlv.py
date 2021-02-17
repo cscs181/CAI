@@ -12,13 +12,16 @@ import time
 import struct
 import random
 from hashlib import md5
-from typing import List, Dict, Union
+from typing import Any, List, Dict, Union
 
-from rtea import qqtea_encrypt
+from rtea import qqtea_encrypt, qqtea_decrypt
 
 from cai.log import logger
 from .data_pb2 import DeviceInfo
 from cai.utils.binary import Packet
+from cai.settings.device import get_device
+
+DEVICE = get_device()
 
 
 class TlvEncoder:
@@ -419,7 +422,7 @@ class TlvDecoder:
         data: Union[bytes, Packet],
         offset: int = 0,
         tag_size: int = 2
-    ) -> Dict[int, bytes]:
+    ) -> Dict[int, Any]:
         if not isinstance(data, Packet):
             data = Packet(data)
 
@@ -446,25 +449,128 @@ class TlvDecoder:
             length = data.read_uint16(offset)
             offset += 2
             value = data.read_bytes(length, offset)
-            result[tag] = value
-
             futher_decode = getattr(cls, f"t{tag:x}", None)
             if futher_decode:
-                futher_result: Dict[int, bytes] = futher_decode(cls, value)
-                conflict = set(result.keys()) & set(futher_result.keys())
-                if conflict:
-                    logger.warning(
-                        f"Conflict key when decoding tlv: {conflict}"
-                    )
-                result.update(futher_result)
+                value = futher_decode(cls, value)
+            result[tag] = value
+
         return result
 
     @classmethod
-    def t161(cls, data: Union[bytes, Packet]) -> Dict[int, bytes]:
+    def t108(cls, data: bytes) -> Dict[str, Any]:
+        return {"ksid": data}
+
+    @classmethod
+    def t113(cls, data: bytes) -> Dict[str, Any]:
+        return {"uin": struct.unpack_from(">I", data)[0]}
+
+    @classmethod
+    def t119(cls, data: bytes) -> Dict[int, Any]:
+        data = qqtea_decrypt(data, DEVICE.tgtgt)
+        result = cls.decode(data, offset=2)
+        return result
+
+    @classmethod
+    def t11a(cls, data: bytes) -> Dict[str, Any]:
+        data_ = Packet(data)
+        return {
+            "age": data_.read_uint8(2),
+            "gender": data_.read_uint8(3),
+            "nick": data_.read_bytes(data_.read_uint8(4), 5).decode()
+        }
+
+    @classmethod
+    def t125(cls, data: bytes) -> Dict[str, Any]:
+        data_ = Packet(data)
+        offset = 0
+        id_length = data_.read_uint16(offset)
+        offset += 2 + id_length
+        key_length = data_.read_uint16(offset)
+        return {
+            "open_id": data_.read_bytes(id_length, 2),
+            "open_key": data_.read_bytes(key_length, offset + 2)
+        }
+
+    @classmethod
+    def t130(cls, data: bytes) -> Dict[str, Any]:
+        data_ = Packet(data)
+        return {"time_diff": data_.read_int32(), "t149": data_.read_bytes(4)}
+
+    # @classmethod
+    # def t138(cls, data: bytes) -> Dict[str, Any]:
+    #     return {}
+
+    @classmethod
+    def t161(cls, data: bytes) -> Dict[int, bytes]:
+        result = cls.decode(data, offset=2)
+        return result
+
+    @classmethod
+    def t172(cls, data: bytes) -> Dict[str, bytes]:
+        return {"rollback_sig": data}
+
+    @classmethod
+    def t186(cls, data: bytes) -> Dict[str, Any]:
+        return {"pwd_flag": data[0] == bytes([1])}
+
+    @classmethod
+    def t199(cls, data: bytes) -> Dict[str, Any]:
+        data_ = Packet(data)
+        offset = 0
+        id_length = data_.read_uint16(offset)
+        offset += 2 + id_length
+        token_length = data_.read_uint16(offset)
+        return {
+            "open_id": data_.read_bytes(id_length, 2),
+            "pay_token": data_.read_bytes(token_length, offset + 2)
+        }
+
+    @classmethod
+    def t200(cls, data: bytes) -> Dict[str, Any]:
+        data_ = Packet(data)
+        offset = 0
+        pf_length = data_.read_uint16(offset)
+        offset += 2 + pf_length
+        key_length = data_.read_uint16(offset)
+        return {
+            "pf": data_.read_bytes(pf_length, 2),
+            "pf_key": data_.read_bytes(key_length, offset + 2)
+        }
+
+    @classmethod
+    def t512(cls, data: bytes) -> Dict[str, Any]:
+        data_ = Packet(data)
+        offset = 0
+        length = data_.read_uint16()
+        offset += 2
+
+        ps_key_map: Dict[str, bytes] = {}
+        ps4_token_map: Dict[str, bytes] = {}
+        for i in range(length):
+            domain_length = data_.read_uint16(offset)
+            offset += 2
+            domain = data_.read_bytes(domain_length, offset).decode()
+            offset += domain_length
+
+            key_length = data_.read_uint16(offset)
+            offset += 2
+            ps_key = data_.read_bytes(key_length, offset)
+            offset += key_length
+
+            token_length = data_.read_uint16(offset)
+            offset += 2
+            ps4_token = data_.read_bytes(token_length, offset)
+            offset += token_length
+
+            ps_key_map[domain] = ps_key
+            ps4_token_map[domain] = ps4_token
+
+        return {"ps_key_map": ps_key_map, "ps4_token_map": ps4_token_map}
+
+    @classmethod
+    def t531(cls, data: bytes) -> Dict[str, Any]:
         result = cls.decode(data)
-        return result
-
-    @classmethod
-    def t173(cls, data: Union[bytes, Packet]) -> Dict[int, bytes]:
-        # TODO
-        pass
+        return {
+            "a1": (result.get(0x106, b"") + result.get(0x10c, b"")) or None,
+            "no_pic_sig": result.get(0x16a)
+        }

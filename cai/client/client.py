@@ -171,3 +171,18 @@ class Client:
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         if not isinstance(response, OICQResponse):
             raise RuntimeError("Invalid login response type!")
+
+        # login success
+        if response.status == 0:
+            # TODO
+            pass
+        # captcha
+        elif response.status == 2:
+            # TODO
+            pass
+        elif response.status == 40:
+            # TODO
+            pass
+        elif response.status == 160 or response.status == 239:
+            # TODO
+            pass

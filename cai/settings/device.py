@@ -94,6 +94,10 @@ class DeviceInfo(JsonableDataclass):
     def tgtgt(self) -> bytes:
         return bytes.fromhex(self._tgtgt_md5)
 
+    @tgtgt.setter
+    def tgtgt(self, key: bytes):
+        self._tgtgt_md5 = key.hex()
+
     @property
     def guid(self) -> bytes:
         if not self._guid_md5:

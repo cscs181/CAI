@@ -61,11 +61,28 @@ class Packet(bytearray):
         return self.write(*data)
 
     def unpack(self, format: Union[bytes, str]) -> Tuple[Any, ...]:
+        """Unpack all data from current packet.
+
+        Args:
+            format (Union[bytes, str]): Struct format.
+
+        Returns:
+            Tuple[Any, ...]: Unpacked data tuple.
+        """
         return struct.unpack(format, self)
 
     def unpack_from(self,
                     format: Union[bytes, str],
                     offset: int = 0) -> Tuple[Any, ...]:
+        """Unpack data from current packet with given offset.
+
+        Args:
+            format (Union[bytes, str]): Struct format.
+            offset (int, optional): Data offset. Defaults to 0.
+
+        Returns:
+            Tuple[Any, ...]: Unpacked data.
+        """
         return struct.unpack_from(format, self, offset)
 
     def read_int8(self, offset: int = 0) -> int:

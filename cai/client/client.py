@@ -8,18 +8,28 @@ This module is used to control client actions.
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
+import string
 import struct
 import secrets
 import asyncio
+from hashlib import md5
 from typing import Any, List, Dict, Union, Optional, Callable
 
-from .login import encode_login_request, decode_login_response, OICQResponse
+from rtea import qqtea_decrypt
+
+from .login import (
+    encode_login_request, decode_login_response, OICQResponse, LoginSuccess,
+    NeedCaptcha
+)
+
+from cai.exceptions import (LoginSliderException, LoginCaptchaException)
 
 from cai.log import logger
 from .siginfo import SigInfo
 from .packet import IncomingPacket
 from cai.utils.binary import Packet
 from cai.utils.future import FutureStore
+from .event import Event, _packet_to_event
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.connection import connect, Connection
@@ -27,7 +37,7 @@ from .sso_server import get_sso_server, SsoServer
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
-HANDLERS: Dict[str, Callable[[IncomingPacket], IncomingPacket]] = {
+HANDLERS: Dict[str, Callable[[IncomingPacket], Event]] = {
     "wtlogin.login": decode_login_response
 }
 
@@ -38,23 +48,42 @@ class Client:
         # account info
         self._uin: int = uin
         self._password_md5: bytes = password_md5
+        self._nick: Optional[str] = None
         self._age: Optional[int] = None
         self._gender: Optional[int] = None
-        # TODO
         self._friend_list: List[Any] = []
         self._group_list: List[Any] = []
         self._other_clients: List[Any] = []
 
         self._seq: int = 0x3635
         self._key: bytes = secrets.token_bytes(16)
-        self._siginfo: SigInfo = SigInfo()
         self._session_id: bytes = bytes([0x02, 0xB0, 0x5B, 0x8B])
         self._connection: Optional[Connection] = None
-        self._receive_store: FutureStore[int, IncomingPacket] = FutureStore()
+
+        self._dpwd: bytes = bytes()
+        self._t402: bytes = bytes()
+        self._g: bytes = bytes()
+        self._t150: bytes = bytes()
+        self._rollback_sig: bytes = bytes()
+        self._rand_seed: bytes = bytes()
+        self._time_diff: int = 0
+        self._t149: bytes = bytes()
+        self._t528: bytes = bytes()
+        self._t530: bytes = bytes()
+        self._t108: bytes = bytes()
+        self._ksid: bytes = bytes()
+        self._pwd_flag: bool = False
+
+        self._siginfo: SigInfo = SigInfo()
+        self._receive_store: FutureStore[int, Event] = FutureStore()
 
     @property
     def uin(self) -> int:
         return self._uin
+
+    @property
+    def nick(self) -> Optional[str]:
+        return self._nick
 
     @property
     def age(self) -> Optional[int]:
@@ -131,7 +160,7 @@ class Client:
         command_name: str,
         packet: Union[bytes, Packet],
         timeout: Optional[float] = None
-    ) -> IncomingPacket:
+    ) -> Event:
         logger.debug(f"--> {seq}: {command_name}")
         self._send(packet)
         return await self._receive_store.fetch(seq, timeout)
@@ -154,16 +183,15 @@ class Client:
                     self._siginfo.wt_session_ticket_key
                 )
                 logger.debug(f"<-- {packet.seq}: {packet.command_name}")
-                handler = HANDLERS.get(packet.command_name)
-                if handler:
-                    packet = handler(packet)
+                handler = HANDLERS.get(packet.command_name, _packet_to_event)
+                packet = handler(packet)
                 self._receive_store.store_result(packet.seq, packet)
                 # TODO: broadcast packet
             except Exception as e:
                 # TODO: handle exception
                 pass
 
-    async def login(self):
+    async def login(self) -> OICQResponse:
         seq = self.next_seq()
         packet = encode_login_request(
             seq, self._key, self._session_id, self.uin, self._password_md5
@@ -172,17 +200,80 @@ class Client:
         if not isinstance(response, OICQResponse):
             raise RuntimeError("Invalid login response type!")
 
+        if response.t402:
+            self._dpwd = (
+                "".join(
+                    secrets.choice(string.ascii_letters + string.digits)
+                    for _ in range(16)
+                )
+            ).encode()
+            self._t402 = response.t402
+            self._g = md5(DEVICE.guid + self._dpwd + self._t402).digest()
+
         # login success
-        if response.status == 0:
-            # TODO
-            pass
+        if isinstance(response, LoginSuccess):
+            self._t150 = response.t150 or self._t150
+            self._rollback_sig = response.rollback_sig or self._rollback_sig
+            self._rand_seed = response.rand_seed or self._rand_seed
+            self._time_diff = response.time_diff or self._time_diff
+            self._t149 = response.t149 or self._t149
+            self._t528 = response.t528 or self._t528
+            self._t530 = response.t530 or self._t530
+            self._ksid = response.ksid or self._ksid
+            self._pwd_flag = response.pwd_flag or self._pwd_flag
+            self._nick = response.nick or self._nick
+            self._age = response.age or self._age
+            self._gender = response.gender or self._gender
+
+            self._siginfo.tgt = response.tgt or self._siginfo.tgt
+            self._siginfo.tgt_key = response.tgt_key or self._siginfo.tgt_key
+            self._siginfo.srm_token = response.srm_token or self._siginfo.srm_token
+            self._siginfo.t133 = response.t133 or self._siginfo.t133
+            self._siginfo.encrypted_a1 = (
+                response.encrypted_a1 or self._siginfo.encrypted_a1
+            )
+            self._siginfo.user_st_key = response.user_st_key or self._siginfo.user_st_key
+            self._siginfo.user_st_web_sig = (
+                response.user_st_web_sig or self._siginfo.user_st_web_sig
+            )
+            self._siginfo.s_key = response.s_key or self._siginfo.s_key
+            self._siginfo.s_key_expire_time = (
+                response.s_key_expire_time or self._siginfo.s_key_expire_time
+            )
+            self._siginfo.d2 = response.d2 or self._siginfo.d2
+            self._siginfo.d2key = response.d2key or self._siginfo.d2key
+            self._siginfo.wt_session_ticket_key = (
+                response.wt_session_ticket_key or
+                self._siginfo.wt_session_ticket_key
+            )
+            self._siginfo.device_token = (
+                response.device_token or self._siginfo.device_token
+            )
+            self._siginfo.ps_key_map = response.ps_key_map or self._siginfo.ps_key_map
+            self._siginfo.pt4_token_map = (
+                response.pt4_token_map or self._siginfo.pt4_token_map
+            )
+
+            key = md5(
+                self._password_md5 + bytes(4) + struct.pack(">I", self._uin)
+            ).digest()
+            decrypted = qqtea_decrypt(response.encrypted_a1, key)
+            DEVICE.tgtgt = decrypted[51:67]
+            logger.info(f"{self.nick}({self.uin}) 登录成功！")
         # captcha
-        elif response.status == 2:
-            # TODO
-            pass
-        elif response.status == 40:
-            # TODO
-            pass
-        elif response.status == 160 or response.status == 239:
-            # TODO
-            pass
+        elif isinstance(response, NeedCaptcha):
+            if response.verify_url:
+                logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
+                raise LoginSliderException(response.verify_url)
+            elif response.captcha_image:
+                logger.info(f"登录失败！需要根据图片输入验证码")
+                raise LoginCaptchaException(
+                    response.captcha_image, response.captcha_sign
+                )
+        # elif response.status == 40:
+        #     # TODO
+        #     pass
+        # elif response.status == 160 or response.status == 239:
+        #     # TODO
+        #     pass
+        return response

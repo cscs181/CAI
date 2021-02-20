@@ -25,10 +25,26 @@ cai.client.client module
    :undoc-members:
    :show-inheritance:
 
+cai.client.event module
+-----------------------
+
+.. automodule:: cai.client.event
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cai.client.packet module
 ------------------------
 
 .. automodule:: cai.client.packet
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cai.client.siginfo module
+-------------------------
+
+.. automodule:: cai.client.siginfo
    :members:
    :undoc-members:
    :show-inheritance:

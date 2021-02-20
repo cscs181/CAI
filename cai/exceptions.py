@@ -16,3 +16,28 @@ class CaiException(Exception):
 
 class SsoServerException(CaiException):
     """Server Related Exception"""
+
+
+class LoginException(CaiException):
+    """Base Exception for Login"""
+
+
+class LoginSliderException(LoginException):
+    """Need Slider Ticket when Login"""
+
+    def __init__(self, verify_url: str):
+        self.verify_url = verify_url
+
+    def __repr__(self) -> str:
+        return f"LoginSliderException(verify_url={self.verify_url})"
+
+
+class LoginCaptchaException(LoginException):
+    """Need Captcha Image when Login"""
+
+    def __init__(self, captcha_image: bytes, captcha_sign: bytes):
+        self.captcha_image = captcha_image
+        self.captcha_sign = captcha_sign
+
+    def __repr__(self) -> str:
+        return "LoginCaptchaException(captcha_image=<raw_bytes>)"

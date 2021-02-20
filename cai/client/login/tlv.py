@@ -506,10 +506,6 @@ class TlvDecoder:
         return result
 
     @classmethod
-    def t172(cls, data: bytes) -> Dict[str, bytes]:
-        return {"rollback_sig": data}
-
-    @classmethod
     def t186(cls, data: bytes) -> Dict[str, Any]:
         return {"pwd_flag": data[0] == bytes([1])}
 
@@ -545,7 +541,7 @@ class TlvDecoder:
         offset += 2
 
         ps_key_map: Dict[str, bytes] = {}
-        ps4_token_map: Dict[str, bytes] = {}
+        pt4_token_map: Dict[str, bytes] = {}
         for i in range(length):
             domain_length = data_.read_uint16(offset)
             offset += 2
@@ -563,9 +559,9 @@ class TlvDecoder:
             offset += token_length
 
             ps_key_map[domain] = ps_key
-            ps4_token_map[domain] = ps4_token
+            pt4_token_map[domain] = ps4_token
 
-        return {"ps_key_map": ps_key_map, "ps4_token_map": ps4_token_map}
+        return {"ps_key_map": ps_key_map, "pt4_token_map": pt4_token_map}
 
     @classmethod
     def t531(cls, data: bytes) -> Dict[str, Any]:

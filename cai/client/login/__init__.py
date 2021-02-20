@@ -17,7 +17,7 @@ from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
-from .oicq_packet import OICQRequest, OICQResponse
+from .oicq import OICQRequest, OICQResponse, LoginSuccess, NeedCaptcha
 from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
 
 DEVICE = get_device()
@@ -145,10 +145,13 @@ def encode_login_request(
 
 
 def decode_login_response(packet: IncomingPacket) -> OICQResponse:
-    return OICQResponse(
-        packet.uin, packet.seq, packet.ret_code, packet.extra,
-        packet.command_name, packet.session_id, packet.data
+    return OICQResponse.decode_response(
+        packet.uin, packet.seq, packet.ret_code, packet.command_name,
+        packet.data
     )
 
 
-__all__ = ["encode_login_request", "decode_login_response", "OICQResponse"]
+__all__ = [
+    "encode_login_request", "decode_login_response", "OICQResponse",
+    "LoginSuccess", "NeedCaptcha"
+]

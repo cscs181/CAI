@@ -164,7 +164,7 @@ class UniPacket(Packet):
 
 @dataclass
 class IncomingPacket:
-    uin: str
+    uin: int
     seq: int
     ret_code: int
     extra: bytes
@@ -193,6 +193,10 @@ class IncomingPacket:
 
         uin = data.read_string(offset)
         offset += 4 + len(uin)
+        try:
+            uin = int(uin)
+        except ValueError:
+            uin = 0
 
         payload: Packet
         if encrypt_type == 0:

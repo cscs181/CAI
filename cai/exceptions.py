@@ -14,11 +14,22 @@ class CaiException(Exception):
     """Application Base Exception"""
 
 
+# sso server
 class SsoServerException(CaiException):
     """Server Related Exception"""
 
 
-class LoginException(CaiException):
+# api
+class ApiException(CaiException):
+    """Base Exception for API"""
+
+
+class ClientNotAvailable(ApiException):
+    """Cannot get client"""
+
+
+# login api
+class LoginException(ApiException):
     """Base Exception for Login"""
 
 

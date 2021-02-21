@@ -1,6 +1,6 @@
 from typing import Dict
 
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 
 @dataclass
@@ -21,5 +21,5 @@ class SigInfo:
     d2key: bytes = bytes()
     wt_session_ticket_key: bytes = bytes()
     device_token: bytes = bytes()
-    ps_key_map: Dict[str, bytes] = {}
-    pt4_token_map: Dict[str, bytes] = {}
+    ps_key_map: Dict[str, bytes] = field(default_factory=lambda: {})
+    pt4_token_map: Dict[str, bytes] = field(default_factory=lambda: {})

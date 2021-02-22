@@ -121,7 +121,7 @@ class CSsoDataPacket(Packet):
                 struct.pack(">I",
                             len(str(uin)) + 4),
                 str(uin).encode(),
-                qqtea_encrypt(body, key) if key else body
+                qqtea_encrypt(bytes(body), key) if key else body
             ),
             offset=4
         )

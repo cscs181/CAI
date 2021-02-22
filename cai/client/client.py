@@ -103,7 +103,7 @@ class Client:
 
     @property
     def connected(self) -> bool:
-        return not self._connection.closed
+        return bool(self._connection) and not self._connection.closed
 
     async def connect(self, server: Optional[SsoServer] = None) -> None:
         if self.connected:
@@ -142,6 +142,9 @@ class Client:
         )
         await self.disconnect()
         await self.connect(_server)
+
+    async def close(self):
+        await self.disconnect()
 
     @property
     def seq(self) -> int:

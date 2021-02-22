@@ -57,7 +57,7 @@ async def login(uin: int, password_md5: bytes):
     try:
         await client.login()
     except Exception:
-        await client.disconnect()
+        await client.close()
         raise
     _clients[uin] = client
 

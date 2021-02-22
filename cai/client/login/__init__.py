@@ -65,12 +65,14 @@ def encode_login_request(
     MAIN_SIGMAP = APK_INFO.main_sigmap
     SUB_SIGMAP = APK_INFO.sub_sigmap
 
+    GUID_SRC = 1
+    GUID_CHANGE = 0
     GUID_FLAG = 0
-    GUID_FLAG |= 1 << 24 & 0xFF000000
-    GUID_FLAG |= 0 << 8 & 0xFF00
+    GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
+    GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
     CAN_WEB_VERIFY = 130  # oicq.wlogin_sdk.request.k.K
     LOCAL_ID = 2052  # com.tencent.qqmini.minigame.GameConst.GAME_RUNTIME_MSG_GAME_ON_HIDE
-    IP_BYTES = ipaddress.ip_address(DEVICE.ip_address).packed
+    IP_BYTES: bytes = ipaddress.ip_address(DEVICE.ip_address).packed
     NETWORK_TYPE = (DEVICE.apn == "wifi") + 1
     KSID = f"|{DEVICE.imei}|A8.2.7.27f6ea96".encode()
 
@@ -80,7 +82,7 @@ def encode_login_request(
         TlvEncoder.t1(uin, int(time.time()), IP_BYTES),
         TlvEncoder.t106(
             SSO_VERSION, APP_ID, SUB_APP_ID, APP_CLIENT_VERSION, uin, 0,
-            IP_BYTES, password_md5, True, DEVICE.guid, DEVICE.tgtgt
+            password_md5, DEVICE.guid, DEVICE.tgtgt
         ),
         TlvEncoder.t116(BITMAP, SUB_SIGMAP),
         TlvEncoder.t100(
@@ -129,7 +131,7 @@ def encode_login_request(
         TlvEncoder.t177(APK_BUILD_TIME, SDK_VERSION),
         TlvEncoder.t516(),
         TlvEncoder.t521(),
-        TlvEncoder.t525(TlvEncoder.t536(bytes([1, 0]))),  # 1, length
+        TlvEncoder.t525(TlvEncoder.t536([])),
         # TlvBuilder.t318()  # not login in by qr
     )
     oicq_packet = OICQRequest.build_encoded(

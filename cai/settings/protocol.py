@@ -25,11 +25,11 @@ class ApkInfo(NamedTuple):
     app_id: int
     sub_app_id: int  # com.tencent.common.config.AppSetting.f
     version: str
-    build_time: int
     apk_sign: bytes
+    build_time: int  # oicq.wlogin_sdk.tools.util.BUILD_TIME
     sdk_version: str  # oicq.wlogin_sdk.tools.util.SDK_VERSION
     sso_version: int  # oicq.wlogin_sdk.tools.util.SSO_VERSION
-    bitmap: int  # oicq.wlogin_sdk.request.WtloginHelper.mMiscBitmap | 33554432
+    bitmap: int  # oicq.wlogin_sdk.request.WtloginHelper.mMiscBitmap | 0x2000000
     main_sigmap: int  # com.tencent.mobileqq.msf.core.auth.n.f
     sub_sigmap: int  # oicq.wlogin_sdk.request.WtloginHelper.mSubSigMap
 

@@ -89,11 +89,12 @@ class TestEncodeLoginRequest(unittest.IsolatedAsyncioTestCase):
 
     def test_encode_login_request(self):
         self.log(logging.INFO, "test encode login request")
+        # ensure encode has no error
         packet = encode_login_request(
             10, bytes(16), bytes([0x02, 0xB0, 0x5B, 0x8B]), 123456,
             md5("123456".encode()).digest()
         )
-        print(packet.hex())
+        # print(packet.hex())
 
 
 if __name__ == "__main__":

@@ -263,12 +263,13 @@ async def quality_test(
     Returns:
         List[Tuple[:obj:`.SsoServer`, float]]: List of server and latency in tuple.
     """
-    tasks = [tcp_latency_test(server.host, server.port) for server in servers]
+    servers_ = list(servers)
+    tasks = [tcp_latency_test(server.host, server.port) for server in servers_]
     result: List[Union[float, Exception]
                 ] = await asyncio.gather(*tasks, return_exceptions=True)
     success_servers = [
         (server, latency)
-        for server, latency in zip(servers, result)
+        for server, latency in zip(servers_, result)
         if isinstance(latency, float) and latency < threshold
     ]
     return success_servers

@@ -90,6 +90,7 @@ class Connection:
         try:
             data = await self._reader.readexactly(num_bytes)
         except (asyncio.IncompleteReadError, IOError, OSError) as e:
+            await self.close()
             raise ConnectionAbortedError(
                 f"Lost connection to {self._host}:{self._port}"
             ) from e
@@ -99,6 +100,7 @@ class Connection:
         try:
             data = await self._reader.readline()
         except (asyncio.IncompleteReadError, IOError, OSError) as e:
+            await self.close()
             raise ConnectionAbortedError(
                 f"Lost connection to {self._host}:{self._port}"
             ) from e
@@ -108,6 +110,7 @@ class Connection:
         try:
             data = await self._reader.read(-1)
         except (asyncio.IncompleteReadError, IOError, OSError) as e:
+            await self.close()
             raise ConnectionAbortedError(
                 f"Lost connection to {self._host}:{self._port}"
             ) from e

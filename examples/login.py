@@ -7,7 +7,7 @@ from hashlib import md5
 from PIL import Image
 
 import cai
-from cai.exceptions import LoginException, LoginSliderException, LoginCaptchaException
+from cai.exceptions import ApiResponseError, LoginException, LoginSliderException, LoginCaptchaException
 
 
 async def run():
@@ -23,8 +23,10 @@ async def run():
         return
 
     try:
-        await cai.login(account, md5(password.encode()).digest())
+        client = await cai.login(account, md5(password.encode()).digest())
+        print("Login Success!")
         await asyncio.sleep(3)
+        await client.close()
     except LoginSliderException as e:
         print("Verify url:", e.verify_url)
     except LoginCaptchaException as e:
@@ -33,6 +35,8 @@ async def run():
         image.show()
     except LoginException as e:
         print("Login Error:", repr(e))
+    except ApiResponseError as e:
+        print("Response Error:", repr(e))
     except Exception as e:
         print("Unknown Error:", repr(e))
         traceback.print_exc()

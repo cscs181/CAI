@@ -53,27 +53,14 @@ class OICQRequest(Packet):
 
 @dataclass
 class OICQResponse(Event):
-    sub_command: int
-    status: int
-    _tlv_map: Dict[int, Any]
-
-    t402: Optional[bytes]
-
-    def __init__(
-        self, uin: int, seq: int, ret_code: int, command_name: str,
-        sub_command: int, status: int, _tlv_map: Dict[int, Any]
-    ):
-        super().__init__(uin, seq, ret_code, command_name)
-        self.sub_command = sub_command
-        self.status = status
-        self._tlv_map = _tlv_map
-
-        self.t402 = _tlv_map.get(0x402)
 
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
     ) -> "OICQResponse":
+        if ret_code != 0 or not data:
+            return OICQResponse(uin, seq, ret_code, command_name)
+
         data_ = Packet(data)
 
         offset = 0
@@ -92,13 +79,33 @@ class OICQResponse(Event):
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
             )
         else:
-            return OICQResponse(
+            return UnknownLoginStatus(
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
             )
 
 
 @dataclass
-class LoginSuccess(OICQResponse):
+class UnknownLoginStatus(OICQResponse):
+    sub_command: int
+    status: int
+    _tlv_map: Dict[int, Any]
+
+    t402: Optional[bytes]
+
+    def __init__(
+        self, uin: int, seq: int, ret_code: int, command_name: str,
+        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+    ):
+        super().__init__(uin, seq, ret_code, command_name)
+        self.sub_command = sub_command
+        self.status = status
+        self._tlv_map = _tlv_map
+
+        self.t402 = _tlv_map.get(0x402)
+
+
+@dataclass
+class LoginSuccess(UnknownLoginStatus):
     nick: Optional[str]
     age: Optional[int]
     gender: Optional[int]
@@ -169,7 +176,7 @@ class LoginSuccess(OICQResponse):
 
 
 @dataclass
-class NeedCaptcha(OICQResponse):
+class NeedCaptcha(UnknownLoginStatus):
     t104: bytes
     verify_url: str
     captcha_image: bytes

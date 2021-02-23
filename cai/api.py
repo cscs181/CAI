@@ -34,7 +34,7 @@ def _get_client(uin: Optional[int] = None) -> Client:
         return _clients[uin]
 
 
-async def login(uin: int, password_md5: bytes):
+async def login(uin: int, password_md5: bytes) -> Client:
     """Create a new client (or use an existing one) and login.
 
     This function wraps the login method of the client.
@@ -44,6 +44,7 @@ async def login(uin: int, password_md5: bytes):
         password_md5 (bytes): md5 bytes of the password.
 
     Raises:
+        RuntimeError: Client already exists and is running.
         LoginSliderException: Need slider ticket.
         LoginCaptchaException: Need captcha image.
     """
@@ -60,6 +61,7 @@ async def login(uin: int, password_md5: bytes):
         await client.close()
         raise
     _clients[uin] = client
+    return client
 
 
 __all__ = ["login"]

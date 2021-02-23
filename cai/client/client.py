@@ -19,10 +19,13 @@ from rtea import qqtea_decrypt
 
 from .login import (
     encode_login_request, decode_login_response, OICQResponse, LoginSuccess,
-    NeedCaptcha
+    NeedCaptcha, UnknownLoginStatus
 )
 
-from cai.exceptions import (LoginSliderException, LoginCaptchaException)
+from cai.exceptions import (
+    ApiResponseError, LoginException, LoginSliderException,
+    LoginCaptchaException
+)
 
 from cai.log import logger
 from .siginfo import SigInfo
@@ -112,7 +115,7 @@ class Client:
         _server = server or await get_sso_server()
         try:
             self._connection = await connect(
-                _server.host, _server.port, ssl=True, timeout=3.
+                _server.host, _server.port, ssl=False, timeout=3.
             )
             asyncio.create_task(self.receive())
         except ConnectionError as e:
@@ -162,7 +165,7 @@ class Client:
         seq: int,
         command_name: str,
         packet: Union[bytes, Packet],
-        timeout: Optional[float] = None
+        timeout: Optional[float] = 10.
     ) -> Event:
         logger.debug(f"--> {seq}: {command_name}")
         self._send(packet)
@@ -185,14 +188,18 @@ class Client:
                     data, self._key, self._siginfo.d2key,
                     self._siginfo.wt_session_ticket_key
                 )
-                logger.debug(f"<-- {packet.seq}: {packet.command_name}")
+                logger.debug(
+                    f"<-- {packet.seq} ({packet.ret_code}): {packet.command_name}"
+                )
                 handler = HANDLERS.get(packet.command_name, _packet_to_event)
                 packet = handler(packet)
                 self._receive_store.store_result(packet.seq, packet)
                 # TODO: broadcast packet
+            except ConnectionAbortedError:
+                logger.debug("Connection closed")
             except Exception as e:
                 # TODO: handle exception
-                pass
+                logger.exception(e)
 
     async def login(self) -> OICQResponse:
         seq = self.next_seq()
@@ -202,6 +209,12 @@ class Client:
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         if not isinstance(response, OICQResponse):
             raise RuntimeError("Invalid login response type!")
+
+        if not isinstance(response, UnknownLoginStatus):
+            raise ApiResponseError(
+                response.uin, response.seq, response.ret_code,
+                response.command_name
+            )
 
         if response.t402:
             self._dpwd = (
@@ -279,4 +292,6 @@ class Client:
         # elif response.status == 160 or response.status == 239:
         #     # TODO
         #     pass
+        elif isinstance(response, UnknownLoginStatus):
+            raise LoginException(response.status)
         return response

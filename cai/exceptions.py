@@ -28,9 +28,31 @@ class ClientNotAvailable(ApiException):
     """Cannot get client"""
 
 
+class ApiResponseError(ApiException):
+    """Receive a response with non zero return code."""
+
+    def __init__(self, uin: int, seq: int, ret_code: int, command_name: str):
+        self.uin = uin
+        self.seq = seq
+        self.ret_code = ret_code
+        self.command_name = command_name
+
+    def __repr__(self) -> str:
+        return (
+            f"ApiResponseError(uin={self.uin}, seq={self.seq}, "
+            f"ret_code={self.ret_code}, command_name={self.command_name})"
+        )
+
+
 # login api
 class LoginException(ApiException):
     """Base Exception for Login"""
+
+    def __init__(self, status: int):
+        self.status = status
+
+    def __repr__(self) -> str:
+        return f"LoginException(status={self.status})"
 
 
 class LoginSliderException(LoginException):

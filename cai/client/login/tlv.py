@@ -215,7 +215,7 @@ class TlvEncoder:
         network_type: int,
         sim_info: bytes,
         apn: bytes,
-        address: bytes = bytes(0)
+        address: bytes = bytes()
     ) -> Packet:
         return cls._pack_tlv(
             0x124, cls._pack_lv_limited(os_type, 16),
@@ -465,7 +465,7 @@ class TlvEncoder:
             index2 = domain.find(")")
             if index1 != 0 or index2 <= 0:
                 data.append(bytes([1]))
-                data.append(domain.encode())
+                data.append(cls._pack_lv(domain.encode()))
             else:
                 try:
                     i = int(domain[index1 + 1:index2])
@@ -521,7 +521,10 @@ class TlvEncoder:
 
     @classmethod
     def t536(cls, login_extra_data: List[bytes]) -> Packet:
-        return cls._pack_tlv(0x536, struct.pack(">BB", 1, len(login_extra_data)), *login_extra_data)
+        return cls._pack_tlv(
+            0x536, struct.pack(">BB", 1, len(login_extra_data)),
+            *login_extra_data
+        )
 
     @classmethod
     def t544(cls) -> Packet:

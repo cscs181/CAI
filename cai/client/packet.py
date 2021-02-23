@@ -54,16 +54,12 @@ class CSsoBodyPacket(Packet):
         Note:
             Source: `CSSOReqHead::serialize_verFull`
         """
-        extra = extra_data and (len(extra_data) != 4)
         packet = cls().write_with_length(
             struct.pack(">III", seq, sub_app_id, sub_app_id),
             unknown_bytes,
-            struct.pack(">I", 4) if not extra else b"",
-            struct.pack(
-                ">I",
-                len(extra_data) + 4,
-            ) if extra else b"",
-            extra_data if extra else b"",
+            struct.pack(">I",
+                        len(extra_data) + 4),
+            extra_data,
             struct.pack(">I",
                         len(command_name) + 4),
             command_name.encode(),
@@ -202,9 +198,9 @@ class IncomingPacket:
         if encrypt_type == 0:
             payload = Packet(data[offset:])
         elif encrypt_type == 1:
-            payload = Packet(qqtea_decrypt(data[offset:], d2key))
+            payload = Packet(qqtea_decrypt(bytes(data[offset:]), d2key))
         elif encrypt_type == 2:
-            payload = Packet(qqtea_decrypt(data[offset:], bytes(16)))
+            payload = Packet(qqtea_decrypt(bytes(data[offset:]), bytes(16)))
         else:
             raise ValueError(
                 f"Invalid encrypt type. Expected 0 / 1 / 2, got {encrypt_type}."
@@ -249,6 +245,16 @@ class IncomingPacket:
         session_id = sso_frame.read_bytes(session_id_length, offset)
         offset += session_id_length
 
+        if offset >= len(sso_frame):
+            return cls(
+                seq=seq,
+                ret_code=ret_code,
+                extra=extra,
+                command_name=command_name,
+                session_id=session_id,
+                data=bytes(),
+                **kwargs
+            )
         compress_type = sso_frame.read_int32(offset)
         offset += 4
         decompressed_data: bytes
@@ -303,14 +309,14 @@ class IncomingPacket:
         body = data[offset:-1]
         if encrypt_type == 0:
             try:
-                return qqtea_decrypt(body, ECDH.share_key)
+                return qqtea_decrypt(bytes(body), ECDH.share_key)
             except Exception:
-                return qqtea_decrypt(body, key)
+                return qqtea_decrypt(bytes(body), key)
         elif encrypt_type == 3:
-            return qqtea_decrypt(body, session_key)
+            return qqtea_decrypt(bytes(body), session_key)
         elif encrypt_type == 4:
             # seems not used
-            # data = qqtea_decrypt(body, ECDH.share_key)
+            # data = qqtea_decrypt(bytes(body), ECDH.share_key)
             # ...
             raise NotImplementedError
         else:

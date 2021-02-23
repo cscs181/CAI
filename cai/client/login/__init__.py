@@ -17,7 +17,10 @@ from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
-from .oicq import OICQRequest, OICQResponse, LoginSuccess, NeedCaptcha, UnknownLoginStatus
+from .oicq import (
+    OICQRequest, OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen,
+    DeviceLocked, UnknownLoginStatus
+)
 from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
 
 DEVICE = get_device()
@@ -155,5 +158,6 @@ def decode_login_response(packet: IncomingPacket) -> OICQResponse:
 
 __all__ = [
     "encode_login_request", "decode_login_response", "OICQResponse",
-    "LoginSuccess", "NeedCaptcha", "UnknownLoginStatus"
+    "LoginSuccess", "NeedCaptcha", "AccountFrozen", "DeviceLocked",
+    "UnknownLoginStatus"
 ]

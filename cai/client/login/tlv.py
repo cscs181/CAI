@@ -566,6 +566,7 @@ class TlvDecoder:
             length = data.read_uint16(offset)
             offset += 2
             value = data.read_bytes(length, offset)
+            offset += length
             futher_decode = getattr(cls, f"t{tag:x}", None)
             if futher_decode:
                 value = futher_decode(cls, value)

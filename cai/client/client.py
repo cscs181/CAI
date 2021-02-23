@@ -19,12 +19,12 @@ from rtea import qqtea_decrypt
 
 from .login import (
     encode_login_request, decode_login_response, OICQResponse, LoginSuccess,
-    NeedCaptcha, UnknownLoginStatus
+    NeedCaptcha, AccountFrozen, DeviceLocked, UnknownLoginStatus
 )
 
 from cai.exceptions import (
-    ApiResponseError, LoginException, LoginSliderException,
-    LoginCaptchaException
+    ApiResponseError, LoginException, LoginSliderNeeded, LoginCaptchaNeeded,
+    LoginAccountFrozen, LoginDeviceLocked
 )
 
 from cai.log import logger
@@ -280,18 +280,16 @@ class Client:
         elif isinstance(response, NeedCaptcha):
             if response.verify_url:
                 logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
-                raise LoginSliderException(response.verify_url)
+                raise LoginSliderNeeded(response.verify_url)
             elif response.captcha_image:
                 logger.info(f"登录失败！需要根据图片输入验证码")
-                raise LoginCaptchaException(
+                raise LoginCaptchaNeeded(
                     response.captcha_image, response.captcha_sign
                 )
-        # elif response.status == 40:
-        #     # TODO
-        #     pass
-        # elif response.status == 160 or response.status == 239:
-        #     # TODO
-        #     pass
+        elif isinstance(response, AccountFrozen):
+            raise LoginAccountFrozen()
+        elif isinstance(response, DeviceLocked):
+            raise LoginDeviceLocked()
         elif isinstance(response, UnknownLoginStatus):
             raise LoginException(response.status)
         return response

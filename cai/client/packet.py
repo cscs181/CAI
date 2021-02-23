@@ -209,10 +209,11 @@ class IncomingPacket:
         if not payload:
             raise ValueError(f"Data cannot be none.")
 
-        offset = 0
-        sso_frame_length = payload.read_int32(offset) - 4
-        offset += 4
-        sso_frame = payload.read_bytes(sso_frame_length, offset)
+        # offset = 0
+        # sso_head_length = payload.read_int32(offset) - 4
+        # offset += 4
+        offset = 4
+        sso_frame = payload[offset:]
 
         return cls.parse_sso_frame(
             sso_frame, encrypt_type, key, session_key, uin=uin
@@ -240,7 +241,7 @@ class IncomingPacket:
         command_name = sso_frame.read_string(offset)
         offset += 4 + len(command_name)
 
-        session_id_length = sso_frame.read_int32(offset)
+        session_id_length = sso_frame.read_int32(offset) - 4
         offset += 4
         session_id = sso_frame.read_bytes(session_id_length, offset)
         offset += session_id_length
@@ -297,7 +298,7 @@ class IncomingPacket:
             data = Packet(data)
 
         flag = data.read_uint8()
-        if not flag != 2:
+        if flag != 2:
             raise ValueError(
                 f"Invalid OICQ response flag. Expected 2, got {flag}."
             )

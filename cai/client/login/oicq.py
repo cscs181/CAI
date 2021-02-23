@@ -78,6 +78,14 @@ class OICQResponse(Event):
             return NeedCaptcha(
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
             )
+        elif status == 40:
+            return AccountFrozen(
+                uin, seq, ret_code, command_name, sub_command, status, _tlv_map
+            )
+        elif status == 160 or status == 239:
+            return DeviceLocked(
+                uin, seq, ret_code, command_name, sub_command, status, _tlv_map
+            )
         else:
             return UnknownLoginStatus(
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
@@ -196,3 +204,23 @@ class NeedCaptcha(UnknownLoginStatus):
             sign_length = data.read_uint16()
             self.captcha_sign = data.read_bytes(sign_length, 4)
             self.captcha_image = data[4 + sign_length:]
+
+
+@dataclass
+class AccountFrozen(UnknownLoginStatus):
+
+    # Nothing to do
+    pass
+
+
+@dataclass
+class DeviceLocked(UnknownLoginStatus):
+
+    def __init__(
+        self, uin: int, seq: int, ret_code: int, command_name: str,
+        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+    ):
+        super().__init__(
+            uin, seq, ret_code, command_name, sub_command, status, _tlv_map
+        )
+        # TODO: parse verify_url and sms phone

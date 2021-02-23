@@ -55,7 +55,7 @@ class LoginException(ApiException):
         return f"LoginException(status={self.status})"
 
 
-class LoginSliderException(LoginException):
+class LoginSliderNeeded(LoginException):
     """Need Slider Ticket when Login"""
 
     def __init__(self, verify_url: str):
@@ -65,7 +65,7 @@ class LoginSliderException(LoginException):
         return f"LoginSliderException(verify_url={self.verify_url})"
 
 
-class LoginCaptchaException(LoginException):
+class LoginCaptchaNeeded(LoginException):
     """Need Captcha Image when Login"""
 
     def __init__(self, captcha_image: bytes, captcha_sign: bytes):
@@ -74,3 +74,24 @@ class LoginCaptchaException(LoginException):
 
     def __repr__(self) -> str:
         return "LoginCaptchaException(captcha_image=<raw_bytes>)"
+
+
+class LoginAccountFrozen(LoginException):
+    """Account is already frozen"""
+
+    def __init__(self):
+        pass
+
+    def __repr__(self) -> str:
+        return "LoginAccountFrozen()"
+
+
+class LoginDeviceLocked(LoginException):
+    """Device lock checking is needed"""
+
+    def __init__(self):
+        # TODO: store verify_url and sms phone
+        pass
+
+    def __repr__(self) -> str:
+        return "LoginDeviceLocked()"

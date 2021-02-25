@@ -231,6 +231,7 @@ class DeviceLocked(UnknownLoginStatus):
     sms_phone: Optional[str]
     verify_url: Optional[str]
     message: Optional[str]
+    rand_seed: Optional[bytes]
     t104: Optional[bytes]
     t174: Optional[bytes]
 
@@ -241,9 +242,15 @@ class DeviceLocked(UnknownLoginStatus):
         super().__init__(
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map
         )
-        # TODO: parse verify_url and sms phone
+        self.sms_phone = None
+        self.verify_url = _tlv_map.get(0x204, b"").decode() or None
+        self.message = _tlv_map.get(0x17e, b"").decode() or None
+        self.rand_seed = _tlv_map.get(0x403)
         self.t104 = _tlv_map.get(0x104)
         self.t174 = _tlv_map.get(0x174)
+        if self.t174:
+            t178 = Packet(_tlv_map[0x178])
+            self.sms_phone = t178.read_bytes(t178.read_int32(), 4).decode()
 
 
 @dataclass
@@ -260,6 +267,8 @@ class TooManySMSRequest(UnknownLoginStatus):
 
 @dataclass
 class DeviceLockLogin(UnknownLoginStatus):
+    rand_seed: Optional[bytes]
+    t104: Optional[bytes]
 
     def __init__(
         self, uin: int, seq: int, ret_code: int, command_name: str,
@@ -268,3 +277,5 @@ class DeviceLockLogin(UnknownLoginStatus):
         super().__init__(
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map
         )
+        self.rand_seed = _tlv_map.get(0x403)
+        self.t104 = _tlv_map.get(0x104)

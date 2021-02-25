@@ -19,12 +19,13 @@ from rtea import qqtea_decrypt
 
 from .login import (
     encode_login_request, decode_login_response, OICQResponse, LoginSuccess,
-    NeedCaptcha, AccountFrozen, DeviceLocked, UnknownLoginStatus
+    NeedCaptcha, AccountFrozen, DeviceLocked, TooManySMSRequest,
+    DeviceLockLogin, UnknownLoginStatus
 )
 
 from cai.exceptions import (
     ApiResponseError, LoginException, LoginSliderNeeded, LoginCaptchaNeeded,
-    LoginAccountFrozen, LoginDeviceLocked
+    LoginAccountFrozen, LoginDeviceLocked, LoginSMSRequestError
 )
 
 from cai.log import logger
@@ -229,7 +230,6 @@ class Client:
             self._t402 = response.t402
             self._g = md5(DEVICE.guid + self._dpwd + self._t402).digest()
 
-        # login success
         if isinstance(response, LoginSuccess):
             self._t150 = response.t150 or self._t150
             self._rollback_sig = response.rollback_sig or self._rollback_sig
@@ -279,7 +279,6 @@ class Client:
             decrypted = qqtea_decrypt(response.encrypted_a1, key)
             DEVICE.tgtgt = decrypted[51:67]
             logger.info(f"{self.nick}({self.uin}) 登录成功！")
-        # captcha
         elif isinstance(response, NeedCaptcha):
             if response.verify_url:
                 logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
@@ -290,9 +289,40 @@ class Client:
                     response.captcha_image, response.captcha_sign
                 )
         elif isinstance(response, AccountFrozen):
+            logger.info("账号已被冻结！")
             raise LoginAccountFrozen()
         elif isinstance(response, DeviceLocked):
-            raise LoginDeviceLocked()
+            self._t104 = response.t104 or self._t104
+            self._t174 = response.t174 or self._t174
+            self._rand_seed = response.rand_seed or self._rand_seed
+            msg = "账号已开启设备锁！"
+            if response.sms_phone:
+                msg += f"向手机{response.sms_phone}发送验证码 "
+            if response.verify_url:
+                msg += f"或前往{response.verify_url}扫码验证"
+            logger.info(msg + ". " + str(response.message))
+            raise LoginDeviceLocked(
+                response.sms_phone, response.verify_url, response.message
+            )
+        elif isinstance(response, TooManySMSRequest):
+            logger.info("验证码发送频繁！")
+            raise LoginSMSRequestError()
+        elif isinstance(response, DeviceLockLogin):
+            self._t104 = response.t104 or self._t104
+            self._rand_seed = response.rand_seed or self._rand_seed
+            # TODO: send device login packet
+            pass
         elif isinstance(response, UnknownLoginStatus):
+            t146 = response._tlv_map.get(0x146)
+            t149 = response._tlv_map.get(0x149)
+            if t146:
+                packet = Packet(t146)
+                msg = packet.read_bytes(packet.read_uint16(4), 6).decode()
+            elif t149:
+                packet = Packet(t149)
+                msg = packet.read_bytes(packet.read_uint16(2), 4).decode()
+            else:
+                msg = ""
+            logger.info(f"未知的登录返回码 {response.status}! {msg}")
             raise LoginException(response.status)
         return response

@@ -8,6 +8,7 @@ This module is used to collect all application exceptions.
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
+from typing import Optional
 
 
 class CaiException(Exception):
@@ -89,9 +90,26 @@ class LoginAccountFrozen(LoginException):
 class LoginDeviceLocked(LoginException):
     """Device lock checking is needed"""
 
+    def __init__(
+        self, sms_phone: Optional[str], verify_url: Optional[str],
+        message: Optional[str]
+    ):
+        self.sms_phone = sms_phone
+        self.verify_url = verify_url
+        self.message = message
+
+    def __repr__(self) -> str:
+        return (
+            f"LoginDeviceLocked(message={self.message}, "
+            f"sms_phone={self.sms_phone}, verify_url={self.message})"
+        )
+
+
+class LoginSMSRequestError(LoginException):
+    """Too many sms verify request"""
+
     def __init__(self):
-        # TODO: store verify_url and sms phone
         pass
 
     def __repr__(self) -> str:
-        return "LoginDeviceLocked()"
+        return "LoginSMSRequestError()"

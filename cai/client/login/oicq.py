@@ -86,6 +86,14 @@ class OICQResponse(Event):
             return DeviceLocked(
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
             )
+        elif status == 162:
+            return TooManySMSRequest(
+                uin, seq, ret_code, command_name, sub_command, status, _tlv_map
+            )
+        elif status == 204:
+            return DeviceLockLogin(
+                uin, seq, ret_code, command_name, sub_command, status, _tlv_map
+            )
         else:
             return UnknownLoginStatus(
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
@@ -209,12 +217,22 @@ class NeedCaptcha(UnknownLoginStatus):
 @dataclass
 class AccountFrozen(UnknownLoginStatus):
 
-    # Nothing to do
-    pass
+    def __init__(
+        self, uin: int, seq: int, ret_code: int, command_name: str,
+        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+    ):
+        super().__init__(
+            uin, seq, ret_code, command_name, sub_command, status, _tlv_map
+        )
 
 
 @dataclass
 class DeviceLocked(UnknownLoginStatus):
+    sms_phone: Optional[str]
+    verify_url: Optional[str]
+    message: Optional[str]
+    t104: Optional[bytes]
+    t174: Optional[bytes]
 
     def __init__(
         self, uin: int, seq: int, ret_code: int, command_name: str,
@@ -224,3 +242,29 @@ class DeviceLocked(UnknownLoginStatus):
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map
         )
         # TODO: parse verify_url and sms phone
+        self.t104 = _tlv_map.get(0x104)
+        self.t174 = _tlv_map.get(0x174)
+
+
+@dataclass
+class TooManySMSRequest(UnknownLoginStatus):
+
+    def __init__(
+        self, uin: int, seq: int, ret_code: int, command_name: str,
+        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+    ):
+        super().__init__(
+            uin, seq, ret_code, command_name, sub_command, status, _tlv_map
+        )
+
+
+@dataclass
+class DeviceLockLogin(UnknownLoginStatus):
+
+    def __init__(
+        self, uin: int, seq: int, ret_code: int, command_name: str,
+        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+    ):
+        super().__init__(
+            uin, seq, ret_code, command_name, sub_command, status, _tlv_map
+        )

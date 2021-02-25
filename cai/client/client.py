@@ -63,19 +63,22 @@ class Client:
         self._session_id: bytes = bytes([0x02, 0xB0, 0x5B, 0x8B])
         self._connection: Optional[Connection] = None
 
-        self._dpwd: bytes = bytes()
-        self._t402: bytes = bytes()
         self._g: bytes = bytes()
-        self._t150: bytes = bytes()
-        self._rollback_sig: bytes = bytes()
-        self._rand_seed: bytes = bytes()
         self._time_diff: int = 0
-        self._t149: bytes = bytes()
-        self._t528: bytes = bytes()
-        self._t530: bytes = bytes()
-        self._t108: bytes = bytes()
+        self._dpwd: bytes = bytes()
         self._ksid: bytes = bytes()
         self._pwd_flag: bool = False
+        self._rand_seed: bytes = bytes()
+        self._rollback_sig: bytes = bytes()
+
+        self._t104: bytes = bytes()
+        self._t108: bytes = bytes()
+        self._t149: bytes = bytes()
+        self._t150: bytes = bytes()
+        self._t174: bytes = bytes()
+        self._t402: bytes = bytes()
+        self._t528: bytes = bytes()
+        self._t530: bytes = bytes()
 
         self._siginfo: SigInfo = SigInfo()
         self._receive_store: FutureStore[int, Event] = FutureStore()

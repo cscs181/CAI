@@ -49,11 +49,12 @@ class ApiResponseError(ApiException):
 class LoginException(ApiException):
     """Base Exception for Login"""
 
-    def __init__(self, status: int):
+    def __init__(self, status: int, message: str = ""):
         self.status = status
+        self.message = message
 
     def __repr__(self) -> str:
-        return f"LoginException(status={self.status})"
+        return f"LoginException(status={self.status}, message={self.message})"
 
 
 class LoginSliderNeeded(LoginException):

@@ -58,6 +58,28 @@ class OICQResponse(Event):
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
     ) -> "OICQResponse":
+        """Decode login response and wrap main info of the response.
+
+        Note:
+            Source: oicq.wlogin_sdk.request.WtloginHelper.GetStWithPasswd
+
+        Args:
+            uin (int): User QQ
+            seq (int): Sequence number of the response packet.
+            ret_code (int): Return code of the response.
+            command_name (str): Command name of the response.
+            data (bytes): Payload data of the response.
+
+        Returns:
+            LoginSuccess: Login success.
+            NeedCaptcha: Captcha image needed.
+            AccountFrozen: Account is frozen.
+            DeviceLocked: Device lock detected.
+            TooManySMSRequest: Too many SMS messages were sent.
+            DeviceLockLogin: More login packet needed.
+            UnknownLoginStatus: Unknown login status.
+            OICQResponse: Invalid login response.
+        """
         if ret_code != 0 or not data:
             return OICQResponse(uin, seq, ret_code, command_name)
 
@@ -127,6 +149,7 @@ class LoginSuccess(UnknownLoginStatus):
     gender: Optional[int]
     ksid: Optional[bytes]
     time_diff: Optional[int]
+    ip_address: Optional[bytes]
     pwd_flag: Optional[bool]
     rand_seed: Optional[bytes]
     rollback_sig: Optional[bytes]
@@ -136,6 +159,7 @@ class LoginSuccess(UnknownLoginStatus):
     srm_token: bytes
     t133: bytes
     encrypted_a1: bytes
+    user_st: bytes
     user_st_key: bytes
     user_st_web_sig: bytes
     s_key: bytes
@@ -147,7 +171,6 @@ class LoginSuccess(UnknownLoginStatus):
     ps_key_map: Dict[str, bytes]
     pt4_token_map: Dict[str, bytes]
 
-    t149: Optional[bytes]
     t150: Optional[bytes]
     t528: Optional[bytes]
     t530: Optional[bytes]
@@ -165,30 +188,35 @@ class LoginSuccess(UnknownLoginStatus):
 
         t119 = _tlv_map.get(0x119, {})
         self.time_diff = t119.get(0x130, {}).get("time_diff")
-        self.t149 = t119.get(0x130, {}).get("t149")
+        self.ip_address = t119.get(0x130, {}).get("ip_address")
+        # TODO: check the ip?
+        print(self.ip_address.hex())
         self.t528 = t119.get(0x528)
         self.t530 = t119.get(0x530)
-        self.ksid = t119.get(0x108)
-        self.pwd_flag = t119.get(0x186, {}).get("pwd_flag")
+        self.tgt_key = t119[0x10d]
+        self.user_st_key = t119[0x10e]
+        self.tgt = t119[0x10a]
+        self.user_st = t119[0x114]
         self.nick = t119.get(0x11a, {}).get("nick")
         self.age = t119.get(0x11a, {}).get("age")
         self.gender = t119.get(0x11a, {}).get("gender")
+        self.user_st_web_sig = t119[0x103]
+        self.ksid = t119.get(0x108)
+        self.s_key = t119[0x120]
+        self.s_key_expire_time = int(time.time()) + 21600
+        self.pwd_flag = t119.get(0x186, {}).get("pwd_flag")
+        self.encrypted_a1 = t119[0x106]
+        # TODO: 106 + 10c?
+        print(_tlv_map.get(0x106, b"").hex(), _tlv_map.get(0x10c, b"").hex())
+        self.srm_token = t119[0x16a]
+
+        self.d2 = t119[0x143]
+        self.d2key = t119[0x305]
         self.ps_key_map = t119.get(0x512, {}).get("ps_key_map", {})
         self.pt4_token_map = t119.get(0x512, {}).get("pt4_token_map", {})
-
-        self.srm_token = _tlv_map[0x16a]
-        self.t133 = _tlv_map[0x133]
-        self.encrypted_a1 = _tlv_map[0x106]
-        self.tgt = _tlv_map[0x10a]
-        self.tgt_key = _tlv_map[0x10d]
-        self.user_st_key = _tlv_map[0x10e]
-        self.user_st_web_sig = _tlv_map[0x103]
-        self.s_key = _tlv_map[0x120]
-        self.s_key_expire_time = int(time.time()) + 21600
-        self.d2 = _tlv_map[0x143]
-        self.d2key = _tlv_map[0x305]
-        self.wt_session_ticket_key = _tlv_map[0x134]
-        self.device_token = _tlv_map[0x322]
+        self.t133 = t119[0x133]
+        self.wt_session_ticket_key = t119[0x134]
+        self.device_token = t119[0x322]
 
 
 @dataclass
@@ -206,6 +234,8 @@ class NeedCaptcha(UnknownLoginStatus):
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map
         )
         self.t104 = _tlv_map[0x104]
+        self.captcha_image = bytes()
+        self.captcha_sign = bytes()
         self.verify_url = _tlv_map.get(0x192, b"").decode()
         if 0x165 in _tlv_map:
             data = Packet(_tlv_map[0x165])

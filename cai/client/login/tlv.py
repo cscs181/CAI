@@ -575,23 +575,92 @@ class TlvDecoder:
         return result
 
     @classmethod
-    def t108(cls, data: bytes) -> Dict[str, Any]:
-        return {"ksid": data}
-
-    @classmethod
     def t113(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 113 data.
+
+        Data:
+            * uin (int): user QQ number.
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t113
+        """
         return {"uin": struct.unpack_from(">I", data)[0]}
 
     @classmethod
     def t119(cls, data: bytes) -> Dict[int, Any]:
+        """Tea decrypt tlv 119 data.
+
+        Tlv list:
+            * tlv 149: error message (optional).
+            * tlv 543:
+            * tlv 130: further decode.
+            * tlv 113: further decode.
+            * tlv 528:
+            * tlv 530:
+            * tlv 10d: tgt key.
+            * tlv 10e: st key.
+            * tlv 10a: tgt.
+            * tlv 114: st.
+            * tlv 11a: further decode.
+            * tlv 118: main display name.
+            * tlv 103: stwx web sig.
+            * tlv 108: ksid.
+            * tlv 102:
+            * tlv 10b:
+            * tlv 11c: ls key.
+            * tlv 120: skey.
+            * tlv 121: sig64.
+            * tlv 125: further decode.
+            * tlv 186: further decode.
+            * tlv 537: login extra data.
+            * tlv 169:
+            * tlv 167:
+            * tlv 10c:
+            * tlv 106: encrypted a1.
+            * tlv 16a: no pic sig.
+            * tlv 531: further decode.
+            * tlv 136: vkey.
+            * tlv 132: access token.
+            * tlv 143: d2.
+            * tlv 305: d2 key.
+            * tlv 164: sid.
+            * tlv 171: aq sig.
+            * tlv 512: ps key.
+            * tlv 16d: super key.
+            * tlv 199: further decode.
+            * tlv 200: further decode.
+            * tlv 203: pfkey.
+            * tlv 317: da2.
+            * tlv 133: wt session ticket.
+            * tlv 134: wt session ticket key.
+            * tlv 322: device token.
+            * tlv 11f: futher decode. change time and tk_pri.
+            * tlv 138: further decode. a2, lskey, skey, vkey, a8, stweb, d2, sid change time.
+            * tlv 11d: further decode. st and stkey.
+
+        Note:
+            Source: oicq.wlogin_sdk.request.oicq_request.d
+        """
         data = qqtea_decrypt(data, DEVICE.tgtgt)
         result = cls.decode(data, offset=2)
         return result
 
     @classmethod
     def t11a(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 11a data.
+
+        Data:
+            * face (bytes(2))
+            * age (int)
+            * gender (int)
+            * nick (str)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t11a
+        """
         data_ = Packet(data)
         return {
+            "face": data_.read_bytes(2),
             "age": data_.read_uint8(2),
             "gender": data_.read_uint8(3),
             "nick": data_.read_bytes(data_.read_uint8(4), 5).decode()
@@ -599,6 +668,15 @@ class TlvDecoder:
 
     @classmethod
     def t125(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 125 data.
+
+        Data:
+            * open_id (bytes)
+            * open_key (bytes)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t125
+        """
         data_ = Packet(data)
         offset = 0
         id_length = data_.read_uint16(offset)
@@ -611,8 +689,20 @@ class TlvDecoder:
 
     @classmethod
     def t130(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 130 data.
+
+        Data:
+            * time_diff (int): time difference between server and local.
+            * ip_address (bytes(4)): may be server ip
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t130
+        """
         data_ = Packet(data)
-        return {"time_diff": data_.read_int32(), "t149": data_.read_bytes(4)}
+        return {
+            "time_diff": data_.read_int32() - int(time.time()),
+            "ip_address": data_.read_bytes(4)
+        }
 
     # @classmethod
     # def t138(cls, data: bytes) -> Dict[str, Any]:
@@ -620,15 +710,42 @@ class TlvDecoder:
 
     @classmethod
     def t161(cls, data: bytes) -> Dict[int, bytes]:
+        """Decode tlv 161 data.
+
+        Tlv list:
+            * tlv 172: rollback sig.
+            * tlv 173: further decode.
+            * tlv 17f: further decode.
+
+        Note:
+            Source: oicq.wlogin_sdk.request.oicq_request.a
+        """
         result = cls.decode(data, offset=2)
         return result
 
     @classmethod
     def t186(cls, data: bytes) -> Dict[str, Any]:
-        return {"pwd_flag": data[0] == bytes([1])}
+        """Decode tlv 186 data.
+
+        Data:
+            * pwd_flag (bool)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t186
+        """
+        return {"pwd_flag": data[1] == bytes([1])}
 
     @classmethod
     def t199(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 199 data.
+
+        Data:
+            * open_id (bytes)
+            * pay_token (bytes)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t199
+        """
         data_ = Packet(data)
         offset = 0
         id_length = data_.read_uint16(offset)
@@ -641,6 +758,15 @@ class TlvDecoder:
 
     @classmethod
     def t200(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 200 data.
+
+        Data:
+            * pf (bytes)
+            * pf_key (bytes)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t200
+        """
         data_ = Packet(data)
         offset = 0
         pf_length = data_.read_uint16(offset)
@@ -683,6 +809,17 @@ class TlvDecoder:
 
     @classmethod
     def t531(cls, data: bytes) -> Dict[str, Any]:
+        """Tea decrypt tlv 119 data.
+
+        Tlv list:
+            * tlv 106: a1 part.
+            * tlv 10c: a1 part.
+            * tlv 16a: no pic sig.
+            * tlv 113:
+
+        Note:
+            Source: oicq.wlogin_sdk.request.oicq_request.d
+        """
         result = cls.decode(data)
         return {
             "a1": (result.get(0x106, b"") + result.get(0x10c, b"")) or None,

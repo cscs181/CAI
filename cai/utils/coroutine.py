@@ -54,7 +54,7 @@ class _ContextManager(Coroutine, Generic[TY, TS, TR]):
 
     async def __aexit__(
         self, exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        exc_value: Optional[BaseException], traceback: Optional[TracebackType]
     ):
-        await self._obj.__aexit__(exc_type, exc_val, exc_tb)
+        await self._obj.__aexit__(exc_type, exc_value, traceback)
         self._obj = None

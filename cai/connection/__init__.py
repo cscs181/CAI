@@ -55,7 +55,7 @@ class Connection:
 
     async def __aexit__(
         self, exc_type: Optional[Type[BaseException]],
-        exc_val: Optional[BaseException], exc_tb: Optional[TracebackType]
+        exc_value: Optional[BaseException], traceback: Optional[TracebackType]
     ) -> None:
         await self.close()
         return

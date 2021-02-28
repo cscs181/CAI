@@ -72,7 +72,7 @@ mock_protocol = unittest.mock.patch.object(
 
 with mock_device:
     with mock_protocol:
-        from cai.client.login import encode_login_request
+        from cai.client.login import encode_login_request9
 
 
 class TestEncodeLoginRequest(unittest.IsolatedAsyncioTestCase):
@@ -90,7 +90,7 @@ class TestEncodeLoginRequest(unittest.IsolatedAsyncioTestCase):
     def test_encode_login_request(self):
         self.log(logging.INFO, "test encode login request")
         # ensure encode has no error
-        packet = encode_login_request(
+        packet = encode_login_request9(
             10, bytes(16), bytes([0x02, 0xB0, 0x5B, 0x8B]), 123456,
             md5("123456".encode()).digest()
         )

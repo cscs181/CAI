@@ -27,10 +27,11 @@ DEVICE = get_device()
 APK_INFO = get_protocol()
 
 
-def encode_login_request(
-    seq: int, key: bytes, session_id: bytes, uin: int, password_md5: bytes
+def encode_login_request9(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
+    password_md5: bytes
 ):
-    """Build login request packet.
+    """Build main login request packet.
 
     command id: `0x810 = 2064`
 
@@ -44,7 +45,8 @@ def encode_login_request(
     Args:
         seq (int): Packet sequence.
         key (bytes): 16 bits key used to decode the response.
-        session_id (bytes): Session ID
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
         uin (int): User QQ number.
         password_md5 (bytes): User QQ password md5 hash.
 
@@ -74,10 +76,9 @@ def encode_login_request(
     GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
     GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
     CAN_WEB_VERIFY = 130  # oicq.wlogin_sdk.request.k.K
-    LOCAL_ID = 2052  # com.tencent.qqmini.minigame.GameConst.GAME_RUNTIME_MSG_GAME_ON_HIDE
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
     IP_BYTES: bytes = ipaddress.ip_address(DEVICE.ip_address).packed
     NETWORK_TYPE = (DEVICE.apn == "wifi") + 1
-    KSID = f"|{DEVICE.imei}|A8.2.7.27f6ea96".encode()
 
     data = Packet.build(
         struct.pack(">HH", SUB_COMMAND_ID, 23),  # packet num
@@ -141,7 +142,63 @@ def encode_login_request(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
     )
     sso_packet = CSsoBodyPacket.build(
-        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, KSID,
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+def encode_login_request20(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
+    g: bytes
+):
+    """Build device lock login request packet.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `20`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.p
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        t104 (bytes): T104 response data.
+        g (bytes): md5 of (guid + dpwd + t402)
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 20
+    COMMAND_NAME = "wtlogin.login"
+
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 4),  # packet num
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
+        TlvEncoder.t401(g)
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
         oicq_packet
     )
     # encrypted by 16-byte zero. Reference: `CSSOData::serialize`

@@ -294,6 +294,22 @@ class IncomingPacket:
     def parse_oicq_body(
         cls, data: Union[bytes, Packet], key: bytes, session_key: bytes
     ) -> bytes:
+        """Parse incoming OICQ packet.
+
+        Note:
+            Source: oicq.wlogin_sdk.request.oicq_request.b
+
+        Args:
+            data (Union[bytes, Packet]): OICQ data.
+            key (bytes): Random key.
+            session_key (bytes): Siginfo wt_session_ticket_key.
+
+        Raises:
+            ValueError: Flag error or unknown encrypt type.
+
+        Returns:
+            bytes: Decode data.
+        """
         if not isinstance(data, Packet):
             data = Packet(data)
 

@@ -21,6 +21,14 @@ Subpackages
 Submodules
 ----------
 
+cai.api module
+--------------
+
+.. automodule:: cai.api
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cai.exceptions module
 ---------------------
 

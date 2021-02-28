@@ -12,15 +12,19 @@ import time
 import struct
 import random
 from hashlib import md5
-from typing import List, Union
+from typing import Any, List, Dict, Union
 
-from rtea import qqtea_encrypt
+from rtea import qqtea_encrypt, qqtea_decrypt
 
+from cai.log import logger
 from .data_pb2 import DeviceInfo
 from cai.utils.binary import Packet
+from cai.settings.device import get_device
+
+DEVICE = get_device()
 
 
-class TlvBuilder:
+class TlvEncoder:
 
     # oicq/wlogin_sdk/tlv_type/tlv_t.java
     @classmethod
@@ -45,11 +49,18 @@ class TlvBuilder:
         return random.randint(0, 0xFFFFFFFF)
 
     @classmethod
-    def t1(cls, uin: int, server_time: int, ip: bytes) -> Packet:
+    def t1(
+        cls,
+        uin: int,
+        server_time: int,
+        ip: bytes,
+        ip_version: int = 1
+    ) -> Packet:
         return cls._pack_tlv(
             0x1,
             struct.pack(
-                ">HIII4sH", 1, cls._random_int16(), uin, server_time, ip, 0
+                ">HIII4sH", ip_version, cls._random_int32(), uin, server_time,
+                ip, 0
             )
         )
 
@@ -69,24 +80,32 @@ class TlvBuilder:
         app_id: int,
         app_client_version: int,
         uin: int,
+        _ping_version: int = 1,
+        _sso_version: int = 1536,
         unknown: int = 0
     ) -> Packet:
         return cls._pack_tlv(
             0x18,
             struct.pack(
-                ">HIIIIHH", 1, 1536, app_id, app_client_version, uin, unknown, 0
+                ">HIIIIHH", _ping_version, _sso_version, app_id,
+                app_client_version, uin, unknown, 0
             )
         )
 
     @classmethod
     def t100(
-        cls, sso_version: int, app_id: int, sub_app_id: int,
-        app_client_version: int, sigmap: int
+        cls,
+        sso_version: int,
+        app_id: int,
+        sub_app_id: int,
+        app_client_version: int,
+        sigmap: int,
+        _db_buf_ver: int = 1
     ) -> Packet:
         return cls._pack_tlv(
             0x100,
             struct.pack(
-                ">HIIIII", 1, sso_version, app_id, sub_app_id,
+                ">HIIIII", _db_buf_ver, sso_version, app_id, sub_app_id,
                 app_client_version, sigmap
             )
         )
@@ -97,9 +116,19 @@ class TlvBuilder:
 
     @classmethod
     def t106(
-        cls, sso_version: int, app_id: int, sub_app_id: int,
-        app_client_version: int, uin: int, salt: int, ip: bytes,
-        password_md5: bytes, guid_available: bool, guid: bytes, tgtgt_key: bytes
+        cls,
+        sso_version: int,
+        app_id: int,
+        sub_app_id: int,
+        app_client_version: int,
+        uin: int,
+        salt: int,
+        password_md5: bytes,
+        guid: bytes,
+        tgtgt_key: bytes,
+        ip: bytes = bytes(4),
+        save_password: bool = True,
+        login_type: int = 1  # password login
     ) -> Packet:
         key = md5(
             Packet.build(
@@ -117,37 +146,35 @@ class TlvBuilder:
                 app_client_version,
                 uin or salt
             ),
-            struct.pack(">I", int(time.time() * 1000)),
+            struct.pack(">I", int(time.time())),
             ip,
-            struct.pack(">B", 1),  # save password,
+            struct.pack(">?", save_password),
             struct.pack(">16s", password_md5),
             tgtgt_key,
-            struct.pack(">I?", 0, guid_available),
+            struct.pack(">I?", 0, bool(guid)),
             guid or struct.pack(
                 ">IIII", cls._random_int32(), cls._random_int32(),
                 cls._random_int32(), cls._random_int32()
             ),
-            struct.pack(
-                ">II",
-                sub_app_id,
-                1  # password login
-            ),
+            struct.pack(">II", sub_app_id, login_type),
             cls._pack_lv(str(uin).encode()),
-            # struct.pack(">H", 0)  # not found in source
+            struct.pack(">H", 0)  # not found in source
         )
 
-        data = qqtea_encrypt(body, key)
+        data = qqtea_encrypt(bytes(body), key)
         return cls._pack_tlv(0x106, data)
 
     @classmethod
     def t107(
         cls,
         pic_type: int = 0,
-        i1: int = 0,
-        i2: int = 0,
-        i3: int = 1
+        cap_type: int = 0,
+        pic_size: int = 0,
+        ret_type: int = 1
     ) -> Packet:
-        return cls._pack_tlv(0x107, struct.pack(">HBHB", pic_type, i1, i2, i3))
+        return cls._pack_tlv(
+            0x107, struct.pack(">HBHB", pic_type, cap_type, pic_size, ret_type)
+        )
 
     @classmethod
     def t108(cls, ksid: str) -> Packet:
@@ -162,28 +189,39 @@ class TlvBuilder:
         return cls._pack_tlv(0x10A, arr)
 
     @classmethod
+    def t112(cls, non_number_uin: bytes) -> Packet:
+        return cls._pack_tlv(0x112, non_number_uin)
+
+    @classmethod
     def t116(
         cls,
         bitmap: int,
         sub_sigmap: int,
-        sub_app_id_list: List[int] = [1600000226]
+        sub_app_id_list: List[int] = [1600000226],
+        _ver: int = 0
     ) -> Packet:
         return cls._pack_tlv(
             0x116,
-            struct.pack(">BIIB", 0, bitmap, sub_sigmap, len(sub_app_id_list)),
-            *[struct.pack(">I", id) for id in sub_app_id_list]
+            struct.pack(
+                ">BIIB", _ver, bitmap, sub_sigmap, len(sub_app_id_list)
+            ), *[struct.pack(">I", id) for id in sub_app_id_list]
         )
 
     @classmethod
     def t124(
-        cls, os_type: bytes, os_version: bytes, network_type: int,
-        sim_info: bytes, apn: bytes
+        cls,
+        os_type: bytes,
+        os_version: bytes,
+        network_type: int,
+        sim_info: bytes,
+        apn: bytes,
+        address: bytes = bytes()
     ) -> Packet:
         return cls._pack_tlv(
             0x124, cls._pack_lv_limited(os_type, 16),
             cls._pack_lv_limited(os_version, 16),
             struct.pack(">H", network_type), cls._pack_lv_limited(sim_info, 16),
-            cls._pack_lv_limited(bytes(0), 16), cls._pack_lv_limited(apn, 16)
+            cls._pack_lv_limited(address, 32), cls._pack_lv_limited(apn, 16)
         )
 
     @classmethod
@@ -192,6 +230,25 @@ class TlvBuilder:
         is_guid_changed: bool, guid_flag: int, build_model: bytes, guid: bytes,
         build_brand: bytes
     ) -> Packet:
+        """
+        GUID_SRC:
+            * 0: 初始值
+            * 1: 以前保存的文件
+            * 17: 以前没保存但现在生成成功
+            * 20: 以前没保存且现在生成失败
+
+        GUID_CHANGE_FLAG:
+            * mac != current mac: GUID_CHANGE_FLAG |= 0x1
+            * android_id != current android_id: GUID_CHANGE_FLAG |= 0x2
+            * guid != current guid: GUID_CHANGE_FLAG |= 0x4
+
+        .. code-block:: python
+
+            GUID_FLAG = 0
+            GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
+            GUID_FLAG |= GUID_CHANGE_FLAG << 8 & 0xFF00
+
+        """
         return cls._pack_tlv(
             0x128,
             struct.pack(
@@ -203,16 +260,22 @@ class TlvBuilder:
         )
 
     @classmethod
-    def t141(cls, sim_info: bytes, network_type: int, apn: bytes) -> Packet:
+    def t141(
+        cls,
+        sim_info: bytes,
+        network_type: int,
+        apn: bytes,
+        _version: int = 1
+    ) -> Packet:
         return cls._pack_tlv(
-            0x141, struct.pack(">H", 1), cls._pack_lv(sim_info),
+            0x141, struct.pack(">H", _version), cls._pack_lv(sim_info),
             struct.pack(">H", network_type), cls._pack_lv(apn)
         )
 
     @classmethod
-    def t142(cls, apk_id: str) -> Packet:
+    def t142(cls, apk_id: str, _version: int = 0) -> Packet:
         return cls._pack_tlv(
-            0x142, struct.pack(">H", 0),
+            0x142, struct.pack(">H", _version),
             cls._pack_lv_limited(apk_id.encode(), 32)
         )
 
@@ -233,20 +296,27 @@ class TlvBuilder:
         return cls._pack_tlv(
             0x144,
             qqtea_encrypt(
-                Packet.build(
-                    struct.pack(">H", 5), cls.t109(imei),
-                    cls.t52d(
-                        bootloader, proc_version, codename, incremental,
-                        fingerprint, boot_id, android_id, baseband,
-                        inner_version
-                    ),
-                    cls.t124(os_type, os_version, network_type, sim_info, apn),
-                    cls.t128(
-                        is_guid_from_file_null, is_guid_available,
-                        is_guid_changed, guid_flag, build_model, guid,
-                        build_brand
-                    ), cls.t16e(build_model)
-                ), tgtgt_key
+                bytes(
+                    Packet.build(
+                        struct.pack(">H", 5),  # tlv count
+                        cls.t109(imei),
+                        cls.t52d(
+                            bootloader, proc_version, codename, incremental,
+                            fingerprint, boot_id, android_id, baseband,
+                            inner_version
+                        ),
+                        cls.t124(
+                            os_type, os_version, network_type, sim_info, apn
+                        ),
+                        cls.t128(
+                            is_guid_from_file_null, is_guid_available,
+                            is_guid_changed, guid_flag, build_model, guid,
+                            build_brand
+                        ),
+                        cls.t16e(build_model)
+                    )
+                ),
+                tgtgt_key
             )
         )
 
@@ -273,12 +343,16 @@ class TlvBuilder:
         return cls._pack_tlv(0x166, struct.pack(">c", image_type))
 
     @classmethod
-    def t16a(cls, arr: bytes) -> Packet:
-        return cls._pack_tlv(0x16A, arr)
+    def t16a(cls, no_pic_sig: bytes) -> Packet:
+        return cls._pack_tlv(0x16A, no_pic_sig)
 
     @classmethod
     def t16e(cls, build_model: bytes) -> Packet:
         return cls._pack_tlv(0x16E, build_model)
+
+    @classmethod
+    def t172(cls, rollback_sig: bytes) -> Packet:
+        return cls._pack_tlv(0x172, rollback_sig)
 
     @classmethod
     def t174(cls, data: bytes) -> Packet:
@@ -297,7 +371,11 @@ class TlvBuilder:
 
     @classmethod
     def t17c(cls, code: str) -> Packet:
-        return cls._pack_tlv(0x17C, code.encode())
+        return cls._pack_tlv(0x17C, cls._pack_lv(code.encode()))
+
+    @classmethod
+    def t185(cls) -> Packet:
+        return cls._pack_tlv(0x185, bytes([1, 1]))
 
     @classmethod
     def t187(cls, mac_address: bytes) -> Packet:
@@ -308,8 +386,8 @@ class TlvBuilder:
         return cls._pack_tlv(0x188, md5(android_id).digest())
 
     @classmethod
-    def t191(cls, k: int) -> Packet:
-        return cls._pack_tlv(0x191, struct.pack(">B", k))
+    def t191(cls, can_web_verify: int) -> Packet:
+        return cls._pack_tlv(0x191, struct.pack(">B", can_web_verify))
 
     @classmethod
     def t193(cls, ticket: str) -> Packet:
@@ -320,12 +398,29 @@ class TlvBuilder:
         return cls._pack_tlv(0x194, imsi_md5)
 
     @classmethod
-    def t197(cls) -> Packet:
-        return cls._pack_tlv(0x197, bytes(1))
+    def t197(cls, data: bytes = bytes(1)) -> Packet:
+        return cls._pack_tlv(0x197, data)
 
     @classmethod
     def t198(cls) -> Packet:
         return cls._pack_tlv(0x198, bytes(1))
+
+    @classmethod
+    def t19e(cls, value: int = 1) -> Packet:
+        return cls._pack_tlv(0x19E, struct.pack(">HB", 1, value))
+
+    @classmethod
+    def t201(
+        cls,
+        channel_id: bytes,
+        client_type: bytes,
+        n: bytes,
+        l: bytes = bytes()
+    ) -> Packet:
+        return cls._pack_tlv(
+            0x201, cls._pack_lv(l), cls._pack_lv(channel_id),
+            cls._pack_lv(client_type), cls._pack_lv(n)
+        )
 
     @classmethod
     def t202(cls, wifi_bssid: bytes, wifi_ssid: bytes) -> Packet:
@@ -335,48 +430,59 @@ class TlvBuilder:
         )
 
     @classmethod
-    def t400(
-        cls, g: bytes, uin: int, guid: bytes, dpwd: bytes, j2: int, j3: int,
-        rand_seed: bytes
-    ) -> Packet:
-        data = Packet.build(
-            struct.pack(">HQ", 1, uin), guid, dpwd,
-            struct.pack(">III", j2, j3, int(time.time())), rand_seed
-        )
-        return cls._pack_tlv(0x400, qqtea_encrypt(data, g))
+    def t318(cls, tgt_qr: bytes) -> Packet:
+        return cls._pack_tlv(0x318, tgt_qr)
 
     @classmethod
-    def t401(cls, d: bytes) -> Packet:
-        return cls._pack_tlv(0x401, d)
+    def t400(
+        cls,
+        g: bytes,
+        uin: int,
+        guid: bytes,
+        dpwd: bytes,
+        app_id: int,
+        sub_app_id: int,
+        rand_seed: bytes,
+        _version: int = 1
+    ) -> Packet:
+        data = Packet.build(
+            struct.pack(">HQ", _version, uin), guid, dpwd,
+            struct.pack(">III", app_id, sub_app_id, int(time.time())), rand_seed
+        )
+        return cls._pack_tlv(0x400, qqtea_encrypt(bytes(data), g))
+
+    @classmethod
+    def t401(cls, data: bytes) -> Packet:
+        return cls._pack_tlv(0x401, data)
 
     @classmethod
     def t511(cls, domains: List[str]) -> Packet:
         _domains = [domain for domain in domains if domain]
 
-        data: List[bytes] = []
+        data: List[Union[bytes, Packet]] = []
         for domain in _domains:
-            index1 = domain.index("(")
-            index2 = domain.index(")")
+            index1 = domain.find("(")
+            index2 = domain.find(")")
             if index1 != 0 or index2 <= 0:
                 data.append(bytes([1]))
-                data.append(domain.encode())
+                data.append(cls._pack_lv(domain.encode()))
             else:
                 try:
                     i = int(domain[index1 + 1:index2])
                     data.append(
                         struct.pack(
                             ">B",
-                            (((i & 134217728) > 0) << 1) | ((1048576 & i) > 0)
+                            (((i & 0x8000000) > 0) << 1) | ((0x100000 & i) > 0)
                         )
                     )
-                    data.append(domain[index2 + 1:].encode())
+                    data.append(cls._pack_lv(domain[index2 + 1:].encode()))
                 except Exception:
                     pass
         return cls._pack_tlv(0x511, struct.pack(">H", len(_domains)), *data)
 
     @classmethod
-    def t516(cls) -> Packet:
-        return cls._pack_tlv(0x516, struct.pack(">I", 0))
+    def t516(cls, source_type: int = 0) -> Packet:
+        return cls._pack_tlv(0x516, struct.pack(">I", source_type))
 
     @classmethod
     def t521(cls, product_type: int = 0) -> Packet:
@@ -387,11 +493,19 @@ class TlvBuilder:
         return cls._pack_tlv(0x525, struct.pack(">H", 1), t536)
 
     @classmethod
+    def t52c(cls) -> Packet:
+        return cls._pack_tlv(0x52C, struct.pack(">BQ", 1, -1))
+
+    @classmethod
     def t52d(
         cls, bootloader: str, proc_version: str, codename: str,
         incremental: str, fingerprint: str, boot_id: str, android_id: str,
         baseband: str, inner_version: str
     ) -> Packet:
+        """
+        Note:
+            Source: oicq.wlogin_sdk.tools.util#get_android_dev_info
+        """
         device_info = DeviceInfo(
             bootloader=bootloader,
             proc_version=proc_version,
@@ -406,5 +520,308 @@ class TlvBuilder:
         return cls._pack_tlv(0x52D, device_info.SerializeToString())
 
     @classmethod
-    def t536(cls, login_extra_data: bytes) -> Packet:
-        return cls._pack_tlv(0x536, login_extra_data)
+    def t536(cls, login_extra_data: List[bytes]) -> Packet:
+        return cls._pack_tlv(
+            0x536, struct.pack(">BB", 1, len(login_extra_data)),
+            *login_extra_data
+        )
+
+    @classmethod
+    def t544(cls) -> Packet:
+        return cls._pack_tlv(0x544, bytes([0, 0, 0, 11]))
+
+
+class TlvDecoder:
+
+    @classmethod
+    def decode(
+        cls,
+        data: Union[bytes, Packet],
+        offset: int = 0,
+        tag_size: int = 2
+    ) -> Dict[int, Any]:
+        if not isinstance(data, Packet):
+            data = Packet(data)
+
+        result: Dict[int, bytes] = {}
+        while offset + tag_size <= len(data):
+            tag: int
+            if tag_size == 1:
+                tag = data.read_int8(offset)
+                offset += 1
+            elif tag_size == 2:
+                tag = data.read_int16(offset)
+                offset += 2
+            elif tag_size == 4:
+                tag = data.read_int32(offset)
+                offset += 4
+            else:
+                raise ValueError(
+                    f"Invalid tag size. Expected 1 / 2 / 4, got {tag_size}."
+                )
+
+            if tag == 255:
+                return result
+
+            length = data.read_uint16(offset)
+            offset += 2
+            value = data.read_bytes(length, offset)
+            offset += length
+            futher_decode = getattr(cls, f"t{tag:x}", None)
+            if futher_decode:
+                value = futher_decode(cls, value)
+            result[tag] = value
+
+        return result
+
+    @classmethod
+    def t113(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 113 data.
+
+        Data:
+            * uin (int): user QQ number.
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t113
+        """
+        return {"uin": struct.unpack_from(">I", data)[0]}
+
+    @classmethod
+    def t119(cls, data: bytes) -> Dict[int, Any]:
+        """Tea decrypt tlv 119 data.
+
+        Tlv list:
+            * tlv 149: error message (optional).
+            * tlv 543:
+            * tlv 130: further decode.
+            * tlv 113: further decode.
+            * tlv 528:
+            * tlv 530:
+            * tlv 10d: tgt key.
+            * tlv 10e: st key.
+            * tlv 10a: tgt.
+            * tlv 114: st.
+            * tlv 11a: further decode.
+            * tlv 118: main display name.
+            * tlv 103: stwx web sig.
+            * tlv 108: ksid.
+            * tlv 102:
+            * tlv 10b:
+            * tlv 11c: ls key.
+            * tlv 120: skey.
+            * tlv 121: sig64.
+            * tlv 125: further decode.
+            * tlv 186: further decode.
+            * tlv 537: login extra data.
+            * tlv 169:
+            * tlv 167:
+            * tlv 10c:
+            * tlv 106: encrypted a1.
+            * tlv 16a: no pic sig.
+            * tlv 531: further decode.
+            * tlv 136: vkey.
+            * tlv 132: access token.
+            * tlv 143: d2.
+            * tlv 305: d2 key.
+            * tlv 164: sid.
+            * tlv 171: aq sig.
+            * tlv 512: ps key.
+            * tlv 16d: super key.
+            * tlv 199: further decode.
+            * tlv 200: further decode.
+            * tlv 203: pfkey.
+            * tlv 317: da2.
+            * tlv 133: wt session ticket.
+            * tlv 134: wt session ticket key.
+            * tlv 322: device token.
+            * tlv 11f: futher decode. change time and tk_pri.
+            * tlv 138: further decode. a2, lskey, skey, vkey, a8, stweb, d2, sid change time.
+            * tlv 11d: further decode. st and stkey.
+
+        Note:
+            Source: oicq.wlogin_sdk.request.oicq_request.d
+        """
+        data = qqtea_decrypt(data, DEVICE.tgtgt)
+        result = cls.decode(data, offset=2)
+        return result
+
+    @classmethod
+    def t11a(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 11a data.
+
+        Data:
+            * face (bytes(2))
+            * age (int)
+            * gender (int)
+            * nick (str)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t11a
+        """
+        data_ = Packet(data)
+        return {
+            "face": data_.read_bytes(2),
+            "age": data_.read_uint8(2),
+            "gender": data_.read_uint8(3),
+            "nick": data_.read_bytes(data_.read_uint8(4), 5).decode()
+        }
+
+    @classmethod
+    def t125(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 125 data.
+
+        Data:
+            * open_id (bytes)
+            * open_key (bytes)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t125
+        """
+        data_ = Packet(data)
+        offset = 0
+        id_length = data_.read_uint16(offset)
+        offset += 2 + id_length
+        key_length = data_.read_uint16(offset)
+        return {
+            "open_id": data_.read_bytes(id_length, 2),
+            "open_key": data_.read_bytes(key_length, offset + 2)
+        }
+
+    @classmethod
+    def t130(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 130 data.
+
+        Data:
+            * time_diff (int): time difference between server and local.
+            * ip_address (bytes(4)): may be server ip
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t130
+        """
+        data_ = Packet(data)
+        return {
+            "time_diff": data_.read_int32() - int(time.time()),
+            "ip_address": data_.read_bytes(4)
+        }
+
+    # @classmethod
+    # def t138(cls, data: bytes) -> Dict[str, Any]:
+    #     return {}
+
+    @classmethod
+    def t161(cls, data: bytes) -> Dict[int, bytes]:
+        """Decode tlv 161 data.
+
+        Tlv list:
+            * tlv 172: rollback sig.
+            * tlv 173: further decode.
+            * tlv 17f: further decode.
+
+        Note:
+            Source: oicq.wlogin_sdk.request.oicq_request.a
+        """
+        result = cls.decode(data, offset=2)
+        return result
+
+    @classmethod
+    def t186(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 186 data.
+
+        Data:
+            * pwd_flag (bool)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t186
+        """
+        return {"pwd_flag": data[1] == bytes([1])}
+
+    @classmethod
+    def t199(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 199 data.
+
+        Data:
+            * open_id (bytes)
+            * pay_token (bytes)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t199
+        """
+        data_ = Packet(data)
+        offset = 0
+        id_length = data_.read_uint16(offset)
+        offset += 2 + id_length
+        token_length = data_.read_uint16(offset)
+        return {
+            "open_id": data_.read_bytes(id_length, 2),
+            "pay_token": data_.read_bytes(token_length, offset + 2)
+        }
+
+    @classmethod
+    def t200(cls, data: bytes) -> Dict[str, Any]:
+        """Decode tlv 200 data.
+
+        Data:
+            * pf (bytes)
+            * pf_key (bytes)
+
+        Note:
+            Source: oicq.wlogin_sdk.tlv_type.tlv_t200
+        """
+        data_ = Packet(data)
+        offset = 0
+        pf_length = data_.read_uint16(offset)
+        offset += 2 + pf_length
+        key_length = data_.read_uint16(offset)
+        return {
+            "pf": data_.read_bytes(pf_length, 2),
+            "pf_key": data_.read_bytes(key_length, offset + 2)
+        }
+
+    @classmethod
+    def t512(cls, data: bytes) -> Dict[str, Any]:
+        data_ = Packet(data)
+        offset = 0
+        length = data_.read_uint16()
+        offset += 2
+
+        ps_key_map: Dict[str, bytes] = {}
+        pt4_token_map: Dict[str, bytes] = {}
+        for i in range(length):
+            domain_length = data_.read_uint16(offset)
+            offset += 2
+            domain = data_.read_bytes(domain_length, offset).decode()
+            offset += domain_length
+
+            key_length = data_.read_uint16(offset)
+            offset += 2
+            ps_key = data_.read_bytes(key_length, offset)
+            offset += key_length
+
+            token_length = data_.read_uint16(offset)
+            offset += 2
+            ps4_token = data_.read_bytes(token_length, offset)
+            offset += token_length
+
+            ps_key_map[domain] = ps_key
+            pt4_token_map[domain] = ps4_token
+
+        return {"ps_key_map": ps_key_map, "pt4_token_map": pt4_token_map}
+
+    @classmethod
+    def t531(cls, data: bytes) -> Dict[str, Any]:
+        """Tea decrypt tlv 119 data.
+
+        Tlv list:
+            * tlv 106: a1 part.
+            * tlv 10c: a1 part.
+            * tlv 16a: no pic sig.
+            * tlv 113:
+
+        Note:
+            Source: oicq.wlogin_sdk.request.oicq_request.d
+        """
+        result = cls.decode(data)
+        return {
+            "a1": (result.get(0x106, b"") + result.get(0x10c, b"")) or None,
+            "no_pic_sig": result.get(0x16a)
+        }

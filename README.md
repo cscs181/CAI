@@ -1,6 +1,8 @@
 <p align="center">
-  <a href="https://v2.nonebot.dev/"><img src="https://raw.githubusercontent.com/yanyongyu/CAI/master/docs/assets/logo_text.png" width="900" height="200" alt="CAI"></a>
-  _✨ Yet Another Bot Framework for Tencent QQ Written in Python ✨_
+  <a href="#"><img src="https://raw.githubusercontent.com/yanyongyu/CAI/master/docs/assets/logo_text.png" width="900" height="200" alt="CAI"></a>
+
+_✨ Yet Another Bot Framework for Tencent QQ Written in Python ✨_
+
 </p>
 
 ---

@@ -17,10 +17,10 @@ cai.client.login.data\_pb2 module
    :undoc-members:
    :show-inheritance:
 
-cai.client.login.oicq\_packet module
-------------------------------------
+cai.client.login.oicq module
+----------------------------
 
-.. automodule:: cai.client.login.oicq_packet
+.. automodule:: cai.client.login.oicq
    :members:
    :undoc-members:
    :show-inheritance:

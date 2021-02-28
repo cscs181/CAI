@@ -10,7 +10,7 @@ This module is used to get server list and choose the best one.
 import asyncio
 import http.client
 from io import BytesIO
-from typing import List, Union, Tuple, Iterable, Optional
+from typing import List, Union, Tuple, Iterable, Optional, Container
 
 from jce import JceStruct, JceField, types
 from rtea import qqtea_encrypt, qqtea_decrypt
@@ -229,9 +229,9 @@ async def get_sso_list() -> SsoServerResponse:
             b"Content-Length: " + str(len(buffer)).encode() + b"\r\n"
             b"\r\n" + buffer
         )
-        conn._write_bytes(query)
-        conn._write_eof()
-        resp_bytes = await conn._read_all()
+        conn.write_bytes(query)
+        conn.write_eof()
+        resp_bytes = await conn.read_all()
         response = http.client.HTTPResponse(
             _FakeSocket(resp_bytes)  # type: ignore
         )
@@ -263,22 +263,29 @@ async def quality_test(
     Returns:
         List[Tuple[:obj:`.SsoServer`, float]]: List of server and latency in tuple.
     """
-    tasks = [tcp_latency_test(server.host, server.port) for server in servers]
+    servers_ = list(servers)
+    tasks = [tcp_latency_test(server.host, server.port) for server in servers_]
     result: List[Union[float, Exception]
                 ] = await asyncio.gather(*tasks, return_exceptions=True)
     success_servers = [
         (server, latency)
-        for server, latency in zip(servers, result)
+        for server, latency in zip(servers_, result)
         if isinstance(latency, float) and latency < threshold
     ]
     return success_servers
 
 
-async def get_sso_server(cache: bool = True) -> SsoServer:
+async def get_sso_server(
+    cache: bool = True,
+    cache_server_list: bool = True,
+    exclude: Optional[Container[str]] = None
+) -> SsoServer:
     """Get the best sso server
 
     Args:
-        cache (bool, optional): Using cache or not. Defaults to True.
+        cache (bool, optional): Using cache server or not. Defaults to True.
+        cache_server_list (bool, optional): Using cache server list or not. Defaults to True.
+        exclude (List[str], optional): List of servers' ip want to be excluded
 
     Returns:
         :obj:`.SsoServer`: The best server with smallest latency.
@@ -286,14 +293,19 @@ async def get_sso_server(cache: bool = True) -> SsoServer:
     global _cached_server
     if cache and _cached_server:
         return _cached_server
-    if cache and _cached_servers:
+
+    if cache_server_list and _cached_servers:
         servers = _cached_servers
     else:
         sso_list = await get_sso_list()
         servers = [*sso_list.socket_v4_mobile, *sso_list.socket_v4_wifi]
         _cached_servers.clear()
         _cached_servers.extend(servers)
-    success_servers = await quality_test(servers)
+
+    exclude_server = exclude or []
+    success_servers = await quality_test(
+        server for server in servers if server.host not in exclude_server
+    )
     success_servers.sort(key=lambda x: x[1])
     _cached_server = success_servers[0][0]
     return _cached_server

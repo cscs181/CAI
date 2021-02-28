@@ -94,6 +94,10 @@ class DeviceInfo(JsonableDataclass):
     def tgtgt(self) -> bytes:
         return bytes.fromhex(self._tgtgt_md5)
 
+    @tgtgt.setter
+    def tgtgt(self, key: bytes):
+        self._tgtgt_md5 = key.hex()
+
     @property
     def guid(self) -> bytes:
         if not self._guid_md5:
@@ -136,7 +140,7 @@ def new_boot_id() -> str:
 
 
 def new_proc_version() -> str:
-    return f"Linux version 4.19.71-{hex(random.randint(0x10000000, 0xffffffff))[2:]} (android-build@github.com)"
+    return f"Linux version 4.19.71-{random.randint(0x10000000, 0xffffffff):x} (android-build@github.com)"
 
 
 def new_ip_address() -> str:

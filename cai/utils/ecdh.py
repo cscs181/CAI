@@ -54,5 +54,5 @@ class ECDH:
                 len(cls.client_public_key)
             ),
             cls.client_public_key,
-            qqtea_encrypt(data, cls.share_key)
+            qqtea_encrypt(bytes(data), cls.share_key)
         )

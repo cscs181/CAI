@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
 from cai.client import Client
-from cai.exceptions import ClientNotAvailable
+from cai.exceptions import ApiException, ClientNotAvailable
 
 _clients: Dict[int, Client] = {}
 
@@ -34,6 +34,16 @@ def _get_client(uin: Optional[int] = None) -> Client:
         return _clients[uin]
 
 
+async def close(uin: Optional[int] = None) -> None:
+    """Close an existing client.
+
+    Args:
+        uin (Optional[int], optional): Account of the client want to close. Defaults to None.
+    """
+    client = _get_client(uin)
+    await client.close()
+
+
 async def login(uin: int, password_md5: bytes) -> Client:
     """Create a new client (or use an existing one) and login.
 
@@ -54,14 +64,44 @@ async def login(uin: int, password_md5: bytes) -> Client:
             raise RuntimeError(f"Client {uin} already connected!")
         client._password_md5 = password_md5
     client = Client(uin, password_md5)
+    _clients[uin] = client
     await client.connect()
     try:
         await client.login()
+    except ApiException:
+        raise
     except Exception:
         await client.close()
         raise
-    _clients[uin] = client
     return client
 
 
-__all__ = ["login"]
+async def submit_captcha(
+    captcha: str, captcha_sign: bytes, uin: Optional[int] = None
+) -> bool:
+    client = _get_client(uin)
+    try:
+        await client.submit_captcha(captcha, captcha_sign)
+    except ApiException:
+        raise
+    except Exception:
+        await client.close()
+        raise
+    return True
+
+
+async def submit_slider_ticket(ticket: str, uin: Optional[int] = None) -> bool:
+    client = _get_client(uin)
+    try:
+        await client.submit_slider_ticket(ticket)
+    except ApiException:
+        raise
+    except Exception:
+        await client.close()
+        raise
+    return True
+
+
+__all__ = [
+    "_get_client", "close", "login", "submit_captcha", "submit_slider_ticket"
+]

@@ -65,9 +65,10 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t2(cls, result: bytes, sign: bytes) -> Packet:
+    def t2(cls, captcha: bytes, sign: bytes) -> Packet:
         return cls._pack_tlv(
-            0x2, struct.pack(">H", 0), cls._pack_lv(result), cls._pack_lv(sign)
+            0x2, struct.pack(">H", 0), cls._pack_lv(captcha),
+            cls._pack_lv(sign)
         )
 
     @classmethod

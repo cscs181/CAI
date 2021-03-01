@@ -18,6 +18,7 @@ from typing import Any, List, Dict, Union, Optional, Callable
 from rtea import qqtea_decrypt
 
 from .login import (
+    encode_login_request2_captcha, encode_login_request2_slider,
     encode_login_request9, encode_login_request20, decode_login_response,
     OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen, DeviceLocked,
     TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
@@ -151,7 +152,7 @@ class Client:
         await self.disconnect()
         await self.connect(_server)
 
-    async def close(self):
+    async def close(self) -> None:
         await self.disconnect()
 
     @property
@@ -206,6 +207,146 @@ class Client:
                 # TODO: handle exception
                 logger.exception(e)
 
+    async def _handle_login_response(
+        self, response: Event, try_times: int = 1
+    ) -> LoginSuccess:
+        if not isinstance(response, OICQResponse):
+            raise RuntimeError("Invalid login response type!")
+
+        if not isinstance(response, UnknownLoginStatus):
+            raise ApiResponseError(
+                response.uin, response.seq, response.ret_code,
+                response.command_name
+            )
+
+        if response.t402:
+            self._dpwd = (
+                "".join(
+                    secrets.choice(string.ascii_letters + string.digits)
+                    for _ in range(16)
+                )
+            ).encode()
+            self._t402 = response.t402
+            self._g = md5(DEVICE.guid + self._dpwd + self._t402).digest()
+
+        if isinstance(response, LoginSuccess):
+            self._t150 = response.t150 or self._t150
+            self._rollback_sig = response.rollback_sig or self._rollback_sig
+            self._rand_seed = response.rand_seed or self._rand_seed
+            self._time_diff = response.time_diff or self._time_diff
+            self._ip_address = response.ip_address or self._ip_address
+            self._t528 = response.t528 or self._t528
+            self._t530 = response.t530 or self._t530
+            self._ksid = response.ksid or self._ksid
+            self._pwd_flag = response.pwd_flag or self._pwd_flag
+            self._nick = response.nick or self._nick
+            self._age = response.age or self._age
+            self._gender = response.gender or self._gender
+
+            self._siginfo.tgt = response.tgt or self._siginfo.tgt
+            self._siginfo.tgt_key = response.tgt_key or self._siginfo.tgt_key
+            self._siginfo.srm_token = response.srm_token or self._siginfo.srm_token
+            self._siginfo.t133 = response.t133 or self._siginfo.t133
+            self._siginfo.encrypted_a1 = (
+                response.encrypted_a1 or self._siginfo.encrypted_a1
+            )
+            self._siginfo.user_st_key = response.user_st_key or self._siginfo.user_st_key
+            self._siginfo.user_st_web_sig = (
+                response.user_st_web_sig or self._siginfo.user_st_web_sig
+            )
+            self._siginfo.s_key = response.s_key or self._siginfo.s_key
+            self._siginfo.s_key_expire_time = (
+                response.s_key_expire_time or self._siginfo.s_key_expire_time
+            )
+            self._siginfo.d2 = response.d2 or self._siginfo.d2
+            self._siginfo.d2key = response.d2key or self._siginfo.d2key
+            self._siginfo.wt_session_ticket_key = (
+                response.wt_session_ticket_key or
+                self._siginfo.wt_session_ticket_key
+            )
+            self._siginfo.device_token = (
+                response.device_token or self._siginfo.device_token
+            )
+            self._siginfo.ps_key_map = response.ps_key_map or self._siginfo.ps_key_map
+            self._siginfo.pt4_token_map = (
+                response.pt4_token_map or self._siginfo.pt4_token_map
+            )
+
+            key = md5(
+                self._password_md5 + bytes(4) + struct.pack(">I", self._uin)
+            ).digest()
+            decrypted = qqtea_decrypt(response.encrypted_a1, key)
+            DEVICE.tgtgt = decrypted[51:67]
+            logger.info(f"{self.nick}({self.uin}) 登录成功！")
+        elif isinstance(response, NeedCaptcha):
+            self._t104 = response.t104 or self._t104
+            if response.verify_url:
+                logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
+                raise LoginSliderNeeded(response.verify_url)
+            elif response.captcha_image:
+                logger.info(f"登录失败！需要根据图片输入验证码")
+                raise LoginCaptchaNeeded(
+                    response.captcha_image, response.captcha_sign
+                )
+            else:
+                raise LoginException(
+                    response.status,
+                    "Cannot get verify_url or captcha_image from the response!"
+                )
+        elif isinstance(response, AccountFrozen):
+            logger.info("账号已被冻结！")
+            raise LoginAccountFrozen()
+        elif isinstance(response, DeviceLocked):
+            self._t104 = response.t104 or self._t104
+            self._t174 = response.t174 or self._t174
+            self._rand_seed = response.rand_seed or self._rand_seed
+            msg = "账号已开启设备锁！"
+            if response.sms_phone:
+                msg += f"向手机{response.sms_phone}发送验证码 "
+            if response.verify_url:
+                msg += f"或前往{response.verify_url}扫码验证"
+            logger.info(msg + ". " + str(response.message))
+            raise LoginDeviceLocked(
+                response.sms_phone, response.verify_url, response.message
+            )
+        elif isinstance(response, TooManySMSRequest):
+            logger.info("验证码发送频繁！")
+            raise LoginSMSRequestError()
+        elif isinstance(response, DeviceLockLogin):
+            self._t104 = response.t104 or self._t104
+            self._rand_seed = response.rand_seed or self._rand_seed
+            if try_times:
+                seq = self.next_seq()
+                packet = encode_login_request20(
+                    seq, self._key, self._session_id, self._ksid, self.uin,
+                    self._t104, self._g
+                )
+                response = await self.send_and_wait(
+                    seq, "wtlogin.login", packet
+                )
+                return await self._handle_login_response(
+                    response, try_times - 1
+                )
+            else:
+                raise LoginException(
+                    response.status,
+                    "Maximum number of login attempts exceeded!"
+                )
+        elif isinstance(response, UnknownLoginStatus):
+            t146 = response._tlv_map.get(0x146)
+            t149 = response._tlv_map.get(0x149)
+            if t146:
+                packet = Packet(t146)
+                msg = packet.read_bytes(packet.read_uint16(4), 6).decode()
+            elif t149:
+                packet = Packet(t149)
+                msg = packet.read_bytes(packet.read_uint16(2), 4).decode()
+            else:
+                msg = ""
+            logger.info(f"未知的登录返回码 {response.status}! {msg}")
+            raise LoginException(response.status, "Unknown login status.")
+        return response
+
     async def login(self) -> LoginSuccess:
         """Login the account of the client.
 
@@ -229,142 +370,23 @@ class Client:
             seq, self._key, self._session_id, self._ksid, self.uin,
             self._password_md5
         )
-        try_times = 1
-        while try_times:
-            response = await self.send_and_wait(seq, "wtlogin.login", packet)
-            if not isinstance(response, OICQResponse):
-                raise RuntimeError("Invalid login response type!")
+        response = await self.send_and_wait(seq, "wtlogin.login", packet)
+        return await self._handle_login_response(response)
 
-            if not isinstance(response, UnknownLoginStatus):
-                raise ApiResponseError(
-                    response.uin, response.seq, response.ret_code,
-                    response.command_name
-                )
-
-            if response.t402:
-                self._dpwd = (
-                    "".join(
-                        secrets.choice(string.ascii_letters + string.digits)
-                        for _ in range(16)
-                    )
-                ).encode()
-                self._t402 = response.t402
-                self._g = md5(DEVICE.guid + self._dpwd + self._t402).digest()
-
-            if isinstance(response, LoginSuccess):
-                self._t150 = response.t150 or self._t150
-                self._rollback_sig = response.rollback_sig or self._rollback_sig
-                self._rand_seed = response.rand_seed or self._rand_seed
-                self._time_diff = response.time_diff or self._time_diff
-                self._ip_address = response.ip_address or self._ip_address
-                self._t528 = response.t528 or self._t528
-                self._t530 = response.t530 or self._t530
-                self._ksid = response.ksid or self._ksid
-                self._pwd_flag = response.pwd_flag or self._pwd_flag
-                self._nick = response.nick or self._nick
-                self._age = response.age or self._age
-                self._gender = response.gender or self._gender
-
-                self._siginfo.tgt = response.tgt or self._siginfo.tgt
-                self._siginfo.tgt_key = response.tgt_key or self._siginfo.tgt_key
-                self._siginfo.srm_token = response.srm_token or self._siginfo.srm_token
-                self._siginfo.t133 = response.t133 or self._siginfo.t133
-                self._siginfo.encrypted_a1 = (
-                    response.encrypted_a1 or self._siginfo.encrypted_a1
-                )
-                self._siginfo.user_st_key = response.user_st_key or self._siginfo.user_st_key
-                self._siginfo.user_st_web_sig = (
-                    response.user_st_web_sig or self._siginfo.user_st_web_sig
-                )
-                self._siginfo.s_key = response.s_key or self._siginfo.s_key
-                self._siginfo.s_key_expire_time = (
-                    response.s_key_expire_time or
-                    self._siginfo.s_key_expire_time
-                )
-                self._siginfo.d2 = response.d2 or self._siginfo.d2
-                self._siginfo.d2key = response.d2key or self._siginfo.d2key
-                self._siginfo.wt_session_ticket_key = (
-                    response.wt_session_ticket_key or
-                    self._siginfo.wt_session_ticket_key
-                )
-                self._siginfo.device_token = (
-                    response.device_token or self._siginfo.device_token
-                )
-                self._siginfo.ps_key_map = response.ps_key_map or self._siginfo.ps_key_map
-                self._siginfo.pt4_token_map = (
-                    response.pt4_token_map or self._siginfo.pt4_token_map
-                )
-
-                key = md5(
-                    self._password_md5 + bytes(4) +
-                    struct.pack(">I", self._uin)
-                ).digest()
-                decrypted = qqtea_decrypt(response.encrypted_a1, key)
-                DEVICE.tgtgt = decrypted[51:67]
-                logger.info(f"{self.nick}({self.uin}) 登录成功！")
-            elif isinstance(response, NeedCaptcha):
-                if response.verify_url:
-                    logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
-                    raise LoginSliderNeeded(response.verify_url)
-                elif response.captcha_image:
-                    logger.info(f"登录失败！需要根据图片输入验证码")
-                    raise LoginCaptchaNeeded(
-                        response.captcha_image, response.captcha_sign
-                    )
-                else:
-                    raise LoginException(
-                        response.status,
-                        "Cannot get verify_url or captcha_image from the response!"
-                    )
-            elif isinstance(response, AccountFrozen):
-                logger.info("账号已被冻结！")
-                raise LoginAccountFrozen()
-            elif isinstance(response, DeviceLocked):
-                self._t104 = response.t104 or self._t104
-                self._t174 = response.t174 or self._t174
-                self._rand_seed = response.rand_seed or self._rand_seed
-                msg = "账号已开启设备锁！"
-                if response.sms_phone:
-                    msg += f"向手机{response.sms_phone}发送验证码 "
-                if response.verify_url:
-                    msg += f"或前往{response.verify_url}扫码验证"
-                logger.info(msg + ". " + str(response.message))
-                raise LoginDeviceLocked(
-                    response.sms_phone, response.verify_url, response.message
-                )
-            elif isinstance(response, TooManySMSRequest):
-                logger.info("验证码发送频繁！")
-                raise LoginSMSRequestError()
-            elif isinstance(response, DeviceLockLogin):
-                self._t104 = response.t104 or self._t104
-                self._rand_seed = response.rand_seed or self._rand_seed
-                if try_times:
-                    seq = self.next_seq()
-                    packet = encode_login_request20(
-                        seq, self._key, self._session_id, self._ksid, self.uin,
-                        self._t104, self._g
-                    )
-                    try_times -= 1
-                    continue
-                else:
-                    raise LoginException(
-                        response.status,
-                        "Maximum number of login attempts exceeded!"
-                    )
-            elif isinstance(response, UnknownLoginStatus):
-                t146 = response._tlv_map.get(0x146)
-                t149 = response._tlv_map.get(0x149)
-                if t146:
-                    packet = Packet(t146)
-                    msg = packet.read_bytes(packet.read_uint16(4), 6).decode()
-                elif t149:
-                    packet = Packet(t149)
-                    msg = packet.read_bytes(packet.read_uint16(2), 4).decode()
-                else:
-                    msg = ""
-                logger.info(f"未知的登录返回码 {response.status}! {msg}")
-                raise LoginException(response.status, "Unknown login status.")
-            return response
-        raise LoginException(
-            -1, "Login failed. This exception should not happen."
+    async def submit_captcha(self, captcha: str, captcha_sign: bytes):
+        seq = self.next_seq()
+        packet = encode_login_request2_captcha(
+            seq, self._key, self._session_id, self._ksid, self.uin, captcha,
+            captcha_sign, self._t104
         )
+        response = await self.send_and_wait(seq, "wtlogin.login", packet)
+        return await self._handle_login_response(response)
+
+    async def submit_slider_ticket(self, ticket: str):
+        seq = self.next_seq()
+        packet = encode_login_request2_slider(
+            seq, self._key, self._session_id, self._ksid, self.uin, ticket,
+            self._t104
+        )
+        response = await self.send_and_wait(seq, "wtlogin.login", packet)
+        return await self._handle_login_response(response)

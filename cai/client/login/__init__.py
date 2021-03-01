@@ -27,11 +27,135 @@ DEVICE = get_device()
 APK_INFO = get_protocol()
 
 
+# submit captcha
+def encode_login_request2_captcha(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
+    captcha: str, sign: bytes, t104: bytes
+):
+    """Build submit captcha request packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt`.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `2`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.n
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        captcha (str): Captcha image result.
+        sign (bytes): Signature of the captcha.
+        t104 (bytes): TLV 104 data.
+
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 2
+    COMMAND_NAME = "wtlogin.login"
+
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 4),  # packet num
+        TlvEncoder.t2(captcha.encode(), sign),
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP)
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+# submit ticket
+def encode_login_request2_slider(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, ticket: str,
+    t104: bytes
+):
+    """Build slider ticket request packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt`.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `2`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.n
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        ticket (str): Captcha image result.
+        t104 (bytes): TLV 104 data.
+
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 2
+    COMMAND_NAME = "wtlogin.login"
+
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 4),  # packet num
+        TlvEncoder.t193(ticket),
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP)
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+# password md5 login
 def encode_login_request9(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
     password_md5: bytes
 ):
     """Build main login request packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.GetStWithPasswd`.
 
     command id: `0x810 = 2064`
 
@@ -150,6 +274,7 @@ def encode_login_request9(
     return packet
 
 
+# device lock login, when status 204
 def encode_login_request20(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
     g: bytes
@@ -214,7 +339,8 @@ def decode_login_response(packet: IncomingPacket) -> OICQResponse:
 
 
 __all__ = [
-    "encode_login_request", "decode_login_response", "OICQResponse",
-    "LoginSuccess", "NeedCaptcha", "AccountFrozen", "DeviceLocked",
-    "TooManySMSRequest", "DeviceLockLogin", "UnknownLoginStatus"
+    "encode_login_request2_captcha", "encode_login_request2_slider",
+    "encode_login_request9", "encode_login_request20", "decode_login_response",
+    "OICQResponse", "LoginSuccess", "NeedCaptcha", "AccountFrozen",
+    "DeviceLocked", "TooManySMSRequest", "DeviceLockLogin", "UnknownLoginStatus"
 ]

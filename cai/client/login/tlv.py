@@ -367,8 +367,8 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t17a(cls, value: int) -> Packet:
-        return cls._pack_tlv(0x17A, struct.pack(">I", value))
+    def t17a(cls, sms_app_id: int) -> Packet:
+        return cls._pack_tlv(0x17A, struct.pack(">I", sms_app_id))
 
     @classmethod
     def t17c(cls, code: str) -> Packet:

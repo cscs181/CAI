@@ -6,7 +6,7 @@ from cai.exceptions import ApiException, ClientNotAvailable
 _clients: Dict[int, Client] = {}
 
 
-def _get_client(uin: Optional[int] = None) -> Client:
+def get_client(uin: Optional[int] = None) -> Client:
     """Get the specific client or existing client.
 
     Args:
@@ -40,7 +40,7 @@ async def close(uin: Optional[int] = None) -> None:
     Args:
         uin (Optional[int], optional): Account of the client want to close. Defaults to None.
     """
-    client = _get_client(uin)
+    client = get_client(uin)
     await client.close()
 
 
@@ -79,7 +79,7 @@ async def login(uin: int, password_md5: bytes) -> Client:
 async def submit_captcha(
     captcha: str, captcha_sign: bytes, uin: Optional[int] = None
 ) -> bool:
-    client = _get_client(uin)
+    client = get_client(uin)
     try:
         await client.submit_captcha(captcha, captcha_sign)
     except ApiException:
@@ -91,7 +91,7 @@ async def submit_captcha(
 
 
 async def submit_slider_ticket(ticket: str, uin: Optional[int] = None) -> bool:
-    client = _get_client(uin)
+    client = get_client(uin)
     try:
         await client.submit_slider_ticket(ticket)
     except ApiException:
@@ -103,5 +103,5 @@ async def submit_slider_ticket(ticket: str, uin: Optional[int] = None) -> bool:
 
 
 __all__ = [
-    "_get_client", "close", "login", "submit_captcha", "submit_slider_ticket"
+    "get_client", "close", "login", "submit_captcha", "submit_slider_ticket"
 ]

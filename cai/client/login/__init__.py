@@ -55,7 +55,6 @@ def encode_login_request2_captcha(
         sign (bytes): Signature of the captcha.
         t104 (bytes): TLV 104 data.
 
-
     Returns:
         Packet: Login packet.
     """
@@ -115,7 +114,6 @@ def encode_login_request2_slider(
         ticket (str): Captcha image result.
         t104 (bytes): TLV 104 data.
 
-
     Returns:
         Packet: Login packet.
     """
@@ -135,6 +133,142 @@ def encode_login_request2_slider(
         TlvEncoder.t8(LOCAL_ID),
         TlvEncoder.t104(t104),
         TlvEncoder.t116(BITMAP, SUB_SIGMAP)
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+# submit sms
+def encode_login_request7(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
+    sms_code: str, t104: bytes, t174: bytes, g: bytes
+):
+    """Build slider ticket request packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckSMSAndGetSt`.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `7`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.o
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        sms_code (str): SMS code.
+        t104 (bytes): TLV 104 data.
+        t174 (bytes): TLV 174 data.
+        g (bytes): G data of client.
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 7
+    COMMAND_NAME = "wtlogin.login"
+
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    GUID_SRC = 1
+    GUID_CHANGE = 0
+    GUID_FLAG = 0
+    GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
+    GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 7),  # packet num
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
+        TlvEncoder.t174(t174),
+        TlvEncoder.t17c(sms_code),
+        TlvEncoder.t401(g),
+        TlvEncoder.t198()
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+# request sms
+def encode_login_request8(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
+    t174: bytes
+):
+    """Build slider ticket request packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.RefreshSMSData`.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `8`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.r
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        t104 (bytes): TLV 104 data.
+        t174 (bytes): TLV 174 data.
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 8
+    COMMAND_NAME = "wtlogin.login"
+
+    SMS_APP_ID = 9
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    GUID_SRC = 1
+    GUID_CHANGE = 0
+    GUID_FLAG = 0
+    GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
+    GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 6),  # packet num
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
+        TlvEncoder.t174(t174),
+        TlvEncoder.t17a(SMS_APP_ID),
+        TlvEncoder.t197()
     )
     oicq_packet = OICQRequest.build_encoded(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id

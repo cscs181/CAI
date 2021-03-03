@@ -19,9 +19,10 @@ from rtea import qqtea_decrypt
 
 from .login import (
     encode_login_request2_captcha, encode_login_request2_slider,
-    encode_login_request9, encode_login_request20, decode_login_response,
-    OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen, DeviceLocked,
-    TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
+    encode_login_request7, encode_login_request8, encode_login_request9,
+    encode_login_request20, decode_login_response, OICQResponse, LoginSuccess,
+    NeedCaptcha, AccountFrozen, DeviceLocked, TooManySMSRequest,
+    DeviceLockLogin, UnknownLoginStatus
 )
 
 from cai.exceptions import (
@@ -282,20 +283,20 @@ class Client:
             self._t104 = response.t104 or self._t104
             if response.verify_url:
                 logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
-                raise LoginSliderNeeded(response.verify_url)
+                raise LoginSliderNeeded(response.uin, response.verify_url)
             elif response.captcha_image:
                 logger.info(f"登录失败！需要根据图片输入验证码")
                 raise LoginCaptchaNeeded(
-                    response.captcha_image, response.captcha_sign
+                    response.uin, response.captcha_image, response.captcha_sign
                 )
             else:
                 raise LoginException(
-                    response.status,
+                    response.uin, response.status,
                     "Cannot get verify_url or captcha_image from the response!"
                 )
         elif isinstance(response, AccountFrozen):
             logger.info("账号已被冻结！")
-            raise LoginAccountFrozen()
+            raise LoginAccountFrozen(response.uin)
         elif isinstance(response, DeviceLocked):
             self._t104 = response.t104 or self._t104
             self._t174 = response.t174 or self._t174
@@ -307,11 +308,12 @@ class Client:
                 msg += f"或前往{response.verify_url}扫码验证"
             logger.info(msg + ". " + str(response.message))
             raise LoginDeviceLocked(
-                response.sms_phone, response.verify_url, response.message
+                response.uin, response.sms_phone, response.verify_url,
+                response.message
             )
         elif isinstance(response, TooManySMSRequest):
             logger.info("验证码发送频繁！")
-            raise LoginSMSRequestError()
+            raise LoginSMSRequestError(response.uin)
         elif isinstance(response, DeviceLockLogin):
             self._t104 = response.t104 or self._t104
             self._rand_seed = response.rand_seed or self._rand_seed
@@ -329,7 +331,7 @@ class Client:
                 )
             else:
                 raise LoginException(
-                    response.status,
+                    response.uin, response.status,
                     "Maximum number of login attempts exceeded!"
                 )
         elif isinstance(response, UnknownLoginStatus):
@@ -344,7 +346,9 @@ class Client:
             else:
                 msg = ""
             logger.info(f"未知的登录返回码 {response.status}! {msg}")
-            raise LoginException(response.status, "Unknown login status.")
+            raise LoginException(
+                response.uin, response.status, "Unknown login status."
+            )
         return response
 
     async def login(self) -> LoginSuccess:
@@ -373,7 +377,9 @@ class Client:
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
 
-    async def submit_captcha(self, captcha: str, captcha_sign: bytes):
+    async def submit_captcha(
+        self, captcha: str, captcha_sign: bytes
+    ) -> LoginSuccess:
         seq = self.next_seq()
         packet = encode_login_request2_captcha(
             seq, self._key, self._session_id, self._ksid, self.uin, captcha,
@@ -382,11 +388,36 @@ class Client:
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
 
-    async def submit_slider_ticket(self, ticket: str):
+    async def submit_slider_ticket(self, ticket: str) -> LoginSuccess:
         seq = self.next_seq()
         packet = encode_login_request2_slider(
             seq, self._key, self._session_id, self._ksid, self.uin, ticket,
             self._t104
+        )
+        response = await self.send_and_wait(seq, "wtlogin.login", packet)
+        return await self._handle_login_response(response)
+
+    async def request_sms(self) -> bool:
+        seq = self.next_seq()
+        packet = encode_login_request8(
+            seq, self._key, self._session_id, self._ksid, self.uin, self._t104,
+            self._t174
+        )
+        response = await self.send_and_wait(seq, "wtlogin.login", packet)
+
+        try:
+            await self._handle_login_response(response)
+            return True
+        except LoginDeviceLocked:
+            return True
+        except Exception:
+            raise
+
+    async def submit_sms(self, sms_code: str) -> LoginSuccess:
+        seq = self.next_seq()
+        packet = encode_login_request7(
+            seq, self._key, self._session_id, self._ksid, self.uin, sms_code,
+            self._t104, self._t174, self._g
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)

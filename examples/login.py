@@ -60,6 +60,38 @@ async def handle_failure(exception: Exception):
         print("Account is frozen!")
     elif isinstance(exception, LoginDeviceLocked):
         print("Device lock detected!")
+        way = "sms" if exception.sms_phone else "url" if exception.verify_url else ""
+        if exception.sms_phone and exception.verify_url:
+            while True:
+                choice = input(
+                    f"1. Send sms message to {exception.sms_phone}.\n"
+                    f"2. Verify device by scanning.\nChoose: "
+                )
+                if "1" in choice:
+                    way = "sms"
+                    break
+                elif "2" in choice:
+                    way = "url"
+                    break
+                print(f"'{choice}' is not valid!")
+        if not way:
+            print("No way to verify device...")
+        elif way == "sms":
+            await cai.request_sms()
+            print(f"SMS sent to {exception.sms_phone}!")
+            sms_code = input("Please enter the sms_code: ").strip()
+            try:
+                await cai.submit_sms(sms_code)
+            except Exception as e:
+                await handle_failure(e)
+        elif way == "url":
+            await cai.close()
+            print(f"Go to {exception.verify_url} to verify device!")
+            input("Press ENTER after verification to continue login...")
+            try:
+                await cai.login(exception.uin)
+            except Exception as e:
+                await handle_failure(e)
     elif isinstance(exception, LoginException):
         print("Login Error:", repr(exception))
     elif isinstance(exception, ApiResponseError):

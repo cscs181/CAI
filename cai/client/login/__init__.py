@@ -151,7 +151,7 @@ def encode_login_request7(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
     sms_code: str, t104: bytes, t174: bytes, g: bytes
 ):
-    """Build slider ticket request packet.
+    """Build sms submit packet.
 
     Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckSMSAndGetSt`.
 
@@ -220,7 +220,7 @@ def encode_login_request8(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
     t174: bytes
 ):
-    """Build slider ticket request packet.
+    """Build sms request packet.
 
     Called in `oicq.wlogin_sdk.request.WtloginHelper.RefreshSMSData`.
 

@@ -570,7 +570,7 @@ class TlvDecoder:
             offset += length
             futher_decode = getattr(cls, f"t{tag:x}", None)
             if futher_decode:
-                value = futher_decode(cls, value)
+                value = futher_decode(value)
             result[tag] = value
 
         return result
@@ -661,10 +661,14 @@ class TlvDecoder:
         """
         data_ = Packet(data)
         return {
-            "face": data_.read_bytes(2),
-            "age": data_.read_uint8(2),
-            "gender": data_.read_uint8(3),
-            "nick": data_.read_bytes(data_.read_uint8(4), 5).decode()
+            "face":
+                data_.read_bytes(2),
+            "age":
+                data_.read_uint8(offset=2),
+            "gender":
+                data_.read_uint8(offset=3),
+            "nick":
+                data_.read_bytes(data_.read_uint8(offset=4), offset=5).decode()
         }
 
     @classmethod
@@ -701,8 +705,8 @@ class TlvDecoder:
         """
         data_ = Packet(data)
         return {
-            "time_diff": data_.read_int32() - int(time.time()),
-            "ip_address": data_.read_bytes(4)
+            "time_diff": data_.read_int32(offset=2) - int(time.time()),
+            "ip_address": data_.read_bytes(4, offset=6)
         }
 
     # @classmethod

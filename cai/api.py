@@ -1,7 +1,7 @@
 from typing import Dict, Optional
 
 from cai.client import Client
-from cai.exceptions import ApiException, ClientNotAvailable
+from cai.exceptions import LoginException, ClientNotAvailable
 
 _clients: Dict[int, Client] = {}
 
@@ -21,7 +21,7 @@ def get_client(uin: Optional[int] = None) -> Client:
         Client: Current client to use.
     """
     if not _clients:
-        raise ClientNotAvailable(f"No client available!")
+        raise ClientNotAvailable(uin, f"No client available!")
     elif len(_clients) == 1 and not uin:
         return list(_clients.values())[0]
     else:
@@ -44,17 +44,20 @@ async def close(uin: Optional[int] = None) -> None:
     await client.close()
 
 
-async def login(uin: int, password_md5: bytes) -> Client:
+async def login(uin: int, password_md5: Optional[bytes] = None) -> Client:
     """Create a new client (or use an existing one) and login.
+
+    Password md5 should be provided when login a new account.
 
     This function wraps the login method of the client.
 
     Args:
         uin (int): QQ account number.
-        password_md5 (bytes): md5 bytes of the password.
+        password_md5 (Optional[bytes], optional): md5 bytes of the password. Defaults to None.
 
     Raises:
         RuntimeError: Client already exists and is running.
+        RuntimeError: Password not provided when login a new account.
         LoginSliderException: Need slider ticket.
         LoginCaptchaException: Need captcha image.
     """
@@ -62,13 +65,17 @@ async def login(uin: int, password_md5: bytes) -> Client:
         client = _clients[uin]
         if client.connected:
             raise RuntimeError(f"Client {uin} already connected!")
-        client._password_md5 = password_md5
-    client = Client(uin, password_md5)
-    _clients[uin] = client
-    await client.connect()
+        client._password_md5 = password_md5 or client._password_md5
+    else:
+        if not password_md5:
+            raise RuntimeError(f"Password md5 needed for creating new client!")
+        client = Client(uin, password_md5)
+        _clients[uin] = client
+
+    await client.reconnect()
     try:
         await client.login()
-    except ApiException:
+    except LoginException:
         raise
     except Exception:
         await client.close()
@@ -82,7 +89,7 @@ async def submit_captcha(
     client = get_client(uin)
     try:
         await client.submit_captcha(captcha, captcha_sign)
-    except ApiException:
+    except LoginException:
         raise
     except Exception:
         await client.close()
@@ -94,7 +101,24 @@ async def submit_slider_ticket(ticket: str, uin: Optional[int] = None) -> bool:
     client = get_client(uin)
     try:
         await client.submit_slider_ticket(ticket)
-    except ApiException:
+    except LoginException:
+        raise
+    except Exception:
+        await client.close()
+        raise
+    return True
+
+
+async def request_sms(uin: Optional[int] = None) -> bool:
+    client = get_client(uin)
+    return await client.request_sms()
+
+
+async def submit_sms(sms_code: str, uin: Optional[int] = None) -> bool:
+    client = get_client(uin)
+    try:
+        await client.submit_sms(sms_code)
+    except LoginException:
         raise
     except Exception:
         await client.close()
@@ -103,5 +127,6 @@ async def submit_slider_ticket(ticket: str, uin: Optional[int] = None) -> bool:
 
 
 __all__ = [
-    "get_client", "close", "login", "submit_captcha", "submit_slider_ticket"
+    "get_client", "close", "login", "submit_captcha", "submit_slider_ticket",
+    "request_sms", "submit_sms"
 ]

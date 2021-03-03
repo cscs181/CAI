@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    cai.client.login
+   cai.client.sso_server
 
 Submodules
 ----------
@@ -45,14 +46,6 @@ cai.client.siginfo module
 -------------------------
 
 .. automodule:: cai.client.siginfo
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-cai.client.sso\_server module
------------------------------
-
-.. automodule:: cai.client.sso_server
    :members:
    :undoc-members:
    :show-inheritance:

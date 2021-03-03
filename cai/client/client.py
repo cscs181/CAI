@@ -24,6 +24,7 @@ from .login import (
     NeedCaptcha, AccountFrozen, DeviceLocked, TooManySMSRequest,
     DeviceLockLogin, UnknownLoginStatus
 )
+from .sso_server import get_sso_server, SsoServer
 
 from cai.exceptions import (
     ApiResponseError, LoginException, LoginSliderNeeded, LoginCaptchaNeeded,
@@ -39,7 +40,6 @@ from .event import Event, _packet_to_event
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.connection import connect, Connection
-from .sso_server import get_sso_server, SsoServer
 
 DEVICE = get_device()
 APK_INFO = get_protocol()

@@ -115,6 +115,17 @@ class Client:
         return bool(self._connection) and not self._connection.closed
 
     async def connect(self, server: Optional[SsoServer] = None) -> None:
+        """Connect to the server.
+
+        This should be called before sending any packets.
+
+        Args:
+            server (Optional[SsoServer], optional): The server you want to connect. Defaults to None.
+
+        Raises:
+            RuntimeError: Already connected to the server.
+            ConnectionError: Error when connecting the server.
+        """
         if self.connected:
             raise RuntimeError("Already connected to the server")
 
@@ -174,6 +185,17 @@ class Client:
         packet: Union[bytes, Packet],
         timeout: Optional[float] = 10.
     ) -> Event:
+        """Send a packet with the given sequense and wait for the response.
+
+        Args:
+            seq (int): Sequence number.
+            command_name (str): Command name of the packet.
+            packet (Union[bytes, Packet]): Packet to send.
+            timeout (Optional[float], optional): Timeout. Defaults to 10.
+
+        Returns:
+            Event: Response.
+        """
         logger.debug(f"--> {seq}: {command_name}")
         self._send(packet)
         return await self._receive_store.fetch(seq, timeout)
@@ -380,6 +402,23 @@ class Client:
     async def submit_captcha(
         self, captcha: str, captcha_sign: bytes
     ) -> LoginSuccess:
+        """Submit captcha when login captcha needed.
+
+        This should be called after :class:`~cai.exceptions.LoginCaptchaNeeded` occurred.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Invalid response got. Like unknown return code.
+            LoginSliderNeeded: Slider ticket needed.
+            LoginCaptchaNeeded: Captcha image needed.
+            LoginAccountFrozen: Account is frozen.
+            LoginDeviceLocked: Device lock detected.
+            LoginSMSRequestError: Too many SMS messages were sent.
+            LoginException: Unknown login return code or other exception.
+
+        Returns:
+            LoginSuccess: Success login event.
+        """
         seq = self.next_seq()
         packet = encode_login_request2_captcha(
             seq, self._key, self._session_id, self._ksid, self.uin, captcha,
@@ -389,6 +428,23 @@ class Client:
         return await self._handle_login_response(response)
 
     async def submit_slider_ticket(self, ticket: str) -> LoginSuccess:
+        """Submit slider ticket when login slider captcha needed.
+
+        This should be called after :class:`~cai.exceptions.LoginSliderNeeded` occurred.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Invalid response got. Like unknown return code.
+            LoginSliderNeeded: Slider ticket needed.
+            LoginCaptchaNeeded: Captcha image needed.
+            LoginAccountFrozen: Account is frozen.
+            LoginDeviceLocked: Device lock detected.
+            LoginSMSRequestError: Too many SMS messages were sent.
+            LoginException: Unknown login return code or other exception.
+
+        Returns:
+            LoginSuccess: Success login event.
+        """
         seq = self.next_seq()
         packet = encode_login_request2_slider(
             seq, self._key, self._session_id, self._ksid, self.uin, ticket,
@@ -398,6 +454,23 @@ class Client:
         return await self._handle_login_response(response)
 
     async def request_sms(self) -> bool:
+        """Request new sms message when login sms code needed.
+
+        This should be called after :class:`~cai.exceptions.LoginSMSRequestError` occurred.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Invalid response got. Like unknown return code.
+            LoginSliderNeeded: Slider ticket needed.
+            LoginCaptchaNeeded: Captcha image needed.
+            LoginAccountFrozen: Account is frozen.
+            LoginDeviceLocked: Device lock detected.
+            LoginSMSRequestError: Too many SMS messages were sent.
+            LoginException: Unknown login return code or other exception.
+
+        Returns:
+            LoginSuccess: Success login event.
+        """
         seq = self.next_seq()
         packet = encode_login_request8(
             seq, self._key, self._session_id, self._ksid, self.uin, self._t104,
@@ -414,6 +487,23 @@ class Client:
             raise
 
     async def submit_sms(self, sms_code: str) -> LoginSuccess:
+        """Submit sms code when login sms code needed.
+
+        This should be called after :class:`~cai.exceptions.LoginSMSRequestError` occurred.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Invalid response got. Like unknown return code.
+            LoginSliderNeeded: Slider ticket needed.
+            LoginCaptchaNeeded: Captcha image needed.
+            LoginAccountFrozen: Account is frozen.
+            LoginDeviceLocked: Device lock detected.
+            LoginSMSRequestError: Too many SMS messages were sent.
+            LoginException: Unknown login return code or other exception.
+
+        Returns:
+            LoginSuccess: Success login event.
+        """
         seq = self.next_seq()
         packet = encode_login_request7(
             seq, self._key, self._session_id, self._ksid, self.uin, sms_code,

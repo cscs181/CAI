@@ -42,6 +42,9 @@ class FutureStore(Generic[KT, VT]):
         future = self._futures[seq]
         return future.remove_done_callback(callback)
 
+    def done(self, seq: KT) -> bool:
+        return self._futures[seq].done()
+
     def result(self, seq: KT) -> VT:
         return self._futures[seq].result()
 

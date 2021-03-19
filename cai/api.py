@@ -1,6 +1,6 @@
 """Application Client APIs.
 
-This module wraps the client methods to provide easier control.
+This module wraps the client methods to provide easier control (high-level api).
 
 :Copyright: Copyright (C) 2021-2021  yanyongyu
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
@@ -37,10 +37,10 @@ def get_client(uin: Optional[int] = None) -> Client:
     else:
         if not uin:
             raise ClientNotAvailable(
-                f"Multiple clients found! Specify uin to choose."
+                None, f"Multiple clients found! Specify uin to choose."
             )
         if uin not in _clients:
-            raise ClientNotAvailable(f"Client {uin} not exists!")
+            raise ClientNotAvailable(None, f"Client {uin} not exists!")
         return _clients[uin]
 
 

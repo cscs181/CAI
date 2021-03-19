@@ -1,6 +1,6 @@
 """Application Client Class.
 
-This module is used to control client actions.
+This module is used to control client actions (low-level api).
 
 :Copyright: Copyright (C) 2021-2021  yanyongyu
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
@@ -17,7 +17,7 @@ from typing import Any, List, Dict, Union, Optional, Callable
 
 from rtea import qqtea_decrypt
 
-from .login import (
+from .wtlogin import (
     encode_login_request2_captcha, encode_login_request2_slider,
     encode_login_request7, encode_login_request8, encode_login_request9,
     encode_login_request20, decode_login_response, OICQResponse, LoginSuccess,

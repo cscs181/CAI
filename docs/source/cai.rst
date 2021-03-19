@@ -44,11 +44,3 @@ cai.log module
    :members:
    :undoc-members:
    :show-inheritance:
-
-cai.signal module
------------------
-
-.. automodule:: cai.signal
-   :members:
-   :undoc-members:
-   :show-inheritance:

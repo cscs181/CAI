@@ -12,8 +12,9 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   cai.client.login
    cai.client.sso_server
+   cai.client.status_service
+   cai.client.wtlogin
 
 Submodules
 ----------

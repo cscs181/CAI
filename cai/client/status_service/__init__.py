@@ -23,7 +23,7 @@ APK_INFO = get_protocol()
 
 # register
 def encode_register(
-    seq: int, session_id: bytes, ksid: bytes, uin: int, d2key: bytes, d2: bytes
+    seq: int, session_id: bytes, ksid: bytes, uin: int, d2: bytes, d2key: bytes
 ):
     """Build status service register packet.
 
@@ -36,10 +36,11 @@ def encode_register(
 
     Args:
         seq (int): Packet sequence.
-        key (bytes): 16 bits key used to decode the response.
         session_id (bytes): Session ID.
         ksid (bytes): KSID of client.
         uin (int): User QQ number.
+        d2 (bytes): siginfo d2.
+        d2key (bytes): siginfo d2 key.
 
     Returns:
         Packet: Register packet.

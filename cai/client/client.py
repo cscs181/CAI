@@ -24,6 +24,7 @@ from .wtlogin import (
     NeedCaptcha, AccountFrozen, DeviceLocked, TooManySMSRequest,
     DeviceLockLogin, UnknownLoginStatus
 )
+from .status_service import encode_register
 from .sso_server import get_sso_server, SsoServer
 
 from cai.exceptions import (

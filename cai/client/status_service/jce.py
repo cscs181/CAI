@@ -20,7 +20,8 @@ class VendorPushInfo(JceStruct):
     Note:
         Source: com.tencent.msf.service.protocol.push.VendorPushInfo
     """
-    vendor_type: types.INT64 = JceField(jce_id=0)
+    vendor_type: types.INT64 = JceField(0, jce_id=0)
+    """:obj:`~jce.types.INT64`: third push type."""
 
 
 class SvcReqRegister(JceStruct):
@@ -73,24 +74,52 @@ class SvcReqRegister(JceStruct):
     appRegister, fillRegProxy, createDefaultRegInfo, setOnlineStatus: 0; else 1.
     """
     dev_param: Optional[types.BYTES] = JceField(None, jce_id=15)
+    """:obj:`~jce.types.BYTES`: unknown."""
     guid: Optional[types.BYTES] = JceField(None, jce_id=16)
-    locale_id: types.INT32 = JceField(jce_id=17)
-    slient_push: types.BYTE = JceField(jce_id=18)
+    """:obj:`~jce.types.BYTES`: guid."""
+    locale_id: types.INT32 = JceField(2052, jce_id=17)
+    """:obj:`~jce.types.INT32`: 2052 by default."""
+    slient_push: types.BYTE = JceField(bytes(1), jce_id=18)
+    """:obj:`~jce.types.BYTE`: unknown."""
     dev_name: types.STRING = JceField("", jce_id=19)
+    """:obj:`~jce.types.STRING`: device model."""
     dev_type: types.STRING = JceField("", jce_id=20)
+    """:obj:`~jce.types.STRING`: device model."""
     os_version: types.STRING = JceField("", jce_id=21)
+    """:obj:`~jce.types.STRING`: build version release."""
     open_push: types.BOOL = JceField(True, jce_id=22)
+    """:obj:`~jce.types.BOOL`: open push."""
     large_seq: types.INT64 = JceField(jce_id=23)
-    last_watch_start_time: types.INT64 = JceField(jce_id=24)
-    bind_uin: types.LIST[types.JceType] = JceField(types.LIST(), jce_id=25)
-    old_sso_ip: types.INT64 = JceField(jce_id=26)
-    new_sso_ip: types.INT64 = JceField(jce_id=27)
+    """:obj:`~jce.types.INT64`: large seq."""
+    last_watch_start_time: types.INT64 = JceField(0, jce_id=24)
+    """:obj:`~jce.types.INT64`: unknown."""
+    bind_uin: Optional[types.LIST[types.JceType]] = JceField(None, jce_id=25)
+    """:obj:`~jce.types.LIST`: unknown."""
+    old_sso_ip: types.INT64 = JceField(0, jce_id=26)
+    """:obj:`~jce.types.INT64`: old sso ip."""
+    new_sso_ip: types.INT64 = JceField(0, jce_id=27)
+    """:obj:`~jce.types.INT64`:  new sso ip."""
     channel_num: types.STRING = JceField("", jce_id=28)
-    cp_id: types.INT64 = JceField(jce_id=29)
-    vendor_name: Optional[types.STRING] = JceField(None, jce_id=30)
-    vendor_os_name: Optional[types.STRING] = JceField(None, jce_id=31)
-    ios_idfa: Optional[types.STRING] = JceField(None, jce_id=32)
+    """:obj:`~jce.types.STRING`: unknown."""
+    cp_id: types.INT64 = JceField(0, jce_id=29)
+    """:obj:`~jce.types.INT64`: unknown."""
+    vendor_name: types.STRING = JceField("", jce_id=30)
+    """:obj:`~jce.types.STRING`: vendor name.
+
+    from com.tencent.qphone.base.util.ROMUtil.getRomName():
+        MIUI, EMUI, FuntouchOS, SMARTISAN, LENOVO, H2OS/O2OS, EUI, MiFavorUI,
+        NUBIAUI, FLYME, LINEAGE, 360, Build.MANUFACTURER
+    """
+    vendor_os_name: types.STRING = JceField("", jce_id=31)
+    """:obj:`~jce.types.STRING`: vendor os name.
+
+    com.tencent.qphone.base.util.ROMUtil.getRomVersion():
+        ro.miui.ui.version.name, ro.build.version.emui, ro.vivo.os.version, ...
+    """
+    ios_idfa: types.STRING = JceField("", jce_id=32)
+    """:obj:`~jce.types.STRING`: unknown."""
     b769: Optional[types.BYTES] = JceField(None, jce_id=33)
+    """:obj:`~jce.types.BYTES`: oidb 0x769 request body."""
     is_set_status: types.BOOL = JceField(jce_id=34)
     """:obj:`~jce.types.BOOL`: is set status.
 
@@ -98,7 +127,15 @@ class SvcReqRegister(JceStruct):
         setOnlineStatus: True, else: False.
     """
     server_buf: Optional[types.BYTES] = JceField(None, jce_id=35)
+    """:obj:`~jce.types.BYTES`: unknown."""
     set_mute: types.BOOL = JceField(jce_id=36)
+    """:obj:`~jce.types.BOOL`: set mute."""
     ext_online_status: types.INT64 = JceField(jce_id=38)
+    """:obj:`~jce.types.INT64`: extra online status."""
     battery_status: types.INT32 = JceField(jce_id=39)
+    """:obj:`~jce.types.INT32`: battery status.
+
+    battery capacity ( | 128 when power connect).
+    """
     vendor_push_info: Optional[VendorPushInfo] = JceField(None, jce_id=42)
+    """:obj:`.VendorPushInfo`: vendor push info."""

@@ -11,6 +11,7 @@ Once the device setting is loaded, it will be cached until application shut down
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
 import os
+import time
 import uuid
 import random
 import secrets
@@ -18,6 +19,7 @@ from hashlib import md5
 from typing import Optional
 from dataclasses import dataclass
 
+from cai.log import logger
 from cai.storage import Storage
 from cai.utils.dataclass import JsonableDataclass
 
@@ -38,14 +40,18 @@ class Version(JsonableDataclass):
 @dataclass(init=True, eq=False)
 class DeviceInfo(JsonableDataclass):
     # __slots__ not work with dataclass default value
-    # __slots__ = ("product", "device", "board", "model", "bootloader", "boot_id",
-    #              "proc_version", "baseband", "mac_address", "ip_address",
-    #              "wifi_ssid", "imei", "android_id", "version", "sim", "os_type",
-    #              "apn", "imsi_md5", "tgtgt", "display", "fingerprint", "wifi_bssid")
+    # __slots__ = (
+    #     "product", "device", "board", "model", "bootloader", "boot_id",
+    #     "proc_version", "baseband", "vendor_name", "vendor_os_name",
+    #     "mac_address", "ip_address", "wifi_ssid", "imei", "android_id",
+    #     "version", "sim", "os_type", "apn", "imsi_md5", "tgtgt", "display",
+    #     "fingerprint", "wifi_bssid"
+    # )
     __json_fields__ = (
         "product", "device", "board", "brand", "model", "bootloader", "boot_id",
-        "proc_version", "baseband", "mac_address", "ip_address", "wifi_ssid",
-        "imei", "android_id", "version", "sim", "os_type", "apn", "_imsi_md5"
+        "proc_version", "baseband", "vendor_name", "vendor_os_name",
+        "mac_address", "ip_address", "wifi_ssid", "imei", "android_id",
+        "version", "sim", "os_type", "apn", "_imsi_md5"
     )
 
     product: str
@@ -57,6 +63,8 @@ class DeviceInfo(JsonableDataclass):
     boot_id: str
     proc_version: str
     baseband: str
+    vendor_name: str
+    vendor_os_name: str
     mac_address: str
     ip_address: str
     wifi_ssid: str
@@ -188,6 +196,8 @@ def new_device(
         boot_id=boot_id or new_boot_id(),
         proc_version=proc_version or new_proc_version(),
         baseband=baseband or "",
+        vendor_name="MIUI",
+        vendor_os_name="MIUI",
         mac_address=mac_address or new_mac_address(),
         ip_address=ip_address or new_ip_address(),
         wifi_ssid=wifi_ssid or "<unknown ssid>",
@@ -208,8 +218,25 @@ def get_device(cache: bool = True) -> DeviceInfo:
         with open(Storage.device_file, "w") as f:
             device.to_file(f)
     else:
-        with open(Storage.device_file, "r") as f:
-            device = DeviceInfo.from_file(f)
+        with open(Storage.device_file, "r+") as f:
+            try:
+                device = DeviceInfo.from_file(f)
+            except Exception as e:
+                backup_file = f"{Storage.device_file}.{int(time.time())}.bak"
+                logger.error(
+                    "Error when loading device info from config file:\n\n" +
+                    repr(e) +
+                    f"\n\nRegenerating device info in `{Storage.device_file}`! "
+                    +
+                    f"The original device info has been backed up in `{backup_file}`."
+                )
+                f.seek(0)
+                with open(backup_file, "w") as fb:
+                    fb.write(f.read())
+                device = new_device()
+                f.seek(0)
+                f.truncate(0)
+                device.to_file(f)
 
     _device = device
     return _device

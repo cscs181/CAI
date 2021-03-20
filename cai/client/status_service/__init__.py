@@ -8,10 +8,14 @@ This module is used to build and handle status service related packet.
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
-from cai.settings.device import get_device
-from cai.settings.protocol import get_protocol
+
+from jce import types
 
 from .jce import SvcReqRegister
+from cai.settings.device import get_device
+from cai.settings.protocol import get_protocol
+from cai.utils.jce import RequestPacketVersion3
+from cai.client.packet import CSsoBodyPacket, CSsoDataPacket
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
@@ -19,27 +23,44 @@ APK_INFO = get_protocol()
 
 # register
 def encode_register(
-    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int
+    seq: int, session_id: bytes, ksid: bytes, uin: int, d2key: bytes, d2: bytes
 ):
+    """Build status service register packet.
+
+    Called in `com.tencent.mobileqq.msf.core.push.e.a`.
+
+    command name: `StatSvc.register`
+
+    Note:
+        Source: com.tencent.mobileqq.msf.core.push.e.a
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+
+    Returns:
+        Packet: Register packet.
+    """
+    COMMAND_NAME = "StatSvc.register"
+    SUB_APP_ID = APK_INFO.sub_app_id
+
     svc = SvcReqRegister(
         uin=uin,
         bid=7,  # login: 1 | 2 | 4, logout: 0
         status=11,  # login: 11, logout: 21
         ios_version=DEVICE.version.sdk,
-        nettype=1,
+        nettype=bytes([1]),
         reg_type=bytes(1),
         guid=DEVICE.guid,
-        locale_id=2052,
         dev_name=DEVICE.model,
         dev_type=DEVICE.model,
         os_version=DEVICE.version.release,
         large_seq=1551,
-        old_sso_ip=0,
-        new_sso_ip=31806887127679168,
-        channel_num="",
-        cp_id=0,
-        vendor_name=DEVICE.brand,
-        vendor_os_name=DEVICE.brand,
+        vendor_name=DEVICE.vendor_name,
+        vendor_os_name=DEVICE.vendor_os_name,
         b769=bytes(
             [
                 0x0A, 0x04, 0x08, 0x2E, 0x10, 0x00, 0x0A, 0x05, 0x08, 0x9B,
@@ -51,3 +72,15 @@ def encode_register(
         ext_online_status=1000,
         battery_status=98
     )
+    payload = SvcReqRegister.to_bytes(0, svc)
+    req_packet = RequestPacketVersion3(
+        req_id=0,
+        servant_name="PushService",
+        func_name="SvcReqRegister",
+        data=types.MAP({types.STRING("SvcReqRegister"): types.BYTES(payload)})
+    ).encode()
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid, req_packet
+    )
+    packet = CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
+    return packet

@@ -9,14 +9,6 @@ cai.client.wtlogin package
 Submodules
 ----------
 
-cai.client.wtlogin.data\_pb2 module
------------------------------------
-
-.. automodule:: cai.client.wtlogin.data_pb2
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
 cai.client.wtlogin.oicq module
 ------------------------------
 

@@ -24,7 +24,10 @@ from .wtlogin import (
     NeedCaptcha, AccountFrozen, DeviceLocked, TooManySMSRequest,
     DeviceLockLogin, UnknownLoginStatus
 )
-from .status_service import encode_register
+from .status_service import (
+    encode_register, decode_register_response, SvcRegisterResponse,
+    RegisterSuccess, RegisterFail
+)
 from .sso_server import get_sso_server, SsoServer
 
 from cai.exceptions import (
@@ -45,7 +48,8 @@ from cai.connection import connect, Connection
 DEVICE = get_device()
 APK_INFO = get_protocol()
 HANDLERS: Dict[str, Callable[[IncomingPacket], Event]] = {
-    "wtlogin.login": decode_login_response
+    "wtlogin.login": decode_login_response,
+    "StatSvc.register": decode_register_response
 }
 
 
@@ -66,6 +70,7 @@ class Client:
         self._key: bytes = secrets.token_bytes(16)
         self._session_id: bytes = bytes([0x02, 0xB0, 0x5B, 0x8B])
         self._connection: Optional[Connection] = None
+        self._heartbeat_interval: int = 30
 
         self._g: bytes = bytes()
         self._time_diff: int = 0
@@ -512,3 +517,25 @@ class Client:
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
+
+    async def register(self) -> RegisterSuccess:
+        seq = self.next_seq()
+        packet = encode_register(
+            seq, self._session_id, self._ksid, self.uin, self._siginfo.d2,
+            self._siginfo.d2key
+        )
+        response = await self.send_and_wait(seq, "StatSvc.register", packet)
+
+        if not isinstance(response, SvcRegisterResponse):
+            raise RuntimeError("Invalid register response type!")
+
+        if not isinstance(response, RegisterSuccess):
+            raise ApiResponseError(
+                response.uin, response.seq, response.ret_code,
+                response.command_name
+            )
+
+        print(response.response.hello_interval)
+        self._heartbeat_interval = response.response.hello_interval
+
+        return response

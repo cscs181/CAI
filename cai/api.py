@@ -85,6 +85,7 @@ async def login(uin: int, password_md5: Optional[bytes] = None) -> Client:
     await client.reconnect()
     try:
         await client.login()
+        await client.register()
     except LoginException:
         raise
     except Exception:

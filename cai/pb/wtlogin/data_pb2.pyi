@@ -3,6 +3,7 @@
 isort:skip_file
 """
 from builtins import (
+    bool,
     int,
 )
 
@@ -16,6 +17,7 @@ from google.protobuf.message import (
 )
 
 from typing import (
+    Optional,
     Text,
 )
 
@@ -26,7 +28,7 @@ from typing_extensions import (
 
 DESCRIPTOR: FileDescriptor = ...
 
-class DeviceInfo(Message):
+class DeviceReport(Message):
     DESCRIPTOR: Descriptor = ...
     BOOTLOADER_FIELD_NUMBER: int
     PROC_VERSION_FIELD_NUMBER: int
@@ -49,14 +51,15 @@ class DeviceInfo(Message):
 
     def __init__(self,
         *,
-        bootloader : Text = ...,
-        proc_version : Text = ...,
-        codename : Text = ...,
-        incremental : Text = ...,
-        fingerprint : Text = ...,
-        boot_id : Text = ...,
-        android_id : Text = ...,
-        base_band : Text = ...,
-        inner_version : Text = ...,
+        bootloader : Optional[Text] = ...,
+        proc_version : Optional[Text] = ...,
+        codename : Optional[Text] = ...,
+        incremental : Optional[Text] = ...,
+        fingerprint : Optional[Text] = ...,
+        boot_id : Optional[Text] = ...,
+        android_id : Optional[Text] = ...,
+        base_band : Optional[Text] = ...,
+        inner_version : Optional[Text] = ...,
         ) -> None: ...
+    def HasField(self, field_name: Literal[u"android_id",b"android_id",u"base_band",b"base_band",u"boot_id",b"boot_id",u"bootloader",b"bootloader",u"codename",b"codename",u"fingerprint",b"fingerprint",u"incremental",b"incremental",u"inner_version",b"inner_version",u"proc_version",b"proc_version"]) -> bool: ...
     def ClearField(self, field_name: Literal[u"android_id",b"android_id",u"base_band",b"base_band",u"boot_id",b"boot_id",u"bootloader",b"bootloader",u"codename",b"codename",u"fingerprint",b"fingerprint",u"incremental",b"incremental",u"inner_version",b"inner_version",u"proc_version",b"proc_version"]) -> None: ...

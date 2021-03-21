@@ -1,4 +1,4 @@
-"""StatSvc Related SDK
+"""StatSvc Related SDK.
 
 This module is used to build and handle status service related packet.
 
@@ -12,10 +12,13 @@ This module is used to build and handle status service related packet.
 from jce import types
 
 from .jce import SvcReqRegister
+from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.utils.jce import RequestPacketVersion3
-from cai.client.packet import CSsoBodyPacket, CSsoDataPacket
+from cai.pb.oicq.cmd0x769_pb2 import ConfigSeq, ReqBody
+from .event import SvcRegisterResponse, RegisterSuccess, RegisterFail
+from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
@@ -24,7 +27,7 @@ APK_INFO = get_protocol()
 # register
 def encode_register(
     seq: int, session_id: bytes, ksid: bytes, uin: int, d2: bytes, d2key: bytes
-):
+) -> Packet:
     """Build status service register packet.
 
     Called in `com.tencent.mobileqq.msf.core.push.e.a`.
@@ -62,12 +65,12 @@ def encode_register(
         large_seq=1551,
         vendor_name=DEVICE.vendor_name,
         vendor_os_name=DEVICE.vendor_os_name,
-        b769=bytes(
-            [
-                0x0A, 0x04, 0x08, 0x2E, 0x10, 0x00, 0x0A, 0x05, 0x08, 0x9B,
-                0x02, 0x10, 0x00
+        b769_req=ReqBody(
+            config_list=[
+                ConfigSeq(type=46, version=0),
+                ConfigSeq(type=283, version=0)
             ]
-        ),
+        ).SerializeToString(),
         is_set_status=False,
         set_mute=False,
         ext_online_status=1000,
@@ -85,3 +88,16 @@ def encode_register(
     )
     packet = CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
     return packet
+
+
+def decode_register_response(packet: IncomingPacket) -> SvcRegisterResponse:
+    return SvcRegisterResponse.decode_response(
+        packet.uin, packet.seq, packet.ret_code, packet.command_name,
+        packet.data
+    )
+
+
+__all__ = [
+    "encode_register", "decode_register_response", "SvcRegisterResponse",
+    "RegisterSuccess", "RegisterFail"
+]

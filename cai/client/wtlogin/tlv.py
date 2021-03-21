@@ -16,10 +16,9 @@ from typing import Any, List, Dict, Union
 
 from rtea import qqtea_encrypt, qqtea_decrypt
 
-from cai.log import logger
-from .data_pb2 import DeviceInfo
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
+from cai.pb.wtlogin.data_pb2 import DeviceReport
 
 DEVICE = get_device()
 
@@ -507,7 +506,7 @@ class TlvEncoder:
         Note:
             Source: oicq.wlogin_sdk.tools.util#get_android_dev_info
         """
-        device_info = DeviceInfo(
+        device_info = DeviceReport(
             bootloader=bootloader,
             proc_version=proc_version,
             codename=codename,

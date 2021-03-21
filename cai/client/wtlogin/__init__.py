@@ -31,7 +31,7 @@ APK_INFO = get_protocol()
 def encode_login_request2_captcha(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
     captcha: str, sign: bytes, t104: bytes
-):
+) -> Packet:
     """Build submit captcha request packet.
 
     Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt`.
@@ -91,7 +91,7 @@ def encode_login_request2_captcha(
 def encode_login_request2_slider(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, ticket: str,
     t104: bytes
-):
+) -> Packet:
     """Build slider ticket request packet.
 
     Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt`.
@@ -150,7 +150,7 @@ def encode_login_request2_slider(
 def encode_login_request7(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
     sms_code: str, t104: bytes, t174: bytes, g: bytes
-):
+) -> Packet:
     """Build sms submit packet.
 
     Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckSMSAndGetSt`.
@@ -219,7 +219,7 @@ def encode_login_request7(
 def encode_login_request8(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
     t174: bytes
-):
+) -> Packet:
     """Build sms request packet.
 
     Called in `oicq.wlogin_sdk.request.WtloginHelper.RefreshSMSData`.
@@ -286,7 +286,7 @@ def encode_login_request8(
 def encode_login_request9(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
     password_md5: bytes
-):
+) -> Packet:
     """Build main login request packet.
 
     Called in `oicq.wlogin_sdk.request.WtloginHelper.GetStWithPasswd`.
@@ -412,7 +412,7 @@ def encode_login_request9(
 def encode_login_request20(
     seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
     g: bytes
-):
+) -> Packet:
     """Build device lock login request packet.
 
     command id: `0x810 = 2064`

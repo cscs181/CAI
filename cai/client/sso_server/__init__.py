@@ -209,7 +209,6 @@ async def get_sso_list() -> SsoServerResponse:
         0, SsoServerRequest(app_id=protocol.app_id, imei=device.imei)
     )
     req_packet = RequestPacketVersion3(
-        req_id=0,
         servant_name="HttpServerListReq",
         func_name="HttpServerListReq",
         data=types.MAP(

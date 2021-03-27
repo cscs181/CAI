@@ -51,7 +51,11 @@ class FutureStore(Generic[KT, VT]):
     def cancel(self, seq: KT) -> bool:
         return self._futures[seq].cancel()
 
-    def exception(self, seq: KT):
+    def cancel_all(self):
+        for future in self._futures.values():
+            future.cancel()
+
+    def exception(self, seq: KT) -> Optional[BaseException]:
         return self._futures[seq].exception()
 
     async def fetch(self, seq: KT, timeout: Optional[float] = None) -> VT:

@@ -28,6 +28,7 @@ from .status_service import (
     encode_register, decode_register_response, SvcRegisterResponse,
     RegisterSuccess, RegisterFail
 )
+from .config_push import decode_push_req
 from .sso_server import get_sso_server, SsoServer
 
 from cai.exceptions import (
@@ -49,7 +50,8 @@ DEVICE = get_device()
 APK_INFO = get_protocol()
 HANDLERS: Dict[str, Callable[[IncomingPacket], Event]] = {
     "wtlogin.login": decode_login_response,
-    "StatSvc.register": decode_register_response
+    "StatSvc.register": decode_register_response,
+    "ConfigPushSvc.PushReq": decode_push_req
 }
 
 
@@ -181,7 +183,20 @@ class Client:
         self._seq = (self._seq + 1) % 0x7FFF
         return self._seq
 
-    def _send(self, packet: Union[bytes, Packet]) -> None:
+    def send(
+        self, seq: int, command_name: str, packet: Union[bytes, Packet]
+    ) -> None:
+        """Send a packet with the given sequence but not wait for the response.
+
+        Args:
+            seq (int): Sequence number.
+            command_name (str): Command name of the packet.
+            packet (Union[bytes, Packet]): Packet to send.
+
+        Returns:
+            None.
+        """
+        logger.debug(f"--> {seq}: {command_name}")
         self.connection.write_bytes(packet)
 
     async def send_and_wait(
@@ -191,7 +206,7 @@ class Client:
         packet: Union[bytes, Packet],
         timeout: Optional[float] = 10.
     ) -> Event:
-        """Send a packet with the given sequense and wait for the response.
+        """Send a packet with the given sequence and wait for the response.
 
         Args:
             seq (int): Sequence number.
@@ -202,8 +217,7 @@ class Client:
         Returns:
             Event: Response.
         """
-        logger.debug(f"--> {seq}: {command_name}")
-        self._send(packet)
+        self.send(seq, command_name, packet)
         return await self._receive_store.fetch(seq, timeout)
 
     async def receive(self):
@@ -521,8 +535,8 @@ class Client:
     async def register(self) -> RegisterSuccess:
         seq = self.next_seq()
         packet = encode_register(
-            seq, self._session_id, self._ksid, self.uin, self._siginfo.d2,
-            self._siginfo.d2key
+            seq, self._session_id, self._ksid, self.uin, self._siginfo.tgt,
+            self._siginfo.d2, self._siginfo.d2key
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
 

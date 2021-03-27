@@ -173,7 +173,7 @@ def _get_win_folder_from_registry(csidl_name):
     registry for this guarantees us the correct answer for all CSIDL_*
     names.
     """
-    import _winreg
+    import _winreg  # type: ignore
 
     shell_folder_name = {
         "CSIDL_APPDATA": "AppData",
@@ -197,7 +197,9 @@ def _get_win_folder_with_ctypes(csidl_name):
     }[csidl_name]
 
     buf = ctypes.create_unicode_buffer(1024)
-    ctypes.windll.shell32.SHGetFolderPathW(None, csidl_const, None, 0, buf)
+    ctypes.windll.shell32.SHGetFolderPathW(  # type: ignore
+        None, csidl_const, None, 0, buf
+    )
 
     # Downgrade to short path name if have highbit chars. See
     # <http://bugs.activestate.com/show_bug.cgi?id=85099>.
@@ -208,7 +210,9 @@ def _get_win_folder_with_ctypes(csidl_name):
             break
     if has_high_char:
         buf2 = ctypes.create_unicode_buffer(1024)
-        if ctypes.windll.kernel32.GetShortPathNameW(buf.value, buf2, 1024):
+        if ctypes.windll.kernel32.GetShortPathNameW(  # type: ignore
+            buf.value, buf2, 1024
+        ):
             buf = buf2
 
     return buf.value

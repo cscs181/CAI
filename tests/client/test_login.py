@@ -24,6 +24,8 @@ mock_device = unittest.mock.patch.object(
         board="venus",
         brand="Xiaomi",
         model="MI 11",
+        vendor_name="MIUI",
+        vendor_os_name="MIUI",
         bootloader="unknown",
         boot_id="dc109fd7-f17f-4f43-a266-b68469c19a1f",
         proc_version="Linux version 4.19.71-ab0b8e88 (android-build@github.com)",
@@ -72,7 +74,8 @@ mock_protocol = unittest.mock.patch.object(
 
 with mock_device:
     with mock_protocol:
-        from cai.client.login import encode_login_request9
+        from cai.settings.device import get_device
+        from cai.client.wtlogin import encode_login_request9
 
 
 class TestEncodeLoginRequest(unittest.IsolatedAsyncioTestCase):
@@ -91,7 +94,8 @@ class TestEncodeLoginRequest(unittest.IsolatedAsyncioTestCase):
         self.log(logging.INFO, "test encode login request")
         # ensure encode has no error
         packet = encode_login_request9(
-            10, bytes(16), bytes([0x02, 0xB0, 0x5B, 0x8B]), 123456,
+            10, bytes(16), bytes([0x02, 0xB0, 0x5B, 0x8B]),
+            f"|{get_device().imei}|A8.2.7.27f6ea96".encode(), 123456,
             md5("123456".encode()).digest()
         )
         # print(packet.hex())

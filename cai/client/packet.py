@@ -154,7 +154,7 @@ class UniPacket(Packet):
             struct.pack(">IBIB", 0xB, encrypt_type, seq, 0),
             struct.pack(">I",
                         len(str(uin)) + 4),
-            str(uin).encode(), qqtea_encrypt(data, key)
+            str(uin).encode(), qqtea_encrypt(bytes(data), key)
         )
 
 
@@ -228,7 +228,7 @@ class IncomingPacket:
             sso_frame = Packet(sso_frame)
 
         offset = 0
-        seq = sso_frame.read_int32(offset)
+        seq = sso_frame.read_uint32(offset)
         offset += 4
         ret_code = sso_frame.read_int32(offset)
         offset += 4

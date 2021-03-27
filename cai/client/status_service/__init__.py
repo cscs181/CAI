@@ -26,7 +26,8 @@ APK_INFO = get_protocol()
 
 # register
 def encode_register(
-    seq: int, session_id: bytes, ksid: bytes, uin: int, d2: bytes, d2key: bytes
+    seq: int, session_id: bytes, ksid: bytes, uin: int, tgt: bytes, d2: bytes,
+    d2key: bytes
 ) -> Packet:
     """Build status service register packet.
 
@@ -42,6 +43,7 @@ def encode_register(
         session_id (bytes): Session ID.
         ksid (bytes): KSID of client.
         uin (int): User QQ number.
+        tgt (bytes): siginfo tgt.
         d2 (bytes): siginfo d2.
         d2key (bytes): siginfo d2 key.
 
@@ -62,7 +64,7 @@ def encode_register(
         dev_name=DEVICE.model,
         dev_type=DEVICE.model,
         os_version=DEVICE.version.release,
-        large_seq=1551,
+        large_seq=0,
         vendor_name=DEVICE.vendor_name,
         vendor_os_name=DEVICE.vendor_os_name,
         b769_req=ReqBody(
@@ -78,13 +80,19 @@ def encode_register(
     )
     payload = SvcReqRegister.to_bytes(0, svc)
     req_packet = RequestPacketVersion3(
-        req_id=0,
         servant_name="PushService",
         func_name="SvcReqRegister",
         data=types.MAP({types.STRING("SvcReqRegister"): types.BYTES(payload)})
     ).encode()
     sso_packet = CSsoBodyPacket.build(
-        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid, req_packet
+        seq,
+        SUB_APP_ID,
+        COMMAND_NAME,
+        DEVICE.imei,
+        session_id,
+        ksid,
+        body=req_packet,
+        extra_data=tgt
     )
     packet = CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
     return packet

@@ -27,7 +27,7 @@ class SvcRegisterResponse(Event):
         """Decode StatSvc register response.
 
         Note:
-            Source: oicq.wlogin_sdk.request.WtloginHelper.GetStWithPasswd
+            Source: com.tencent.mobileqq.servlet.PushServlet.onReceive
 
         Args:
             uin (int): User QQ

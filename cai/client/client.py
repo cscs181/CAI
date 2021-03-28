@@ -72,7 +72,8 @@ class Client:
         self._key: bytes = secrets.token_bytes(16)
         self._session_id: bytes = bytes([0x02, 0xB0, 0x5B, 0x8B])
         self._connection: Optional[Connection] = None
-        self._heartbeat_interval: int = 30
+        self._heartbeat_interval: int = 300
+        """:obj:`int`: heartbeat interval. defaults to 300 seconds."""
 
         self._g: bytes = bytes()
         self._time_diff: int = 0
@@ -96,22 +97,40 @@ class Client:
 
     @property
     def uin(self) -> int:
+        """:obj:`int`: qq number of the client account."""
         return self._uin
 
     @property
     def nick(self) -> Optional[str]:
+        """:obj:`~typing.Optional[str]`: nick name of the client account.
+
+        Only available after login.
+        """
         return self._nick
 
     @property
     def age(self) -> Optional[int]:
+        """:obj:`~typing.Optional[int]`: age of the client account.
+
+        Only available after login.
+        """
         return self._age
 
     @property
     def gender(self) -> Optional[int]:
+        """:obj:`~typing.Optional[int]`: gender of the client account.
+
+        Only available after login.
+        """
         return self._gender
 
     @property
     def connection(self) -> Connection:
+        """:obj:`~cai.connection.Connection`: connection object for the client.
+
+        Raises:
+            ConnectionError: no connection available.
+        """
         if not self._connection or self._connection.closed:
             raise ConnectionError(
                 "Lost Connection! Use `connect` or `reconnect` first."
@@ -120,6 +139,7 @@ class Client:
 
     @property
     def connected(self) -> bool:
+        """:obj:`bool`: True if the client has connected to the server."""
         return bool(self._connection) and not self._connection.closed
 
     async def connect(self, server: Optional[SsoServer] = None) -> None:
@@ -153,6 +173,7 @@ class Client:
             )
 
     async def disconnect(self) -> None:
+        """Disconnect if already connected to the server."""
         if self._connection:
             await self._connection.close()
 
@@ -161,11 +182,20 @@ class Client:
         change_server: bool = False,
         server: Optional[SsoServer] = None
     ) -> None:
+        """Reconnect to the server.
+
+        The ``server`` arg only take effect if ``change_server`` is True.
+
+        Args:
+            change_server (bool, optional): True if you want to change the server. Defaults to False.
+            server (Optional[SsoServer], optional): Which server you want to connect to. Defaults to None.
+        """
         if not change_server and self._connection:
             await self._connection.reconnect()
             return
 
-        exclude = [self._connection.host] if self._connection else []
+        exclude = [self._connection.host
+                  ] if change_server and self._connection else []
         _server = server or await get_sso_server(
             cache=False, cache_server_list=True, exclude=exclude
         )
@@ -173,13 +203,20 @@ class Client:
         await self.connect(_server)
 
     async def close(self) -> None:
+        """Close the client and logout."""
         await self.disconnect()
 
     @property
     def seq(self) -> int:
+        """:obj:`int`: current packet sequence number."""
         return self._seq
 
     def next_seq(self) -> int:
+        """Get next packet sequence number.
+
+        Returns:
+            int: next sequence number.
+        """
         self._seq = (self._seq + 1) % 0x7FFF
         return self._seq
 
@@ -533,6 +570,17 @@ class Client:
         return await self._handle_login_response(response)
 
     async def register(self) -> RegisterSuccess:
+        """Register app client and get login status.
+
+        This should be called after :meth:`.Client.login` successed.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Register failed.
+
+        Returns:
+            RegisterSuccess: Register success.
+        """
         seq = self.next_seq()
         packet = encode_register(
             seq, self._session_id, self._ksid, self.uin, self._siginfo.tgt,
@@ -549,7 +597,6 @@ class Client:
                 response.command_name
             )
 
-        print(response.response.hello_interval)
         self._heartbeat_interval = response.response.hello_interval
 
         return response

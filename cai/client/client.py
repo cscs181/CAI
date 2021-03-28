@@ -28,7 +28,7 @@ from .status_service import (
     encode_register, decode_register_response, SvcRegisterResponse,
     RegisterSuccess, RegisterFail
 )
-from .config_push import decode_push_req
+from .config_push import handle_config_push_request, FileServerPushList
 from .sso_server import get_sso_server, SsoServer
 
 from cai.exceptions import (
@@ -48,10 +48,10 @@ from cai.connection import connect, Connection
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
-HANDLERS: Dict[str, Callable[[IncomingPacket], Event]] = {
+HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Event]] = {
     "wtlogin.login": decode_login_response,
     "StatSvc.register": decode_register_response,
-    "ConfigPushSvc.PushReq": decode_push_req
+    "ConfigPushSvc.PushReq": handle_config_push_request
 }
 
 
@@ -68,15 +68,17 @@ class Client:
         self._group_list: List[Any] = []
         self._other_clients: List[Any] = []
 
+        # server info
         self._seq: int = 0x3635
+        self._time_diff: int = 0
         self._key: bytes = secrets.token_bytes(16)
         self._session_id: bytes = bytes([0x02, 0xB0, 0x5B, 0x8B])
         self._connection: Optional[Connection] = None
         self._heartbeat_interval: int = 300
         """:obj:`int`: heartbeat interval. defaults to 300 seconds."""
+        self._file_storage_info: Optional[FileServerPushList] = None
 
         self._g: bytes = bytes()
-        self._time_diff: int = 0
         self._dpwd: bytes = bytes()
         self._ip_address: bytes = bytes()
         self._ksid: bytes = f"|{DEVICE.imei}|A8.2.7.27f6ea96".encode()
@@ -278,7 +280,7 @@ class Client:
                     f"<-- {packet.seq} ({packet.ret_code}): {packet.command_name}"
                 )
                 handler = HANDLERS.get(packet.command_name, _packet_to_event)
-                packet = handler(packet)
+                packet = handler(self, packet)
                 self._receive_store.store_result(packet.seq, packet)
                 # TODO: broadcast packet
             except ConnectionAbortedError:

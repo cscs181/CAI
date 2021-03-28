@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from cai.client.event import Event
 from cai.utils.jce import RequestPacketVersion2
 
-from .jce import PushReq, FileServerPushList
+from .jce import PushReq, SsoServerPushList, FileServerPushList
 
 
 @dataclass
@@ -49,8 +49,8 @@ class ConfigPushEvent(Event):
             packet.data["PushReq"]["ConfigPush.PushReq"][1:-1]
         )
         if push.type == 1:
-            # TODO
-            return SsoServerPushEvent(uin, seq, ret_code, command_name)
+            list = SsoServerPushList.decode(push.jcebuf)
+            return SsoServerPushEvent(uin, seq, ret_code, command_name, list)
         elif push.type == 2:
             list = FileServerPushList.decode(push.jcebuf)
             return FileServerPushEvent(uin, seq, ret_code, command_name, list)
@@ -62,7 +62,7 @@ class ConfigPushEvent(Event):
 
 @dataclass
 class SsoServerPushEvent(ConfigPushEvent):
-    pass
+    list: SsoServerPushList
 
 
 @dataclass

@@ -11,6 +11,7 @@ This module is used to build and handle login related packet.
 import time
 import struct
 import ipaddress
+from typing import TYPE_CHECKING
 
 from .tlv import TlvEncoder
 from cai.utils.ecdh import ECDH
@@ -22,6 +23,10 @@ from .oicq import (
     DeviceLocked, TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
 )
 from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
+
+if TYPE_CHECKING:
+    from cai.client import Client
+
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
@@ -465,7 +470,7 @@ def encode_login_request20(
     return packet
 
 
-def decode_login_response(packet: IncomingPacket) -> OICQResponse:
+def decode_login_response(client: "Client", packet: IncomingPacket) -> OICQResponse:
     return OICQResponse.decode_response(
         packet.uin, packet.seq, packet.ret_code, packet.command_name,
         packet.data

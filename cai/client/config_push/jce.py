@@ -13,6 +13,8 @@ from typing import Optional
 
 from jce import JceStruct, JceField, types
 
+from cai.client.sso_server import SsoServer
+
 
 class PushReq(JceStruct):
     """
@@ -110,7 +112,7 @@ class DomainIpChannel(JceStruct):
     Note:
         Source: ConfigPush.DomainIpChannel
     """
-    domain_iplists: DomainIpList = JceField(jce_id=0)
+    domain_iplists: types.LIST[DomainIpList] = JceField(jce_id=0)
 
 
 class FileServerPushList(JceStruct):
@@ -134,3 +136,61 @@ class FileServerPushList(JceStruct):
     fmt_ip_info: Optional[FmtIpInfo] = JceField(None, jce_id=8)
     domain_ip_channel: Optional[DomainIpChannel] = JceField(None, jce_id=9)
     ptt_list: Optional[types.BYTES] = JceField(None, jce_id=10)
+
+
+class SsoServerPushList(JceStruct):
+    """
+    Note:
+        Source: com.tencent.msf.service.protocol.serverconfig.C32524j
+    """
+    socket_v4_mobile: types.LIST[SsoServer] = JceField(jce_id=1)
+    """:obj:`~jce.types.LIST` of :obj:`~cai.client.sso_server.jce.SsoServer`:
+    socket ipv4 mobile server, renamed from a.
+    """
+    socket_v4_wifi: types.LIST[SsoServer] = JceField(jce_id=3)
+    """:obj:`~jce.types.LIST` of :obj:`~cai.client.sso_server.jce.SsoServer`:
+    socket ipv4 wifi server, renamed from b.
+    """
+    # c: types.INT32 = JceField(jce_id=4)
+    # d: types.BYTE = JceField(jce_id=5)
+    # e: types.BYTE = JceField(jce_id=6)
+    # f: types.INT32 = JceField(jce_id=7)
+    http_v4_mobile: types.LIST[SsoServer] = JceField(jce_id=8)
+    """:obj:`~jce.types.LIST` of :obj:`~cai.client.sso_server.jce.SsoServer`:
+    http ipv4 mobile server, renamed from g.
+    """
+    http_v4_wifi: types.LIST[SsoServer] = JceField(jce_id=9)
+    """:obj:`~jce.types.LIST` of :obj:`~cai.client.sso_server.jce.SsoServer`:
+    http ipv4 wifi server, renamed from h.
+    """
+    udp_v4: types.LIST[SsoServer] = JceField(jce_id=10)
+    """:obj:`~jce.types.LIST` of :obj:`~cai.client.sso_server.jce.SsoServer`:
+    quic ipv4 server, renamed from i.
+    """
+    socket_v6: types.LIST[SsoServer] = JceField(jce_id=11)
+    """:obj:`~jce.types.LIST` of :obj:`~cai.client.sso_server.jce.SsoServer`:
+    socket ipv6 server, renamed from j.
+
+    used when (wifi and :attr:`~.SsoServerPushList.nettype` & 1 == 1)
+    or (mobile and :attr:`~.SsoServerPushList.nettype` & 2 == 2)
+    """
+    http_v6: types.LIST[SsoServer] = JceField(jce_id=12)
+    """:obj:`~jce.types.LIST` of :obj:`~cai.client.sso_server.jce.SsoServer`:
+    http ipv6 server, renamed from k.
+
+    used when (wifi and :attr:`~.SsoServerPushList.nettype` & 1 == 1)
+    or (mobile and :attr:`~.SsoServerPushList.nettype` & 2 == 2)
+    """
+    udp_v6: types.LIST[SsoServer] = JceField(jce_id=13)
+    """:obj:`~jce.types.LIST` of :obj:`~cai.client.sso_server.jce.SsoServer`:
+    quic ipv6 server, renamed from l.
+
+    used when (wifi and :attr:`~.SsoServerPushList.nettype` & 1 == 1)
+    or (mobile and :attr:`~.SsoServerPushList.nettype` & 2 == 2)
+    """
+    nettype: types.BYTE = JceField(bytes(1), jce_id=14)
+    """:obj:`~jce.types.BYTE`: nettype, renamed from m."""
+    delay_threshold: types.INT32 = JceField(0, jce_id=15)
+    """:obj:`~jce.types.INT32`: delay threshold, renamed from n."""
+    policy_id: types.STRING = JceField("", jce_id=16)
+    """:obj:`~jce.types.STRING`: policy id, renamed from o."""

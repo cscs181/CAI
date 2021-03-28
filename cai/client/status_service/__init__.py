@@ -10,6 +10,7 @@ This module is used to build and handle status service related packet.
 """
 
 from jce import types
+from typing import TYPE_CHECKING
 
 from .jce import SvcReqRegister
 from cai.utils.binary import Packet
@@ -19,6 +20,9 @@ from cai.utils.jce import RequestPacketVersion3
 from cai.pb.oicq.cmd0x769_pb2 import ConfigSeq, ReqBody
 from .event import SvcRegisterResponse, RegisterSuccess, RegisterFail
 from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
+
+if TYPE_CHECKING:
+    from cai.client import Client
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
@@ -98,7 +102,9 @@ def encode_register(
     return packet
 
 
-def decode_register_response(packet: IncomingPacket) -> SvcRegisterResponse:
+def decode_register_response(
+    client: "Client", packet: IncomingPacket
+) -> SvcRegisterResponse:
     return SvcRegisterResponse.decode_response(
         packet.uin, packet.seq, packet.ret_code, packet.command_name,
         packet.data

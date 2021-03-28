@@ -50,21 +50,42 @@ class ConfigPushEvent(Event):
         )
         if push.type == 1:
             list = SsoServerPushList.decode(push.jcebuf)
-            return SsoServerPushEvent(uin, seq, ret_code, command_name, list)
+            return SsoServerPushEvent(
+                uin, seq, ret_code, command_name, push.type, push.jcebuf,
+                push.large_seq, list
+            )
         elif push.type == 2:
             list = FileServerPushList.decode(push.jcebuf)
-            return FileServerPushEvent(uin, seq, ret_code, command_name, list)
+            return FileServerPushEvent(
+                uin, seq, ret_code, command_name, push.type, push.jcebuf,
+                push.large_seq, list
+            )
         elif push.type == 3:
-            # do nothing
-            return ConfigPushEvent(uin, seq, ret_code, command_name)
+            # LogAction, do nothing
+            return LogActionPushEvent(
+                uin, seq, ret_code, command_name, push.type, push.jcebuf,
+                push.large_seq
+            )
         return ConfigPushEvent(uin, seq, ret_code, command_name)
 
 
 @dataclass
-class SsoServerPushEvent(ConfigPushEvent):
+class _ConfigPushEventBase(ConfigPushEvent):
+    type: int
+    jcebuf: bytes
+    large_seq: int
+
+
+@dataclass
+class SsoServerPushEvent(_ConfigPushEventBase):
     list: SsoServerPushList
 
 
 @dataclass
-class FileServerPushEvent(ConfigPushEvent):
+class FileServerPushEvent(_ConfigPushEventBase):
     list: FileServerPushList
+
+
+@dataclass
+class LogActionPushEvent(_ConfigPushEventBase):
+    pass

@@ -36,7 +36,7 @@ async def run():
     try:
         client = await cai.login(account, md5(password.encode()).digest())
         print("Login Success!")
-        await asyncio.sleep(3)
+        await asyncio.sleep(5)
     except Exception as e:
         await handle_failure(e)
     finally:

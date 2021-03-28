@@ -29,6 +29,7 @@ APK_INFO = get_protocol()
 
 
 # register
+# FIXME: using enum for status and reg reason
 def encode_register(
     seq: int, session_id: bytes, ksid: bytes, uin: int, tgt: bytes, d2: bytes,
     d2key: bytes
@@ -47,9 +48,9 @@ def encode_register(
         session_id (bytes): Session ID.
         ksid (bytes): KSID of client.
         uin (int): User QQ number.
-        tgt (bytes): siginfo tgt.
-        d2 (bytes): siginfo d2.
-        d2key (bytes): siginfo d2 key.
+        tgt (bytes): Siginfo tgt.
+        d2 (bytes): Siginfo d2.
+        d2key (bytes): Siginfo d2 key.
 
     Returns:
         Packet: Register packet.

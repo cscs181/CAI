@@ -26,6 +26,17 @@ class PushReq(JceStruct):
     large_seq: types.INT64 = JceField(jce_id=3)
 
 
+class PushResp(JceStruct):
+    """
+    Note:
+        Source: com.tencent.msf.service.protocol.serverconfig.g
+            ConfigPush.PushResp
+    """
+    type: types.INT32 = JceField(jce_id=1)
+    large_seq: types.INT64 = JceField(jce_id=2)
+    jcebuf: Optional[types.BYTES] = JceField(None, jce_id=3)
+
+
 class FileServerInfo(JceStruct):
     """
     Note:

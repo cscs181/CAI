@@ -13,7 +13,7 @@ import struct
 import secrets
 import asyncio
 from hashlib import md5
-from typing import Any, List, Dict, Union, Optional, Callable
+from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
 
 from rtea import qqtea_decrypt
 
@@ -48,7 +48,7 @@ from cai.connection import connect, Connection
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
-HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Event]] = {
+HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "wtlogin.login": decode_login_response,
     "StatSvc.register": decode_register_response,
     "ConfigPushSvc.PushReq": handle_config_push_request
@@ -64,6 +64,7 @@ class Client:
         self._nick: Optional[str] = None
         self._age: Optional[int] = None
         self._gender: Optional[int] = None
+        self._status: Optional[OnlineStatus] = None
         self._friend_list: List[Any] = []
         self._group_list: List[Any] = []
         self._other_clients: List[Any] = []
@@ -99,36 +100,54 @@ class Client:
 
     @property
     def uin(self) -> int:
-        """:obj:`int`: qq number of the client account."""
+        """
+        Returns:
+            int: qq number of the client account.
+        """
         return self._uin
 
     @property
     def nick(self) -> Optional[str]:
-        """:obj:`~typing.Optional[str]`: nick name of the client account.
+        """Only available after login.
 
-        Only available after login.
+        Returns:
+            Optional[str]: nick name of the client account.
         """
         return self._nick
 
     @property
     def age(self) -> Optional[int]:
-        """:obj:`~typing.Optional[int]`: age of the client account.
+        """Only available after login.
 
-        Only available after login.
+        Returns:
+            Optional[int]: age of the client account.
         """
         return self._age
 
     @property
     def gender(self) -> Optional[int]:
-        """:obj:`~typing.Optional[int]`: gender of the client account.
+        """Only available after login.
 
-        Only available after login.
+        Returns:
+            Optional[int]: gender of the client account.
         """
         return self._gender
 
     @property
+    def status(self) -> Optional[OnlineStatus]:
+        """See detail statuses in
+        :class:`~cai.client.status_service.OnlineStatus` Enum class.
+
+        Returns:
+            Optional[OnlineStatus]: Online status of the client account.
+        """
+        return self._status
+
+    @property
     def connection(self) -> Connection:
-        """:obj:`~cai.connection.Connection`: connection object for the client.
+        """
+        Returns:
+            Connection: connection object for the client.
 
         Raises:
             ConnectionError: no connection available.
@@ -141,7 +160,10 @@ class Client:
 
     @property
     def connected(self) -> bool:
-        """:obj:`bool`: True if the client has connected to the server."""
+        """
+        Returns:
+            bool: True if the client has connected to the server.
+        """
         return bool(self._connection) and not self._connection.closed
 
     async def connect(self, server: Optional[SsoServer] = None) -> None:
@@ -210,7 +232,10 @@ class Client:
 
     @property
     def seq(self) -> int:
-        """:obj:`int`: current packet sequence number."""
+        """
+        Returns:
+            int: current packet sequence number.
+        """
         return self._seq
 
     def next_seq(self) -> int:
@@ -280,7 +305,7 @@ class Client:
                     f"<-- {packet.seq} ({packet.ret_code}): {packet.command_name}"
                 )
                 handler = HANDLERS.get(packet.command_name, _packet_to_event)
-                packet = handler(self, packet)
+                packet = await handler(self, packet)
                 self._receive_store.store_result(packet.seq, packet)
                 # TODO: broadcast packet
             except ConnectionAbortedError:
@@ -301,67 +326,9 @@ class Client:
                 response.command_name
             )
 
-        if response.t402:
-            self._dpwd = (
-                "".join(
-                    secrets.choice(string.ascii_letters + string.digits)
-                    for _ in range(16)
-                )
-            ).encode()
-            self._t402 = response.t402
-            self._g = md5(DEVICE.guid + self._dpwd + self._t402).digest()
-
         if isinstance(response, LoginSuccess):
-            self._t150 = response.t150 or self._t150
-            self._rollback_sig = response.rollback_sig or self._rollback_sig
-            self._rand_seed = response.rand_seed or self._rand_seed
-            self._time_diff = response.time_diff or self._time_diff
-            self._ip_address = response.ip_address or self._ip_address
-            self._t528 = response.t528 or self._t528
-            self._t530 = response.t530 or self._t530
-            self._ksid = response.ksid or self._ksid
-            self._pwd_flag = response.pwd_flag or self._pwd_flag
-            self._nick = response.nick or self._nick
-            self._age = response.age or self._age
-            self._gender = response.gender or self._gender
-
-            self._siginfo.tgt = response.tgt or self._siginfo.tgt
-            self._siginfo.tgt_key = response.tgt_key or self._siginfo.tgt_key
-            self._siginfo.srm_token = response.srm_token or self._siginfo.srm_token
-            self._siginfo.t133 = response.t133 or self._siginfo.t133
-            self._siginfo.encrypted_a1 = (
-                response.encrypted_a1 or self._siginfo.encrypted_a1
-            )
-            self._siginfo.user_st_key = response.user_st_key or self._siginfo.user_st_key
-            self._siginfo.user_st_web_sig = (
-                response.user_st_web_sig or self._siginfo.user_st_web_sig
-            )
-            self._siginfo.s_key = response.s_key or self._siginfo.s_key
-            self._siginfo.s_key_expire_time = (
-                response.s_key_expire_time or self._siginfo.s_key_expire_time
-            )
-            self._siginfo.d2 = response.d2 or self._siginfo.d2
-            self._siginfo.d2key = response.d2key or self._siginfo.d2key
-            self._siginfo.wt_session_ticket_key = (
-                response.wt_session_ticket_key or
-                self._siginfo.wt_session_ticket_key
-            )
-            self._siginfo.device_token = (
-                response.device_token or self._siginfo.device_token
-            )
-            self._siginfo.ps_key_map = response.ps_key_map or self._siginfo.ps_key_map
-            self._siginfo.pt4_token_map = (
-                response.pt4_token_map or self._siginfo.pt4_token_map
-            )
-
-            key = md5(
-                self._password_md5 + bytes(4) + struct.pack(">I", self._uin)
-            ).digest()
-            decrypted = qqtea_decrypt(response.encrypted_a1, key)
-            DEVICE.tgtgt = decrypted[51:67]
             logger.info(f"{self.nick}({self.uin}) 登录成功！")
         elif isinstance(response, NeedCaptcha):
-            self._t104 = response.t104 or self._t104
             if response.verify_url:
                 logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
                 raise LoginSliderNeeded(response.uin, response.verify_url)
@@ -379,9 +346,6 @@ class Client:
             logger.info("账号已被冻结！")
             raise LoginAccountFrozen(response.uin)
         elif isinstance(response, DeviceLocked):
-            self._t104 = response.t104 or self._t104
-            self._t174 = response.t174 or self._t174
-            self._rand_seed = response.rand_seed or self._rand_seed
             msg = "账号已开启设备锁！"
             if response.sms_phone:
                 msg += f"向手机{response.sms_phone}发送验证码 "
@@ -396,8 +360,6 @@ class Client:
             logger.info("验证码发送频繁！")
             raise LoginSMSRequestError(response.uin)
         elif isinstance(response, DeviceLockLogin):
-            self._t104 = response.t104 or self._t104
-            self._rand_seed = response.rand_seed or self._rand_seed
             if try_times:
                 seq = self.next_seq()
                 packet = encode_login_request20(
@@ -437,6 +399,9 @@ class Client:
 
         This should be called before using any other apis.
 
+        Returns:
+            LoginSuccess: Success login event.
+
         Raises:
             RuntimeError: Error response type got. This should not happen.
             ApiResponseError: Invalid response got. Like unknown return code.
@@ -446,9 +411,6 @@ class Client:
             LoginDeviceLocked: Device lock detected.
             LoginSMSRequestError: Too many SMS messages were sent.
             LoginException: Unknown login return code or other exception.
-
-        Returns:
-            LoginSuccess: Success login event.
         """
         seq = self.next_seq()
         packet = encode_login_request9(
@@ -465,6 +427,9 @@ class Client:
 
         This should be called after :class:`~cai.exceptions.LoginCaptchaNeeded` occurred.
 
+        Returns:
+            LoginSuccess: Success login event.
+
         Raises:
             RuntimeError: Error response type got. This should not happen.
             ApiResponseError: Invalid response got. Like unknown return code.
@@ -474,9 +439,6 @@ class Client:
             LoginDeviceLocked: Device lock detected.
             LoginSMSRequestError: Too many SMS messages were sent.
             LoginException: Unknown login return code or other exception.
-
-        Returns:
-            LoginSuccess: Success login event.
         """
         seq = self.next_seq()
         packet = encode_login_request2_captcha(
@@ -491,6 +453,9 @@ class Client:
 
         This should be called after :class:`~cai.exceptions.LoginSliderNeeded` occurred.
 
+        Returns:
+            LoginSuccess: Success login event.
+
         Raises:
             RuntimeError: Error response type got. This should not happen.
             ApiResponseError: Invalid response got. Like unknown return code.
@@ -500,9 +465,6 @@ class Client:
             LoginDeviceLocked: Device lock detected.
             LoginSMSRequestError: Too many SMS messages were sent.
             LoginException: Unknown login return code or other exception.
-
-        Returns:
-            LoginSuccess: Success login event.
         """
         seq = self.next_seq()
         packet = encode_login_request2_slider(
@@ -517,6 +479,9 @@ class Client:
 
         This should be called after :class:`~cai.exceptions.LoginSMSRequestError` occurred.
 
+        Returns:
+            LoginSuccess: Success login event.
+
         Raises:
             RuntimeError: Error response type got. This should not happen.
             ApiResponseError: Invalid response got. Like unknown return code.
@@ -526,9 +491,6 @@ class Client:
             LoginDeviceLocked: Device lock detected.
             LoginSMSRequestError: Too many SMS messages were sent.
             LoginException: Unknown login return code or other exception.
-
-        Returns:
-            LoginSuccess: Success login event.
         """
         seq = self.next_seq()
         packet = encode_login_request8(
@@ -550,6 +512,9 @@ class Client:
 
         This should be called after :class:`~cai.exceptions.LoginSMSRequestError` occurred.
 
+        Returns:
+            LoginSuccess: Success login event.
+
         Raises:
             RuntimeError: Error response type got. This should not happen.
             ApiResponseError: Invalid response got. Like unknown return code.
@@ -559,9 +524,6 @@ class Client:
             LoginDeviceLocked: Device lock detected.
             LoginSMSRequestError: Too many SMS messages were sent.
             LoginException: Unknown login return code or other exception.
-
-        Returns:
-            LoginSuccess: Success login event.
         """
         seq = self.next_seq()
         packet = encode_login_request7(
@@ -571,22 +533,30 @@ class Client:
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
 
-    async def register(self) -> RegisterSuccess:
+    async def register(
+        self, status: OnlineStatus = OnlineStatus.Online
+    ) -> RegisterSuccess:
         """Register app client and get login status.
 
         This should be called after :meth:`.Client.login` successed.
 
-        Raises:
-            RuntimeError: Error response type got. This should not happen.
-            ApiResponseError: Register failed.
+        Args:
+            status (OnlineStatus): :attr:`~cai.client.status_service.OnlineStatus.Online` or
+                :attr:`~cai.client.status_service.OnlineStatus.Offline`. defaults to
+                :attr:`~cai.client.status_service.OnlineStatus.Online`
 
         Returns:
             RegisterSuccess: Register success.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Register failed.
         """
         seq = self.next_seq()
         packet = encode_register(
             seq, self._session_id, self._ksid, self.uin, self._siginfo.tgt,
-            self._siginfo.d2, self._siginfo.d2key, 7, OnlineStatus.Online,
+            self._siginfo.d2, self._siginfo.d2key,
+            7 if status == OnlineStatus.Online else 0, status,
             RegPushReason.AppRegister
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
@@ -599,7 +569,5 @@ class Client:
                 response.uin, response.seq, response.ret_code,
                 response.command_name
             )
-
-        self._heartbeat_interval = response.response.hello_interval
 
         return response

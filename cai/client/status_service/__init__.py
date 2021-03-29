@@ -140,13 +140,16 @@ def encode_register(
     return packet
 
 
-def decode_register_response(
+async def decode_register_response(
     client: "Client", packet: IncomingPacket
 ) -> SvcRegisterResponse:
-    return SvcRegisterResponse.decode_response(
+    response = SvcRegisterResponse.decode_response(
         packet.uin, packet.seq, packet.ret_code, packet.command_name,
         packet.data
     )
+    if isinstance(response, RegisterSuccess):
+        client._heartbeat_interval = response.response.hello_interval
+    return response
 
 
 __all__ = [

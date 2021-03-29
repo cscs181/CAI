@@ -31,7 +31,7 @@ class UnhandledEvent(Event):
     data: bytes
 
 
-def _packet_to_event(
+async def _packet_to_event(
     client: "Client", packet: IncomingPacket
 ) -> UnhandledEvent:
     return UnhandledEvent(

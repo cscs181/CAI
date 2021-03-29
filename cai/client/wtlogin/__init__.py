@@ -9,11 +9,15 @@ This module is used to build and handle login related packet.
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
 import time
+import string
 import struct
+import secrets
 import ipaddress
+from hashlib import md5
 from typing import TYPE_CHECKING
 
 from .tlv import TlvEncoder
+from rtea import qqtea_decrypt
 from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
@@ -26,7 +30,6 @@ from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
 
 if TYPE_CHECKING:
     from cai.client import Client
-
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
@@ -470,11 +473,84 @@ def encode_login_request20(
     return packet
 
 
-def decode_login_response(client: "Client", packet: IncomingPacket) -> OICQResponse:
-    return OICQResponse.decode_response(
+async def decode_login_response(
+    client: "Client", packet: IncomingPacket
+) -> OICQResponse:
+    response = OICQResponse.decode_response(
         packet.uin, packet.seq, packet.ret_code, packet.command_name,
         packet.data
     )
+    if not isinstance(response, UnknownLoginStatus):
+        return response
+
+    if response.t402:
+        client._dpwd = (
+            "".join(
+                secrets.choice(string.ascii_letters + string.digits)
+                for _ in range(16)
+            )
+        ).encode()
+        client._t402 = response.t402
+        client._g = md5(DEVICE.guid + client._dpwd + client._t402).digest()
+
+    if isinstance(response, LoginSuccess):
+        client._t150 = response.t150 or client._t150
+        client._rollback_sig = response.rollback_sig or client._rollback_sig
+        client._rand_seed = response.rand_seed or client._rand_seed
+        client._time_diff = response.time_diff or client._time_diff
+        client._ip_address = response.ip_address or client._ip_address
+        client._t528 = response.t528 or client._t528
+        client._t530 = response.t530 or client._t530
+        client._ksid = response.ksid or client._ksid
+        client._pwd_flag = response.pwd_flag or client._pwd_flag
+        client._nick = response.nick or client._nick
+        client._age = response.age or client._age
+        client._gender = response.gender or client._gender
+
+        client._siginfo.tgt = response.tgt or client._siginfo.tgt
+        client._siginfo.tgt_key = response.tgt_key or client._siginfo.tgt_key
+        client._siginfo.srm_token = response.srm_token or client._siginfo.srm_token
+        client._siginfo.t133 = response.t133 or client._siginfo.t133
+        client._siginfo.encrypted_a1 = (
+            response.encrypted_a1 or client._siginfo.encrypted_a1
+        )
+        client._siginfo.user_st_key = response.user_st_key or client._siginfo.user_st_key
+        client._siginfo.user_st_web_sig = (
+            response.user_st_web_sig or client._siginfo.user_st_web_sig
+        )
+        client._siginfo.s_key = response.s_key or client._siginfo.s_key
+        client._siginfo.s_key_expire_time = (
+            response.s_key_expire_time or client._siginfo.s_key_expire_time
+        )
+        client._siginfo.d2 = response.d2 or client._siginfo.d2
+        client._siginfo.d2key = response.d2key or client._siginfo.d2key
+        client._siginfo.wt_session_ticket_key = (
+            response.wt_session_ticket_key or
+            client._siginfo.wt_session_ticket_key
+        )
+        client._siginfo.device_token = (
+            response.device_token or client._siginfo.device_token
+        )
+        client._siginfo.ps_key_map = response.ps_key_map or client._siginfo.ps_key_map
+        client._siginfo.pt4_token_map = (
+            response.pt4_token_map or client._siginfo.pt4_token_map
+        )
+
+        key = md5(
+            client._password_md5 + bytes(4) + struct.pack(">I", client._uin)
+        ).digest()
+        decrypted = qqtea_decrypt(response.encrypted_a1, key)
+        DEVICE.tgtgt = decrypted[51:67]
+    elif isinstance(response, NeedCaptcha):
+        client._t104 = response.t104 or client._t104
+    elif isinstance(response, DeviceLocked):
+        client._t104 = response.t104 or client._t104
+        client._t174 = response.t174 or client._t174
+        client._rand_seed = response.rand_seed or client._rand_seed
+    elif isinstance(response, DeviceLockLogin):
+        client._t104 = response.t104 or client._t104
+        client._rand_seed = response.rand_seed or client._rand_seed
+    return response
 
 
 __all__ = [

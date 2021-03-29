@@ -9,8 +9,10 @@ This module is used to build and handle status service related packet.
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
 
+from enum import Enum, IntEnum
+from typing import Union, TYPE_CHECKING
+
 from jce import types
-from typing import TYPE_CHECKING
 
 from .jce import SvcReqRegister
 from cai.utils.binary import Packet
@@ -28,11 +30,42 @@ DEVICE = get_device()
 APK_INFO = get_protocol()
 
 
+class OnlineStatus(IntEnum):
+    """
+    Note:
+        Source: mqq.app.AppRuntime
+    """
+    Online = 11
+    Offline = 21
+    Away = 31
+    Invisible = 41
+    Busy = 50
+    Qme = 60
+    Dnd = 70
+    ReceiveOfflineMsg = 95
+
+
+class RegPushReason(str, Enum):
+    """
+    Note:
+        Source: com.tencent.mobileqq.msf.core.push.RegPushReason
+    """
+    MsfBoot = "msfBoot"
+    AppRegister = "appRegister"
+    Unknown = "unknown"
+    MsfHeartTimeTooLong = "msfHeartTimeTooLong"
+    MsfByNetChange = "msfByNetChange"
+    ServerPush = "serverPush"
+    FillRegProxy = "fillRegProxy"
+    CreateDefaultRegInfo = "createDefaultRegInfo"
+    SetOnlineStatus = "setOnlineStatus"
+
+
 # register
-# FIXME: using enum for status and reg reason
 def encode_register(
     seq: int, session_id: bytes, ksid: bytes, uin: int, tgt: bytes, d2: bytes,
-    d2key: bytes
+    d2key: bytes, bid: int, status: Union[int, OnlineStatus],
+    reg_push_reason: Union[str, RegPushReason]
 ) -> Packet:
     """Build status service register packet.
 
@@ -51,6 +84,9 @@ def encode_register(
         tgt (bytes): Siginfo tgt.
         d2 (bytes): Siginfo d2.
         d2key (bytes): Siginfo d2 key.
+        bid (int): register bid. login: 1 | 2 | 4, other: 0.
+        status (Union[int, OnlineStatus]): Online status.
+        reg_push_reason (Union[str, RegPushReason]): Reg push reason
 
     Returns:
         Packet: Register packet.
@@ -60,11 +96,12 @@ def encode_register(
 
     svc = SvcReqRegister(
         uin=uin,
-        bid=7,  # login: 1 | 2 | 4, logout: 0
-        status=11,  # login: 11, logout: 21
+        bid=bid,
+        status=status.value,
         ios_version=DEVICE.version.sdk,
         nettype=bytes([1]),
-        reg_type=bytes(1),
+        reg_type=bytes(1)
+        if reg_push_reason in (RegPushReason.AppRegister) else bytes([1]),
         guid=DEVICE.guid,
         dev_name=DEVICE.model,
         dev_type=DEVICE.model,
@@ -113,6 +150,6 @@ def decode_register_response(
 
 
 __all__ = [
-    "encode_register", "decode_register_response", "SvcRegisterResponse",
-    "RegisterSuccess", "RegisterFail"
+    "encode_register", "decode_register_response", "OnlineStatus",
+    "RegPushReason", "SvcRegisterResponse", "RegisterSuccess", "RegisterFail"
 ]

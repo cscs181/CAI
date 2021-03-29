@@ -25,8 +25,8 @@ from .wtlogin import (
     DeviceLockLogin, UnknownLoginStatus
 )
 from .status_service import (
-    encode_register, decode_register_response, SvcRegisterResponse,
-    RegisterSuccess, RegisterFail
+    encode_register, decode_register_response, OnlineStatus, RegPushReason,
+    SvcRegisterResponse, RegisterSuccess, RegisterFail
 )
 from .config_push import handle_config_push_request, FileServerPushList
 from .sso_server import get_sso_server, SsoServer
@@ -586,7 +586,8 @@ class Client:
         seq = self.next_seq()
         packet = encode_register(
             seq, self._session_id, self._ksid, self.uin, self._siginfo.tgt,
-            self._siginfo.d2, self._siginfo.d2key
+            self._siginfo.d2, self._siginfo.d2key, 7, OnlineStatus.Online,
+            RegPushReason.AppRegister
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
 

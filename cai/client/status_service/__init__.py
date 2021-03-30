@@ -140,7 +140,7 @@ def encode_register(
     return packet
 
 
-async def decode_register_response(
+async def handle_register_response(
     client: "Client", packet: IncomingPacket
 ) -> SvcRegisterResponse:
     response = SvcRegisterResponse.decode_response(

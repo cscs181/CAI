@@ -16,6 +16,7 @@ import ipaddress
 from hashlib import md5
 from typing import TYPE_CHECKING
 
+from cai.log import logger
 from .tlv import TlvEncoder
 from rtea import qqtea_decrypt
 from cai.utils.ecdh import ECDH
@@ -473,7 +474,7 @@ def encode_login_request20(
     return packet
 
 
-async def decode_login_response(
+async def handle_login_response(
     client: "Client", packet: IncomingPacket
 ) -> OICQResponse:
     response = OICQResponse.decode_response(
@@ -541,15 +542,43 @@ async def decode_login_response(
         ).digest()
         decrypted = qqtea_decrypt(response.encrypted_a1, key)
         DEVICE.tgtgt = decrypted[51:67]
+        logger.info(f"{client.nick}({client.uin}) 登录成功！")
     elif isinstance(response, NeedCaptcha):
         client._t104 = response.t104 or client._t104
+        if response.verify_url:
+            logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
+        elif response.captcha_image:
+            logger.info(f"登录失败！需要根据图片输入验证码")
+    elif isinstance(response, AccountFrozen):
+        logger.info("账号已被冻结！")
     elif isinstance(response, DeviceLocked):
         client._t104 = response.t104 or client._t104
         client._t174 = response.t174 or client._t174
         client._rand_seed = response.rand_seed or client._rand_seed
+
+        msg = "账号已开启设备锁！"
+        if response.sms_phone:
+            msg += f"向手机{response.sms_phone}发送验证码 "
+        if response.verify_url:
+            msg += f"或前往{response.verify_url}扫码验证"
+        logger.info(msg + ". " + str(response.message))
+    elif isinstance(response, TooManySMSRequest):
+        logger.info("验证码发送频繁！")
     elif isinstance(response, DeviceLockLogin):
         client._t104 = response.t104 or client._t104
         client._rand_seed = response.rand_seed or client._rand_seed
+    elif isinstance(response, UnknownLoginStatus):
+        t146 = response._tlv_map.get(0x146)
+        t149 = response._tlv_map.get(0x149)
+        if t146:
+            packet_ = Packet(t146)
+            msg = packet_.read_bytes(packet_.read_uint16(4), 6).decode()
+        elif t149:
+            packet_ = Packet(t149)
+            msg = packet_.read_bytes(packet_.read_uint16(2), 4).decode()
+        else:
+            msg = ""
+        logger.info(f"未知的登录返回码 {response.status}! {msg}")
     return response
 
 

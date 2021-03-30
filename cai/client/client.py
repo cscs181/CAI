@@ -8,7 +8,6 @@ This module is used to control client actions (low-level api).
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
-import signal
 import struct
 import secrets
 import asyncio
@@ -17,12 +16,12 @@ from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
 from .wtlogin import (
     encode_login_request2_captcha, encode_login_request2_slider,
     encode_login_request7, encode_login_request8, encode_login_request9,
-    encode_login_request20, decode_login_response, OICQResponse, LoginSuccess,
+    encode_login_request20, handle_login_response, OICQResponse, LoginSuccess,
     NeedCaptcha, AccountFrozen, DeviceLocked, TooManySMSRequest,
     DeviceLockLogin, UnknownLoginStatus
 )
 from .status_service import (
-    encode_register, decode_register_response, OnlineStatus, RegPushReason,
+    encode_register, handle_register_response, OnlineStatus, RegPushReason,
     SvcRegisterResponse, RegisterSuccess, RegisterFail
 )
 from .config_push import handle_config_push_request, FileServerPushList
@@ -46,8 +45,8 @@ from cai.connection import connect, Connection
 DEVICE = get_device()
 APK_INFO = get_protocol()
 HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
-    "wtlogin.login": decode_login_response,
-    "StatSvc.register": decode_register_response,
+    "wtlogin.login": handle_login_response,
+    "StatSvc.register": handle_register_response,
     "ConfigPushSvc.PushReq": handle_config_push_request
 }
 
@@ -327,13 +326,11 @@ class Client:
             )
 
         if isinstance(response, LoginSuccess):
-            logger.info(f"{self.nick}({self.uin}) 登录成功！")
+            return response
         elif isinstance(response, NeedCaptcha):
             if response.verify_url:
-                logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
                 raise LoginSliderNeeded(response.uin, response.verify_url)
             elif response.captcha_image:
-                logger.info(f"登录失败！需要根据图片输入验证码")
                 raise LoginCaptchaNeeded(
                     response.uin, response.captcha_image, response.captcha_sign
                 )
@@ -343,21 +340,13 @@ class Client:
                     "Cannot get verify_url or captcha_image from the response!"
                 )
         elif isinstance(response, AccountFrozen):
-            logger.info("账号已被冻结！")
             raise LoginAccountFrozen(response.uin)
         elif isinstance(response, DeviceLocked):
-            msg = "账号已开启设备锁！"
-            if response.sms_phone:
-                msg += f"向手机{response.sms_phone}发送验证码 "
-            if response.verify_url:
-                msg += f"或前往{response.verify_url}扫码验证"
-            logger.info(msg + ". " + str(response.message))
             raise LoginDeviceLocked(
                 response.uin, response.sms_phone, response.verify_url,
                 response.message
             )
         elif isinstance(response, TooManySMSRequest):
-            logger.info("验证码发送频繁！")
             raise LoginSMSRequestError(response.uin)
         elif isinstance(response, DeviceLockLogin):
             if try_times:
@@ -378,21 +367,9 @@ class Client:
                     "Maximum number of login attempts exceeded!"
                 )
         elif isinstance(response, UnknownLoginStatus):
-            t146 = response._tlv_map.get(0x146)
-            t149 = response._tlv_map.get(0x149)
-            if t146:
-                packet = Packet(t146)
-                msg = packet.read_bytes(packet.read_uint16(4), 6).decode()
-            elif t149:
-                packet = Packet(t149)
-                msg = packet.read_bytes(packet.read_uint16(2), 4).decode()
-            else:
-                msg = ""
-            logger.info(f"未知的登录返回码 {response.status}! {msg}")
             raise LoginException(
                 response.uin, response.status, "Unknown login status."
             )
-        return response
 
     async def login(self) -> LoginSuccess:
         """Login the account of the client.

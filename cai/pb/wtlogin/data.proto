@@ -1,0 +1,14 @@
+syntax = "proto2";
+
+// oicq/wlogin_sdk/pb/device_report.java
+message DeviceReport {
+  optional string bootloader = 1;
+  optional string proc_version = 2;
+  optional string codename = 3;
+  optional string incremental = 4;
+  optional string fingerprint = 5;
+  optional string boot_id = 6;
+  optional string android_id = 7;
+  optional string base_band = 8;
+  optional string inner_version = 9;
+}

@@ -42,13 +42,20 @@ class FutureStore(Generic[KT, VT]):
         future = self._futures[seq]
         return future.remove_done_callback(callback)
 
+    def done(self, seq: KT) -> bool:
+        return self._futures[seq].done()
+
     def result(self, seq: KT) -> VT:
         return self._futures[seq].result()
 
     def cancel(self, seq: KT) -> bool:
         return self._futures[seq].cancel()
 
-    def exception(self, seq: KT):
+    def cancel_all(self):
+        for future in self._futures.values():
+            future.cancel()
+
+    def exception(self, seq: KT) -> Optional[BaseException]:
         return self._futures[seq].exception()
 
     async def fetch(self, seq: KT, timeout: Optional[float] = None) -> VT:

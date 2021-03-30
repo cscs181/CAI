@@ -1,0 +1,590 @@
+"""Login Related SDK
+
+This module is used to build and handle login related packet.
+
+:Copyright: Copyright (C) 2021-2021  yanyongyu
+:License: AGPL-3.0 or later. See `LICENSE`_ for detail.
+
+.. _LICENSE:
+    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+"""
+import time
+import string
+import struct
+import secrets
+import ipaddress
+from hashlib import md5
+from typing import TYPE_CHECKING
+
+from cai.log import logger
+from .tlv import TlvEncoder
+from rtea import qqtea_decrypt
+from cai.utils.ecdh import ECDH
+from cai.utils.binary import Packet
+from cai.settings.device import get_device
+from cai.settings.protocol import get_protocol
+from .oicq import (
+    OICQRequest, OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen,
+    DeviceLocked, TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
+)
+from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
+
+if TYPE_CHECKING:
+    from cai.client import Client
+
+DEVICE = get_device()
+APK_INFO = get_protocol()
+
+
+# submit captcha
+def encode_login_request2_captcha(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
+    captcha: str, sign: bytes, t104: bytes
+) -> Packet:
+    """Build submit captcha request packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt`.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `2`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.n
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        captcha (str): Captcha image result.
+        sign (bytes): Signature of the captcha.
+        t104 (bytes): TLV 104 data.
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 2
+    COMMAND_NAME = "wtlogin.login"
+
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 4),  # packet num
+        TlvEncoder.t2(captcha.encode(), sign),
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP)
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+# submit ticket
+def encode_login_request2_slider(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, ticket: str,
+    t104: bytes
+) -> Packet:
+    """Build slider ticket request packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt`.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `2`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.n
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        ticket (str): Captcha image result.
+        t104 (bytes): TLV 104 data.
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 2
+    COMMAND_NAME = "wtlogin.login"
+
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 4),  # packet num
+        TlvEncoder.t193(ticket),
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP)
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+# submit sms
+def encode_login_request7(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
+    sms_code: str, t104: bytes, t174: bytes, g: bytes
+) -> Packet:
+    """Build sms submit packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckSMSAndGetSt`.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `7`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.o
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        sms_code (str): SMS code.
+        t104 (bytes): TLV 104 data.
+        t174 (bytes): TLV 174 data.
+        g (bytes): G data of client.
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 7
+    COMMAND_NAME = "wtlogin.login"
+
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    GUID_SRC = 1
+    GUID_CHANGE = 0
+    GUID_FLAG = 0
+    GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
+    GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 7),  # packet num
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
+        TlvEncoder.t174(t174),
+        TlvEncoder.t17c(sms_code),
+        TlvEncoder.t401(g),
+        TlvEncoder.t198()
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+# request sms
+def encode_login_request8(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
+    t174: bytes
+) -> Packet:
+    """Build sms request packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.RefreshSMSData`.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `8`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.r
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        t104 (bytes): TLV 104 data.
+        t174 (bytes): TLV 174 data.
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 8
+    COMMAND_NAME = "wtlogin.login"
+
+    SMS_APP_ID = 9
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    GUID_SRC = 1
+    GUID_CHANGE = 0
+    GUID_FLAG = 0
+    GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
+    GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 6),  # packet num
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
+        TlvEncoder.t174(t174),
+        TlvEncoder.t17a(SMS_APP_ID),
+        TlvEncoder.t197()
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+# password md5 login
+def encode_login_request9(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
+    password_md5: bytes
+) -> Packet:
+    """Build main login request packet.
+
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.GetStWithPasswd`.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `9`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.k
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        password_md5 (bytes): User QQ password md5 hash.
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 9
+    COMMAND_NAME = "wtlogin.login"
+
+    APK_ID = APK_INFO.apk_id
+    APK_VERSION = APK_INFO.version
+    APK_SIGN = APK_INFO.apk_sign
+    APK_BUILD_TIME = APK_INFO.build_time
+    APP_ID = APK_INFO.app_id
+    SUB_APP_ID = APK_INFO.sub_app_id
+    APP_CLIENT_VERSION = 0
+    SDK_VERSION = APK_INFO.sdk_version
+    SSO_VERSION = APK_INFO.sso_version
+    BITMAP = APK_INFO.bitmap
+    MAIN_SIGMAP = APK_INFO.main_sigmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    GUID_SRC = 1
+    GUID_CHANGE = 0
+    GUID_FLAG = 0
+    GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
+    GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
+    CAN_WEB_VERIFY = 130  # oicq.wlogin_sdk.request.k.K
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+    IP_BYTES: bytes = ipaddress.ip_address(DEVICE.ip_address).packed
+    NETWORK_TYPE = (DEVICE.apn == "wifi") + 1
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 23),  # packet num
+        TlvEncoder.t18(APP_ID, APP_CLIENT_VERSION, uin),
+        TlvEncoder.t1(uin, int(time.time()), IP_BYTES),
+        TlvEncoder.t106(
+            SSO_VERSION, APP_ID, SUB_APP_ID, APP_CLIENT_VERSION, uin, 0,
+            password_md5, DEVICE.guid, DEVICE.tgtgt
+        ),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
+        TlvEncoder.t100(
+            SSO_VERSION, APP_ID, SUB_APP_ID, APP_CLIENT_VERSION, MAIN_SIGMAP
+        ),
+        TlvEncoder.t107(),
+        # TlvBuilder.t108(KSID),  # null when first time login
+        # TlvBuilder.t104(),
+        TlvEncoder.t142(APK_ID),
+        TlvEncoder.t144(
+            DEVICE.imei.encode(), DEVICE.bootloader, DEVICE.proc_version,
+            DEVICE.version.codename, DEVICE.version.incremental,
+            DEVICE.fingerprint, DEVICE.boot_id,
+            DEVICE.android_id, DEVICE.baseband, DEVICE.version.incremental,
+            DEVICE.os_type.encode(),
+            DEVICE.version.release.encode(), NETWORK_TYPE, DEVICE.sim.encode(),
+            DEVICE.apn.encode(), False, True, False, GUID_FLAG,
+            DEVICE.model.encode(), DEVICE.guid, DEVICE.brand.encode(),
+            DEVICE.tgtgt
+        ),
+        TlvEncoder.t145(DEVICE.guid),
+        TlvEncoder.t147(APP_ID, APK_VERSION.encode(), APK_SIGN),
+        # TlvBuilder.t166(1),
+        # TlvBuilder.t16a(),
+        TlvEncoder.t154(seq),
+        TlvEncoder.t141(DEVICE.sim.encode(), NETWORK_TYPE, DEVICE.apn.encode()),
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t511(
+            [
+                "tenpay.com", "openmobile.qq.com", "docs.qq.com",
+                "connect.qq.com", "qzone.qq.com", "vip.qq.com",
+                "gamecenter.qq.com", "qun.qq.com", "game.qq.com",
+                "qqweb.qq.com", "office.qq.com", "ti.qq.com", "mail.qq.com",
+                "mma.qq.com"
+            ]
+        ),  # com.tencent.mobileqq.msf.core.auth.l
+        # TlvBuilder.t172(),
+        # TlvBuilder.t185(1),  # when sms login, is_password_login == 3
+        # TlvBuilder.t400(),  # null when first time login
+        TlvEncoder.t187(DEVICE.mac_address.encode()),
+        TlvEncoder.t188(DEVICE.android_id.encode()),
+        TlvEncoder.t194(DEVICE.imsi_md5) if DEVICE.imsi_md5 else b"",
+        TlvEncoder.t191(CAN_WEB_VERIFY),
+        # TlvBuilder.t201(),
+        TlvEncoder.t202(DEVICE.wifi_bssid.encode(), DEVICE.wifi_ssid.encode()),
+        TlvEncoder.t177(APK_BUILD_TIME, SDK_VERSION),
+        TlvEncoder.t516(),
+        TlvEncoder.t521(),
+        TlvEncoder.t525(TlvEncoder.t536([])),
+        # TlvBuilder.t318()  # not login in by qr
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+# device lock login, when status 204
+def encode_login_request20(
+    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
+    g: bytes
+) -> Packet:
+    """Build device lock login request packet.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `20`
+
+    command name: `wtlogin.login`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.p
+
+    Args:
+        seq (int): Packet sequence.
+        key (bytes): 16 bits key used to decode the response.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        t104 (bytes): T104 response data.
+        g (bytes): md5 of (guid + dpwd + t402)
+
+    Returns:
+        Packet: Login packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 20
+    COMMAND_NAME = "wtlogin.login"
+
+    SUB_APP_ID = APK_INFO.sub_app_id
+    BITMAP = APK_INFO.bitmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 4),  # packet num
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t104(t104),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
+        TlvEncoder.t401(g)
+    )
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
+    )
+    sso_packet = CSsoBodyPacket.build(
+        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
+        oicq_packet
+    )
+    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
+    return packet
+
+
+async def handle_login_response(
+    client: "Client", packet: IncomingPacket
+) -> OICQResponse:
+    response = OICQResponse.decode_response(
+        packet.uin, packet.seq, packet.ret_code, packet.command_name,
+        packet.data
+    )
+    if not isinstance(response, UnknownLoginStatus):
+        return response
+
+    if response.t402:
+        client._dpwd = (
+            "".join(
+                secrets.choice(string.ascii_letters + string.digits)
+                for _ in range(16)
+            )
+        ).encode()
+        client._t402 = response.t402
+        client._g = md5(DEVICE.guid + client._dpwd + client._t402).digest()
+
+    if isinstance(response, LoginSuccess):
+        client._t150 = response.t150 or client._t150
+        client._rollback_sig = response.rollback_sig or client._rollback_sig
+        client._rand_seed = response.rand_seed or client._rand_seed
+        client._time_diff = response.time_diff or client._time_diff
+        client._ip_address = response.ip_address or client._ip_address
+        client._t528 = response.t528 or client._t528
+        client._t530 = response.t530 or client._t530
+        client._ksid = response.ksid or client._ksid
+        client._pwd_flag = response.pwd_flag or client._pwd_flag
+        client._nick = response.nick or client._nick
+        client._age = response.age or client._age
+        client._gender = response.gender or client._gender
+
+        client._siginfo.tgt = response.tgt or client._siginfo.tgt
+        client._siginfo.tgt_key = response.tgt_key or client._siginfo.tgt_key
+        client._siginfo.srm_token = response.srm_token or client._siginfo.srm_token
+        client._siginfo.t133 = response.t133 or client._siginfo.t133
+        client._siginfo.encrypted_a1 = (
+            response.encrypted_a1 or client._siginfo.encrypted_a1
+        )
+        client._siginfo.user_st_key = response.user_st_key or client._siginfo.user_st_key
+        client._siginfo.user_st_web_sig = (
+            response.user_st_web_sig or client._siginfo.user_st_web_sig
+        )
+        client._siginfo.s_key = response.s_key or client._siginfo.s_key
+        client._siginfo.s_key_expire_time = (
+            response.s_key_expire_time or client._siginfo.s_key_expire_time
+        )
+        client._siginfo.d2 = response.d2 or client._siginfo.d2
+        client._siginfo.d2key = response.d2key or client._siginfo.d2key
+        client._siginfo.wt_session_ticket_key = (
+            response.wt_session_ticket_key or
+            client._siginfo.wt_session_ticket_key
+        )
+        client._siginfo.device_token = (
+            response.device_token or client._siginfo.device_token
+        )
+        client._siginfo.ps_key_map = response.ps_key_map or client._siginfo.ps_key_map
+        client._siginfo.pt4_token_map = (
+            response.pt4_token_map or client._siginfo.pt4_token_map
+        )
+
+        key = md5(
+            client._password_md5 + bytes(4) + struct.pack(">I", client._uin)
+        ).digest()
+        decrypted = qqtea_decrypt(response.encrypted_a1, key)
+        DEVICE.tgtgt = decrypted[51:67]
+        logger.info(f"{client.nick}({client.uin}) 登录成功！")
+    elif isinstance(response, NeedCaptcha):
+        client._t104 = response.t104 or client._t104
+        if response.verify_url:
+            logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
+        elif response.captcha_image:
+            logger.info(f"登录失败！需要根据图片输入验证码")
+    elif isinstance(response, AccountFrozen):
+        logger.info("账号已被冻结！")
+    elif isinstance(response, DeviceLocked):
+        client._t104 = response.t104 or client._t104
+        client._t174 = response.t174 or client._t174
+        client._rand_seed = response.rand_seed or client._rand_seed
+
+        msg = "账号已开启设备锁！"
+        if response.sms_phone:
+            msg += f"向手机{response.sms_phone}发送验证码 "
+        if response.verify_url:
+            msg += f"或前往{response.verify_url}扫码验证"
+        logger.info(msg + ". " + str(response.message))
+    elif isinstance(response, TooManySMSRequest):
+        logger.info("验证码发送频繁！")
+    elif isinstance(response, DeviceLockLogin):
+        client._t104 = response.t104 or client._t104
+        client._rand_seed = response.rand_seed or client._rand_seed
+    elif isinstance(response, UnknownLoginStatus):
+        t146 = response._tlv_map.get(0x146)
+        t149 = response._tlv_map.get(0x149)
+        if t146:
+            packet_ = Packet(t146)
+            msg = packet_.read_bytes(packet_.read_uint16(4), 6).decode()
+        elif t149:
+            packet_ = Packet(t149)
+            msg = packet_.read_bytes(packet_.read_uint16(2), 4).decode()
+        else:
+            msg = ""
+        logger.info(f"未知的登录返回码 {response.status}! {msg}")
+    return response
+
+
+__all__ = [
+    "encode_login_request2_captcha", "encode_login_request2_slider",
+    "encode_login_request9", "encode_login_request20", "decode_login_response",
+    "OICQResponse", "LoginSuccess", "NeedCaptcha", "AccountFrozen",
+    "DeviceLocked", "TooManySMSRequest", "DeviceLockLogin", "UnknownLoginStatus"
+]

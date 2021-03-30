@@ -14,6 +14,7 @@ Subpackages
 
    cai.client
    cai.connection
+   cai.pb
    cai.settings
    cai.storage
    cai.utils

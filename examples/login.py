@@ -1,8 +1,18 @@
+"""Example Code for Login.
+
+:Copyright: Copyright (C) 2021-2021  yanyongyu
+:License: AGPL-3.0 or later. See `LICENSE`_ for detail.
+
+.. _LICENSE:
+    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+"""
 import os
+import signal
 import asyncio
 import traceback
 from io import BytesIO
 from hashlib import md5
+from functools import partial
 
 from PIL import Image
 
@@ -28,26 +38,85 @@ async def run():
     try:
         client = await cai.login(account, md5(password.encode()).digest())
         print("Login Success!")
-        await asyncio.sleep(3)
-        await client.close()
-    except LoginSliderNeeded as e:
-        print("Verify url:", e.verify_url)
-    except LoginCaptchaNeeded as e:
-        print("Captcha:")
-        image = Image.open(BytesIO(e.captcha_image))
-        image.show()
-    except LoginAccountFrozen as e:
-        print("Account is frozen!")
-    except LoginDeviceLocked as e:
-        print("Device lock detected!")
-    except LoginException as e:
-        print("Login Error:", repr(e))
-    except ApiResponseError as e:
-        print("Response Error:", repr(e))
     except Exception as e:
-        print("Unknown Error:", repr(e))
+        await handle_failure(e)
+
+
+async def handle_failure(exception: Exception):
+    if isinstance(exception, LoginSliderNeeded):
+        print("Verify url:", exception.verify_url)
+        ticket = input("Please enter the ticket: ").strip()
+        try:
+            await cai.submit_slider_ticket(ticket)
+            print("Login Success!")
+            await asyncio.sleep(3)
+        except Exception as e:
+            await handle_failure(e)
+    elif isinstance(exception, LoginCaptchaNeeded):
+        print("Captcha:")
+        image = Image.open(BytesIO(exception.captcha_image))
+        image.show()
+        captcha = input("Please enter the captcha: ").strip()
+        try:
+            await cai.submit_captcha(captcha, exception.captcha_sign)
+            print("Login Success!")
+            await asyncio.sleep(3)
+        except Exception as e:
+            await handle_failure(e)
+    elif isinstance(exception, LoginAccountFrozen):
+        print("Account is frozen!")
+    elif isinstance(exception, LoginDeviceLocked):
+        print("Device lock detected!")
+        way = "sms" if exception.sms_phone else "url" if exception.verify_url else ""
+        if exception.sms_phone and exception.verify_url:
+            while True:
+                choice = input(
+                    f"1. Send sms message to {exception.sms_phone}.\n"
+                    f"2. Verify device by scanning.\nChoose: "
+                )
+                if "1" in choice:
+                    way = "sms"
+                    break
+                elif "2" in choice:
+                    way = "url"
+                    break
+                print(f"'{choice}' is not valid!")
+        if not way:
+            print("No way to verify device...")
+        elif way == "sms":
+            await cai.request_sms()
+            print(f"SMS sent to {exception.sms_phone}!")
+            sms_code = input("Please enter the sms_code: ").strip()
+            try:
+                await cai.submit_sms(sms_code)
+            except Exception as e:
+                await handle_failure(e)
+        elif way == "url":
+            await cai.close()
+            print(f"Go to {exception.verify_url} to verify device!")
+            input("Press ENTER after verification to continue login...")
+            try:
+                await cai.login(exception.uin)
+            except Exception as e:
+                await handle_failure(e)
+    elif isinstance(exception, LoginException):
+        print("Login Error:", repr(exception))
+    elif isinstance(exception, ApiResponseError):
+        print("Response Error:", repr(exception))
+    else:
+        print("Unknown Error:", repr(exception))
         traceback.print_exc()
 
 
 if __name__ == "__main__":
-    asyncio.run(run())
+    close = asyncio.Event()
+
+    async def wait_cleanup():
+        await close.wait()
+        await cai.close_all()
+
+    loop = asyncio.get_event_loop()
+    loop.add_signal_handler(signal.SIGINT, close.set)
+    loop.add_signal_handler(signal.SIGTERM, close.set)
+    loop.create_task(run())
+    loop.run_until_complete(wait_cleanup())

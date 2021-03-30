@@ -10,11 +10,19 @@ Welcome to cai's documentation!
    :maxdepth: 2
    :caption: Contents:
 
+Code Examples
+--------------
 
+:doc:`Example Code </examples/index>`
 
-Indices and tables
-==================
+Api Reference
+--------------
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+:ref:`modindex`
+
+.. Indices and tables
+.. ==================
+
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`

@@ -167,7 +167,7 @@ class LoginSuccess(UnknownLoginStatus):
     d2: bytes
     d2key: bytes
     wt_session_ticket_key: bytes
-    device_token: bytes
+    device_token: Optional[bytes]
     ps_key_map: Dict[str, bytes]
     pt4_token_map: Dict[str, bytes]
 
@@ -189,8 +189,6 @@ class LoginSuccess(UnknownLoginStatus):
         t119 = _tlv_map.get(0x119, {})
         self.time_diff = t119.get(0x130, {}).get("time_diff")
         self.ip_address = t119.get(0x130, {}).get("ip_address")
-        # TODO: check the ip?
-        print(self.ip_address.hex())
         self.t528 = t119.get(0x528)
         self.t530 = t119.get(0x530)
         self.tgt_key = t119[0x10d]
@@ -206,8 +204,6 @@ class LoginSuccess(UnknownLoginStatus):
         self.s_key_expire_time = int(time.time()) + 21600
         self.pwd_flag = t119.get(0x186, {}).get("pwd_flag")
         self.encrypted_a1 = t119[0x106]
-        # TODO: 106 + 10c?
-        print(_tlv_map.get(0x106, b"").hex(), _tlv_map.get(0x10c, b"").hex())
         self.srm_token = t119[0x16a]
 
         self.d2 = t119[0x143]
@@ -216,7 +212,7 @@ class LoginSuccess(UnknownLoginStatus):
         self.pt4_token_map = t119.get(0x512, {}).get("pt4_token_map", {})
         self.t133 = t119[0x133]
         self.wt_session_ticket_key = t119[0x134]
-        self.device_token = t119[0x322]
+        self.device_token = t119.get(0x322, None)
 
 
 @dataclass

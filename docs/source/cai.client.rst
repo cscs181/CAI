@@ -12,7 +12,10 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   cai.client.login
+   cai.client.config_push
+   cai.client.sso_server
+   cai.client.status_service
+   cai.client.wtlogin
 
 Submodules
 ----------
@@ -45,14 +48,6 @@ cai.client.siginfo module
 -------------------------
 
 .. automodule:: cai.client.siginfo
-   :members:
-   :undoc-members:
-   :show-inheritance:
-
-cai.client.sso\_server module
------------------------------
-
-.. automodule:: cai.client.sso_server
    :members:
    :undoc-members:
    :show-inheritance:

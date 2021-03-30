@@ -10,7 +10,7 @@ This module is used to build dataclass related tools.
 """
 import json
 import copy
-from dataclasses import _is_dataclass_instance, fields, MISSING, is_dataclass
+from dataclasses import _is_dataclass_instance, fields, MISSING, is_dataclass  # type: ignore
 from typing import IO, Any, List, Dict, Type, Tuple, Union, TypeVar, Mapping, Collection
 
 T = TypeVar("T", bound="JsonableDataclass")

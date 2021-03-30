@@ -16,10 +16,9 @@ from typing import Any, List, Dict, Union
 
 from rtea import qqtea_encrypt, qqtea_decrypt
 
-from cai.log import logger
-from .data_pb2 import DeviceInfo
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
+from cai.pb.wtlogin.data_pb2 import DeviceReport
 
 DEVICE = get_device()
 
@@ -65,9 +64,10 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t2(cls, result: bytes, sign: bytes) -> Packet:
+    def t2(cls, captcha: bytes, sign: bytes) -> Packet:
         return cls._pack_tlv(
-            0x2, struct.pack(">H", 0), cls._pack_lv(result), cls._pack_lv(sign)
+            0x2, struct.pack(">H", 0), cls._pack_lv(captcha),
+            cls._pack_lv(sign)
         )
 
     @classmethod
@@ -366,8 +366,8 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t17a(cls, value: int) -> Packet:
-        return cls._pack_tlv(0x17A, struct.pack(">I", value))
+    def t17a(cls, sms_app_id: int) -> Packet:
+        return cls._pack_tlv(0x17A, struct.pack(">I", sms_app_id))
 
     @classmethod
     def t17c(cls, code: str) -> Packet:
@@ -506,7 +506,7 @@ class TlvEncoder:
         Note:
             Source: oicq.wlogin_sdk.tools.util#get_android_dev_info
         """
-        device_info = DeviceInfo(
+        device_info = DeviceReport(
             bootloader=bootloader,
             proc_version=proc_version,
             codename=codename,
@@ -569,7 +569,7 @@ class TlvDecoder:
             offset += length
             futher_decode = getattr(cls, f"t{tag:x}", None)
             if futher_decode:
-                value = futher_decode(cls, value)
+                value = futher_decode(value)
             result[tag] = value
 
         return result
@@ -660,10 +660,14 @@ class TlvDecoder:
         """
         data_ = Packet(data)
         return {
-            "face": data_.read_bytes(2),
-            "age": data_.read_uint8(2),
-            "gender": data_.read_uint8(3),
-            "nick": data_.read_bytes(data_.read_uint8(4), 5).decode()
+            "face":
+                data_.read_bytes(2),
+            "age":
+                data_.read_uint8(offset=2),
+            "gender":
+                data_.read_uint8(offset=3),
+            "nick":
+                data_.read_bytes(data_.read_uint8(offset=4), offset=5).decode()
         }
 
     @classmethod
@@ -700,8 +704,8 @@ class TlvDecoder:
         """
         data_ = Packet(data)
         return {
-            "time_diff": data_.read_int32() - int(time.time()),
-            "ip_address": data_.read_bytes(4)
+            "time_diff": data_.read_int32(offset=2) - int(time.time()),
+            "ip_address": data_.read_bytes(4, offset=6)
         }
 
     # @classmethod

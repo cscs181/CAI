@@ -7,10 +7,12 @@
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
 import os
+import signal
 import asyncio
 import traceback
 from io import BytesIO
 from hashlib import md5
+from functools import partial
 
 from PIL import Image
 
@@ -36,11 +38,8 @@ async def run():
     try:
         client = await cai.login(account, md5(password.encode()).digest())
         print("Login Success!")
-        await asyncio.sleep(5)
     except Exception as e:
         await handle_failure(e)
-    finally:
-        await cai.close()
 
 
 async def handle_failure(exception: Exception):
@@ -110,4 +109,14 @@ async def handle_failure(exception: Exception):
 
 
 if __name__ == "__main__":
-    asyncio.run(run())
+    close = asyncio.Event()
+
+    async def wait_cleanup():
+        await close.wait()
+        await cai.close_all()
+
+    loop = asyncio.get_event_loop()
+    loop.add_signal_handler(signal.SIGINT, close.set)
+    loop.add_signal_handler(signal.SIGTERM, close.set)
+    loop.create_task(run())
+    loop.run_until_complete(wait_cleanup())

@@ -8,14 +8,11 @@ This module is used to control client actions (low-level api).
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
-import string
+import signal
 import struct
 import secrets
 import asyncio
-from hashlib import md5
 from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
-
-from rtea import qqtea_decrypt
 
 from .wtlogin import (
     encode_login_request2_captcha, encode_login_request2_slider,
@@ -228,6 +225,9 @@ class Client:
 
     async def close(self) -> None:
         """Close the client and logout."""
+        if self.connected and self.status and self.status != OnlineStatus.Offline:
+            await self.register(OnlineStatus.Offline)
+        self._receive_store.cancel_all()
         await self.disconnect()
 
     @property

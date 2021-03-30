@@ -8,6 +8,8 @@ This module wraps the client methods to provide easier control (high-level api).
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
+
+import asyncio
 from typing import Dict, Optional
 
 from cai.client import Client
@@ -52,6 +54,17 @@ async def close(uin: Optional[int] = None) -> None:
     """
     client = get_client(uin)
     await client.close()
+    del _clients[client.uin]
+
+
+async def close_all() -> None:
+    """Close an existing client.
+
+    Args:
+        uin (Optional[int], optional): Account of the client want to close. Defaults to None.
+    """
+    tasks = [close(uin) for uin in _clients.keys()]
+    await asyncio.gather(*tasks)
 
 
 async def login(uin: int, password_md5: Optional[bytes] = None) -> Client:
@@ -138,6 +151,6 @@ async def submit_sms(sms_code: str, uin: Optional[int] = None) -> bool:
 
 
 __all__ = [
-    "get_client", "close", "login", "submit_captcha", "submit_slider_ticket",
-    "request_sms", "submit_sms"
+    "get_client", "close", "close_all", "login", "submit_captcha",
+    "submit_slider_ticket", "request_sms", "submit_sms"
 ]

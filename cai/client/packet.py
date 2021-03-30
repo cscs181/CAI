@@ -154,7 +154,9 @@ class UniPacket(Packet):
             struct.pack(">IBIB", 0xB, encrypt_type, seq, 0),
             struct.pack(">I",
                         len(str(uin)) + 4),
-            str(uin).encode(), qqtea_encrypt(bytes(data), key)
+            str(uin).encode(),
+            qqtea_encrypt(bytes(data), key),
+            offset=4
         )
 
 

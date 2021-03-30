@@ -47,7 +47,7 @@ def get_client(uin: Optional[int] = None) -> Client:
 
 
 async def close(uin: Optional[int] = None) -> None:
-    """Close an existing client.
+    """Close an existing client and delete it from clients.
 
     Args:
         uin (Optional[int], optional): Account of the client want to close. Defaults to None.
@@ -58,7 +58,7 @@ async def close(uin: Optional[int] = None) -> None:
 
 
 async def close_all() -> None:
-    """Close an existing client.
+    """Close all existing clients and delete them.
 
     Args:
         uin (Optional[int], optional): Account of the client want to close. Defaults to None.

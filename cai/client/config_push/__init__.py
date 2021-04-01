@@ -88,6 +88,6 @@ async def handle_config_push_request(
 
 
 __all__ = [
-    "decode_push_req", "FileServerPushList", "ConfigPushEvent",
+    "handle_config_push_request", "FileServerPushList", "ConfigPushEvent",
     "SsoServerPushEvent", "FileServerPushEvent", "LogActionPushEvent"
 ]

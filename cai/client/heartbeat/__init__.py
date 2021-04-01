@@ -59,7 +59,7 @@ class Heartbeat(Event):
     pass
 
 
-async def decode_heartbeat(
+async def handle_heartbeat(
     client: "Client", packet: IncomingPacket
 ) -> Heartbeat:
     return Heartbeat(
@@ -67,4 +67,4 @@ async def decode_heartbeat(
     )
 
 
-__all__ = ["encode_heartbeat", "decode_heartbeat", "Heartbeat"]
+__all__ = ["encode_heartbeat", "handle_heartbeat", "Heartbeat"]

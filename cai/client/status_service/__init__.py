@@ -97,7 +97,7 @@ def encode_register(
     svc = SvcReqRegister(
         uin=uin,
         bid=bid,
-        status=status.value,
+        status=int(status),
         ios_version=DEVICE.version.sdk,
         nettype=bytes([1]),
         reg_type=bytes(1)
@@ -153,6 +153,6 @@ async def handle_register_response(
 
 
 __all__ = [
-    "encode_register", "decode_register_response", "OnlineStatus",
+    "encode_register", "handle_register_response", "OnlineStatus",
     "RegPushReason", "SvcRegisterResponse", "RegisterSuccess", "RegisterFail"
 ]

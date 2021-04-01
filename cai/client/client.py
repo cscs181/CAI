@@ -16,7 +16,7 @@ from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
 from .wtlogin import (
     encode_login_request2_captcha, encode_login_request2_slider,
     encode_login_request7, encode_login_request8, encode_login_request9,
-    encode_login_request20, handle_login_response, OICQResponse, LoginSuccess,
+    encode_login_request20, handle_oicq_response, OICQResponse, LoginSuccess,
     NeedCaptcha, AccountFrozen, DeviceLocked, TooManySMSRequest,
     DeviceLockLogin, UnknownLoginStatus
 )
@@ -25,6 +25,7 @@ from .status_service import (
     SvcRegisterResponse, RegisterSuccess, RegisterFail
 )
 from .config_push import handle_config_push_request, FileServerPushList
+from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .sso_server import get_sso_server, SsoServer
 
 from cai.exceptions import (
@@ -45,9 +46,10 @@ from cai.connection import connect, Connection
 DEVICE = get_device()
 APK_INFO = get_protocol()
 HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
-    "wtlogin.login": handle_login_response,
+    "wtlogin.login": handle_oicq_response,
     "StatSvc.register": handle_register_response,
-    "ConfigPushSvc.PushReq": handle_config_push_request
+    "ConfigPushSvc.PushReq": handle_config_push_request,
+    "Heartbeat.Alive": handle_heartbeat
 }
 
 
@@ -72,15 +74,12 @@ class Client:
         self._session_id: bytes = bytes([0x02, 0xB0, 0x5B, 0x8B])
         self._connection: Optional[Connection] = None
         self._heartbeat_interval: int = 300
-        """:obj:`int`: heartbeat interval. defaults to 300 seconds."""
+        self._heartbeat_enabled: bool = False
         self._file_storage_info: Optional[FileServerPushList] = None
 
-        self._g: bytes = bytes()
-        self._dpwd: bytes = bytes()
         self._ip_address: bytes = bytes()
         self._ksid: bytes = f"|{DEVICE.imei}|A8.2.7.27f6ea96".encode()
         self._pwd_flag: bool = False
-        self._rand_seed: bytes = bytes()
         self._rollback_sig: bytes = bytes()
 
         self._t104: bytes = bytes()
@@ -353,7 +352,7 @@ class Client:
                 seq = self.next_seq()
                 packet = encode_login_request20(
                     seq, self._key, self._session_id, self._ksid, self.uin,
-                    self._t104, self._g
+                    self._t104, self._siginfo.g
                 )
                 response = await self.send_and_wait(
                     seq, "wtlogin.login", packet
@@ -505,7 +504,7 @@ class Client:
         seq = self.next_seq()
         packet = encode_login_request7(
             seq, self._key, self._session_id, self._ksid, self.uin, sms_code,
-            self._t104, self._t174, self._g
+            self._t104, self._t174, self._siginfo.g
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -547,4 +546,29 @@ class Client:
                 response.command_name
             )
 
+        asyncio.create_task(self.heartbeat())
         return response
+
+    async def heartbeat(self):
+        if self._heartbeat_enabled:
+            return
+
+        self._heartbeat_enabled = True
+
+        while self._heartbeat_enabled and self.connected:
+            seq = self.next_seq()
+            packet = encode_heartbeat(
+                seq, self._session_id, self._ksid, self.uin
+            )
+            try:
+                response = await self.send_and_wait(
+                    seq, "Heartbeat.Alive", packet
+                )
+                if not isinstance(response, Heartbeat):
+                    raise RuntimeError("Invalid heartbeat response type!")
+            except Exception:
+                logger.exception("Heartbeat.Alive: Failed")
+                break
+            await asyncio.sleep(self._heartbeat_interval)
+
+        self._heartbeat_enabled = False

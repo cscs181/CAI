@@ -1,6 +1,6 @@
-"""ECDH Tool.
+"""Crypto Tool.
 
-This module is used to encrypt data using ECDH shared key.
+This module is used to encrypt data using ECDH or Session ticket encryption.
 
 :Copyright: Copyright (C) 2021-2021  yanyongyu
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
@@ -11,6 +11,7 @@ This module is used to encrypt data using ECDH shared key.
 import struct
 from hashlib import md5
 from typing import Union
+
 from rtea import qqtea_encrypt
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
@@ -55,4 +56,19 @@ class ECDH:
             ),
             cls.client_public_key,
             qqtea_encrypt(bytes(data), cls.share_key)
+        )
+
+
+class EncryptSession:
+    id = 0x45
+
+    def __init__(self, ticket: bytes):
+        self.ticket = ticket
+
+    def encrypt(
+        self, data: Union[bytes, Packet], key: Union[bytes, Packet]
+    ) -> Packet:
+        return Packet.build(
+            struct.pack(">H", len(self.ticket)), self.ticket,
+            qqtea_encrypt(bytes(data), bytes(key))
         )

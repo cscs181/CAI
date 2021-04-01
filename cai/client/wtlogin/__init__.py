@@ -19,15 +19,16 @@ from typing import TYPE_CHECKING
 from cai.log import logger
 from .tlv import TlvEncoder
 from rtea import qqtea_decrypt
-from cai.utils.ecdh import ECDH
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
+from cai.utils.crypto import ECDH, EncryptSession
 from .oicq import (
-    OICQRequest, OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen,
-    DeviceLocked, TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
+    OICQRequest, OICQResponse, LoginSuccess, NeedCaptcha, ExchangeEmp,
+    AccountFrozen, DeviceLocked, TooManySMSRequest, DeviceLockLogin,
+    UnknownLoginStatus
 )
-from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
+from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, UniPacket, IncomingPacket
 
 if TYPE_CHECKING:
     from cai.client import Client
@@ -360,8 +361,8 @@ def encode_login_request9(
             SSO_VERSION, APP_ID, SUB_APP_ID, APP_CLIENT_VERSION, MAIN_SIGMAP
         ),
         TlvEncoder.t107(),
-        # TlvBuilder.t108(KSID),  # null when first time login
-        # TlvBuilder.t104(),
+        # TlvEncoder.t108(KSID),  # null when first time login
+        # TlvEncoder.t104(),
         TlvEncoder.t142(APK_ID),
         TlvEncoder.t144(
             DEVICE.imei.encode(), DEVICE.bootloader, DEVICE.proc_version,
@@ -376,8 +377,8 @@ def encode_login_request9(
         ),
         TlvEncoder.t145(DEVICE.guid),
         TlvEncoder.t147(APP_ID, APK_VERSION.encode(), APK_SIGN),
-        # TlvBuilder.t166(1),
-        # TlvBuilder.t16a(),
+        # TlvEncoder.t166(1),
+        # TlvEncoder.t16a(),
         TlvEncoder.t154(seq),
         TlvEncoder.t141(DEVICE.sim.encode(), NETWORK_TYPE, DEVICE.apn.encode()),
         TlvEncoder.t8(LOCAL_ID),
@@ -390,20 +391,20 @@ def encode_login_request9(
                 "mma.qq.com"
             ]
         ),  # com.tencent.mobileqq.msf.core.auth.l
-        # TlvBuilder.t172(),
-        # TlvBuilder.t185(1),  # when sms login, is_password_login == 3
-        # TlvBuilder.t400(),  # null when first time login
+        # TlvEncoder.t172(),
+        # TlvEncoder.t185(1),  # when sms login, is_password_login == 3
+        # TlvEncoder.t400(),  # null when first time login
         TlvEncoder.t187(DEVICE.mac_address.encode()),
         TlvEncoder.t188(DEVICE.android_id.encode()),
         TlvEncoder.t194(DEVICE.imsi_md5) if DEVICE.imsi_md5 else b"",
         TlvEncoder.t191(CAN_WEB_VERIFY),
-        # TlvBuilder.t201(),
+        # TlvEncoder.t201(),
         TlvEncoder.t202(DEVICE.wifi_bssid.encode(), DEVICE.wifi_ssid.encode()),
         TlvEncoder.t177(APK_BUILD_TIME, SDK_VERSION),
         TlvEncoder.t516(),
         TlvEncoder.t521(),
         TlvEncoder.t525(TlvEncoder.t536([])),
-        # TlvBuilder.t318()  # not login in by qr
+        # TlvEncoder.t318()  # not login in by qr
     )
     oicq_packet = OICQRequest.build_encoded(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
@@ -440,7 +441,7 @@ def encode_login_request20(
         ksid (bytes): KSID of client.
         uin (int): User QQ number.
         t104 (bytes): T104 response data.
-        g (bytes): md5 of (guid + dpwd + t402)
+        g (bytes): md5 of (guid + dpwd + t402).
 
     Returns:
         Packet: Login packet.
@@ -474,7 +475,130 @@ def encode_login_request20(
     return packet
 
 
-async def handle_login_response(
+# refresh skey
+def encode_exchange_emp(
+    seq: int, session_id: bytes, ksid: bytes, uin: int, g: bytes, dpwd: bytes,
+    no_pic_sig: bytes, encrypted_a1: bytes, rand_seed: bytes,
+    wt_session_ticket: bytes, wt_session_ticket_key: bytes
+) -> Packet:
+    """Build exchange emp request packet.
+
+    command id: `0x810 = 2064`
+
+    sub command id: `15`
+
+    command name: `wtlogin.exchange_emp`
+
+    Note:
+        Source: oicq.wlogin_sdk.request.aa
+
+    Args:
+        seq (int): Packet sequence.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        g (bytes): Siginfo g.
+        dpwd (bytes): Siginfo dpwd.
+        no_pic_sig (bytes): Siginfo no pic sig.
+        encrypted_a1 (bytes): Siginfo Encrypted A1.
+        rand_seed (bytes): Siginfo random seed.
+        wt_session_ticket (bytes): Siginfo session ticket.
+        wt_session_ticket_key (bytes): Siginfo session ticket key.
+
+    Returns:
+        Packet: Exchange emp packet.
+    """
+    COMMAND_ID = 2064
+    SUB_COMMAND_ID = 15
+    COMMAND_NAME = "wtlogin.exchange_emp"
+
+    APK_ID = APK_INFO.apk_id
+    APK_VERSION = APK_INFO.version
+    APK_SIGN = APK_INFO.apk_sign
+    APK_BUILD_TIME = APK_INFO.build_time
+    APP_ID = APK_INFO.app_id
+    SUB_APP_ID = APK_INFO.sub_app_id
+    APP_CLIENT_VERSION = 0
+    SDK_VERSION = APK_INFO.sdk_version
+    SSO_VERSION = APK_INFO.sso_version
+    BITMAP = APK_INFO.bitmap
+    MAIN_SIGMAP = APK_INFO.main_sigmap
+    SUB_SIGMAP = APK_INFO.sub_sigmap
+
+    GUID = DEVICE.guid
+    GUID_SRC = 1
+    GUID_CHANGE = 0
+    GUID_FLAG = 0
+    GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
+    GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
+    LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
+    IP_BYTES: bytes = ipaddress.ip_address(DEVICE.ip_address).packed
+    NETWORK_TYPE = (DEVICE.apn == "wifi") + 1
+
+    data = Packet.build(
+        struct.pack(">HH", SUB_COMMAND_ID, 24),
+        TlvEncoder.t18(APP_ID, APP_CLIENT_VERSION, uin),
+        TlvEncoder.t1(uin, int(time.time()), IP_BYTES),
+        TlvEncoder._pack_tlv(0x106, encrypted_a1),
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
+        TlvEncoder.t100(
+            SSO_VERSION, APP_ID, SUB_APP_ID, APP_CLIENT_VERSION, MAIN_SIGMAP
+        ),
+        TlvEncoder.t107(),
+        # TlvEncoder.t108(KSID),  # null when first time login
+        TlvEncoder.t144(
+            DEVICE.imei.encode(), DEVICE.bootloader, DEVICE.proc_version,
+            DEVICE.version.codename, DEVICE.version.incremental,
+            DEVICE.fingerprint, DEVICE.boot_id,
+            DEVICE.android_id, DEVICE.baseband, DEVICE.version.incremental,
+            DEVICE.os_type.encode(),
+            DEVICE.version.release.encode(), NETWORK_TYPE, DEVICE.sim.encode(),
+            DEVICE.apn.encode(), False, True, False, GUID_FLAG,
+            DEVICE.model.encode(), DEVICE.guid, DEVICE.brand.encode(),
+            DEVICE.tgtgt
+        ),
+        TlvEncoder.t142(APK_ID),
+        # TlvEncoder.t112(),
+        TlvEncoder.t145(DEVICE.guid),
+        # TlvEncoder.t166(1),
+        TlvEncoder.t16a(no_pic_sig),
+        TlvEncoder.t154(seq),
+        TlvEncoder.t141(DEVICE.sim.encode(), NETWORK_TYPE, DEVICE.apn.encode()),
+        TlvEncoder.t8(LOCAL_ID),
+        TlvEncoder.t511(
+            [
+                "tenpay.com", "openmobile.qq.com", "docs.qq.com",
+                "connect.qq.com", "qzone.qq.com", "vip.qq.com",
+                "gamecenter.qq.com", "qun.qq.com", "game.qq.com",
+                "qqweb.qq.com", "office.qq.com", "ti.qq.com", "mail.qq.com",
+                "mma.qq.com"
+            ]
+        ),  # com.tencent.mobileqq.msf.core.auth.l
+        TlvEncoder.t147(APP_ID, APK_VERSION.encode(), APK_SIGN),
+        # TlvEncoder.t172(),
+        TlvEncoder.t177(APK_BUILD_TIME, SDK_VERSION),
+        TlvEncoder.t400(g, uin, GUID, dpwd, 1, APP_ID, rand_seed),
+        TlvEncoder.t187(DEVICE.mac_address.encode()),
+        TlvEncoder.t188(DEVICE.android_id.encode()),
+        TlvEncoder.t194(DEVICE.imsi_md5) if DEVICE.imsi_md5 else b"",
+        # TlvEncoder.t201(),
+        TlvEncoder.t202(DEVICE.wifi_bssid.encode(), DEVICE.wifi_ssid.encode()),
+        TlvEncoder.t516(),
+        TlvEncoder.t521(),
+        TlvEncoder.t525(TlvEncoder.t536([]))
+    )
+    session = EncryptSession(wt_session_ticket)
+    oicq_packet = OICQRequest.build_encoded(
+        uin, COMMAND_ID, session.encrypt(data, wt_session_ticket_key),
+        session.id
+    )
+    packet = UniPacket.build(
+        uin, seq, COMMAND_NAME, session_id, 2, oicq_packet, key=bytes(16)
+    )
+    return packet
+
+
+async def handle_oicq_response(
     client: "Client", packet: IncomingPacket
 ) -> OICQResponse:
     response = OICQResponse.decode_response(
@@ -485,19 +609,20 @@ async def handle_login_response(
         return response
 
     if response.t402:
-        client._dpwd = (
+        client._siginfo.dpwd = (
             "".join(
                 secrets.choice(string.ascii_letters + string.digits)
                 for _ in range(16)
             )
         ).encode()
         client._t402 = response.t402
-        client._g = md5(DEVICE.guid + client._dpwd + client._t402).digest()
+        client._siginfo.g = md5(
+            DEVICE.guid + client._siginfo.dpwd + client._t402
+        ).digest()
 
     if isinstance(response, LoginSuccess):
         client._t150 = response.t150 or client._t150
         client._rollback_sig = response.rollback_sig or client._rollback_sig
-        client._rand_seed = response.rand_seed or client._rand_seed
         client._time_diff = response.time_diff or client._time_diff
         client._ip_address = response.ip_address or client._ip_address
         client._t528 = response.t528 or client._t528
@@ -508,33 +633,36 @@ async def handle_login_response(
         client._age = response.age or client._age
         client._gender = response.gender or client._gender
 
+        client._siginfo.d2 = response.d2 or client._siginfo.d2
+        client._siginfo.d2key = response.d2key or client._siginfo.d2key
         client._siginfo.tgt = response.tgt or client._siginfo.tgt
         client._siginfo.tgt_key = response.tgt_key or client._siginfo.tgt_key
-        client._siginfo.srm_token = response.srm_token or client._siginfo.srm_token
-        client._siginfo.t133 = response.t133 or client._siginfo.t133
+        client._siginfo.device_token = (
+            response.device_token or client._siginfo.device_token
+        )
+        client._siginfo.no_pic_sig = response.srm_token or client._siginfo.no_pic_sig
         client._siginfo.encrypted_a1 = (
             response.encrypted_a1 or client._siginfo.encrypted_a1
+        )
+        client._siginfo.ps_key_map = response.ps_key_map or client._siginfo.ps_key_map
+        client._siginfo.pt4_token_map = (
+            response.pt4_token_map or client._siginfo.pt4_token_map
+        )
+        client._siginfo.rand_seed = response.rand_seed or client._siginfo.rand_seed
+        client._siginfo.s_key = response.s_key or client._siginfo.s_key
+        client._siginfo.s_key_expire_time = (
+            response.s_key_expire_time or client._siginfo.s_key_expire_time
         )
         client._siginfo.user_st_key = response.user_st_key or client._siginfo.user_st_key
         client._siginfo.user_st_web_sig = (
             response.user_st_web_sig or client._siginfo.user_st_web_sig
         )
-        client._siginfo.s_key = response.s_key or client._siginfo.s_key
-        client._siginfo.s_key_expire_time = (
-            response.s_key_expire_time or client._siginfo.s_key_expire_time
+        client._siginfo.wt_session_ticket = (
+            response.wt_session_ticket or client._siginfo.wt_session_ticket
         )
-        client._siginfo.d2 = response.d2 or client._siginfo.d2
-        client._siginfo.d2key = response.d2key or client._siginfo.d2key
         client._siginfo.wt_session_ticket_key = (
             response.wt_session_ticket_key or
             client._siginfo.wt_session_ticket_key
-        )
-        client._siginfo.device_token = (
-            response.device_token or client._siginfo.device_token
-        )
-        client._siginfo.ps_key_map = response.ps_key_map or client._siginfo.ps_key_map
-        client._siginfo.pt4_token_map = (
-            response.pt4_token_map or client._siginfo.pt4_token_map
         )
 
         key = md5(
@@ -549,12 +677,14 @@ async def handle_login_response(
             logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
         elif response.captcha_image:
             logger.info(f"登录失败！需要根据图片输入验证码")
+    elif isinstance(response, ExchangeEmp):
+        pass
     elif isinstance(response, AccountFrozen):
         logger.info("账号已被冻结！")
     elif isinstance(response, DeviceLocked):
         client._t104 = response.t104 or client._t104
         client._t174 = response.t174 or client._t174
-        client._rand_seed = response.rand_seed or client._rand_seed
+        client._siginfo.rand_seed = response.rand_seed or client._siginfo.rand_seed
 
         msg = "账号已开启设备锁！"
         if response.sms_phone:
@@ -566,7 +696,7 @@ async def handle_login_response(
         logger.info("验证码发送频繁！")
     elif isinstance(response, DeviceLockLogin):
         client._t104 = response.t104 or client._t104
-        client._rand_seed = response.rand_seed or client._rand_seed
+        client._siginfo.rand_seed = response.rand_seed or client._siginfo.rand_seed
     elif isinstance(response, UnknownLoginStatus):
         t146 = response._tlv_map.get(0x146)
         t149 = response._tlv_map.get(0x149)
@@ -584,7 +714,8 @@ async def handle_login_response(
 
 __all__ = [
     "encode_login_request2_captcha", "encode_login_request2_slider",
-    "encode_login_request9", "encode_login_request20", "decode_login_response",
-    "OICQResponse", "LoginSuccess", "NeedCaptcha", "AccountFrozen",
-    "DeviceLocked", "TooManySMSRequest", "DeviceLockLogin", "UnknownLoginStatus"
+    "encode_login_request9", "encode_login_request20", "encode_exchange_emp",
+    "handle_oicq_response", "OICQResponse", "LoginSuccess", "NeedCaptcha",
+    "ExchangeEmp", "AccountFrozen", "DeviceLocked", "TooManySMSRequest",
+    "DeviceLockLogin", "UnknownLoginStatus"
 ]

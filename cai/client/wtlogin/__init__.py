@@ -16,7 +16,6 @@ import ipaddress
 from hashlib import md5
 from typing import TYPE_CHECKING
 
-from cai.log import logger
 from .tlv import TlvEncoder
 from rtea import qqtea_decrypt
 from cai.utils.binary import Packet

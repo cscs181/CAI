@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 from jce import types
 
 from cai.log import logger
+from cai.utils.binary import Packet
 from .jce import PushResp, FileServerPushList
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
@@ -29,7 +30,7 @@ if TYPE_CHECKING:
 def encode_config_push_response(
     uin: int, seq: int, session_id: bytes, d2key: bytes, type: int,
     jcebuf: bytes, large_seq: int
-):
+) -> Packet:
     """Build config push response packet.
 
     command name: `ConfigPushSvc.PushResp`

@@ -13,6 +13,7 @@ from typing import TYPE_CHECKING
 from dataclasses import dataclass
 
 from cai.client.event import Event
+from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
@@ -24,7 +25,9 @@ DEVICE = get_device()
 APK_INFO = get_protocol()
 
 
-def encode_heartbeat(seq: int, session_id: bytes, ksid: bytes, uin: int):
+def encode_heartbeat(
+    seq: int, session_id: bytes, ksid: bytes, uin: int
+) -> Packet:
     """Build heartbeat alive packet.
 
     Called in `com.tencent.mobileqq.msf.core.C26002ac.A`.

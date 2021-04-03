@@ -8,6 +8,7 @@ This module is used to control client actions (low-level api).
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
+import time
 import struct
 import secrets
 import asyncio
@@ -16,9 +17,9 @@ from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
 from .wtlogin import (
     encode_login_request2_captcha, encode_login_request2_slider,
     encode_login_request7, encode_login_request8, encode_login_request9,
-    encode_login_request20, handle_oicq_response, OICQResponse, LoginSuccess,
-    NeedCaptcha, AccountFrozen, DeviceLocked, TooManySMSRequest,
-    DeviceLockLogin, UnknownLoginStatus
+    encode_login_request20, encode_exchange_emp, handle_oicq_response,
+    OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen, DeviceLocked,
+    TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
 )
 from .status_service import (
     encode_register, handle_register_response, OnlineStatus, RegPushReason,
@@ -30,7 +31,8 @@ from .sso_server import get_sso_server, SsoServer
 
 from cai.exceptions import (
     ApiResponseError, LoginException, LoginSliderNeeded, LoginCaptchaNeeded,
-    LoginAccountFrozen, LoginDeviceLocked, LoginSMSRequestError
+    LoginAccountFrozen, LoginDeviceLocked, LoginSMSRequestError,
+    RegisterException
 )
 
 from cai.log import logger
@@ -47,6 +49,7 @@ DEVICE = get_device()
 APK_INFO = get_protocol()
 HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "wtlogin.login": handle_oicq_response,
+    "wtlogin.exchange_emp": handle_oicq_response,
     "StatSvc.register": handle_register_response,
     "ConfigPushSvc.PushReq": handle_config_push_request,
     "Heartbeat.Alive": handle_heartbeat
@@ -90,7 +93,7 @@ class Client:
         self._t528: bytes = bytes()
         self._t530: bytes = bytes()
 
-        self._siginfo: SigInfo = SigInfo()
+        self._siginfo: SigInfo = SigInfo(self)
         self._receive_store: FutureStore[int, Event] = FutureStore()
 
     @property
@@ -325,11 +328,14 @@ class Client:
             )
 
         if isinstance(response, LoginSuccess):
+            logger.info(f"{self.nick}({self.uin}) 登录成功！")
             return response
         elif isinstance(response, NeedCaptcha):
             if response.verify_url:
+                logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
                 raise LoginSliderNeeded(response.uin, response.verify_url)
             elif response.captcha_image:
+                logger.info(f"登录失败！需要根据图片输入验证码")
                 raise LoginCaptchaNeeded(
                     response.uin, response.captcha_image, response.captcha_sign
                 )
@@ -339,13 +345,22 @@ class Client:
                     "Cannot get verify_url or captcha_image from the response!"
                 )
         elif isinstance(response, AccountFrozen):
+            logger.info("账号已被冻结！")
             raise LoginAccountFrozen(response.uin)
         elif isinstance(response, DeviceLocked):
+            msg = "账号已开启设备锁！"
+            if response.sms_phone:
+                msg += f"向手机{response.sms_phone}发送验证码 "
+            if response.verify_url:
+                msg += f"或前往{response.verify_url}扫码验证"
+            logger.info(msg + ". " + str(response.message))
+
             raise LoginDeviceLocked(
                 response.uin, response.sms_phone, response.verify_url,
                 response.message
             )
         elif isinstance(response, TooManySMSRequest):
+            logger.info("验证码发送频繁！")
             raise LoginSMSRequestError(response.uin)
         elif isinstance(response, DeviceLockLogin):
             if try_times:
@@ -366,6 +381,17 @@ class Client:
                     "Maximum number of login attempts exceeded!"
                 )
         elif isinstance(response, UnknownLoginStatus):
+            t146 = response._tlv_map.get(0x146)
+            t149 = response._tlv_map.get(0x149)
+            if t146:
+                packet_ = Packet(t146)
+                msg = packet_.read_bytes(packet_.read_uint16(4), 6).decode()
+            elif t149:
+                packet_ = Packet(t149)
+                msg = packet_.read_bytes(packet_.read_uint16(2), 4).decode()
+            else:
+                msg = ""
+            logger.info(f"未知的登录返回码 {response.status}! {msg}")
             raise LoginException(
                 response.uin, response.status, "Unknown login status."
             )
@@ -509,6 +535,76 @@ class Client:
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
 
+    async def _get_s_key(self) -> bytes:
+        if time.time() > self._siginfo.s_key_expire_time:
+            await self.refresh_siginfo()
+        return self._siginfo.s_key
+
+    async def _handle_refresh_response(
+        self, response: Event, try_times: int = 1
+    ) -> LoginSuccess:
+        if not isinstance(response, OICQResponse):
+            raise RuntimeError("Invalid refresh siginfo response type!")
+
+        if not isinstance(response, UnknownLoginStatus):
+            raise ApiResponseError(
+                response.uin, response.seq, response.ret_code,
+                response.command_name
+            )
+
+        if isinstance(response, LoginSuccess):
+            return response
+        elif isinstance(response, AccountFrozen):
+            raise LoginAccountFrozen(response.uin)
+        elif isinstance(response, DeviceLockLogin):
+            if try_times:
+                seq = self.next_seq()
+                packet = encode_login_request20(
+                    seq, self._key, self._session_id, self._ksid, self.uin,
+                    self._t104, self._siginfo.g
+                )
+                response = await self.send_and_wait(
+                    seq, "wtlogin.login", packet
+                )
+                return await self._handle_refresh_response(
+                    response, try_times - 1
+                )
+            else:
+                raise LoginException(
+                    response.uin, response.status,
+                    "Maximum number of login attempts exceeded!"
+                )
+        elif isinstance(response, UnknownLoginStatus):
+            raise LoginException(
+                response.uin, response.status,
+                "Refresh siginfo received wrong response type!"
+            )
+
+    async def refresh_siginfo(self) -> LoginSuccess:
+        """Submit sms code when login sms code needed.
+
+        This should be called after :class:`~cai.exceptions.LoginSMSRequestError` occurred.
+
+        Returns:
+            LoginSuccess: Success login event.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Refresh siginfo failed.
+            LoginAccountFrozen: Account is frozen.
+            LoginException: Unknown login return code or other exception.
+        """
+        seq = self.next_seq()
+        packet = encode_exchange_emp(
+            seq, self._session_id, self._ksid, self.uin, self._siginfo.g,
+            self._siginfo.dpwd, self._siginfo.no_pic_sig,
+            self._siginfo.encrypted_a1, self._siginfo.rand_seed,
+            self._siginfo.wt_session_ticket, self._siginfo.wt_session_ticket_key
+        )
+        response = await self.send_and_wait(seq, "wtlogin.exchange_emp", packet)
+
+        return await self._handle_refresh_response(response)
+
     async def register(
         self, status: OnlineStatus = OnlineStatus.Online
     ) -> RegisterSuccess:
@@ -540,16 +636,31 @@ class Client:
         if not isinstance(response, SvcRegisterResponse):
             raise RuntimeError("Invalid register response type!")
 
-        if not isinstance(response, RegisterSuccess):
-            raise ApiResponseError(
-                response.uin, response.seq, response.ret_code,
-                response.command_name
+        if isinstance(response, RegisterFail):
+            raise RegisterException(
+                response.uin, response.ret_code, response.message or ""
             )
+        elif isinstance(response, RegisterSuccess):
+            asyncio.create_task(self.heartbeat())
+            return response
 
-        asyncio.create_task(self.heartbeat())
-        return response
+        raise ApiResponseError(
+            response.uin, response.seq, response.ret_code, response.command_name
+        )
 
-    async def heartbeat(self):
+    async def heartbeat(self) -> None:
+        """Do heartbeat.
+
+        Calling this method more than once takes no effect.
+
+        Heartbeat will be down when an error occurred.
+
+        Example:
+            Create a heartbeat task using ``asyncio``.
+
+            >>> import asyncio
+            >>> asyncio.create_task(client.heartbeat())
+        """
         if self._heartbeat_enabled:
             return
 

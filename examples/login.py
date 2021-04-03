@@ -12,7 +12,6 @@ import asyncio
 import traceback
 from io import BytesIO
 from hashlib import md5
-from functools import partial
 
 from PIL import Image
 

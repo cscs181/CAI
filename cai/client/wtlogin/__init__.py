@@ -24,9 +24,8 @@ from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.utils.crypto import ECDH, EncryptSession
 from .oicq import (
-    OICQRequest, OICQResponse, LoginSuccess, NeedCaptcha, ExchangeEmp,
-    AccountFrozen, DeviceLocked, TooManySMSRequest, DeviceLockLogin,
-    UnknownLoginStatus
+    OICQRequest, OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen,
+    DeviceLocked, TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
 )
 from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, UniPacket, IncomingPacket
 
@@ -640,7 +639,7 @@ async def handle_oicq_response(
         client._siginfo.device_token = (
             response.device_token or client._siginfo.device_token
         )
-        client._siginfo.no_pic_sig = response.srm_token or client._siginfo.no_pic_sig
+        client._siginfo.no_pic_sig = response.no_pic_sig or client._siginfo.no_pic_sig
         client._siginfo.encrypted_a1 = (
             response.encrypted_a1 or client._siginfo.encrypted_a1
         )
@@ -650,9 +649,6 @@ async def handle_oicq_response(
         )
         client._siginfo.rand_seed = response.rand_seed or client._siginfo.rand_seed
         client._siginfo.s_key = response.s_key or client._siginfo.s_key
-        client._siginfo.s_key_expire_time = (
-            response.s_key_expire_time or client._siginfo.s_key_expire_time
-        )
         client._siginfo.user_st_key = response.user_st_key or client._siginfo.user_st_key
         client._siginfo.user_st_web_sig = (
             response.user_st_web_sig or client._siginfo.user_st_web_sig
@@ -670,45 +666,15 @@ async def handle_oicq_response(
         ).digest()
         decrypted = qqtea_decrypt(response.encrypted_a1, key)
         DEVICE.tgtgt = decrypted[51:67]
-        logger.info(f"{client.nick}({client.uin}) 登录成功！")
     elif isinstance(response, NeedCaptcha):
         client._t104 = response.t104 or client._t104
-        if response.verify_url:
-            logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
-        elif response.captcha_image:
-            logger.info(f"登录失败！需要根据图片输入验证码")
-    elif isinstance(response, ExchangeEmp):
-        pass
-    elif isinstance(response, AccountFrozen):
-        logger.info("账号已被冻结！")
     elif isinstance(response, DeviceLocked):
         client._t104 = response.t104 or client._t104
         client._t174 = response.t174 or client._t174
         client._siginfo.rand_seed = response.rand_seed or client._siginfo.rand_seed
-
-        msg = "账号已开启设备锁！"
-        if response.sms_phone:
-            msg += f"向手机{response.sms_phone}发送验证码 "
-        if response.verify_url:
-            msg += f"或前往{response.verify_url}扫码验证"
-        logger.info(msg + ". " + str(response.message))
-    elif isinstance(response, TooManySMSRequest):
-        logger.info("验证码发送频繁！")
     elif isinstance(response, DeviceLockLogin):
         client._t104 = response.t104 or client._t104
         client._siginfo.rand_seed = response.rand_seed or client._siginfo.rand_seed
-    elif isinstance(response, UnknownLoginStatus):
-        t146 = response._tlv_map.get(0x146)
-        t149 = response._tlv_map.get(0x149)
-        if t146:
-            packet_ = Packet(t146)
-            msg = packet_.read_bytes(packet_.read_uint16(4), 6).decode()
-        elif t149:
-            packet_ = Packet(t149)
-            msg = packet_.read_bytes(packet_.read_uint16(2), 4).decode()
-        else:
-            msg = ""
-        logger.info(f"未知的登录返回码 {response.status}! {msg}")
     return response
 
 
@@ -716,6 +682,6 @@ __all__ = [
     "encode_login_request2_captcha", "encode_login_request2_slider",
     "encode_login_request9", "encode_login_request20", "encode_exchange_emp",
     "handle_oicq_response", "OICQResponse", "LoginSuccess", "NeedCaptcha",
-    "ExchangeEmp", "AccountFrozen", "DeviceLocked", "TooManySMSRequest",
-    "DeviceLockLogin", "UnknownLoginStatus"
+    "AccountFrozen", "DeviceLocked", "TooManySMSRequest", "DeviceLockLogin",
+    "UnknownLoginStatus"
 ]

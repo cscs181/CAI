@@ -100,10 +100,6 @@ class OICQResponse(Event):
             return NeedCaptcha(
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
             )
-        elif status == 15:
-            return ExchangeEmp(
-                uin, seq, ret_code, command_name, sub_command, status, _tlv_map
-            )
         elif status == 40:
             return AccountFrozen(
                 uin, seq, ret_code, command_name, sub_command, status, _tlv_map
@@ -160,13 +156,12 @@ class LoginSuccess(UnknownLoginStatus):
 
     tgt: bytes
     tgt_key: bytes
-    srm_token: bytes
+    no_pic_sig: bytes
     encrypted_a1: bytes
     user_st: bytes
     user_st_key: bytes
     user_st_web_sig: bytes
     s_key: bytes
-    s_key_expire_time: int
     d2: bytes
     d2key: bytes
     wt_session_ticket: bytes
@@ -205,10 +200,9 @@ class LoginSuccess(UnknownLoginStatus):
         self.user_st_web_sig = t119[0x103]
         self.ksid = t119.get(0x108)
         self.s_key = t119[0x120]
-        self.s_key_expire_time = int(time.time()) + 21600
         self.pwd_flag = t119.get(0x186, {}).get("pwd_flag")
         self.encrypted_a1 = t119[0x106]
-        self.srm_token = t119[0x16a]
+        self.no_pic_sig = t119[0x16a]
 
         self.d2 = t119[0x143]
         self.d2key = t119[0x305]
@@ -242,19 +236,6 @@ class NeedCaptcha(UnknownLoginStatus):
             sign_length = data.read_uint16()
             self.captcha_sign = data.read_bytes(sign_length, 4)
             self.captcha_image = data[4 + sign_length:]
-
-
-@dataclass
-class ExchangeEmp(UnknownLoginStatus):
-    # TODO: extract data
-
-    def __init__(
-        self, uin: int, seq: int, ret_code: int, command_name: str,
-        sub_command: int, status: int, _tlv_map: Dict[int, Any]
-    ):
-        super().__init__(
-            uin, seq, ret_code, command_name, sub_command, status, _tlv_map
-        )
 
 
 @dataclass

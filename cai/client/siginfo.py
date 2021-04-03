@@ -8,6 +8,7 @@ This module is used to define account siginfo data.
 .. _LICENSE:
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
+import time
 from typing import Dict
 
 from dataclasses import dataclass, field
@@ -33,9 +34,18 @@ class SigInfo:
     ps_key_map: Dict[str, bytes] = field(default_factory=lambda: {})
     pt4_token_map: Dict[str, bytes] = field(default_factory=lambda: {})
     rand_seed: bytes = bytes()
-    s_key: bytes = bytes()
+    _s_key: bytes = bytes()
     s_key_expire_time: int = 0
     user_st_key: bytes = bytes()
     user_st_web_sig: bytes = bytes()
     wt_session_ticket: bytes = bytes()
     wt_session_ticket_key: bytes = bytes()
+
+    @property
+    def s_key(self) -> bytes:
+        return self._s_key
+
+    @s_key.setter
+    def s_key(self, value: bytes):
+        self._s_key = value
+        self.s_key_expire_time = int(time.time()) + 21600

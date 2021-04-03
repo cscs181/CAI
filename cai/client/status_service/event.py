@@ -9,7 +9,7 @@ This module is used to parse StatSvc response packets into event.
     https://github.com/yanyongyu/CAI/blob/master/LICENSE
 """
 
-from typing import Optional
+from typing import Union, Optional
 from dataclasses import dataclass
 
 from .jce import SvcRespRegister
@@ -40,15 +40,8 @@ class SvcRegisterResponse(Event):
             RegisterSuccess: register success.
             RegisterFail: register failed.
         """
-        if ret_code != 0:
-            return RegisterFail(
-                uin, seq, ret_code, command_name,
-                f"Server returned non-zero ret code {ret_code}"
-            )
-        elif not data:
-            return RegisterFail(
-                uin, seq, ret_code, command_name, "Missing data in response"
-            )
+        if ret_code != 0 or not data:
+            return SvcRegisterResponse(uin, seq, ret_code, command_name)
 
         try:
             resp_packet = RequestPacketVersion3.decode(data)

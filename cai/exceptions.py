@@ -134,3 +134,15 @@ class LoginSMSRequestError(LoginException):
 
     def __repr__(self) -> str:
         return f"LoginSMSRequestError(uin={self.uin})"
+
+
+class RegisterException(ApiException):
+    """Base Exception for Login"""
+
+    def __init__(self, uin: int, status: int, message: str = ""):
+        self.uin = uin
+        self.status = status
+        self.message = message
+
+    def __repr__(self) -> str:
+        return f"RegisterException(uin={self.uin}, status={self.status}, message={self.message})"

@@ -17,7 +17,7 @@ from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
 from .wtlogin import (
     encode_login_request2_captcha, encode_login_request2_slider,
     encode_login_request7, encode_login_request8, encode_login_request9,
-    encode_login_request20, encode_exchange_emp, handle_oicq_response,
+    encode_login_request20, encode_exchange_emp_15, handle_oicq_response,
     OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen, DeviceLocked,
     TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
 )
@@ -595,8 +595,8 @@ class Client:
             LoginException: Unknown login return code or other exception.
         """
         seq = self.next_seq()
-        packet = encode_exchange_emp(
-            seq, self._session_id, self._ksid, self.uin, self._siginfo.g,
+        packet = encode_exchange_emp_15(
+            seq, self._session_id, self.uin, self._siginfo.g,
             self._siginfo.dpwd, self._siginfo.no_pic_sig,
             self._siginfo.encrypted_a1, self._siginfo.rand_seed,
             self._siginfo.wt_session_ticket, self._siginfo.wt_session_ticket_key

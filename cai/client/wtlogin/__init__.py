@@ -423,6 +423,8 @@ def encode_login_request20(
 ) -> Packet:
     """Build device lock login request packet.
 
+    Called in `oicq.wlogin_sdk.request.WtloginHelper.GetStWithoutPasswd`.
+
     command id: `0x810 = 2064`
 
     sub command id: `20`
@@ -473,9 +475,15 @@ def encode_login_request20(
     return packet
 
 
-# refresh skey
-def encode_exchange_emp(
-    seq: int, session_id: bytes, ksid: bytes, uin: int, g: bytes, dpwd: bytes,
+# TODO: fast refresh
+# refresh siginfo by A2
+def encode_exchange_emp_10() -> Packet:
+    ...
+
+
+# refresh siginfo by A1
+def encode_exchange_emp_15(
+    seq: int, session_id: bytes, uin: int, g: bytes, dpwd: bytes,
     no_pic_sig: bytes, encrypted_a1: bytes, rand_seed: bytes,
     wt_session_ticket: bytes, wt_session_ticket_key: bytes
 ) -> Packet:

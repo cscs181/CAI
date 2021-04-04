@@ -17,8 +17,8 @@ sys.path.insert(0, os.path.abspath('..'))
 # -- Project information -----------------------------------------------------
 
 project = 'cai'
-copyright = '2021, yanyongyu'
-author = 'yanyongyu'
+copyright = '2021, cscs181'
+author = 'cscs181'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1.0'
@@ -45,9 +45,7 @@ exclude_patterns = []
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
-html_theme_options = {
-    'logo_only': True
-}
+html_theme_options = {'logo_only': True}
 html_logo = 'assets/logo_text_white.png'
 
 # Add any paths that contain custom static files (such as style sheets) here,

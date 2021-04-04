@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="#"><img src="https://raw.githubusercontent.com/yanyongyu/CAI/master/docs/assets/logo_text.png" width="900" height="200" alt="CAI"></a>
+  <a href="#"><img src="https://raw.githubusercontent.com/cscs181/CAI/master/docs/assets/logo_text.png" width="900" height="200" alt="CAI"></a>
 
 _✨ Yet Another Bot Framework for Tencent QQ Written in Python ✨_
 

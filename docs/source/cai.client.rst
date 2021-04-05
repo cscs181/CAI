@@ -13,6 +13,7 @@ Subpackages
    :maxdepth: 4
 
    cai.client.config_push
+   cai.client.friendlist
    cai.client.heartbeat
    cai.client.sso_server
    cai.client.status_service

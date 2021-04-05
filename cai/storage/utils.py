@@ -24,18 +24,20 @@ def user_cache_dir(appname):
     r"""
     Return full path to the user-specific cache dir for this application.
         "appname" is the name of application.
+
     Typical user cache directories are:
-        macOS:      ~/Library/Caches/<AppName>
-        Unix:       ~/.cache/<AppName> (XDG default)
-        Windows:    C:\Users\<username>\AppData\Local\<AppName>\Cache
+        macOS:      ``~/Library/Caches/<AppName>``
+        Unix:       ``~/.cache/<AppName>`` (XDG default)
+        Windows:    ``C:\Users\<username>\AppData\Local\<AppName>\Cache``
+
     On Windows the only suggestion in the MSDN docs is that local settings go
-    in the `CSIDL_LOCAL_APPDATA` directory. This is identical to the
-    non-roaming app data dir (the default returned by `user_data_dir`). Apps
+    in the ``CSIDL_LOCAL_APPDATA`` directory. This is identical to the
+    non-roaming app data dir (the default returned by :meth:`.user_data_dir`). Apps
     typically put cache data somewhere *under* the given dir here. Some
     examples:
-        ...\Mozilla\Firefox\Profiles\<ProfileName>\Cache
-        ...\Acme\SuperApp\Cache\1.0
-    OPINION: This function appends "Cache" to the `CSIDL_LOCAL_APPDATA` value.
+        ``...\Mozilla\Firefox\Profiles\<ProfileName>\Cache``
+        ``...\Acme\SuperApp\Cache\1.0``
+    OPINION: This function appends "Cache" to the ``CSIDL_LOCAL_APPDATA`` value.
     """
     if WINDOWS:
         # Get the base path
@@ -62,24 +64,25 @@ def user_cache_dir(appname):
 def user_data_dir(appname, roaming=False):
     r"""
     Return full path to the user-specific data dir for this application.
-        "appname" is the name of application.
-            If None, just the system directory is returned.
-        "roaming" (boolean, default False) can be set True to use the Windows
-            roaming appdata directory. That means that for users on a Windows
-            network setup for roaming profiles, this user data will be
-            sync'd on login. See
-            <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx>
-            for a discussion of issues.
+
+    "appname" is the name of application.
+    If None, just the system directory is returned.
+
+    "roaming" (boolean, default False) can be set True to use the Windows
+    roaming appdata directory. That means that for users on a Windows
+    network setup for roaming profiles, this user data will be
+    sync'd on login. See
+    <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx>
+    for a discussion of issues.
+
     Typical user data directories are:
-        macOS:                  ~/Library/Application Support/<AppName>
-        Unix:                   ~/.local/share/<AppName>    # or in
-                                $XDG_DATA_HOME, if defined
-        Win XP (not roaming):   C:\Documents and Settings\<username>\ ...
-                                ...Application Data\<AppName>
-        Win XP (roaming):       C:\Documents and Settings\<username>\Local ...
-                                ...Settings\Application Data\<AppName>
-        Win 7  (not roaming):   C:\Users\<username>\AppData\Local\<AppName>
-        Win 7  (roaming):       C:\Users\<username>\AppData\Roaming\<AppName>
+        macOS: ``~/Library/Application Support/<AppName>``
+        Unix: ``~/.local/share/<AppName>`` or in $XDG_DATA_HOME, if defined
+        Win XP (not roaming): ``C:\Documents and Settings\<username>\Application Data\<AppName>``
+        Win XP (roaming): ``C:\Documents and Settings\<username>\Local Settings\Application Data\<AppName>``
+        Win 7  (not roaming): ``C:\Users\<username>\AppData\Local\<AppName>``
+        Win 7  (roaming): ``C:\Users\<username>\AppData\Roaming\<AppName>``
+
     For Unix, we follow the XDG spec and support $XDG_DATA_HOME.
     That means, by default "~/.local/share/<AppName>".
     """
@@ -99,19 +102,23 @@ def user_data_dir(appname, roaming=False):
 
 
 def user_config_dir(appname, roaming=True):
-    """Return full path to the user-specific config dir for this application.
-        "appname" is the name of application.
-            If None, just the system directory is returned.
-        "roaming" (boolean, default True) can be set False to not use the
-            Windows roaming appdata directory. That means that for users on a
-            Windows network setup for roaming profiles, this user data will be
-            sync'd on login. See
-            <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx>
-            for a discussion of issues.
+    r"""Return full path to the user-specific config dir for this application.
+
+    "appname" is the name of application.
+    If None, just the system directory is returned.
+
+    "roaming" (boolean, default True) can be set False to not use the
+    Windows roaming appdata directory. That means that for users on a
+    Windows network setup for roaming profiles, this user data will be
+    sync'd on login. See
+    <http://technet.microsoft.com/en-us/library/cc766489(WS.10).aspx>
+    for a discussion of issues.
+
     Typical user data directories are:
         macOS:                  same as user_data_dir
-        Unix:                   ~/.config/<AppName>
-        Win *:                  same as user_data_dir
+        Unix:                   ``~/.config/<AppName>``
+        Win \*:                  same as user_data_dir
+
     For Unix, we follow the XDG spec and support $XDG_CONFIG_HOME.
     That means, by default "~/.config/<AppName>".
     """
@@ -130,17 +137,15 @@ def user_config_dir(appname, roaming=True):
 # see <https://github.com/pypa/pip/issues/1733>
 def site_config_dirs(appname):
     r"""Return a list of potential user-shared config dirs for this application.
-        "appname" is the name of application.
+
+    "appname" is the name of application.
+
     Typical user config directories are:
-        macOS:      /Library/Application Support/<AppName>/
-        Unix:       /etc or $XDG_CONFIG_DIRS[i]/<AppName>/ for each value in
-                    $XDG_CONFIG_DIRS
-        Win XP:     C:\Documents and Settings\All Users\Application ...
-                    ...Data\<AppName>\
-        Vista:      (Fail! "C:\ProgramData" is a hidden *system* directory
-                    on Vista.)
-        Win 7:      Hidden, but writeable on Win 7:
-                    C:\ProgramData\<AppName>\
+        macOS: ``/Library/Application Support/<AppName>/``
+        Unix: ``/etc or $XDG_CONFIG_DIRS[i]/<AppName>/`` for each value in $XDG_CONFIG_DIRS
+        Win XP: ``C:\Documents and Settings\All Users\Application Data\<AppName>\``
+        Vista: (Fail! "C:\ProgramData" is a hidden *system* directory on Vista.)
+        Win 7: Hidden, but writeable on Win 7 ``C:\ProgramData\<AppName>\``
     """
     if WINDOWS:
         path = os.path.normpath(_get_win_folder("CSIDL_COMMON_APPDATA"))

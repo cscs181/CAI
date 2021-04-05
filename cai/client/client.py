@@ -606,18 +606,26 @@ class Client:
         return await self._handle_refresh_response(response)
 
     async def register(
-        self, status: OnlineStatus = OnlineStatus.Online
+        self,
+        status: OnlineStatus = OnlineStatus.Online,
+        register_reason: RegPushReason = RegPushReason.AppRegister,
+        battery_status: Optional[int] = None,
+        is_power_connected: bool = False
     ) -> RegisterSuccess:
         """Register app client and get login status.
 
         This should be called after :meth:`.Client.login` successed.
 
         Args:
-            status (OnlineStatus): client status. defaults to
+            status (OnlineStatus, optional): Client status. Defaults to
                 :attr:`~cai.client.status_service.OnlineStatus.Online`.
+            register_reason (RegPushReason, optional): Register reason. Defaults to
+                :attr:`~cai.client.status_service.RegPushReason.AppRegister`.
+            battery_status (Optional[int], optional): Battery capacity. Defaults to ``None``.
+            is_power_connected (bool, optional): Is power connected to phone. Defaults to ``False``.
 
         Returns:
-            RegisterSuccess: Register success.
+            RegisterSuccess: Register success response.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -627,8 +635,8 @@ class Client:
         packet = encode_register(
             seq, self._session_id, self._ksid, self.uin, self._siginfo.tgt,
             self._siginfo.d2, self._siginfo.d2key,
-            7 if status == OnlineStatus.Online else 0, status,
-            RegPushReason.AppRegister
+            7 if status == OnlineStatus.Online else 0, status, register_reason,
+            battery_status, is_power_connected
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
 

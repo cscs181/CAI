@@ -110,8 +110,10 @@ def encode_register(
         bid (int): register bid. login: 1 | 2 | 4, other: 0.
         status (Union[int, OnlineStatus]): Online status.
         reg_push_reason (Union[str, RegPushReason]): Reg push reason.
-        battery_status (Optional[int]): Battery capacity. defaults to None.
-        is_power_connected (bool): Is power connected to phone. defaults to False.
+        battery_status (Optional[int], optional): Battery capacity.
+            Defaults to None.
+        is_power_connected (bool, optional): Is power connected to phone.
+            Defaults to False.
 
     Returns:
         Packet: Register packet.

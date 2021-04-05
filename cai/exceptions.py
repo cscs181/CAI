@@ -137,7 +137,7 @@ class LoginSMSRequestError(LoginException):
 
 
 class RegisterException(ApiException):
-    """Base Exception for Login"""
+    """Base Exception for Register"""
 
     def __init__(self, uin: int, status: int, message: str = ""):
         self.uin = uin

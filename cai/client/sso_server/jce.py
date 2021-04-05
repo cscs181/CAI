@@ -122,7 +122,7 @@ class SsoServerResponse(JceStruct):
     speed_info: types.BYTES = JceField(jce_id=14)
     """:obj:`~jce.types.BYTES`: vCesuInfo, renamed from n.
 
-    bytes from :class:`~cai.utils.jce.RequestPacketVersion3`(QualityTest)
+    bytes from :class:`~cai.utils.jce.RequestPacketVersion3` (QualityTest)
     """
     socket_v6: types.LIST[SsoServer] = JceField(jce_id=15)
     """:obj:`~jce.types.LIST` of :obj:`.SsoServer`:

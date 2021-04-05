@@ -135,7 +135,7 @@ class SvcReqRegister(JceStruct):
     battery_status: types.INT32 = JceField(jce_id=39)
     """:obj:`~jce.types.INT32`: battery status.
 
-    battery capacity ( | 128 when power connect).
+    battery capacity ( ``capacity | 128`` when power connect).
     """
     vendor_push_info: Optional[VendorPushInfo] = JceField(None, jce_id=42)
     """:obj:`.VendorPushInfo`: vendor push info."""

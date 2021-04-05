@@ -10,7 +10,7 @@ This module is used to build and handle status service related packet.
 """
 
 from enum import Enum, IntEnum
-from typing import Union, TYPE_CHECKING
+from typing import Union, Optional, TYPE_CHECKING
 
 from jce import types
 
@@ -63,9 +63,18 @@ class RegPushReason(str, Enum):
 
 # register
 def encode_register(
-    seq: int, session_id: bytes, ksid: bytes, uin: int, tgt: bytes, d2: bytes,
-    d2key: bytes, bid: int, status: Union[int, OnlineStatus],
-    reg_push_reason: Union[str, RegPushReason]
+    seq: int,
+    session_id: bytes,
+    ksid: bytes,
+    uin: int,
+    tgt: bytes,
+    d2: bytes,
+    d2key: bytes,
+    bid: int,
+    status: Union[int, OnlineStatus],
+    reg_push_reason: Union[str, RegPushReason],
+    battery_status: Optional[int] = None,
+    is_power_connected: bool = False
 ) -> Packet:
     """Build status service register packet.
 
@@ -86,13 +95,17 @@ def encode_register(
         d2key (bytes): Siginfo d2 key.
         bid (int): register bid. login: 1 | 2 | 4, other: 0.
         status (Union[int, OnlineStatus]): Online status.
-        reg_push_reason (Union[str, RegPushReason]): Reg push reason
+        reg_push_reason (Union[str, RegPushReason]): Reg push reason.
+        battery_status (Optional[int]): Battery capacity. defaults to None.
+        is_power_connected (bool): Is power connected to phone. defaults to False.
 
     Returns:
         Packet: Register packet.
     """
     COMMAND_NAME = "StatSvc.register"
     SUB_APP_ID = APK_INFO.sub_app_id
+
+    assert battery_status is None or 0 <= battery_status <= 100, "Battery Capacity Error!"
 
     svc = SvcReqRegister(
         uin=uin,
@@ -117,8 +130,9 @@ def encode_register(
         ).SerializeToString(),
         is_set_status=False,
         set_mute=False,
-        ext_online_status=1000,
-        battery_status=98
+        ext_online_status=1000 if battery_status is None else -1,
+        battery_status=0 if battery_status is None else battery_status |
+        (128 if is_power_connected else 0)
     )
     payload = SvcReqRegister.to_bytes(0, svc)
     req_packet = RequestPacketVersion3(

@@ -10,10 +10,11 @@ This module wraps the client methods to provide easier control (high-level api).
 """
 
 import asyncio
-from typing import Dict, Optional
+from typing import Dict, Optional, Callable, Awaitable
 
-from cai.client import Client
+from cai.log import logger
 from cai.exceptions import LoginException, ClientNotAvailable
+from cai.client import Client, HANDLERS, Event, IncomingPacket
 
 _clients: Dict[int, Client] = {}
 
@@ -58,11 +59,7 @@ async def close(uin: Optional[int] = None) -> None:
 
 
 async def close_all() -> None:
-    """Close all existing clients and delete them.
-
-    Args:
-        uin (Optional[int], optional): Account of the client want to close. Defaults to None.
-    """
+    """Close all existing clients and delete them."""
     tasks = [close(uin) for uin in _clients.keys()]
     await asyncio.gather(*tasks)
 
@@ -148,6 +145,17 @@ async def submit_sms(sms_code: str, uin: Optional[int] = None) -> bool:
         await client.close()
         raise
     return True
+
+
+def register_packet_handler(
+    cmd: str, packet_handler: Callable[[Client, IncomingPacket],
+                                       Awaitable[Event]]
+):
+    if cmd in HANDLERS:
+        logger.warning(
+            f"You are overwriting an existing handler for command {cmd}!"
+        )
+    HANDLERS[cmd] = packet_handler
 
 
 __all__ = [

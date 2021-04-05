@@ -9,4 +9,6 @@ This module is main entry point for the application.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from .client import Client
+from .event import Event
+from .packet import IncomingPacket
+from .client import Client, HANDLERS

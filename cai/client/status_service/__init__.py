@@ -35,14 +35,28 @@ class OnlineStatus(IntEnum):
     Note:
         Source: mqq.app.AppRuntime
     """
+    Unknown = 0
+    """未知"""
     Online = 11
+    """我在线上"""
     Offline = 21
+    """离线"""
     Away = 31
+    """离开"""
     Invisible = 41
+    """隐身"""
     Busy = 50
+    """忙碌"""
     Qme = 60
+    """Q 我吧"""
     Dnd = 70
+    """请勿打扰"""
     ReceiveOfflineMsg = 95
+    """离线但接收消息"""
+
+    @classmethod
+    def _missing_(cls, value: int) -> "OnlineStatus":
+        return OnlineStatus.Unknown
 
 
 class RegPushReason(str, Enum):
@@ -163,6 +177,7 @@ async def handle_register_response(
     )
     if isinstance(response, RegisterSuccess):
         client._heartbeat_interval = response.response.hello_interval
+        client._status = OnlineStatus(response.response.status)
     return response
 
 

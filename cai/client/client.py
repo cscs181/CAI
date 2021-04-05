@@ -613,9 +613,8 @@ class Client:
         This should be called after :meth:`.Client.login` successed.
 
         Args:
-            status (OnlineStatus): :attr:`~cai.client.status_service.OnlineStatus.Online` or
-                :attr:`~cai.client.status_service.OnlineStatus.Offline`. defaults to
-                :attr:`~cai.client.status_service.OnlineStatus.Online`
+            status (OnlineStatus): client status. defaults to
+                :attr:`~cai.client.status_service.OnlineStatus.Online`.
 
         Returns:
             RegisterSuccess: Register success.

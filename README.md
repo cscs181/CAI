@@ -1,8 +1,18 @@
 <p align="center">
-  <a href="#"><img src="https://raw.githubusercontent.com/cscs181/CAI/master/docs/assets/logo_text.png" width="900" height="200" alt="CAI"></a>
+  <a href="#"><img src="https://raw.githubusercontent.com/cscs181/CAI/master/docs/assets/logo_text.png" width="40%" alt="CAI"></a>
+</p>
+
+<div align="center">
 
 _✨ Yet Another Bot Framework for Tencent QQ Written in Python ✨_
 
+</div>
+
+<p align="center">
+  <a href="https://github.com/cscs181/CAI/blob/master/LICENSE">
+    <img src="https://img.shields.io/github/license/cscs181/CAI" alt="license">
+  </a>
+  <img src="https://img.shields.io/badge/python-3.7+-blue" alt="python">
 </p>
 
 ---

@@ -2,11 +2,11 @@
 
 This module is used to packet data into outgoing format.
 
-:Copyright: Copyright (C) 2021-2021  yanyongyu
+:Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
-    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+    https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import zlib
 import struct
@@ -15,7 +15,7 @@ from typing import Union, Optional
 
 from rtea import qqtea_encrypt, qqtea_decrypt
 
-from cai.utils.ecdh import ECDH
+from cai.utils.crypto import ECDH
 from cai.utils.binary import Packet
 
 
@@ -132,7 +132,7 @@ class UniPacket(Packet):
         seq: int,
         command_name: str,
         session_id: bytes,
-        encrypt_type: int,
+        body_type: int,
         body: Union[bytes, Packet],
         key: bytes,
         extra_data: bytes = b""
@@ -151,7 +151,7 @@ class UniPacket(Packet):
         )
         data.write_with_length(body, offset=4)
         return cls().write_with_length(
-            struct.pack(">IBIB", 0xB, encrypt_type, seq, 0),
+            struct.pack(">IBIB", 0xB, body_type, seq, 0),
             struct.pack(">I",
                         len(str(uin)) + 4),
             str(uin).encode(),

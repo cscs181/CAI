@@ -2,11 +2,11 @@
 
 This module is used to build and handle tlv bytes.
 
-:Copyright: Copyright (C) 2021-2021  yanyongyu
+:Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
-    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+    https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import time
 import struct
@@ -231,22 +231,22 @@ class TlvEncoder:
         build_brand: bytes
     ) -> Packet:
         """
-        GUID_SRC:
+        :GUID_SRC:
             * 0: 初始值
             * 1: 以前保存的文件
             * 17: 以前没保存但现在生成成功
             * 20: 以前没保存且现在生成失败
 
-        GUID_CHANGE_FLAG:
-            * mac != current mac: GUID_CHANGE_FLAG |= 0x1
-            * android_id != current android_id: GUID_CHANGE_FLAG |= 0x2
-            * guid != current guid: GUID_CHANGE_FLAG |= 0x4
+        :GUID_CHANGE_FLAG:
+            * mac != current mac: ``GUID_CHANGE_FLAG |= 0x1``
+            * android_id != current android_id: ``GUID_CHANGE_FLAG |= 0x2``
+            * guid != current guid: ``GUID_CHANGE_FLAG |= 0x4``
 
-        .. code-block:: python
+        Example:
 
-            GUID_FLAG = 0
-            GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
-            GUID_FLAG |= GUID_CHANGE_FLAG << 8 & 0xFF00
+            >>> GUID_FLAG = 0
+            >>> GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
+            >>> GUID_FLAG |= GUID_CHANGE_FLAG << 8 & 0xFF00
 
         """
         return cls._pack_tlv(

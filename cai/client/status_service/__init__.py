@@ -2,15 +2,15 @@
 
 This module is used to build and handle status service related packet.
 
-:Copyright: Copyright (C) 2021-2021  yanyongyu
+:Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
-    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+    https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
 from enum import Enum, IntEnum
-from typing import Union, TYPE_CHECKING
+from typing import Union, Optional, TYPE_CHECKING
 
 from jce import types
 
@@ -35,14 +35,28 @@ class OnlineStatus(IntEnum):
     Note:
         Source: mqq.app.AppRuntime
     """
+    Unknown = 0
+    """未知"""
     Online = 11
+    """我在线上"""
     Offline = 21
+    """离线"""
     Away = 31
+    """离开"""
     Invisible = 41
+    """隐身"""
     Busy = 50
+    """忙碌"""
     Qme = 60
+    """Q 我吧"""
     Dnd = 70
+    """请勿打扰"""
     ReceiveOfflineMsg = 95
+    """离线但接收消息"""
+
+    @classmethod
+    def _missing_(cls, value: int) -> "OnlineStatus":
+        return OnlineStatus.Unknown
 
 
 class RegPushReason(str, Enum):
@@ -63,9 +77,18 @@ class RegPushReason(str, Enum):
 
 # register
 def encode_register(
-    seq: int, session_id: bytes, ksid: bytes, uin: int, tgt: bytes, d2: bytes,
-    d2key: bytes, bid: int, status: Union[int, OnlineStatus],
-    reg_push_reason: Union[str, RegPushReason]
+    seq: int,
+    session_id: bytes,
+    ksid: bytes,
+    uin: int,
+    tgt: bytes,
+    d2: bytes,
+    d2key: bytes,
+    bid: int,
+    status: Union[int, OnlineStatus],
+    reg_push_reason: Union[str, RegPushReason],
+    battery_status: Optional[int] = None,
+    is_power_connected: bool = False
 ) -> Packet:
     """Build status service register packet.
 
@@ -86,7 +109,11 @@ def encode_register(
         d2key (bytes): Siginfo d2 key.
         bid (int): register bid. login: 1 | 2 | 4, other: 0.
         status (Union[int, OnlineStatus]): Online status.
-        reg_push_reason (Union[str, RegPushReason]): Reg push reason
+        reg_push_reason (Union[str, RegPushReason]): Reg push reason.
+        battery_status (Optional[int], optional): Battery capacity.
+            Defaults to None.
+        is_power_connected (bool, optional): Is power connected to phone.
+            Defaults to False.
 
     Returns:
         Packet: Register packet.
@@ -94,10 +121,12 @@ def encode_register(
     COMMAND_NAME = "StatSvc.register"
     SUB_APP_ID = APK_INFO.sub_app_id
 
+    assert battery_status is None or 0 <= battery_status <= 100, "Battery Capacity Error!"
+
     svc = SvcReqRegister(
         uin=uin,
         bid=bid,
-        status=status.value,
+        status=int(status),
         ios_version=DEVICE.version.sdk,
         nettype=bytes([1]),
         reg_type=bytes(1)
@@ -117,8 +146,9 @@ def encode_register(
         ).SerializeToString(),
         is_set_status=False,
         set_mute=False,
-        ext_online_status=1000,
-        battery_status=98
+        ext_online_status=1000 if battery_status is None else -1,
+        battery_status=0 if battery_status is None else battery_status |
+        (128 if is_power_connected else 0)
     )
     payload = SvcReqRegister.to_bytes(0, svc)
     req_packet = RequestPacketVersion3(
@@ -149,10 +179,11 @@ async def handle_register_response(
     )
     if isinstance(response, RegisterSuccess):
         client._heartbeat_interval = response.response.hello_interval
+        client._status = OnlineStatus(response.response.status)
     return response
 
 
 __all__ = [
-    "encode_register", "decode_register_response", "OnlineStatus",
+    "encode_register", "handle_register_response", "OnlineStatus",
     "RegPushReason", "SvcRegisterResponse", "RegisterSuccess", "RegisterFail"
 ]

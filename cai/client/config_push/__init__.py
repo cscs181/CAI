@@ -2,11 +2,11 @@
 
 This module is used to build and handle config push service related packet.
 
-:Copyright: Copyright (C) 2021-2021  yanyongyu
+:Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
-    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+    https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
 from typing import TYPE_CHECKING
@@ -14,6 +14,7 @@ from typing import TYPE_CHECKING
 from jce import types
 
 from cai.log import logger
+from cai.utils.binary import Packet
 from .jce import PushResp, FileServerPushList
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
@@ -29,7 +30,7 @@ if TYPE_CHECKING:
 def encode_config_push_response(
     uin: int, seq: int, session_id: bytes, d2key: bytes, type: int,
     jcebuf: bytes, large_seq: int
-):
+) -> Packet:
     """Build config push response packet.
 
     command name: `ConfigPushSvc.PushResp`
@@ -88,6 +89,6 @@ async def handle_config_push_request(
 
 
 __all__ = [
-    "decode_push_req", "FileServerPushList", "ConfigPushEvent",
+    "handle_config_push_request", "FileServerPushList", "ConfigPushEvent",
     "SsoServerPushEvent", "FileServerPushEvent", "LogActionPushEvent"
 ]

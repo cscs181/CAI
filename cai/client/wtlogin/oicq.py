@@ -2,11 +2,11 @@
 
 This module is used to build and handle OICQ packets.
 
-:Copyright: Copyright (C) 2021-2021  yanyongyu
+:Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
-    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+    https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import time
 import struct
@@ -156,16 +156,15 @@ class LoginSuccess(UnknownLoginStatus):
 
     tgt: bytes
     tgt_key: bytes
-    srm_token: bytes
-    t133: bytes
+    no_pic_sig: bytes
     encrypted_a1: bytes
     user_st: bytes
     user_st_key: bytes
     user_st_web_sig: bytes
     s_key: bytes
-    s_key_expire_time: int
     d2: bytes
     d2key: bytes
+    wt_session_ticket: bytes
     wt_session_ticket_key: bytes
     device_token: Optional[bytes]
     ps_key_map: Dict[str, bytes]
@@ -201,16 +200,15 @@ class LoginSuccess(UnknownLoginStatus):
         self.user_st_web_sig = t119[0x103]
         self.ksid = t119.get(0x108)
         self.s_key = t119[0x120]
-        self.s_key_expire_time = int(time.time()) + 21600
         self.pwd_flag = t119.get(0x186, {}).get("pwd_flag")
         self.encrypted_a1 = t119[0x106]
-        self.srm_token = t119[0x16a]
+        self.no_pic_sig = t119[0x16a]
 
         self.d2 = t119[0x143]
         self.d2key = t119[0x305]
         self.ps_key_map = t119.get(0x512, {}).get("ps_key_map", {})
         self.pt4_token_map = t119.get(0x512, {}).get("pt4_token_map", {})
-        self.t133 = t119[0x133]
+        self.wt_session_ticket = t119[0x133]
         self.wt_session_ticket_key = t119[0x134]
         self.device_token = t119.get(0x322, None)
 

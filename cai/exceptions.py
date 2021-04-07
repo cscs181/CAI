@@ -2,11 +2,11 @@
 
 This module is used to collect all application exceptions.
 
-:Copyright: Copyright (C) 2021-2021  yanyongyu
+:Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
-    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+    https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 from typing import Optional
 
@@ -134,3 +134,15 @@ class LoginSMSRequestError(LoginException):
 
     def __repr__(self) -> str:
         return f"LoginSMSRequestError(uin={self.uin})"
+
+
+class RegisterException(ApiException):
+    """Base Exception for Register"""
+
+    def __init__(self, uin: int, status: int, message: str = ""):
+        self.uin = uin
+        self.status = status
+        self.message = message
+
+    def __repr__(self) -> str:
+        return f"RegisterException(uin={self.uin}, status={self.status}, message={self.message})"

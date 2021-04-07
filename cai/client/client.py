@@ -2,12 +2,13 @@
 
 This module is used to control client actions (low-level api).
 
-:Copyright: Copyright (C) 2021-2021  yanyongyu
+:Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
-    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+    https://github.com/cscs181/CAI/blob/master/LICENSE
 """
+import time
 import struct
 import secrets
 import asyncio
@@ -16,20 +17,22 @@ from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
 from .wtlogin import (
     encode_login_request2_captcha, encode_login_request2_slider,
     encode_login_request7, encode_login_request8, encode_login_request9,
-    encode_login_request20, handle_login_response, OICQResponse, LoginSuccess,
-    NeedCaptcha, AccountFrozen, DeviceLocked, TooManySMSRequest,
-    DeviceLockLogin, UnknownLoginStatus
+    encode_login_request20, encode_exchange_emp_15, handle_oicq_response,
+    OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen, DeviceLocked,
+    TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
 )
 from .status_service import (
     encode_register, handle_register_response, OnlineStatus, RegPushReason,
     SvcRegisterResponse, RegisterSuccess, RegisterFail
 )
 from .config_push import handle_config_push_request, FileServerPushList
+from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .sso_server import get_sso_server, SsoServer
 
 from cai.exceptions import (
     ApiResponseError, LoginException, LoginSliderNeeded, LoginCaptchaNeeded,
-    LoginAccountFrozen, LoginDeviceLocked, LoginSMSRequestError
+    LoginAccountFrozen, LoginDeviceLocked, LoginSMSRequestError,
+    RegisterException
 )
 
 from cai.log import logger
@@ -45,9 +48,11 @@ from cai.connection import connect, Connection
 DEVICE = get_device()
 APK_INFO = get_protocol()
 HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
-    "wtlogin.login": handle_login_response,
+    "wtlogin.login": handle_oicq_response,
+    "wtlogin.exchange_emp": handle_oicq_response,
     "StatSvc.register": handle_register_response,
-    "ConfigPushSvc.PushReq": handle_config_push_request
+    "ConfigPushSvc.PushReq": handle_config_push_request,
+    "Heartbeat.Alive": handle_heartbeat
 }
 
 
@@ -72,15 +77,12 @@ class Client:
         self._session_id: bytes = bytes([0x02, 0xB0, 0x5B, 0x8B])
         self._connection: Optional[Connection] = None
         self._heartbeat_interval: int = 300
-        """:obj:`int`: heartbeat interval. defaults to 300 seconds."""
+        self._heartbeat_enabled: bool = False
         self._file_storage_info: Optional[FileServerPushList] = None
 
-        self._g: bytes = bytes()
-        self._dpwd: bytes = bytes()
         self._ip_address: bytes = bytes()
         self._ksid: bytes = f"|{DEVICE.imei}|A8.2.7.27f6ea96".encode()
         self._pwd_flag: bool = False
-        self._rand_seed: bytes = bytes()
         self._rollback_sig: bytes = bytes()
 
         self._t104: bytes = bytes()
@@ -91,7 +93,7 @@ class Client:
         self._t528: bytes = bytes()
         self._t530: bytes = bytes()
 
-        self._siginfo: SigInfo = SigInfo()
+        self._siginfo: SigInfo = SigInfo(self)
         self._receive_store: FutureStore[int, Event] = FutureStore()
 
     @property
@@ -326,11 +328,14 @@ class Client:
             )
 
         if isinstance(response, LoginSuccess):
+            logger.info(f"{self.nick}({self.uin}) 登录成功！")
             return response
         elif isinstance(response, NeedCaptcha):
             if response.verify_url:
+                logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
                 raise LoginSliderNeeded(response.uin, response.verify_url)
             elif response.captcha_image:
+                logger.info(f"登录失败！需要根据图片输入验证码")
                 raise LoginCaptchaNeeded(
                     response.uin, response.captcha_image, response.captcha_sign
                 )
@@ -340,20 +345,29 @@ class Client:
                     "Cannot get verify_url or captcha_image from the response!"
                 )
         elif isinstance(response, AccountFrozen):
+            logger.info("账号已被冻结！")
             raise LoginAccountFrozen(response.uin)
         elif isinstance(response, DeviceLocked):
+            msg = "账号已开启设备锁！"
+            if response.sms_phone:
+                msg += f"向手机{response.sms_phone}发送验证码 "
+            if response.verify_url:
+                msg += f"或前往{response.verify_url}扫码验证"
+            logger.info(msg + ". " + str(response.message))
+
             raise LoginDeviceLocked(
                 response.uin, response.sms_phone, response.verify_url,
                 response.message
             )
         elif isinstance(response, TooManySMSRequest):
+            logger.info("验证码发送频繁！")
             raise LoginSMSRequestError(response.uin)
         elif isinstance(response, DeviceLockLogin):
             if try_times:
                 seq = self.next_seq()
                 packet = encode_login_request20(
                     seq, self._key, self._session_id, self._ksid, self.uin,
-                    self._t104, self._g
+                    self._t104, self._siginfo.g
                 )
                 response = await self.send_and_wait(
                     seq, "wtlogin.login", packet
@@ -367,6 +381,17 @@ class Client:
                     "Maximum number of login attempts exceeded!"
                 )
         elif isinstance(response, UnknownLoginStatus):
+            t146 = response._tlv_map.get(0x146)
+            t149 = response._tlv_map.get(0x149)
+            if t146:
+                packet_ = Packet(t146)
+                msg = packet_.read_bytes(packet_.read_uint16(4), 6).decode()
+            elif t149:
+                packet_ = Packet(t149)
+                msg = packet_.read_bytes(packet_.read_uint16(2), 4).decode()
+            else:
+                msg = ""
+            logger.info(f"未知的登录返回码 {response.status}! {msg}")
             raise LoginException(
                 response.uin, response.status, "Unknown login status."
             )
@@ -505,25 +530,102 @@ class Client:
         seq = self.next_seq()
         packet = encode_login_request7(
             seq, self._key, self._session_id, self._ksid, self.uin, sms_code,
-            self._t104, self._t174, self._g
+            self._t104, self._t174, self._siginfo.g
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
 
+    async def _get_s_key(self) -> bytes:
+        if time.time() > self._siginfo.s_key_expire_time:
+            await self.refresh_siginfo()
+        return self._siginfo.s_key
+
+    async def _handle_refresh_response(
+        self, response: Event, try_times: int = 1
+    ) -> LoginSuccess:
+        if not isinstance(response, OICQResponse):
+            raise RuntimeError("Invalid refresh siginfo response type!")
+
+        if not isinstance(response, UnknownLoginStatus):
+            raise ApiResponseError(
+                response.uin, response.seq, response.ret_code,
+                response.command_name
+            )
+
+        if isinstance(response, LoginSuccess):
+            return response
+        elif isinstance(response, AccountFrozen):
+            raise LoginAccountFrozen(response.uin)
+        elif isinstance(response, DeviceLockLogin):
+            if try_times:
+                seq = self.next_seq()
+                packet = encode_login_request20(
+                    seq, self._key, self._session_id, self._ksid, self.uin,
+                    self._t104, self._siginfo.g
+                )
+                response = await self.send_and_wait(
+                    seq, "wtlogin.login", packet
+                )
+                return await self._handle_refresh_response(
+                    response, try_times - 1
+                )
+            else:
+                raise LoginException(
+                    response.uin, response.status,
+                    "Maximum number of login attempts exceeded!"
+                )
+        elif isinstance(response, UnknownLoginStatus):
+            raise LoginException(
+                response.uin, response.status,
+                "Refresh siginfo received wrong response type!"
+            )
+
+    async def refresh_siginfo(self) -> LoginSuccess:
+        """Submit sms code when login sms code needed.
+
+        This should be called after :class:`~cai.exceptions.LoginSMSRequestError` occurred.
+
+        Returns:
+            LoginSuccess: Success login event.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Refresh siginfo failed.
+            LoginAccountFrozen: Account is frozen.
+            LoginException: Unknown login return code or other exception.
+        """
+        seq = self.next_seq()
+        packet = encode_exchange_emp_15(
+            seq, self._session_id, self.uin, self._siginfo.g,
+            self._siginfo.dpwd, self._siginfo.no_pic_sig,
+            self._siginfo.encrypted_a1, self._siginfo.rand_seed,
+            self._siginfo.wt_session_ticket, self._siginfo.wt_session_ticket_key
+        )
+        response = await self.send_and_wait(seq, "wtlogin.exchange_emp", packet)
+
+        return await self._handle_refresh_response(response)
+
     async def register(
-        self, status: OnlineStatus = OnlineStatus.Online
+        self,
+        status: OnlineStatus = OnlineStatus.Online,
+        register_reason: RegPushReason = RegPushReason.AppRegister,
+        battery_status: Optional[int] = None,
+        is_power_connected: bool = False
     ) -> RegisterSuccess:
         """Register app client and get login status.
 
         This should be called after :meth:`.Client.login` successed.
 
         Args:
-            status (OnlineStatus): :attr:`~cai.client.status_service.OnlineStatus.Online` or
-                :attr:`~cai.client.status_service.OnlineStatus.Offline`. defaults to
-                :attr:`~cai.client.status_service.OnlineStatus.Online`
+            status (OnlineStatus, optional): Client status. Defaults to
+                :attr:`~cai.client.status_service.OnlineStatus.Online`.
+            register_reason (RegPushReason, optional): Register reason. Defaults to
+                :attr:`~cai.client.status_service.RegPushReason.AppRegister`.
+            battery_status (Optional[int], optional): Battery capacity. Defaults to ``None``.
+            is_power_connected (bool, optional): Is power connected to phone. Defaults to ``False``.
 
         Returns:
-            RegisterSuccess: Register success.
+            RegisterSuccess: Register success response.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -533,18 +635,58 @@ class Client:
         packet = encode_register(
             seq, self._session_id, self._ksid, self.uin, self._siginfo.tgt,
             self._siginfo.d2, self._siginfo.d2key,
-            7 if status == OnlineStatus.Online else 0, status,
-            RegPushReason.AppRegister
+            7 if status == OnlineStatus.Online else 0, status, register_reason,
+            battery_status, is_power_connected
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
 
         if not isinstance(response, SvcRegisterResponse):
             raise RuntimeError("Invalid register response type!")
 
-        if not isinstance(response, RegisterSuccess):
-            raise ApiResponseError(
-                response.uin, response.seq, response.ret_code,
-                response.command_name
+        if isinstance(response, RegisterFail):
+            raise RegisterException(
+                response.uin, response.ret_code, response.message or ""
             )
+        elif isinstance(response, RegisterSuccess):
+            asyncio.create_task(self.heartbeat())
+            return response
 
-        return response
+        raise ApiResponseError(
+            response.uin, response.seq, response.ret_code, response.command_name
+        )
+
+    async def heartbeat(self) -> None:
+        """Do heartbeat.
+
+        Calling this method more than once takes no effect.
+
+        Heartbeat will be down when an error occurred.
+
+        Example:
+            Create a heartbeat task using ``asyncio``.
+
+            >>> import asyncio
+            >>> asyncio.create_task(client.heartbeat())
+        """
+        if self._heartbeat_enabled:
+            return
+
+        self._heartbeat_enabled = True
+
+        while self._heartbeat_enabled and self.connected:
+            seq = self.next_seq()
+            packet = encode_heartbeat(
+                seq, self._session_id, self._ksid, self.uin
+            )
+            try:
+                response = await self.send_and_wait(
+                    seq, "Heartbeat.Alive", packet
+                )
+                if not isinstance(response, Heartbeat):
+                    raise RuntimeError("Invalid heartbeat response type!")
+            except Exception:
+                logger.exception("Heartbeat.Alive: Failed")
+                break
+            await asyncio.sleep(self._heartbeat_interval)
+
+        self._heartbeat_enabled = False

@@ -25,18 +25,18 @@ cai.utils.coroutine module
    :undoc-members:
    :show-inheritance:
 
-cai.utils.dataclass module
---------------------------
+cai.utils.crypto module
+-----------------------
 
-.. automodule:: cai.utils.dataclass
+.. automodule:: cai.utils.crypto
    :members:
    :undoc-members:
    :show-inheritance:
 
-cai.utils.ecdh module
----------------------
+cai.utils.dataclass module
+--------------------------
 
-.. automodule:: cai.utils.ecdh
+.. automodule:: cai.utils.dataclass
    :members:
    :undoc-members:
    :show-inheritance:

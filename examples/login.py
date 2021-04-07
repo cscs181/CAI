@@ -1,10 +1,10 @@
 """Example Code for Login.
 
-:Copyright: Copyright (C) 2021-2021  yanyongyu
+:Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
-    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+    https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import os
 import signal
@@ -12,7 +12,6 @@ import asyncio
 import traceback
 from io import BytesIO
 from hashlib import md5
-from functools import partial
 
 from PIL import Image
 
@@ -37,7 +36,7 @@ async def run():
 
     try:
         client = await cai.login(account, md5(password.encode()).digest())
-        print("Login Success!")
+        print(f"Login Success! Client status: {client.status.name}")
     except Exception as e:
         await handle_failure(e)
 

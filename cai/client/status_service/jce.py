@@ -2,11 +2,11 @@
 
 This module is used to build and handle StatSvc packets.
 
-:Copyright: Copyright (C) 2021-2021  yanyongyu
+:Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
 
 .. _LICENSE:
-    https://github.com/yanyongyu/CAI/blob/master/LICENSE
+    https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
 from typing import Optional
@@ -135,7 +135,7 @@ class SvcReqRegister(JceStruct):
     battery_status: types.INT32 = JceField(jce_id=39)
     """:obj:`~jce.types.INT32`: battery status.
 
-    battery capacity ( | 128 when power connect).
+    battery capacity ( ``capacity | 128`` when power connect).
     """
     vendor_push_info: Optional[VendorPushInfo] = JceField(None, jce_id=42)
     """:obj:`.VendorPushInfo`: vendor push info."""

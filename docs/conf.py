@@ -16,12 +16,16 @@ sys.path.insert(0, os.path.abspath('..'))
 
 if os.getenv("READTHEDOCS"):
     import subprocess
-    subprocess.run(
+    requirements_path = os.path.join(
+        os.path.dirname(os.path.abspath(__file__)), "requirements.txt"
+    )
+    prog = subprocess.run(
         f"{sys.executable} -m pip install poetry &&"
-        f"{sys.executable} -m poetry export -o requirements.txt --dev --without-hashes &&"
-        f"{sys.executable} -m pip install -r requirements.txt",
+        f"{sys.executable} -m poetry export -o {requirements_path} --dev --without-hashes &&"
+        f"{sys.executable} -m pip install -r {requirements_path}",
         shell=True
     )
+    assert prog.returncode == 0
 
 # -- Project information -----------------------------------------------------
 

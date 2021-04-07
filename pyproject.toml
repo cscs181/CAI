@@ -28,6 +28,9 @@ recommonmark = "^0.7.1"
 sphinx-rtd-theme = "^0.5.1"
 sphinxcontrib-napoleon = "^0.7"
 
+[tool.poetry.extras]
+dev = ["yapf", "pillow", "sphinx", "mypy-protobuf", "recommonmark", "sphinx-rtd-theme", "sphinxcontrib-napoleon"]
+
 [[tool.poetry.source]]
 name = "aliyun"
 url = "https://mirrors.aliyun.com/pypi/simple/"

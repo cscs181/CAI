@@ -14,6 +14,15 @@ import os
 import sys
 sys.path.insert(0, os.path.abspath('..'))
 
+if os.getenv("READTHEDOCS"):
+    import subprocess
+    subprocess.run(
+        f"{sys.executable} -m pip install poetry &&"
+        f"{sys.executable} -m poetry export -o requirements.txt --dev --without-hashes &&"
+        f"{sys.executable} -m pip install -r requirements.txt",
+        shell=True
+    )
+
 # -- Project information -----------------------------------------------------
 
 project = 'cai'
@@ -22,6 +31,7 @@ author = 'cscs181'
 
 # The full version, including alpha/beta/rc tags
 release = '0.1.0'
+language = 'zh_CN'
 
 # -- General configuration ---------------------------------------------------
 
@@ -29,7 +39,10 @@ release = '0.1.0'
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 import sphinx_rtd_theme
-extensions = ['sphinxcontrib.napoleon', 'sphinx_rtd_theme', 'recommonmark']
+extensions = [
+    'sphinxcontrib.napoleon', 'sphinx_rtd_theme', 'recommonmark',
+    'sphinx_copybutton'
+]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']

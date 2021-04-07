@@ -31,3 +31,7 @@ _✨ Yet Another Bot Framework for Tencent QQ Written in Python ✨_
 ---
 
 ~~目前尚在开发。~~
+
+## 文档
+
+[See on Read The Docs](https://cai-bot.readthedocs.io/)

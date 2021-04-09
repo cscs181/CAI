@@ -17,7 +17,7 @@ TS = TypeVar("TS")
 TR = TypeVar("TR", bound=AsyncContextManager)
 
 
-class _ContextManager(Coroutine, Generic[TY, TS, TR]):
+class ContextManager(Coroutine, Generic[TY, TS, TR]):
 
     __slots__ = ("_coro", "_obj")
 

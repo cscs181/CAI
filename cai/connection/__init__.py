@@ -13,7 +13,7 @@ from types import TracebackType
 from typing import Any, Type, Union, Optional
 
 from cai.utils.binary import Packet
-from cai.utils.coroutine import _ContextManager
+from cai.utils.coroutine import ContextManager
 
 
 class Connection:
@@ -129,9 +129,9 @@ def connect(
     port: int,
     ssl: bool = False,
     timeout: Optional[float] = None
-) -> _ContextManager[Any, Any, Connection]:
+) -> ContextManager[Any, Any, Connection]:
     coro = _connect(host, port, ssl=ssl, timeout=timeout)
-    return _ContextManager(coro)
+    return ContextManager(coro)
 
 
 async def _connect(*args, **kwargs):

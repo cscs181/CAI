@@ -93,7 +93,7 @@ class Client:
         self._t528: bytes = bytes()
         self._t530: bytes = bytes()
 
-        self._siginfo: SigInfo = SigInfo(self)
+        self._siginfo: SigInfo = SigInfo()
         self._receive_store: FutureStore[int, Event] = FutureStore()
 
     @property

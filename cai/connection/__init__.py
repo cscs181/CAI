@@ -17,13 +17,12 @@ from cai.utils.coroutine import ContextManager
 
 
 class Connection:
-
     def __init__(
         self,
         host: str,
         port: int,
         ssl: bool = False,
-        timeout: Optional[float] = None
+        timeout: Optional[float] = None,
     ) -> None:
         self._host = host
         self._port = port
@@ -54,8 +53,10 @@ class Connection:
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException], traceback: Optional[TracebackType]
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
     ) -> None:
         await self.close()
         return
@@ -64,7 +65,7 @@ class Connection:
         try:
             self._reader, self._writer = await asyncio.wait_for(
                 asyncio.open_connection(self._host, self._port, ssl=self._ssl),
-                self.timeout
+                self.timeout,
             )
         except Exception as e:
             if self._writer:
@@ -125,10 +126,7 @@ class Connection:
 
 
 def connect(
-    host: str,
-    port: int,
-    ssl: bool = False,
-    timeout: Optional[float] = None
+    host: str, port: int, ssl: bool = False, timeout: Optional[float] = None
 ) -> ContextManager[Any, Any, Connection]:
     coro = _connect(host, port, ssl=ssl, timeout=timeout)
     return ContextManager(coro)

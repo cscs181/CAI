@@ -17,6 +17,7 @@ class SsoServerRequest(JceStruct):
     Note:
         Source: com.tencent.msf.service.protocol.serverconfig.d
     """
+
     uin: types.INT64 = JceField(0, jce_id=1)  # uin or 0
     """:obj:`~jce.types.INT64`: User QQ or 0, renamed from a."""
     timeout: types.INT64 = JceField(0, jce_id=2)
@@ -69,6 +70,7 @@ class SsoServer(JceStruct):
     Note:
         Source: com.tencent.msf.service.protocol.serverconfig.i
     """
+
     host: types.STRING = JceField(jce_id=1)
     """:obj:`~jce.types.STRING`: server host, renamed from a."""
     port: types.INT32 = JceField(jce_id=2)
@@ -94,6 +96,7 @@ class SsoServerResponse(JceStruct):
     Note:
         Source: com.tencent.msf.service.protocol.serverconfig.e
     """
+
     # a: types.INT32 = JceField(0, jce_id=1)
     socket_v4_mobile: types.LIST[SsoServer] = JceField(jce_id=2)
     """:obj:`~jce.types.LIST` of :obj:`.SsoServer`:

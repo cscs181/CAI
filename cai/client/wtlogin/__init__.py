@@ -23,10 +23,22 @@ from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.utils.crypto import ECDH, EncryptSession
 from .oicq import (
-    OICQRequest, OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen,
-    DeviceLocked, TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
+    OICQRequest,
+    OICQResponse,
+    LoginSuccess,
+    NeedCaptcha,
+    AccountFrozen,
+    DeviceLocked,
+    TooManySMSRequest,
+    DeviceLockLogin,
+    UnknownLoginStatus,
 )
-from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, UniPacket, IncomingPacket
+from cai.client.packet import (
+    CSsoBodyPacket,
+    CSsoDataPacket,
+    UniPacket,
+    IncomingPacket,
+)
 
 if TYPE_CHECKING:
     from cai.client import Client
@@ -37,8 +49,14 @@ APK_INFO = get_protocol()
 
 # submit captcha
 def encode_login_request2_captcha(
-    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
-    captcha: str, sign: bytes, t104: bytes
+    seq: int,
+    key: bytes,
+    session_id: bytes,
+    ksid: bytes,
+    uin: int,
+    captcha: str,
+    sign: bytes,
+    t104: bytes,
 ) -> Packet:
     """Build submit captcha request packet.
 
@@ -81,14 +99,19 @@ def encode_login_request2_captcha(
         TlvEncoder.t2(captcha.encode(), sign),
         TlvEncoder.t8(LOCAL_ID),
         TlvEncoder.t104(t104),
-        TlvEncoder.t116(BITMAP, SUB_SIGMAP)
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
     )
     oicq_packet = OICQRequest.build_encoded(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
     )
     sso_packet = CSsoBodyPacket.build(
-        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
-        oicq_packet
+        seq,
+        SUB_APP_ID,
+        COMMAND_NAME,
+        DEVICE.imei,
+        session_id,
+        ksid,
+        oicq_packet,
     )
     # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
@@ -97,8 +120,13 @@ def encode_login_request2_captcha(
 
 # submit ticket
 def encode_login_request2_slider(
-    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, ticket: str,
-    t104: bytes
+    seq: int,
+    key: bytes,
+    session_id: bytes,
+    ksid: bytes,
+    uin: int,
+    ticket: str,
+    t104: bytes,
 ) -> Packet:
     """Build slider ticket request packet.
 
@@ -140,14 +168,19 @@ def encode_login_request2_slider(
         TlvEncoder.t193(ticket),
         TlvEncoder.t8(LOCAL_ID),
         TlvEncoder.t104(t104),
-        TlvEncoder.t116(BITMAP, SUB_SIGMAP)
+        TlvEncoder.t116(BITMAP, SUB_SIGMAP),
     )
     oicq_packet = OICQRequest.build_encoded(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
     )
     sso_packet = CSsoBodyPacket.build(
-        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
-        oicq_packet
+        seq,
+        SUB_APP_ID,
+        COMMAND_NAME,
+        DEVICE.imei,
+        session_id,
+        ksid,
+        oicq_packet,
     )
     # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
@@ -156,8 +189,15 @@ def encode_login_request2_slider(
 
 # submit sms
 def encode_login_request7(
-    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
-    sms_code: str, t104: bytes, t174: bytes, g: bytes
+    seq: int,
+    key: bytes,
+    session_id: bytes,
+    ksid: bytes,
+    uin: int,
+    sms_code: str,
+    t104: bytes,
+    t174: bytes,
+    g: bytes,
 ) -> Packet:
     """Build sms submit packet.
 
@@ -209,14 +249,19 @@ def encode_login_request7(
         TlvEncoder.t174(t174),
         TlvEncoder.t17c(sms_code),
         TlvEncoder.t401(g),
-        TlvEncoder.t198()
+        TlvEncoder.t198(),
     )
     oicq_packet = OICQRequest.build_encoded(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
     )
     sso_packet = CSsoBodyPacket.build(
-        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
-        oicq_packet
+        seq,
+        SUB_APP_ID,
+        COMMAND_NAME,
+        DEVICE.imei,
+        session_id,
+        ksid,
+        oicq_packet,
     )
     # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
@@ -225,8 +270,13 @@ def encode_login_request7(
 
 # request sms
 def encode_login_request8(
-    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
-    t174: bytes
+    seq: int,
+    key: bytes,
+    session_id: bytes,
+    ksid: bytes,
+    uin: int,
+    t104: bytes,
+    t174: bytes,
 ) -> Packet:
     """Build sms request packet.
 
@@ -276,14 +326,19 @@ def encode_login_request8(
         TlvEncoder.t116(BITMAP, SUB_SIGMAP),
         TlvEncoder.t174(t174),
         TlvEncoder.t17a(SMS_APP_ID),
-        TlvEncoder.t197()
+        TlvEncoder.t197(),
     )
     oicq_packet = OICQRequest.build_encoded(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
     )
     sso_packet = CSsoBodyPacket.build(
-        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
-        oicq_packet
+        seq,
+        SUB_APP_ID,
+        COMMAND_NAME,
+        DEVICE.imei,
+        session_id,
+        ksid,
+        oicq_packet,
     )
     # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
@@ -292,8 +347,12 @@ def encode_login_request8(
 
 # password md5 login
 def encode_login_request9(
-    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int,
-    password_md5: bytes
+    seq: int,
+    key: bytes,
+    session_id: bytes,
+    ksid: bytes,
+    uin: int,
+    password_md5: bytes,
 ) -> Packet:
     """Build main login request packet.
 
@@ -351,8 +410,15 @@ def encode_login_request9(
         TlvEncoder.t18(APP_ID, APP_CLIENT_VERSION, uin),
         TlvEncoder.t1(uin, int(time.time()), IP_BYTES),
         TlvEncoder.t106(
-            SSO_VERSION, APP_ID, SUB_APP_ID, APP_CLIENT_VERSION, uin, 0,
-            password_md5, DEVICE.guid, DEVICE.tgtgt
+            SSO_VERSION,
+            APP_ID,
+            SUB_APP_ID,
+            APP_CLIENT_VERSION,
+            uin,
+            0,
+            password_md5,
+            DEVICE.guid,
+            DEVICE.tgtgt,
         ),
         TlvEncoder.t116(BITMAP, SUB_SIGMAP),
         TlvEncoder.t100(
@@ -363,15 +429,29 @@ def encode_login_request9(
         # TlvEncoder.t104(),
         TlvEncoder.t142(APK_ID),
         TlvEncoder.t144(
-            DEVICE.imei.encode(), DEVICE.bootloader, DEVICE.proc_version,
-            DEVICE.version.codename, DEVICE.version.incremental,
-            DEVICE.fingerprint, DEVICE.boot_id,
-            DEVICE.android_id, DEVICE.baseband, DEVICE.version.incremental,
+            DEVICE.imei.encode(),
+            DEVICE.bootloader,
+            DEVICE.proc_version,
+            DEVICE.version.codename,
+            DEVICE.version.incremental,
+            DEVICE.fingerprint,
+            DEVICE.boot_id,
+            DEVICE.android_id,
+            DEVICE.baseband,
+            DEVICE.version.incremental,
             DEVICE.os_type.encode(),
-            DEVICE.version.release.encode(), NETWORK_TYPE, DEVICE.sim.encode(),
-            DEVICE.apn.encode(), False, True, False, GUID_FLAG,
-            DEVICE.model.encode(), DEVICE.guid, DEVICE.brand.encode(),
-            DEVICE.tgtgt
+            DEVICE.version.release.encode(),
+            NETWORK_TYPE,
+            DEVICE.sim.encode(),
+            DEVICE.apn.encode(),
+            False,
+            True,
+            False,
+            GUID_FLAG,
+            DEVICE.model.encode(),
+            DEVICE.guid,
+            DEVICE.brand.encode(),
+            DEVICE.tgtgt,
         ),
         TlvEncoder.t145(DEVICE.guid),
         TlvEncoder.t147(APP_ID, APK_VERSION.encode(), APK_SIGN),
@@ -382,11 +462,20 @@ def encode_login_request9(
         TlvEncoder.t8(LOCAL_ID),
         TlvEncoder.t511(
             [
-                "tenpay.com", "openmobile.qq.com", "docs.qq.com",
-                "connect.qq.com", "qzone.qq.com", "vip.qq.com",
-                "gamecenter.qq.com", "qun.qq.com", "game.qq.com",
-                "qqweb.qq.com", "office.qq.com", "ti.qq.com", "mail.qq.com",
-                "mma.qq.com"
+                "tenpay.com",
+                "openmobile.qq.com",
+                "docs.qq.com",
+                "connect.qq.com",
+                "qzone.qq.com",
+                "vip.qq.com",
+                "gamecenter.qq.com",
+                "qun.qq.com",
+                "game.qq.com",
+                "qqweb.qq.com",
+                "office.qq.com",
+                "ti.qq.com",
+                "mail.qq.com",
+                "mma.qq.com",
             ]
         ),  # com.tencent.mobileqq.msf.core.auth.l
         # TlvEncoder.t172(),
@@ -408,8 +497,13 @@ def encode_login_request9(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
     )
     sso_packet = CSsoBodyPacket.build(
-        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
-        oicq_packet
+        seq,
+        SUB_APP_ID,
+        COMMAND_NAME,
+        DEVICE.imei,
+        session_id,
+        ksid,
+        oicq_packet,
     )
     # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
@@ -418,8 +512,13 @@ def encode_login_request9(
 
 # device lock login, when status 204
 def encode_login_request20(
-    seq: int, key: bytes, session_id: bytes, ksid: bytes, uin: int, t104: bytes,
-    g: bytes
+    seq: int,
+    key: bytes,
+    session_id: bytes,
+    ksid: bytes,
+    uin: int,
+    t104: bytes,
+    g: bytes,
 ) -> Packet:
     """Build device lock login request packet.
 
@@ -461,14 +560,19 @@ def encode_login_request20(
         TlvEncoder.t8(LOCAL_ID),
         TlvEncoder.t104(t104),
         TlvEncoder.t116(BITMAP, SUB_SIGMAP),
-        TlvEncoder.t401(g)
+        TlvEncoder.t401(g),
     )
     oicq_packet = OICQRequest.build_encoded(
         uin, COMMAND_ID, ECDH.encrypt(data, key), ECDH.id
     )
     sso_packet = CSsoBodyPacket.build(
-        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid,
-        oicq_packet
+        seq,
+        SUB_APP_ID,
+        COMMAND_NAME,
+        DEVICE.imei,
+        session_id,
+        ksid,
+        oicq_packet,
     )
     # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
@@ -483,9 +587,16 @@ def encode_exchange_emp_10() -> Packet:
 
 # refresh siginfo by A1
 def encode_exchange_emp_15(
-    seq: int, session_id: bytes, uin: int, g: bytes, dpwd: bytes,
-    no_pic_sig: bytes, encrypted_a1: bytes, rand_seed: bytes,
-    wt_session_ticket: bytes, wt_session_ticket_key: bytes
+    seq: int,
+    session_id: bytes,
+    uin: int,
+    g: bytes,
+    dpwd: bytes,
+    no_pic_sig: bytes,
+    encrypted_a1: bytes,
+    rand_seed: bytes,
+    wt_session_ticket: bytes,
+    wt_session_ticket_key: bytes,
 ) -> Packet:
     """Build exchange emp request packet.
 
@@ -553,15 +664,29 @@ def encode_exchange_emp_15(
         TlvEncoder.t107(),
         # TlvEncoder.t108(KSID),  # null when first time login
         TlvEncoder.t144(
-            DEVICE.imei.encode(), DEVICE.bootloader, DEVICE.proc_version,
-            DEVICE.version.codename, DEVICE.version.incremental,
-            DEVICE.fingerprint, DEVICE.boot_id,
-            DEVICE.android_id, DEVICE.baseband, DEVICE.version.incremental,
+            DEVICE.imei.encode(),
+            DEVICE.bootloader,
+            DEVICE.proc_version,
+            DEVICE.version.codename,
+            DEVICE.version.incremental,
+            DEVICE.fingerprint,
+            DEVICE.boot_id,
+            DEVICE.android_id,
+            DEVICE.baseband,
+            DEVICE.version.incremental,
             DEVICE.os_type.encode(),
-            DEVICE.version.release.encode(), NETWORK_TYPE, DEVICE.sim.encode(),
-            DEVICE.apn.encode(), False, True, False, GUID_FLAG,
-            DEVICE.model.encode(), DEVICE.guid, DEVICE.brand.encode(),
-            DEVICE.tgtgt
+            DEVICE.version.release.encode(),
+            NETWORK_TYPE,
+            DEVICE.sim.encode(),
+            DEVICE.apn.encode(),
+            False,
+            True,
+            False,
+            GUID_FLAG,
+            DEVICE.model.encode(),
+            DEVICE.guid,
+            DEVICE.brand.encode(),
+            DEVICE.tgtgt,
         ),
         TlvEncoder.t142(APK_ID),
         # TlvEncoder.t112(),
@@ -573,11 +698,20 @@ def encode_exchange_emp_15(
         TlvEncoder.t8(LOCAL_ID),
         TlvEncoder.t511(
             [
-                "tenpay.com", "openmobile.qq.com", "docs.qq.com",
-                "connect.qq.com", "qzone.qq.com", "vip.qq.com",
-                "gamecenter.qq.com", "qun.qq.com", "game.qq.com",
-                "qqweb.qq.com", "office.qq.com", "ti.qq.com", "mail.qq.com",
-                "mma.qq.com"
+                "tenpay.com",
+                "openmobile.qq.com",
+                "docs.qq.com",
+                "connect.qq.com",
+                "qzone.qq.com",
+                "vip.qq.com",
+                "gamecenter.qq.com",
+                "qun.qq.com",
+                "game.qq.com",
+                "qqweb.qq.com",
+                "office.qq.com",
+                "ti.qq.com",
+                "mail.qq.com",
+                "mma.qq.com",
             ]
         ),  # com.tencent.mobileqq.msf.core.auth.l
         TlvEncoder.t147(APP_ID, APK_VERSION.encode(), APK_SIGN),
@@ -591,12 +725,14 @@ def encode_exchange_emp_15(
         TlvEncoder.t202(DEVICE.wifi_bssid.encode(), DEVICE.wifi_ssid.encode()),
         TlvEncoder.t516(),
         TlvEncoder.t521(),
-        TlvEncoder.t525(TlvEncoder.t536([]))
+        TlvEncoder.t525(TlvEncoder.t536([])),
     )
     session = EncryptSession(wt_session_ticket)
     oicq_packet = OICQRequest.build_encoded(
-        uin, COMMAND_ID, session.encrypt(data, wt_session_ticket_key),
-        session.id
+        uin,
+        COMMAND_ID,
+        session.encrypt(data, wt_session_ticket_key),
+        session.id,
     )
     packet = UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 2, oicq_packet, key=bytes(16)
@@ -608,8 +744,11 @@ async def handle_oicq_response(
     client: "Client", packet: IncomingPacket
 ) -> OICQResponse:
     response = OICQResponse.decode_response(
-        packet.uin, packet.seq, packet.ret_code, packet.command_name,
-        packet.data
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
     )
     if not isinstance(response, UnknownLoginStatus):
         return response
@@ -646,17 +785,25 @@ async def handle_oicq_response(
         client._siginfo.device_token = (
             response.device_token or client._siginfo.device_token
         )
-        client._siginfo.no_pic_sig = response.no_pic_sig or client._siginfo.no_pic_sig
+        client._siginfo.no_pic_sig = (
+            response.no_pic_sig or client._siginfo.no_pic_sig
+        )
         client._siginfo.encrypted_a1 = (
             response.encrypted_a1 or client._siginfo.encrypted_a1
         )
-        client._siginfo.ps_key_map = response.ps_key_map or client._siginfo.ps_key_map
+        client._siginfo.ps_key_map = (
+            response.ps_key_map or client._siginfo.ps_key_map
+        )
         client._siginfo.pt4_token_map = (
             response.pt4_token_map or client._siginfo.pt4_token_map
         )
-        client._siginfo.rand_seed = response.rand_seed or client._siginfo.rand_seed
+        client._siginfo.rand_seed = (
+            response.rand_seed or client._siginfo.rand_seed
+        )
         client._siginfo.s_key = response.s_key or client._siginfo.s_key
-        client._siginfo.user_st_key = response.user_st_key or client._siginfo.user_st_key
+        client._siginfo.user_st_key = (
+            response.user_st_key or client._siginfo.user_st_key
+        )
         client._siginfo.user_st_web_sig = (
             response.user_st_web_sig or client._siginfo.user_st_web_sig
         )
@@ -664,8 +811,8 @@ async def handle_oicq_response(
             response.wt_session_ticket or client._siginfo.wt_session_ticket
         )
         client._siginfo.wt_session_ticket_key = (
-            response.wt_session_ticket_key or
-            client._siginfo.wt_session_ticket_key
+            response.wt_session_ticket_key
+            or client._siginfo.wt_session_ticket_key
         )
 
         key = md5(
@@ -678,17 +825,30 @@ async def handle_oicq_response(
     elif isinstance(response, DeviceLocked):
         client._t104 = response.t104 or client._t104
         client._t174 = response.t174 or client._t174
-        client._siginfo.rand_seed = response.rand_seed or client._siginfo.rand_seed
+        client._siginfo.rand_seed = (
+            response.rand_seed or client._siginfo.rand_seed
+        )
     elif isinstance(response, DeviceLockLogin):
         client._t104 = response.t104 or client._t104
-        client._siginfo.rand_seed = response.rand_seed or client._siginfo.rand_seed
+        client._siginfo.rand_seed = (
+            response.rand_seed or client._siginfo.rand_seed
+        )
     return response
 
 
 __all__ = [
-    "encode_login_request2_captcha", "encode_login_request2_slider",
-    "encode_login_request9", "encode_login_request20", "encode_exchange_emp",
-    "handle_oicq_response", "OICQResponse", "LoginSuccess", "NeedCaptcha",
-    "AccountFrozen", "DeviceLocked", "TooManySMSRequest", "DeviceLockLogin",
-    "UnknownLoginStatus"
+    "encode_login_request2_captcha",
+    "encode_login_request2_slider",
+    "encode_login_request9",
+    "encode_login_request20",
+    "encode_exchange_emp",
+    "handle_oicq_response",
+    "OICQResponse",
+    "LoginSuccess",
+    "NeedCaptcha",
+    "AccountFrozen",
+    "DeviceLocked",
+    "TooManySMSRequest",
+    "DeviceLockLogin",
+    "UnknownLoginStatus",
 ]

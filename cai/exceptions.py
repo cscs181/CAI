@@ -94,7 +94,9 @@ class LoginCaptchaNeeded(LoginException):
         self.captcha_sign = captcha_sign
 
     def __repr__(self) -> str:
-        return f"LoginCaptchaException(uin={self.uin}, captcha_image=<raw_bytes>)"
+        return (
+            f"LoginCaptchaException(uin={self.uin}, captcha_image=<raw_bytes>)"
+        )
 
 
 class LoginAccountFrozen(LoginException):
@@ -111,8 +113,11 @@ class LoginDeviceLocked(LoginException):
     """Device lock checking is needed"""
 
     def __init__(
-        self, uin: int, sms_phone: Optional[str], verify_url: Optional[str],
-        message: Optional[str]
+        self,
+        uin: int,
+        sms_phone: Optional[str],
+        verify_url: Optional[str],
+        message: Optional[str],
     ):
         self.uin = uin
         self.sms_phone = sms_phone

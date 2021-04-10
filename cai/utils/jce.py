@@ -19,6 +19,7 @@ class RequestPacket(JceStruct):
     Note:
         Source: com.qq.taf.RequestPacket
     """
+
     version: types.INT16 = JceField(0, jce_id=1)
     pkg_type: types.BYTE = JceField(bytes(1), jce_id=2)
     msg_type: types.INT32 = JceField(0, jce_id=3)
@@ -36,10 +37,12 @@ class RequestPacketVersion2(RequestPacket):
     Note:
         Source: com.qq.jce.wup.OldUniAttribute
     """
+
     version: types.INT16 = JceField(2, jce_id=1)
     # raw data for buffer field
-    data: Optional[types.MAP[types.STRING, types.MAP[types.STRING,
-                                                     types.JceType]]] = None
+    data: Optional[
+        types.MAP[types.STRING, types.MAP[types.STRING, types.JceType]]
+    ] = None
 
     def _prepare_buffer(self):
         if not self.data:
@@ -75,6 +78,7 @@ class RequestPacketVersion3(RequestPacket):
     Note:
         Source: com.qq.jce.wup.UniAttribute
     """
+
     version: types.INT16 = JceField(3, jce_id=1)
     # raw data for buffer field
     data: Optional[types.MAP[types.STRING, types.JceType]] = None

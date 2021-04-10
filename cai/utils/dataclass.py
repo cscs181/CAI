@@ -11,7 +11,18 @@ This module is used to build dataclass related tools.
 import json
 import copy
 from dataclasses import _is_dataclass_instance, fields, MISSING, is_dataclass  # type: ignore
-from typing import IO, Any, List, Dict, Type, Tuple, Union, TypeVar, Mapping, Collection
+from typing import (
+    IO,
+    Any,
+    List,
+    Dict,
+    Type,
+    Tuple,
+    Union,
+    TypeVar,
+    Mapping,
+    Collection,
+)
 
 T = TypeVar("T", bound="JsonableDataclass")
 JSON = Union[Dict[str, "JSON"], List["JSON"], str, int, float, bool, None]
@@ -26,18 +37,23 @@ def _asdict(obj: Any) -> Any:
         return dict(result)
     elif isinstance(obj, Mapping):
         return dict((_asdict(k), _asdict(v)) for k, v in obj.items())
-    elif isinstance(
-        obj, Collection
-    ) and not isinstance(obj, str) and not isinstance(obj, bytes):
+    elif (
+        isinstance(obj, Collection)
+        and not isinstance(obj, str)
+        and not isinstance(obj, bytes)
+    ):
         return list(_asdict(v) for v in obj)
     else:
         return copy.deepcopy(obj)
 
 
 def _convert_type(type_, value):
-    if type_ is None or type_ == Any or isinstance(
-        type_, TypeVar
-    ) or type_ is Ellipsis:
+    if (
+        type_ is None
+        or type_ == Any
+        or isinstance(type_, TypeVar)
+        or type_ is Ellipsis
+    ):
         return value
     elif is_dataclass(type_):
         return _fromdict(type_, value)
@@ -63,28 +79,31 @@ def _fromdict(cls, kvs):
             else:
                 value = _fromdict(field_type, field_value)
             init_kwargs[field.name] = value
-        elif hasattr(field_type, "__origin__"
-                    ) and issubclass(field_type.__origin__, Mapping):
+        elif hasattr(field_type, "__origin__") and issubclass(
+            field_type.__origin__, Mapping
+        ):
             k_type, v_type = getattr(field_type, "__args__", (Any, Any))
             init_kwargs[field.name] = field_type.__origin__(
                 zip(
                     [
                         (
-                            _convert_type(k_type,
-                                          key), _convert_type(v_type, value)
-                        ) for key, value in field_value.items()
+                            _convert_type(k_type, key),
+                            _convert_type(v_type, value),
+                        )
+                        for key, value in field_value.items()
                     ]
                 )
             )  # type: ignore
-        elif hasattr(field_type, "__origin__"
-                    ) and issubclass(field_type.__origin__, Collection):
+        elif hasattr(field_type, "__origin__") and issubclass(
+            field_type.__origin__, Collection
+        ):
             type_ = getattr(field_type, "__args__", (Any,))[0]
             init_kwargs[field.name] = field_type.__origin__(
                 _convert_type(type_, value) for value in field_value
             )  # type: ignore
-        elif hasattr(
-            field_type, "__origin__"
-        ) and field_type.__origin__ is Union:
+        elif (
+            hasattr(field_type, "__origin__") and field_type.__origin__ is Union
+        ):
             value = field_value
             for type_ in field_type.__args__:
                 try:

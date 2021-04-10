@@ -19,7 +19,6 @@ from cai.utils.jce import RequestPacketVersion3
 
 @dataclass
 class SvcRegisterResponse(Event):
-
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
@@ -46,16 +45,20 @@ class SvcRegisterResponse(Event):
         try:
             resp_packet = RequestPacketVersion3.decode(data)
             svc_register_response = SvcRespRegister.decode(
-                resp_packet.data["SvcRespRegister"]["QQService.SvcRespRegister"]
-                [1:-1]
+                resp_packet.data["SvcRespRegister"][
+                    "QQService.SvcRespRegister"
+                ][1:-1]
             )
             return RegisterSuccess(
                 uin, seq, ret_code, command_name, svc_register_response
             )
         except Exception as e:
             return RegisterFail(
-                uin, seq, ret_code, command_name,
-                f"Error when decoding response! {repr(e)}"
+                uin,
+                seq,
+                ret_code,
+                command_name,
+                f"Error when decoding response! {repr(e)}",
             )
 
 

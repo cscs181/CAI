@@ -20,6 +20,7 @@ class SigInfo:
     Note:
         Source: oicq.wlogin_sdk.sharemem.WloginSigInfo
     """
+
     d2: bytes = bytes()
     d2key: bytes = bytes()
 

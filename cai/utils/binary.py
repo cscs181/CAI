@@ -9,7 +9,17 @@ This module is used to build Binary tools.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import struct
-from typing import Any, List, Type, Tuple, Union, TypeVar, Optional, Callable, NewType
+from typing import (
+    Any,
+    List,
+    Type,
+    Tuple,
+    Union,
+    TypeVar,
+    Optional,
+    Callable,
+    NewType,
+)
 
 P = TypeVar("P", bound="BasePacket")
 
@@ -88,9 +98,9 @@ class BasePacket(bytearray):
         """
         return struct.unpack(format, self)
 
-    def unpack_from(self,
-                    format: Union[bytes, str],
-                    offset: int = 0) -> Tuple[Any, ...]:
+    def unpack_from(
+        self, format: Union[bytes, str], offset: int = 0
+    ) -> Tuple[Any, ...]:
         """Unpack data from current packet with given offset.
 
         Args:

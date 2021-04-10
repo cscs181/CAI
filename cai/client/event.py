@@ -35,6 +35,9 @@ async def _packet_to_event(
     client: "Client", packet: IncomingPacket
 ) -> UnhandledEvent:
     return UnhandledEvent(
-        packet.uin, packet.seq, packet.ret_code, packet.command_name,
-        packet.data
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
     )

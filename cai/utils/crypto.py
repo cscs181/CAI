@@ -29,7 +29,7 @@ class ECDH:
             "04"
             "EBCA94D733E399B2DB96EACDD3F69A8BB0F74224E2B44E3357812211D2E62EFB"
             "C91BB553098E25E33A799ADC7F76FEB208DA7C6522CDB0719A305180CC54A82E"
-        )
+        ),
     )
 
     client_private_key = ec.generate_private_key(_p256)
@@ -52,10 +52,10 @@ class ECDH:
                 ">HHH",
                 305,
                 1,  # oicq.wlogin_sdk.tools.EcdhCrypt.sKeyVersion
-                len(cls.client_public_key)
+                len(cls.client_public_key),
             ),
             cls.client_public_key,
-            qqtea_encrypt(bytes(data), cls.share_key)
+            qqtea_encrypt(bytes(data), cls.share_key),
         )
 
 
@@ -69,6 +69,7 @@ class EncryptSession:
         self, data: Union[bytes, Packet], key: Union[bytes, Packet]
     ) -> Packet:
         return Packet.build(
-            struct.pack(">H", len(self.ticket)), self.ticket,
-            qqtea_encrypt(bytes(data), bytes(key))
+            struct.pack(">H", len(self.ticket)),
+            self.ticket,
+            qqtea_encrypt(bytes(data), bytes(key)),
         )

@@ -35,6 +35,7 @@ class OnlineStatus(IntEnum):
     Note:
         Source: mqq.app.AppRuntime
     """
+
     Unknown = 0
     """未知"""
     Online = 11
@@ -64,6 +65,7 @@ class RegPushReason(str, Enum):
     Note:
         Source: com.tencent.mobileqq.msf.core.push.RegPushReason
     """
+
     MsfBoot = "msfBoot"
     AppRegister = "appRegister"
     Unknown = "unknown"
@@ -88,7 +90,7 @@ def encode_register(
     status: Union[int, OnlineStatus],
     reg_push_reason: Union[str, RegPushReason],
     battery_status: Optional[int] = None,
-    is_power_connected: bool = False
+    is_power_connected: bool = False,
 ) -> Packet:
     """Build status service register packet.
 
@@ -121,7 +123,9 @@ def encode_register(
     COMMAND_NAME = "StatSvc.register"
     SUB_APP_ID = APK_INFO.sub_app_id
 
-    assert battery_status is None or 0 <= battery_status <= 100, "Battery Capacity Error!"
+    assert (
+        battery_status is None or 0 <= battery_status <= 100
+    ), "Battery Capacity Error!"
 
     svc = SvcReqRegister(
         uin=uin,
@@ -130,7 +134,8 @@ def encode_register(
         ios_version=DEVICE.version.sdk,
         nettype=bytes([1]),
         reg_type=bytes(1)
-        if reg_push_reason in (RegPushReason.AppRegister) else bytes([1]),
+        if reg_push_reason in (RegPushReason.AppRegister)
+        else bytes([1]),
         guid=DEVICE.guid,
         dev_name=DEVICE.model,
         dev_type=DEVICE.model,
@@ -141,20 +146,21 @@ def encode_register(
         b769_req=ReqBody(
             config_list=[
                 ConfigSeq(type=46, version=0),
-                ConfigSeq(type=283, version=0)
+                ConfigSeq(type=283, version=0),
             ]
         ).SerializeToString(),
         is_set_status=False,
         set_mute=False,
         ext_online_status=1000 if battery_status is None else -1,
-        battery_status=0 if battery_status is None else battery_status |
-        (128 if is_power_connected else 0)
+        battery_status=0
+        if battery_status is None
+        else battery_status | (128 if is_power_connected else 0),
     )
     payload = SvcReqRegister.to_bytes(0, svc)
     req_packet = RequestPacketVersion3(
         servant_name="PushService",
         func_name="SvcReqRegister",
-        data=types.MAP({types.STRING("SvcReqRegister"): types.BYTES(payload)})
+        data=types.MAP({types.STRING("SvcReqRegister"): types.BYTES(payload)}),
     ).encode()
     sso_packet = CSsoBodyPacket.build(
         seq,
@@ -164,7 +170,7 @@ def encode_register(
         session_id,
         ksid,
         body=req_packet,
-        extra_data=tgt
+        extra_data=tgt,
     )
     packet = CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
     return packet
@@ -174,8 +180,11 @@ async def handle_register_response(
     client: "Client", packet: IncomingPacket
 ) -> SvcRegisterResponse:
     response = SvcRegisterResponse.decode_response(
-        packet.uin, packet.seq, packet.ret_code, packet.command_name,
-        packet.data
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
     )
     if isinstance(response, RegisterSuccess):
         client._heartbeat_interval = response.response.hello_interval
@@ -184,6 +193,11 @@ async def handle_register_response(
 
 
 __all__ = [
-    "encode_register", "handle_register_response", "OnlineStatus",
-    "RegPushReason", "SvcRegisterResponse", "RegisterSuccess", "RegisterFail"
+    "encode_register",
+    "handle_register_response",
+    "OnlineStatus",
+    "RegPushReason",
+    "SvcRegisterResponse",
+    "RegisterSuccess",
+    "RegisterFail",
 ]

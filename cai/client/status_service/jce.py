@@ -20,6 +20,7 @@ class VendorPushInfo(JceStruct):
     Note:
         Source: com.tencent.msf.service.protocol.push.VendorPushInfo
     """
+
     vendor_type: types.INT64 = JceField(0, jce_id=0)
     """:obj:`~jce.types.INT64`: third push type."""
 
@@ -30,6 +31,7 @@ class SvcReqRegister(JceStruct):
     Note:
         Source: com.tencent.msf.service.protocol.push.SvcReqRegister
     """
+
     uin: types.INT64 = JceField(jce_id=0)
     """:obj:`~jce.types.INT64`: uin."""
     bid: types.INT64 = JceField(jce_id=1)
@@ -147,6 +149,7 @@ class SvcRespRegister(JceStruct):
     Note:
         Source: com.tencent.msf.service.protocol.push.SvcRespRegister
     """
+
     uin: types.INT64 = JceField(jce_id=0)
     """:obj:`~jce.types.INT64`: uin."""
     bid: types.INT64 = JceField(jce_id=1)

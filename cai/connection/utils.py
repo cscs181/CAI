@@ -14,7 +14,7 @@ import math
 from . import connect
 
 
-async def tcp_latency_test(host: str, port: int, timeout: float = 5.) -> float:
+async def tcp_latency_test(host: str, port: int, timeout: float = 5.0) -> float:
     start = time.time()
 
     try:

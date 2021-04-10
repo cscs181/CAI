@@ -14,7 +14,14 @@ from typing import Dict, Optional, Callable, Awaitable
 
 from cai.log import logger
 from cai.exceptions import LoginException, ClientNotAvailable
-from cai.client import Client, HANDLERS, Event, IncomingPacket, OnlineStatus, RegPushReason
+from cai.client import (
+    Client,
+    HANDLERS,
+    Event,
+    IncomingPacket,
+    OnlineStatus,
+    RegPushReason,
+)
 
 _clients: Dict[int, Client] = {}
 
@@ -214,7 +221,7 @@ async def set_status(
     status: OnlineStatus,
     battery_status: Optional[int] = None,
     is_power_connected: bool = False,
-    uin: Optional[int] = None
+    uin: Optional[int] = None,
 ) -> None:
     """Change client status.
 
@@ -238,14 +245,16 @@ async def set_status(
     """
     client = get_client(uin)
     await client.register(
-        status, RegPushReason.SetOnlineStatus, battery_status,
-        is_power_connected
+        status,
+        RegPushReason.SetOnlineStatus,
+        battery_status,
+        is_power_connected,
     )
 
 
 def register_packet_handler(
-    cmd: str, packet_handler: Callable[[Client, IncomingPacket],
-                                       Awaitable[Event]]
+    cmd: str,
+    packet_handler: Callable[[Client, IncomingPacket], Awaitable[Event]],
 ) -> None:
     """Register custom packet handler.
 
@@ -266,7 +275,13 @@ def register_packet_handler(
 
 
 __all__ = [
-    "get_client", "close", "close_all", "login", "submit_captcha",
-    "submit_slider_ticket", "request_sms", "submit_sms",
-    "register_packet_handler"
+    "get_client",
+    "close",
+    "close_all",
+    "login",
+    "submit_captcha",
+    "submit_slider_ticket",
+    "request_sms",
+    "submit_sms",
+    "register_packet_handler",
 ]

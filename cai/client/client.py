@@ -15,24 +15,45 @@ import asyncio
 from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
 
 from .wtlogin import (
-    encode_login_request2_captcha, encode_login_request2_slider,
-    encode_login_request7, encode_login_request8, encode_login_request9,
-    encode_login_request20, encode_exchange_emp_15, handle_oicq_response,
-    OICQResponse, LoginSuccess, NeedCaptcha, AccountFrozen, DeviceLocked,
-    TooManySMSRequest, DeviceLockLogin, UnknownLoginStatus
+    encode_login_request2_captcha,
+    encode_login_request2_slider,
+    encode_login_request7,
+    encode_login_request8,
+    encode_login_request9,
+    encode_login_request20,
+    encode_exchange_emp_15,
+    handle_oicq_response,
+    OICQResponse,
+    LoginSuccess,
+    NeedCaptcha,
+    AccountFrozen,
+    DeviceLocked,
+    TooManySMSRequest,
+    DeviceLockLogin,
+    UnknownLoginStatus,
 )
 from .status_service import (
-    encode_register, handle_register_response, OnlineStatus, RegPushReason,
-    SvcRegisterResponse, RegisterSuccess, RegisterFail
+    encode_register,
+    handle_register_response,
+    OnlineStatus,
+    RegPushReason,
+    SvcRegisterResponse,
+    RegisterSuccess,
+    RegisterFail,
 )
 from .config_push import handle_config_push_request, FileServerPushList
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .sso_server import get_sso_server, SsoServer
 
 from cai.exceptions import (
-    ApiResponseError, LoginException, LoginSliderNeeded, LoginCaptchaNeeded,
-    LoginAccountFrozen, LoginDeviceLocked, LoginSMSRequestError,
-    RegisterException
+    ApiResponseError,
+    LoginException,
+    LoginSliderNeeded,
+    LoginCaptchaNeeded,
+    LoginAccountFrozen,
+    LoginDeviceLocked,
+    LoginSMSRequestError,
+    RegisterException,
 )
 
 from cai.log import logger
@@ -52,12 +73,11 @@ HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "wtlogin.exchange_emp": handle_oicq_response,
     "StatSvc.register": handle_register_response,
     "ConfigPushSvc.PushReq": handle_config_push_request,
-    "Heartbeat.Alive": handle_heartbeat
+    "Heartbeat.Alive": handle_heartbeat,
 }
 
 
 class Client:
-
     def __init__(self, uin: int, password_md5: bytes):
         # account info
         self._uin: int = uin
@@ -183,7 +203,7 @@ class Client:
         logger.info(f"Connecting to server: {_server.host}:{_server.port}")
         try:
             self._connection = await connect(
-                _server.host, _server.port, ssl=False, timeout=3.
+                _server.host, _server.port, ssl=False, timeout=3.0
             )
             asyncio.create_task(self.receive())
         except ConnectionError as e:
@@ -200,9 +220,7 @@ class Client:
             await self._connection.close()
 
     async def reconnect(
-        self,
-        change_server: bool = False,
-        server: Optional[SsoServer] = None
+        self, change_server: bool = False, server: Optional[SsoServer] = None
     ) -> None:
         """Reconnect to the server.
 
@@ -216,8 +234,11 @@ class Client:
             await self._connection.reconnect()
             return
 
-        exclude = [self._connection.host
-                  ] if change_server and self._connection else []
+        exclude = (
+            [self._connection.host]
+            if change_server and self._connection
+            else []
+        )
         _server = server or await get_sso_server(
             cache=False, cache_server_list=True, exclude=exclude
         )
@@ -226,7 +247,11 @@ class Client:
 
     async def close(self) -> None:
         """Close the client and logout."""
-        if self.connected and self.status and self.status != OnlineStatus.Offline:
+        if (
+            self.connected
+            and self.status
+            and self.status != OnlineStatus.Offline
+        ):
             await self.register(OnlineStatus.Offline)
         self._receive_store.cancel_all()
         await self.disconnect()
@@ -269,7 +294,7 @@ class Client:
         seq: int,
         command_name: str,
         packet: Union[bytes, Packet],
-        timeout: Optional[float] = 10.
+        timeout: Optional[float] = 10.0,
     ) -> Event:
         """Send a packet with the given sequence and wait for the response.
 
@@ -293,14 +318,17 @@ class Client:
         """
         while self.connected:
             try:
-                length: int = struct.unpack(
-                    ">i", await self.connection.read_bytes(4)
-                )[0] - 4
+                length: int = (
+                    struct.unpack(">i", await self.connection.read_bytes(4))[0]
+                    - 4
+                )
                 # FIXME: length < 0 ?
                 data = await self.connection.read_bytes(length)
                 packet = IncomingPacket.parse(
-                    data, self._key, self._siginfo.d2key,
-                    self._siginfo.wt_session_ticket_key
+                    data,
+                    self._key,
+                    self._siginfo.d2key,
+                    self._siginfo.wt_session_ticket_key,
                 )
                 logger.debug(
                     f"<-- {packet.seq} ({packet.ret_code}): {packet.command_name}"
@@ -323,8 +351,10 @@ class Client:
 
         if not isinstance(response, UnknownLoginStatus):
             raise ApiResponseError(
-                response.uin, response.seq, response.ret_code,
-                response.command_name
+                response.uin,
+                response.seq,
+                response.ret_code,
+                response.command_name,
             )
 
         if isinstance(response, LoginSuccess):
@@ -341,8 +371,9 @@ class Client:
                 )
             else:
                 raise LoginException(
-                    response.uin, response.status,
-                    "Cannot get verify_url or captcha_image from the response!"
+                    response.uin,
+                    response.status,
+                    "Cannot get verify_url or captcha_image from the response!",
                 )
         elif isinstance(response, AccountFrozen):
             logger.info("账号已被冻结！")
@@ -356,8 +387,10 @@ class Client:
             logger.info(msg + ". " + str(response.message))
 
             raise LoginDeviceLocked(
-                response.uin, response.sms_phone, response.verify_url,
-                response.message
+                response.uin,
+                response.sms_phone,
+                response.verify_url,
+                response.message,
             )
         elif isinstance(response, TooManySMSRequest):
             logger.info("验证码发送频繁！")
@@ -366,8 +399,13 @@ class Client:
             if try_times:
                 seq = self.next_seq()
                 packet = encode_login_request20(
-                    seq, self._key, self._session_id, self._ksid, self.uin,
-                    self._t104, self._siginfo.g
+                    seq,
+                    self._key,
+                    self._session_id,
+                    self._ksid,
+                    self.uin,
+                    self._t104,
+                    self._siginfo.g,
                 )
                 response = await self.send_and_wait(
                     seq, "wtlogin.login", packet
@@ -377,8 +415,9 @@ class Client:
                 )
             else:
                 raise LoginException(
-                    response.uin, response.status,
-                    "Maximum number of login attempts exceeded!"
+                    response.uin,
+                    response.status,
+                    "Maximum number of login attempts exceeded!",
                 )
         elif isinstance(response, UnknownLoginStatus):
             t146 = response._tlv_map.get(0x146)
@@ -416,8 +455,12 @@ class Client:
         """
         seq = self.next_seq()
         packet = encode_login_request9(
-            seq, self._key, self._session_id, self._ksid, self.uin,
-            self._password_md5
+            seq,
+            self._key,
+            self._session_id,
+            self._ksid,
+            self.uin,
+            self._password_md5,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -444,8 +487,14 @@ class Client:
         """
         seq = self.next_seq()
         packet = encode_login_request2_captcha(
-            seq, self._key, self._session_id, self._ksid, self.uin, captcha,
-            captcha_sign, self._t104
+            seq,
+            self._key,
+            self._session_id,
+            self._ksid,
+            self.uin,
+            captcha,
+            captcha_sign,
+            self._t104,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -470,8 +519,13 @@ class Client:
         """
         seq = self.next_seq()
         packet = encode_login_request2_slider(
-            seq, self._key, self._session_id, self._ksid, self.uin, ticket,
-            self._t104
+            seq,
+            self._key,
+            self._session_id,
+            self._ksid,
+            self.uin,
+            ticket,
+            self._t104,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -496,8 +550,13 @@ class Client:
         """
         seq = self.next_seq()
         packet = encode_login_request8(
-            seq, self._key, self._session_id, self._ksid, self.uin, self._t104,
-            self._t174
+            seq,
+            self._key,
+            self._session_id,
+            self._ksid,
+            self.uin,
+            self._t104,
+            self._t174,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
 
@@ -529,8 +588,15 @@ class Client:
         """
         seq = self.next_seq()
         packet = encode_login_request7(
-            seq, self._key, self._session_id, self._ksid, self.uin, sms_code,
-            self._t104, self._t174, self._siginfo.g
+            seq,
+            self._key,
+            self._session_id,
+            self._ksid,
+            self.uin,
+            sms_code,
+            self._t104,
+            self._t174,
+            self._siginfo.g,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -548,8 +614,10 @@ class Client:
 
         if not isinstance(response, UnknownLoginStatus):
             raise ApiResponseError(
-                response.uin, response.seq, response.ret_code,
-                response.command_name
+                response.uin,
+                response.seq,
+                response.ret_code,
+                response.command_name,
             )
 
         if isinstance(response, LoginSuccess):
@@ -560,8 +628,13 @@ class Client:
             if try_times:
                 seq = self.next_seq()
                 packet = encode_login_request20(
-                    seq, self._key, self._session_id, self._ksid, self.uin,
-                    self._t104, self._siginfo.g
+                    seq,
+                    self._key,
+                    self._session_id,
+                    self._ksid,
+                    self.uin,
+                    self._t104,
+                    self._siginfo.g,
                 )
                 response = await self.send_and_wait(
                     seq, "wtlogin.login", packet
@@ -571,13 +644,15 @@ class Client:
                 )
             else:
                 raise LoginException(
-                    response.uin, response.status,
-                    "Maximum number of login attempts exceeded!"
+                    response.uin,
+                    response.status,
+                    "Maximum number of login attempts exceeded!",
                 )
         elif isinstance(response, UnknownLoginStatus):
             raise LoginException(
-                response.uin, response.status,
-                "Refresh siginfo received wrong response type!"
+                response.uin,
+                response.status,
+                "Refresh siginfo received wrong response type!",
             )
 
     async def refresh_siginfo(self) -> LoginSuccess:
@@ -596,10 +671,16 @@ class Client:
         """
         seq = self.next_seq()
         packet = encode_exchange_emp_15(
-            seq, self._session_id, self.uin, self._siginfo.g,
-            self._siginfo.dpwd, self._siginfo.no_pic_sig,
-            self._siginfo.encrypted_a1, self._siginfo.rand_seed,
-            self._siginfo.wt_session_ticket, self._siginfo.wt_session_ticket_key
+            seq,
+            self._session_id,
+            self.uin,
+            self._siginfo.g,
+            self._siginfo.dpwd,
+            self._siginfo.no_pic_sig,
+            self._siginfo.encrypted_a1,
+            self._siginfo.rand_seed,
+            self._siginfo.wt_session_ticket,
+            self._siginfo.wt_session_ticket_key,
         )
         response = await self.send_and_wait(seq, "wtlogin.exchange_emp", packet)
 
@@ -610,7 +691,7 @@ class Client:
         status: OnlineStatus = OnlineStatus.Online,
         register_reason: RegPushReason = RegPushReason.AppRegister,
         battery_status: Optional[int] = None,
-        is_power_connected: bool = False
+        is_power_connected: bool = False,
     ) -> RegisterSuccess:
         """Register app client and get login status.
 
@@ -633,10 +714,18 @@ class Client:
         """
         seq = self.next_seq()
         packet = encode_register(
-            seq, self._session_id, self._ksid, self.uin, self._siginfo.tgt,
-            self._siginfo.d2, self._siginfo.d2key,
-            7 if status == OnlineStatus.Online else 0, status, register_reason,
-            battery_status, is_power_connected
+            seq,
+            self._session_id,
+            self._ksid,
+            self.uin,
+            self._siginfo.tgt,
+            self._siginfo.d2,
+            self._siginfo.d2key,
+            7 if status == OnlineStatus.Online else 0,
+            status,
+            register_reason,
+            battery_status,
+            is_power_connected,
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
 

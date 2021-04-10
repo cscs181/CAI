@@ -159,6 +159,7 @@ class Packet(BasePacket):
         self._query = ">"
         self._cache = cache or tuple()
         self._filters: List[Callable[[Any], Any]] = []
+        self._executed: bool = False
 
     def _add_filter(self, filter: Callable[[Any], Any]):
         self._filters.append(filter)
@@ -228,13 +229,13 @@ class Packet(BasePacket):
         self._add_filter(BYTES)
         return self
 
-    def string(self, head_bytes: int, encoding: str = "utf-8"):
+    def string(self, head_bytes: int, offset: int = 0, encoding: str = "utf-8"):
         self._query += f"{head_bytes}s"
         self._add_filter(BYTES)
         packet = self._exec_cache()
         length = int.from_bytes(packet._cache[-1], "big")
         packet._cache = packet._cache[:-1]
-        packet._query += f"{length}s"
+        packet._query += f"{length - offset}s"
         packet._add_filter(lambda x: STRING(x.decode(encoding)))
         return packet
 
@@ -254,10 +255,15 @@ class Packet(BasePacket):
         return Packet(self[length:], cache=cache)
 
     def execute(self):
+        if self._executed:
+            raise RuntimeError(
+                "Cannot re-execute while query execution has already been cached."
+            )
         query = self._query
         filters = self._filters
         self._query = ">"
         self._filters = []
+        self._executed = True
         return self._cache + tuple(
             map(lambda f, v: f(v), filters, self.unpack_from(query))
         )

@@ -86,10 +86,14 @@ class BasePacket(bytearray):
         ...
 
 
+_bool = bool
+
+
 class Packet(BasePacket, Generic[Unpack[Ts]]):
-    _query: str
-    _cache: Tuple[Any, ...]
-    _filters: List[Callable[[Any], Any]]
+    _query: str = ...
+    _cache: Tuple[Any, ...] = ...
+    _filters: List[Callable[[Any], Any]] = ...
+    _executed: _bool = ...
 
     def __init__(
         self,
@@ -167,6 +171,7 @@ class Packet(BasePacket, Generic[Unpack[Ts]]):
     def string(
         self: "Packet[Unpack[Ts]]",
         head_bytes: int,
+        offset: int = ...,
         encoding: str = ...
     ) -> "Packet[Unpack[Ts], STRING]":  # type: ignore
         ...

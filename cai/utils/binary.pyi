@@ -174,6 +174,11 @@ class Packet(BasePacket, Generic[Unpack[Ts]]):
     def offset(self: "Packet[Unpack[Ts]]", offset: int) -> "Packet[Unpack[Ts]]":
         ...
 
+    def remain(
+        self: "Packet[Unpack[Ts]]"
+    ) -> "Packet[Unpack[Ts], Packet[()]]":  # type: ignore
+        ...
+
     def _exec_cache(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts]]":
         ...
 

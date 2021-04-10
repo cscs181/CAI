@@ -242,6 +242,12 @@ class Packet(BasePacket):
         self._query += f"{offset}x"
         return self
 
+    def remain(self):
+        length = struct.calcsize(self._query)
+        self._query += f"{len(self) - length}s"
+        self._add_filter(Packet)
+        return self
+
     def _exec_cache(self):
         length = struct.calcsize(self._query)
         cache = self.execute()

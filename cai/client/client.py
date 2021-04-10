@@ -424,10 +424,10 @@ class Client:
             t149 = response._tlv_map.get(0x149)
             if t146:
                 packet_ = Packet(t146)
-                msg = packet_.read_bytes(packet_.read_uint16(4), 6).decode()
+                msg = packet_.offset(4).string(2).execute()[0]
             elif t149:
                 packet_ = Packet(t149)
-                msg = packet_.read_bytes(packet_.read_uint16(2), 4).decode()
+                msg = packet_.offset(2).string(2).execute()[0]
             else:
                 msg = ""
             logger.info(f"未知的登录返回码 {response.status}! {msg}")

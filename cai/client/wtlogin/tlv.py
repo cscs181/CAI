@@ -16,8 +16,8 @@ from typing import Any, List, Dict, Union
 
 from rtea import qqtea_encrypt, qqtea_decrypt
 
-from cai.utils.binary import Packet
 from cai.settings.device import get_device
+from cai.utils.binary import Packet
 from cai.pb.wtlogin.data_pb2 import DeviceReport
 
 DEVICE = get_device()
@@ -27,17 +27,21 @@ class TlvEncoder:
 
     # oicq/wlogin_sdk/tlv_type/tlv_t.java
     @classmethod
-    def _pack_lv(cls, *data: Union[bytes, Packet]) -> Packet:
+    def _pack_lv(cls, *data: Union[bytes, "Packet[()]"]) -> "Packet[()]":
         return Packet(struct.pack(">H", sum(map(len, data)))).write(*data)
 
     @classmethod
-    def _pack_tlv(cls, type: int, *data: Union[bytes, Packet]) -> Packet:
+    def _pack_tlv(
+        cls, type: int, *data: Union[bytes, "Packet[()]"]
+    ) -> "Packet[()]":
         return Packet(struct.pack(">HH", type, sum(map(len, data)))).write(
             *data
         )
 
     @classmethod
-    def _pack_lv_limited(cls, data: Union[bytes, Packet], size: int) -> Packet:
+    def _pack_lv_limited(
+        cls, data: Union[bytes, "Packet[()]"], size: int
+    ) -> "Packet[()]":
         return cls._pack_lv(data[:size])
 
     @classmethod
@@ -51,7 +55,7 @@ class TlvEncoder:
     @classmethod
     def t1(
         cls, uin: int, server_time: int, ip: bytes, ip_version: int = 1
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x1,
             struct.pack(
@@ -66,13 +70,13 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t2(cls, captcha: bytes, sign: bytes) -> Packet:
+    def t2(cls, captcha: bytes, sign: bytes) -> "Packet[()]":
         return cls._pack_tlv(
             0x2, struct.pack(">H", 0), cls._pack_lv(captcha), cls._pack_lv(sign)
         )
 
     @classmethod
-    def t8(cls, local_id: int, i: int = 0, i2: int = 0) -> Packet:
+    def t8(cls, local_id: int, i: int = 0, i2: int = 0) -> "Packet[()]":
         return cls._pack_tlv(0x8, struct.pack(">HIH", i, local_id, i2))
 
     @classmethod
@@ -84,7 +88,7 @@ class TlvEncoder:
         _ping_version: int = 1,
         _sso_version: int = 1536,
         unknown: int = 0,
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x18,
             struct.pack(
@@ -108,7 +112,7 @@ class TlvEncoder:
         app_client_version: int,
         sigmap: int,
         _db_buf_ver: int = 1,
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x100,
             struct.pack(
@@ -123,7 +127,7 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t104(cls, data: bytes) -> Packet:
+    def t104(cls, data: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x104, data)
 
     @classmethod
@@ -141,7 +145,7 @@ class TlvEncoder:
         ip: bytes = bytes(4),
         save_password: bool = True,
         login_type: int = 1,  # password login
-    ) -> Packet:
+    ) -> "Packet[()]":
         key = md5(
             Packet.build(password_md5, bytes(4), struct.pack(">I", salt or uin))
         ).digest()
@@ -185,25 +189,25 @@ class TlvEncoder:
         cap_type: int = 0,
         pic_size: int = 0,
         ret_type: int = 1,
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x107, struct.pack(">HBHB", pic_type, cap_type, pic_size, ret_type)
         )
 
     @classmethod
-    def t108(cls, ksid: str) -> Packet:
+    def t108(cls, ksid: str) -> "Packet[()]":
         return cls._pack_tlv(0x108, ksid.encode())
 
     @classmethod
-    def t109(cls, android_id: bytes) -> Packet:
+    def t109(cls, android_id: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x109, md5(android_id).digest())
 
     @classmethod
-    def t10a(cls, arr: bytes) -> Packet:
+    def t10a(cls, arr: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x10A, arr)
 
     @classmethod
-    def t112(cls, non_number_uin: bytes) -> Packet:
+    def t112(cls, non_number_uin: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x112, non_number_uin)
 
     @classmethod
@@ -213,7 +217,7 @@ class TlvEncoder:
         sub_sigmap: int,
         sub_app_id_list: List[int] = [1600000226],
         _ver: int = 0,
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x116,
             struct.pack(
@@ -231,7 +235,7 @@ class TlvEncoder:
         sim_info: bytes,
         apn: bytes,
         address: bytes = bytes(),
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x124,
             cls._pack_lv_limited(os_type, 16),
@@ -252,7 +256,7 @@ class TlvEncoder:
         build_model: bytes,
         guid: bytes,
         build_brand: bytes,
-    ) -> Packet:
+    ) -> "Packet[()]":
         """
         :GUID_SRC:
             * 0: 初始值
@@ -290,7 +294,7 @@ class TlvEncoder:
     @classmethod
     def t141(
         cls, sim_info: bytes, network_type: int, apn: bytes, _version: int = 1
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x141,
             struct.pack(">H", _version),
@@ -300,7 +304,7 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t142(cls, apk_id: str, _version: int = 0) -> Packet:
+    def t142(cls, apk_id: str, _version: int = 0) -> "Packet[()]":
         return cls._pack_tlv(
             0x142,
             struct.pack(">H", _version),
@@ -308,7 +312,7 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t143(cls, arr: bytes) -> Packet:
+    def t143(cls, arr: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x143, arr)
 
     @classmethod
@@ -337,7 +341,7 @@ class TlvEncoder:
         guid: bytes,
         build_brand: bytes,
         tgtgt_key: bytes,
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x144,
             qqtea_encrypt(
@@ -376,13 +380,13 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t145(cls, guid: bytes) -> Packet:
+    def t145(cls, guid: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x145, guid)
 
     @classmethod
     def t147(
         cls, app_id: int, apk_version_name: bytes, apk_signature_md5: bytes
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x147,
             struct.pack(">I", app_id),
@@ -391,31 +395,31 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t154(cls, seq: int) -> Packet:
+    def t154(cls, seq: int) -> "Packet[()]":
         return cls._pack_tlv(0x154, struct.pack(">I", seq))
 
     @classmethod
-    def t166(cls, image_type: bytes) -> Packet:
+    def t166(cls, image_type: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x166, struct.pack(">c", image_type))
 
     @classmethod
-    def t16a(cls, no_pic_sig: bytes) -> Packet:
+    def t16a(cls, no_pic_sig: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x16A, no_pic_sig)
 
     @classmethod
-    def t16e(cls, build_model: bytes) -> Packet:
+    def t16e(cls, build_model: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x16E, build_model)
 
     @classmethod
-    def t172(cls, rollback_sig: bytes) -> Packet:
+    def t172(cls, rollback_sig: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x172, rollback_sig)
 
     @classmethod
-    def t174(cls, data: bytes) -> Packet:
+    def t174(cls, data: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x174, data)
 
     @classmethod
-    def t177(cls, build_time: int, sdk_version: str) -> Packet:
+    def t177(cls, build_time: int, sdk_version: str) -> "Packet[()]":
         return cls._pack_tlv(
             0x177,
             struct.pack(">BI", 1, build_time),
@@ -423,53 +427,53 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t17a(cls, sms_app_id: int) -> Packet:
+    def t17a(cls, sms_app_id: int) -> "Packet[()]":
         return cls._pack_tlv(0x17A, struct.pack(">I", sms_app_id))
 
     @classmethod
-    def t17c(cls, code: str) -> Packet:
+    def t17c(cls, code: str) -> "Packet[()]":
         return cls._pack_tlv(0x17C, cls._pack_lv(code.encode()))
 
     @classmethod
-    def t185(cls) -> Packet:
+    def t185(cls) -> "Packet[()]":
         return cls._pack_tlv(0x185, bytes([1, 1]))
 
     @classmethod
-    def t187(cls, mac_address: bytes) -> Packet:
+    def t187(cls, mac_address: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x187, md5(mac_address).digest())
 
     @classmethod
-    def t188(cls, android_id: bytes) -> Packet:
+    def t188(cls, android_id: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x188, md5(android_id).digest())
 
     @classmethod
-    def t191(cls, can_web_verify: int) -> Packet:
+    def t191(cls, can_web_verify: int) -> "Packet[()]":
         return cls._pack_tlv(0x191, struct.pack(">B", can_web_verify))
 
     @classmethod
-    def t193(cls, ticket: str) -> Packet:
+    def t193(cls, ticket: str) -> "Packet[()]":
         return cls._pack_tlv(0x193, ticket.encode())
 
     @classmethod
-    def t194(cls, imsi_md5: bytes) -> Packet:
+    def t194(cls, imsi_md5: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x194, imsi_md5)
 
     @classmethod
-    def t197(cls, data: bytes = bytes(1)) -> Packet:
+    def t197(cls, data: bytes = bytes(1)) -> "Packet[()]":
         return cls._pack_tlv(0x197, data)
 
     @classmethod
-    def t198(cls) -> Packet:
+    def t198(cls) -> "Packet[()]":
         return cls._pack_tlv(0x198, bytes(1))
 
     @classmethod
-    def t19e(cls, value: int = 1) -> Packet:
+    def t19e(cls, value: int = 1) -> "Packet[()]":
         return cls._pack_tlv(0x19E, struct.pack(">HB", 1, value))
 
     @classmethod
     def t201(
         cls, channel_id: bytes, client_type: bytes, n: bytes, l: bytes = bytes()
-    ) -> Packet:
+    ) -> "Packet[()]":
         return cls._pack_tlv(
             0x201,
             cls._pack_lv(l),
@@ -479,7 +483,7 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t202(cls, wifi_bssid: bytes, wifi_ssid: bytes) -> Packet:
+    def t202(cls, wifi_bssid: bytes, wifi_ssid: bytes) -> "Packet[()]":
         return cls._pack_tlv(
             0x202,
             cls._pack_lv_limited(wifi_bssid, 16),
@@ -487,7 +491,7 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t318(cls, tgt_qr: bytes) -> Packet:
+    def t318(cls, tgt_qr: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x318, tgt_qr)
 
     @classmethod
@@ -501,7 +505,7 @@ class TlvEncoder:
         sub_app_id: int,
         rand_seed: bytes,
         _version: int = 1,
-    ) -> Packet:
+    ) -> "Packet[()]":
         data = Packet.build(
             struct.pack(">HQ", _version, uin),
             guid,
@@ -512,14 +516,14 @@ class TlvEncoder:
         return cls._pack_tlv(0x400, qqtea_encrypt(bytes(data), g))
 
     @classmethod
-    def t401(cls, data: bytes) -> Packet:
+    def t401(cls, data: bytes) -> "Packet[()]":
         return cls._pack_tlv(0x401, data)
 
     @classmethod
-    def t511(cls, domains: List[str]) -> Packet:
+    def t511(cls, domains: List[str]) -> "Packet[()]":
         _domains = [domain for domain in domains if domain]
 
-        data: List[Union[bytes, Packet]] = []
+        data: List[Union[bytes, "Packet[()]"]] = []
         for domain in _domains:
             index1 = domain.find("(")
             index2 = domain.find(")")
@@ -541,19 +545,19 @@ class TlvEncoder:
         return cls._pack_tlv(0x511, struct.pack(">H", len(_domains)), *data)
 
     @classmethod
-    def t516(cls, source_type: int = 0) -> Packet:
+    def t516(cls, source_type: int = 0) -> "Packet[()]":
         return cls._pack_tlv(0x516, struct.pack(">I", source_type))
 
     @classmethod
-    def t521(cls, product_type: int = 0) -> Packet:
+    def t521(cls, product_type: int = 0) -> "Packet[()]":
         return cls._pack_tlv(0x521, struct.pack(">IH", product_type, 0))
 
     @classmethod
-    def t525(cls, t536: Packet) -> Packet:
+    def t525(cls, t536: "Packet[()]") -> "Packet[()]":
         return cls._pack_tlv(0x525, struct.pack(">H", 1), t536)
 
     @classmethod
-    def t52c(cls) -> Packet:
+    def t52c(cls) -> "Packet[()]":
         return cls._pack_tlv(0x52C, struct.pack(">BQ", 1, -1))
 
     @classmethod
@@ -568,7 +572,7 @@ class TlvEncoder:
         android_id: str,
         baseband: str,
         inner_version: str,
-    ) -> Packet:
+    ) -> "Packet[()]":
         """
         Note:
             Source: oicq.wlogin_sdk.tools.util#get_android_dev_info
@@ -587,7 +591,7 @@ class TlvEncoder:
         return cls._pack_tlv(0x52D, device_info.SerializeToString())
 
     @classmethod
-    def t536(cls, login_extra_data: List[bytes]) -> Packet:
+    def t536(cls, login_extra_data: List[bytes]) -> "Packet[()]":
         return cls._pack_tlv(
             0x536,
             struct.pack(">BB", 1, len(login_extra_data)),
@@ -595,14 +599,17 @@ class TlvEncoder:
         )
 
     @classmethod
-    def t544(cls) -> Packet:
+    def t544(cls) -> "Packet[()]":
         return cls._pack_tlv(0x544, bytes([0, 0, 0, 11]))
 
 
 class TlvDecoder:
     @classmethod
     def decode(
-        cls, data: Union[bytes, Packet], offset: int = 0, tag_size: int = 2
+        cls,
+        data: Union[bytes, "Packet[()]"],
+        offset: int = 0,
+        tag_size: int = 2,
     ) -> Dict[int, Any]:
         if not isinstance(data, Packet):
             data = Packet(data)
@@ -852,7 +859,7 @@ class TlvDecoder:
 
         ps_key_map: Dict[str, bytes] = {}
         pt4_token_map: Dict[str, bytes] = {}
-        for i in range(length):
+        for _ in range(length):
             domain_length = data_.read_uint16(offset)
             offset += 2
             domain = data_.read_bytes(domain_length, offset).decode()

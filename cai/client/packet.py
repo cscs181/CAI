@@ -197,7 +197,6 @@ class IncomingPacket:
         except ValueError:
             uin = 0
 
-        payload: "Packet[()]"
         if encrypt_type == 0:
             pass
         elif encrypt_type == 1:
@@ -315,7 +314,6 @@ class IncomingPacket:
             data.uint8().offset(12).uint16().offset(1).remain().execute()
         )
 
-        flag = data.read_uint8()
         if flag != 2:
             raise ValueError(
                 f"Invalid OICQ response flag. Expected 2, got {flag}."

@@ -87,12 +87,11 @@ class OICQResponse(Event):
 
         data_ = Packet(data)
 
-        offset = 0
-        sub_command = data_.read_uint16(offset)
-        offset += 2
-        status = data_.read_uint8(offset)
-        offset += 1 + 2
-        _tlv_map = TlvDecoder.decode(data_, offset)
+        sub_command, status, _tlv_bytes = (
+            data_.uint16().uint8().offset(2).remain().execute()
+        )
+
+        _tlv_map = TlvDecoder.decode(_tlv_bytes)
 
         if status == 0:
             return LoginSuccess(
@@ -231,8 +230,8 @@ class LoginSuccess(UnknownLoginStatus):
 class NeedCaptcha(UnknownLoginStatus):
     t104: bytes
     verify_url: str
-    captcha_image: bytes
     captcha_sign: bytes
+    captcha_image: bytes
 
     def __init__(
         self,
@@ -253,9 +252,9 @@ class NeedCaptcha(UnknownLoginStatus):
         self.verify_url = _tlv_map.get(0x192, b"").decode()
         if 0x165 in _tlv_map:
             data = Packet(_tlv_map[0x165])
-            sign_length = data.read_uint16()
-            self.captcha_sign = data.read_bytes(sign_length, 4)
-            self.captcha_image = data[4 + sign_length :]
+            sign, image = data.bytes_with_length(2, 4).remain().execute()
+            self.captcha_sign = sign[2:]
+            self.captcha_image = bytes(image)
 
 
 @dataclass
@@ -305,7 +304,7 @@ class DeviceLocked(UnknownLoginStatus):
         self.t174 = _tlv_map.get(0x174)
         if self.t174:
             t178 = Packet(_tlv_map[0x178])
-            self.sms_phone = t178.read_bytes(t178.read_int32(), 4).decode()
+            self.sms_phone = t178.string(4).execute()[0]
 
 
 @dataclass

@@ -168,6 +168,13 @@ class Packet(BasePacket, Generic[Unpack[Ts]]):
     ) -> "Packet[Unpack[Ts], BYTES]":  # type: ignore
         ...
 
+    def bytes_with_length(
+        self: "Packet[Unpack[Ts]]",
+        head_bytes: int,
+        offset: int = ...
+    ) -> "Packet[Unpack[Ts], BYTES]":  # type: ignore
+        ...
+
     def string(
         self: "Packet[Unpack[Ts]]",
         head_bytes: int,

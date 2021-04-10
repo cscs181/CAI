@@ -229,6 +229,16 @@ class Packet(BasePacket):
         self._add_filter(BYTES)
         return self
 
+    def bytes_with_length(self, head_bytes: int, offset: int = 0):
+        self._query += f"{head_bytes}s"
+        self._add_filter(BYTES)
+        packet = self._exec_cache()
+        length = int.from_bytes(packet._cache[-1], "big")
+        packet._cache = packet._cache[:-1]
+        packet._query += f"{length - offset}s"
+        packet._add_filter(BYTES)
+        return packet
+
     def string(self, head_bytes: int, offset: int = 0, encoding: str = "utf-8"):
         self._query += f"{head_bytes}s"
         self._add_filter(BYTES)

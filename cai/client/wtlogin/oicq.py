@@ -88,7 +88,7 @@ class OICQResponse(Event):
         data_ = Packet(data)
 
         sub_command, status, _tlv_bytes = (
-            data_.uint16().uint8().offset(2).remain().execute()
+            data_.start().uint16().uint8().offset(2).remain().execute()
         )
 
         _tlv_map = TlvDecoder.decode(_tlv_bytes)
@@ -252,7 +252,9 @@ class NeedCaptcha(UnknownLoginStatus):
         self.verify_url = _tlv_map.get(0x192, b"").decode()
         if 0x165 in _tlv_map:
             data = Packet(_tlv_map[0x165])
-            sign, image = data.bytes_with_length(2, 4).remain().execute()
+            sign, image = (
+                data.start().bytes_with_length(2, 4).remain().execute()
+            )
             self.captcha_sign = sign[2:]
             self.captcha_image = bytes(image)
 
@@ -304,7 +306,7 @@ class DeviceLocked(UnknownLoginStatus):
         self.t174 = _tlv_map.get(0x174)
         if self.t174:
             t178 = Packet(_tlv_map[0x178])
-            self.sms_phone = t178.string(4).execute()[0]
+            self.sms_phone = t178.start().string(4).execute()[0]
 
 
 @dataclass

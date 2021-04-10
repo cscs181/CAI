@@ -154,7 +154,7 @@ class Packet(BasePacket):
 
     Example:
         >>> packet = Packet(bytes.fromhex("01000233000000"))
-        >>> packet.int8().uint16().bytes(4).execute()
+        >>> packet.start().int8().uint16().bytes(4).execute()
         (1, 2, b'3\x00\x00\x00')
 
     .. _PEP646:
@@ -162,17 +162,22 @@ class Packet(BasePacket):
 
     """
 
-    def __init__(
-        self, *args, cache: Optional[Tuple[Any, ...]] = None, **kwargs
-    ):
+    def __init__(self, *args, **kwargs):
         super(Packet, self).__init__(*args, **kwargs)
-        self._query = ">"
-        self._cache = cache or tuple()
-        self._filters: List[Callable[[Any], Any]] = []
-        self._executed: bool = False
+        self.start()
 
     def _add_filter(self, filter: Callable[[Any], Any]):
         self._filters.append(filter)
+
+    def _get_position(self) -> int:
+        return struct.calcsize(self._query) + self._offset
+
+    def start(self, offset: int = 0):
+        self._query: str = ">"
+        self._offset: int = offset
+        self._executed: bool = False
+        self._filters: List[Callable[[Any], Any]] = []
+        return self
 
     def bool(self):
         self._query += "?"
@@ -240,24 +245,22 @@ class Packet(BasePacket):
         return self
 
     def bytes_with_length(self, head_bytes: int, offset: int = 0):
-        self._query += f"{head_bytes}s"
+        length = int.from_bytes(
+            self.read_bytes(head_bytes, self._get_position()),
+            "big",
+        )
+        self._query += f"{head_bytes}x{length - offset}s"
         self._add_filter(BYTES)
-        packet = self._exec_cache()
-        length = int.from_bytes(packet._cache[-1], "big")
-        packet._cache = packet._cache[:-1]
-        packet._query += f"{length - offset}s"
-        packet._add_filter(BYTES)
-        return packet
+        return self
 
     def string(self, head_bytes: int, offset: int = 0, encoding: str = "utf-8"):
-        self._query += f"{head_bytes}s"
-        self._add_filter(BYTES)
-        packet = self._exec_cache()
-        length = int.from_bytes(packet._cache[-1], "big")
-        packet._cache = packet._cache[:-1]
-        packet._query += f"{length - offset}s"
-        packet._add_filter(lambda x: STRING(x.decode(encoding)))
-        return packet
+        length = int.from_bytes(
+            self.read_bytes(head_bytes, self._get_position()),
+            "big",
+        )
+        self._query += f"{head_bytes}x{length - offset}s"
+        self._add_filter(lambda x: STRING(x.decode(encoding)))
+        return self
 
     def offset(self, offset: int):
         self._query += f"{offset}x"
@@ -269,21 +272,18 @@ class Packet(BasePacket):
         self._add_filter(Packet)
         return self
 
-    def _exec_cache(self):
-        length = struct.calcsize(self._query)
-        cache = self.execute()
-        return Packet(self[length:], cache=cache)
-
     def execute(self):
         if self._executed:
-            raise RuntimeError(
-                "Cannot re-execute while query execution has already been cached."
-            )
+            raise RuntimeError("Cannot re-execute query. Call `start()` first.")
         query = self._query
         filters = self._filters
         self._query = ">"
         self._filters = []
         self._executed = True
-        return self._cache + tuple(
-            map(lambda f, v: f(v), filters, self.unpack_from(query))
+        return tuple(
+            map(
+                lambda f, v: f(v),
+                filters,
+                self.unpack_from(query, self._offset),
+            )
         )

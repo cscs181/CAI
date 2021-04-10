@@ -173,7 +173,7 @@ class IncomingPacket:
     @classmethod
     def parse(
         cls,
-        data: Union[bytes, "Packet[()]"],
+        data: Union[bytes, bytearray],
         key: bytes,
         d2key: bytes,
         session_key: bytes,
@@ -182,7 +182,13 @@ class IncomingPacket:
             data = Packet(data)
 
         packet_type, encrypt_type, flag3, uin, payload = (
-            data.uint32().uint8().uint8().string(4, 4).remain().execute()
+            data.start()
+            .uint32()
+            .uint8()
+            .uint8()
+            .string(4, 4)
+            .remain()
+            .execute()
         )
 
         if packet_type not in [0xA, 0xB]:
@@ -224,7 +230,7 @@ class IncomingPacket:
     @classmethod
     def parse_sso_frame(
         cls,
-        sso_frame: Union[bytes, "Packet[()]"],
+        sso_frame: Union[bytes, bytearray],
         encrypt_type: int,
         key: bytes,
         session_key: bytes,
@@ -234,7 +240,8 @@ class IncomingPacket:
             sso_frame = Packet(sso_frame)
 
         seq, ret_code, extra, command_name, session_id, data = (
-            sso_frame.uint32()
+            sso_frame.start()
+            .uint32()
             .int32()
             .bytes_with_length(4, 4)
             .string(4, 4)
@@ -254,7 +261,7 @@ class IncomingPacket:
                 **kwargs,
             )
 
-        compress_type, compressed_data = data.int32().remain().execute()
+        compress_type, compressed_data = data.start().int32().remain().execute()
         decompressed_data: bytes
         if compress_type == 0:
             # data_length = sso_frame.read_int32(offset)
@@ -289,7 +296,7 @@ class IncomingPacket:
 
     @classmethod
     def parse_oicq_body(
-        cls, data: Union[bytes, "Packet[()]"], key: bytes, session_key: bytes
+        cls, data: Union[bytes, bytearray], key: bytes, session_key: bytes
     ) -> bytes:
         """Parse incoming OICQ packet.
 
@@ -311,7 +318,13 @@ class IncomingPacket:
             data = Packet(data)
 
         flag, encrypt_type, body = (
-            data.uint8().offset(12).uint16().offset(1).remain().execute()
+            data.start()
+            .uint8()
+            .offset(12)
+            .uint16()
+            .offset(1)
+            .remain()
+            .execute()
         )
 
         if flag != 2:

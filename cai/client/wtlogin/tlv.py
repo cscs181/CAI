@@ -27,12 +27,12 @@ class TlvEncoder:
 
     # oicq/wlogin_sdk/tlv_type/tlv_t.java
     @classmethod
-    def _pack_lv(cls, *data: Union[bytes, "Packet[()]"]) -> "Packet[()]":
+    def _pack_lv(cls, *data: Union[bytes, bytearray]) -> "Packet[()]":
         return Packet(struct.pack(">H", sum(map(len, data)))).write(*data)
 
     @classmethod
     def _pack_tlv(
-        cls, type: int, *data: Union[bytes, "Packet[()]"]
+        cls, type: int, *data: Union[bytes, bytearray]
     ) -> "Packet[()]":
         return Packet(struct.pack(">HH", type, sum(map(len, data)))).write(
             *data
@@ -40,7 +40,7 @@ class TlvEncoder:
 
     @classmethod
     def _pack_lv_limited(
-        cls, data: Union[bytes, "Packet[()]"], size: int
+        cls, data: Union[bytes, bytearray], size: int
     ) -> "Packet[()]":
         return cls._pack_lv(data[:size])
 
@@ -523,7 +523,7 @@ class TlvEncoder:
     def t511(cls, domains: List[str]) -> "Packet[()]":
         _domains = [domain for domain in domains if domain]
 
-        data: List[Union[bytes, "Packet[()]"]] = []
+        data: List[Union[bytes, bytearray]] = []
         for domain in _domains:
             index1 = domain.find("(")
             index2 = domain.find(")")
@@ -553,7 +553,7 @@ class TlvEncoder:
         return cls._pack_tlv(0x521, struct.pack(">IH", product_type, 0))
 
     @classmethod
-    def t525(cls, t536: "Packet[()]") -> "Packet[()]":
+    def t525(cls, t536: bytearray) -> "Packet[()]":
         return cls._pack_tlv(0x525, struct.pack(">H", 1), t536)
 
     @classmethod
@@ -607,7 +607,7 @@ class TlvDecoder:
     @classmethod
     def decode(
         cls,
-        data: Union[bytes, "Packet[()]"],
+        data: Union[bytes, bytearray],
         offset: int = 0,
         tag_size: int = 2,
     ) -> Dict[int, Any]:

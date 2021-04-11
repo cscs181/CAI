@@ -60,13 +60,13 @@ def encode_login_request2_captcha(
 ) -> Packet:
     """Build submit captcha request packet.
 
-    Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt`.
+    Called in ``oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt``.
 
-    command id: `0x810 = 2064`
+    command id: ``0x810 = 2064``
 
-    sub command id: `2`
+    sub command id: ``2``
 
-    command name: `wtlogin.login`
+    command name: ``wtlogin.login``
 
     Note:
         Source: oicq.wlogin_sdk.request.n
@@ -113,7 +113,7 @@ def encode_login_request2_captcha(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
     return packet
 
@@ -130,13 +130,13 @@ def encode_login_request2_slider(
 ) -> Packet:
     """Build slider ticket request packet.
 
-    Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt`.
+    Called in ``oicq.wlogin_sdk.request.WtloginHelper.CheckPictureAndGetSt``.
 
-    command id: `0x810 = 2064`
+    command id: ``0x810 = 2064``
 
-    sub command id: `2`
+    sub command id: ``2``
 
-    command name: `wtlogin.login`
+    command name: ``wtlogin.login``
 
     Note:
         Source: oicq.wlogin_sdk.request.n
@@ -182,7 +182,7 @@ def encode_login_request2_slider(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
     return packet
 
@@ -201,13 +201,13 @@ def encode_login_request7(
 ) -> Packet:
     """Build sms submit packet.
 
-    Called in `oicq.wlogin_sdk.request.WtloginHelper.CheckSMSAndGetSt`.
+    Called in ``oicq.wlogin_sdk.request.WtloginHelper.CheckSMSAndGetSt``.
 
-    command id: `0x810 = 2064`
+    command id: ``0x810 = 2064``
 
-    sub command id: `7`
+    sub command id: ``7``
 
-    command name: `wtlogin.login`
+    command name: ``wtlogin.login``
 
     Note:
         Source: oicq.wlogin_sdk.request.o
@@ -263,7 +263,7 @@ def encode_login_request7(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
     return packet
 
@@ -280,13 +280,13 @@ def encode_login_request8(
 ) -> Packet:
     """Build sms request packet.
 
-    Called in `oicq.wlogin_sdk.request.WtloginHelper.RefreshSMSData`.
+    Called in ``oicq.wlogin_sdk.request.WtloginHelper.RefreshSMSData``.
 
-    command id: `0x810 = 2064`
+    command id: ``0x810 = 2064``
 
-    sub command id: `8`
+    sub command id: ``8``
 
-    command name: `wtlogin.login`
+    command name: ``wtlogin.login``
 
     Note:
         Source: oicq.wlogin_sdk.request.r
@@ -340,7 +340,7 @@ def encode_login_request8(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
     return packet
 
@@ -356,13 +356,13 @@ def encode_login_request9(
 ) -> Packet:
     """Build main login request packet.
 
-    Called in `oicq.wlogin_sdk.request.WtloginHelper.GetStWithPasswd`.
+    Called in ``oicq.wlogin_sdk.request.WtloginHelper.GetStWithPasswd``.
 
-    command id: `0x810 = 2064`
+    command id: ``0x810 = 2064``
 
-    sub command id: `9`
+    sub command id: ``9``
 
-    command name: `wtlogin.login`
+    command name: ``wtlogin.login``
 
     Note:
         Source: oicq.wlogin_sdk.request.k
@@ -505,7 +505,7 @@ def encode_login_request9(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
     return packet
 
@@ -522,13 +522,13 @@ def encode_login_request20(
 ) -> Packet:
     """Build device lock login request packet.
 
-    Called in `oicq.wlogin_sdk.request.WtloginHelper.GetStWithoutPasswd`.
+    Called in ``oicq.wlogin_sdk.request.WtloginHelper.GetStWithoutPasswd``.
 
-    command id: `0x810 = 2064`
+    command id: ``0x810 = 2064``
 
-    sub command id: `20`
+    sub command id: ``20``
 
-    command name: `wtlogin.login`
+    command name: ``wtlogin.login``
 
     Note:
         Source: oicq.wlogin_sdk.request.p
@@ -574,7 +574,7 @@ def encode_login_request20(
         ksid,
         oicq_packet,
     )
-    # encrypted by 16-byte zero. Reference: `CSSOData::serialize`
+    # encrypted by 16-byte zero. Reference: ``CSSOData::serialize``
     packet = CSsoDataPacket.build(uin, 2, sso_packet, key=bytes(16))
     return packet
 
@@ -600,11 +600,11 @@ def encode_exchange_emp_15(
 ) -> Packet:
     """Build exchange emp request packet.
 
-    command id: `0x810 = 2064`
+    command id: ``0x810 = 2064``
 
-    sub command id: `15`
+    sub command id: ``15``
 
-    command name: `wtlogin.exchange_emp`
+    command name: ``wtlogin.exchange_emp``
 
     Note:
         Source: oicq.wlogin_sdk.request.aa

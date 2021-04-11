@@ -94,9 +94,9 @@ def encode_register(
 ) -> Packet:
     """Build status service register packet.
 
-    Called in `com.tencent.mobileqq.msf.core.push.e.a`.
+    Called in ``com.tencent.mobileqq.msf.core.push.e.a``.
 
-    command name: `StatSvc.register`
+    command name: ``StatSvc.register``
 
     Note:
         Source: com.tencent.mobileqq.msf.core.push.e.a

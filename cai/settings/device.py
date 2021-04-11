@@ -153,7 +153,10 @@ def _get_imei_sign(imei: str) -> str:
 
 
 def new_imei() -> str:
-    imei = f"86{random.randint(100, 9999):04d}0{random.randint(1000000, 9999999):07d}"
+    imei = (
+        f"86{random.randint(100, 9999):04d}0"
+        f"{random.randint(1_00_00_00, 9_99_99_99):07d}"
+    )
     return imei + _get_imei_sign(imei)
 
 
@@ -166,11 +169,15 @@ def new_boot_id() -> str:
 
 
 def new_proc_version() -> str:
-    return f"Linux version 4.19.71-{random.randint(0x10000000, 0xffffffff):x} (android-build@github.com)"
+    return (
+        "Linux version 4.19.71-"
+        f"{random.randint(0x10_00_00_00, 0xff_ff_ff_ff):x}"
+        " (android-build@github.com)"
+    )
 
 
 def new_ip_address() -> str:
-    return f"10.0.{random.randint(0,99)}.{random.randint(0,99)}"
+    return f"10.0.{random.randint(0, 99)}.{random.randint(0, 99)}"
 
 
 def new_version(

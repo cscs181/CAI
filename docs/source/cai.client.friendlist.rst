@@ -5,3 +5,14 @@ cai.client.friendlist package
    :members:
    :undoc-members:
    :show-inheritance:
+
+Submodules
+----------
+
+cai.client.friendlist.jce module
+--------------------------------
+
+.. automodule:: cai.client.friendlist.jce
+   :members:
+   :undoc-members:
+   :show-inheritance:

@@ -8,10 +8,16 @@ This module is used to build and handle friend list related packet.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-from typing import TYPE_CHECKING
+from typing import Optional, TYPE_CHECKING
 
 from jce import types
 
+from .event import (
+    TroopListEvent,
+    TroopListSuccess,
+    TroopListFail,
+    TroopListNeedCookie,
+)
 from cai.utils.binary import Packet
 from .jce import TroopListReqV2Simplify
 from cai.utils.jce import RequestPacketVersion3
@@ -27,6 +33,7 @@ def encode_get_troop_list(
     session_id: bytes,
     uin: int,
     d2key: bytes,
+    cookies: Optional[bytes] = None,
 ) -> Packet:
     """Build get troop list v2 packet.
 
@@ -42,6 +49,7 @@ def encode_get_troop_list(
         session_id (bytes): Session ID.
         uin (int): User QQ number.
         d2key (bytes): Siginfo d2 key.
+        cookies (Optional[bytes], optional): Cookie vector. Defaults to None.
 
     Returns:
         Packet: Register packet.
@@ -51,6 +59,7 @@ def encode_get_troop_list(
     req = TroopListReqV2Simplify(
         uin=uin,
         get_msf_msg_flag=False,
+        cookies=cookies,
         group_flag_ext=bytes([1]),
         version=9,
         version_num=1,
@@ -70,8 +79,23 @@ def encode_get_troop_list(
     return packet
 
 
-def handle_troop_list(client: "Client", packet: IncomingPacket):
-    ...
+def handle_troop_list(
+    client: "Client", packet: IncomingPacket
+) -> TroopListEvent:
+    return TroopListEvent.decode_response(
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
+    )
 
 
-__all__ = ["encode_get_troop_list", "handle_troop_list"]
+__all__ = [
+    "encode_get_troop_list",
+    "handle_troop_list",
+    "TroopListEvent",
+    "TroopListSuccess",
+    "TroopListFail",
+    "TroopListNeedCookie",
+]

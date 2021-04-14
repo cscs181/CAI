@@ -780,3 +780,26 @@ class Client:
             await asyncio.sleep(self._heartbeat_interval)
 
         self._heartbeat_enabled = False
+
+    async def get_group_list(self, cache: bool = True) -> List[Any]:
+        """Get Group List.
+
+        Return cached group list if cache is ``True``.
+
+        Args:
+            cache (bool): Use cached group list.
+
+        Returns:
+            List
+        """
+        if cache:
+            return self._group_list
+
+        seq = self.next_seq()
+        packet = encode_get_troop_list(
+            seq, self._session_id, self.uin, self._siginfo.d2key
+        )
+        response = await self.send_and_wait(
+            seq, "friendlist.GetTroopListReqV2", packet
+        )
+        # TODO: with cookie, check fail

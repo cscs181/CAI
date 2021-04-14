@@ -9,6 +9,14 @@ cai.client.friendlist package
 Submodules
 ----------
 
+cai.client.friendlist.event module
+----------------------------------
+
+.. automodule:: cai.client.friendlist.event
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cai.client.friendlist.jce module
 --------------------------------
 

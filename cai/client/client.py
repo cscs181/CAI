@@ -42,7 +42,14 @@ from .status_service import (
     RegisterSuccess,
     RegisterFail,
 )
-from .friendlist import encode_get_troop_list, handle_troop_list
+from .friendlist import (
+    encode_get_troop_list,
+    handle_troop_list,
+    TroopListEvent,
+    TroopListSuccess,
+    TroopListFail,
+    StTroopNum,
+)
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
 
@@ -55,6 +62,7 @@ from cai.exceptions import (
     LoginDeviceLocked,
     LoginSMSRequestError,
     RegisterException,
+    GroupListException,
 )
 
 from cai.log import logger
@@ -75,6 +83,7 @@ HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "StatSvc.register": handle_register_response,
     "ConfigPushSvc.PushReq": handle_config_push_request,
     "Heartbeat.Alive": handle_heartbeat,
+    "friendlist.GetTroopListReqV2": handle_troop_list,
 }
 
 
@@ -88,7 +97,7 @@ class Client:
         self._gender: Optional[int] = None
         self._status: Optional[OnlineStatus] = None
         self._friend_list: List[Any] = []
-        self._group_list: List[Any] = []
+        self._group_list: List[StTroopNum] = []
         self._other_clients: List[Any] = []
 
         # server info
@@ -781,18 +790,63 @@ class Client:
 
         self._heartbeat_enabled = False
 
-    async def get_group_list(self, cache: bool = True) -> List[Any]:
+    async def _handle_group_list_response(
+        self, response: Event, try_times: int = 1
+    ) -> List[StTroopNum]:
+        if not isinstance(response, TroopListEvent):
+            raise RuntimeError("Invalid get group list response type!")
+
+        group_list = []
+        if isinstance(response, TroopListSuccess):
+            group_list.extend(response.response.troop_list)
+            if response.response.cookies and try_times:
+                seq = self.next_seq()
+                packet = encode_get_troop_list(
+                    seq,
+                    self._session_id,
+                    self.uin,
+                    self._siginfo.d2key,
+                    cookies=response.response.cookies,
+                )
+                response = await self.send_and_wait(
+                    seq, "friendlist.GetTroopListReqV2", packet
+                )
+                group_list.extend(
+                    await self._handle_group_list_response(
+                        response, try_times - 1
+                    )
+                )
+            self._group_list = group_list
+            return group_list
+        elif isinstance(response, TroopListFail):
+            raise GroupListException(
+                response.uin, response.result, response.message
+            )
+
+        raise ApiResponseError(
+            response.uin,
+            response.seq,
+            response.ret_code,
+            response.command_name,
+        )
+
+    async def get_group_list(self, cache: bool = True) -> List[StTroopNum]:
         """Get Group List.
 
         Return cached group list if cache is ``True``.
 
         Args:
-            cache (bool): Use cached group list.
+            cache (bool, optional): Use cached group list. Defaults to True.
 
         Returns:
-            List
+            List of :obj:`~cai.client.friendlist.jce.StTroopNum`
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Get group list failed.
+            GroupListException: Get group list returned non-zero ret code.
         """
-        if cache:
+        if cache and self._group_list:
             return self._group_list
 
         seq = self.next_seq()
@@ -802,4 +856,4 @@ class Client:
         response = await self.send_and_wait(
             seq, "friendlist.GetTroopListReqV2", packet
         )
-        # TODO: with cookie, check fail
+        return await self._handle_group_list_response(response)

@@ -16,11 +16,10 @@ from .event import (
     TroopListEvent,
     TroopListSuccess,
     TroopListFail,
-    TroopListNeedCookie,
 )
 from cai.utils.binary import Packet
-from .jce import TroopListReqV2Simplify
 from cai.utils.jce import RequestPacketVersion3
+from .jce import StTroopNum, TroopListReqV2Simplify
 from cai.client.packet import UniPacket, IncomingPacket
 
 
@@ -79,7 +78,7 @@ def encode_get_troop_list(
     return packet
 
 
-def handle_troop_list(
+async def handle_troop_list(
     client: "Client", packet: IncomingPacket
 ) -> TroopListEvent:
     return TroopListEvent.decode_response(
@@ -97,5 +96,5 @@ __all__ = [
     "TroopListEvent",
     "TroopListSuccess",
     "TroopListFail",
-    "TroopListNeedCookie",
+    "StTroopNum",
 ]

@@ -141,6 +141,7 @@ class LoginSMSRequestError(LoginException):
         return f"LoginSMSRequestError(uin={self.uin})"
 
 
+# register
 class RegisterException(ApiException):
     """Base Exception for Register"""
 
@@ -151,3 +152,20 @@ class RegisterException(ApiException):
 
     def __repr__(self) -> str:
         return f"RegisterException(uin={self.uin}, status={self.status}, message={self.message})"
+
+
+# friendlist
+class FriendListException(ApiException):
+    """Base Exception for Friend List"""
+
+
+class GroupListException(FriendListException):
+    """Base Exception for Group List"""
+
+    def __init__(self, uin: int, status: int, message: str = ""):
+        self.uin = uin
+        self.status = status
+        self.message = message
+
+    def __repr__(self) -> str:
+        return f"GroupListException(uin={self.uin}, status={self.status}, message={self.message})"

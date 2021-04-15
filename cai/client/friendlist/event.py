@@ -53,6 +53,7 @@ class TroopListEvent(Event):
                     seq,
                     ret_code,
                     command_name,
+                    troop_list_response.result,
                     "Troop list returns non-zero result code",
                 )
             return TroopListSuccess(
@@ -64,6 +65,7 @@ class TroopListEvent(Event):
                 seq,
                 ret_code,
                 command_name,
+                -1,
                 f"Error when decoding response! {repr(e)}",
             )
 
@@ -74,10 +76,6 @@ class TroopListSuccess(TroopListEvent):
 
 
 @dataclass
-class TroopListNeedCookie(TroopListEvent):
-    cookies: bytes
-
-
-@dataclass
 class TroopListFail(TroopListEvent):
+    result: int
     message: str

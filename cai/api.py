@@ -102,7 +102,10 @@ async def login(uin: int, password_md5: Optional[bytes] = None) -> Client:
     await client.reconnect()
     try:
         await client.login()
+        # register client online status
         await client.register()
+        # force refresh group list
+        await client.get_group_list(False)
     except LoginException:
         raise
     except Exception:
@@ -250,6 +253,26 @@ async def set_status(
         battery_status,
         is_power_connected,
     )
+
+
+async def get_group_list(cache: bool = True, uin: Optional[int] = None):
+    """Get account group list.
+
+    This function wraps the :meth:`~cai.client.client.Client.get_group_list`
+    method of the client.
+
+    Args:
+        cache (bool, optional):  Use cached group list. Defaults to True.
+        uin (Optional[int], optional): Account of the client want to change.
+            Defaults to None.
+
+    Raises:
+        RuntimeError: Error response type got. This should not happen.
+        ApiResponseError: Get group list failed.
+        GroupListException: Get group list returned non-zero ret code.
+    """
+    client = get_client(uin)
+    return await client.get_group_list(cache)
 
 
 def register_packet_handler(

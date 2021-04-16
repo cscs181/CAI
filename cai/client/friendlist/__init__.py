@@ -27,6 +27,11 @@ if TYPE_CHECKING:
     from cai.client import Client
 
 
+# TODO
+def encode_get_friend_list() -> Packet:
+    ...
+
+
 def encode_get_troop_list(
     seq: int,
     session_id: bytes,
@@ -88,6 +93,11 @@ async def handle_troop_list(
         packet.command_name,
         packet.data,
     )
+
+
+# TODO
+def encode_get_troop_member_list() -> Packet:
+    ...
 
 
 __all__ = [

@@ -14,6 +14,198 @@ from typing import Optional
 from jce import JceStruct, JceField, types
 
 
+# Friend
+class VipOpenInfo(JceStruct):
+    """Vip Open Info Jce Packet.
+
+    Note:
+        Source: QQService.VipOpenInfo
+    """
+
+    open: types.BOOL = JceField(jce_id=0)
+    vip_type: types.INT32 = JceField(jce_id=1)
+    vip_level: types.INT32 = JceField(jce_id=2)
+    vip_flag: types.INT32 = JceField(0, jce_id=3)
+    nameplate_id: types.INT64 = JceField(0, jce_id=4)
+
+
+class VipBaseInfo(JceStruct):
+    """Vip Base Info Jce Packet.
+
+    Note:
+        Source: QQService.VipBaseInfo
+    """
+
+    open_info: types.MAP[types.INT, VipOpenInfo] = JceField(jce_id=0)
+    nameplate_vip_type: types.INT32 = JceField(0, jce_id=1)
+    gray_nameplate_flag: types.INT32 = JceField(0, jce_id=2)
+    extend_nameplate_id: types.STRING = JceField("", jce_id=3)
+
+
+class FriendInfo(JceStruct):
+    """Friend Info Jce Packet.
+
+    Note:
+        Source: friendlist.FriendInfo
+    """
+
+    friend_uin: types.INT64 = JceField(jce_id=0)
+    group_id: types.BYTE = JceField(jce_id=1)
+    face_id: types.INT16 = JceField(jce_id=2)
+    remark: types.STRING = JceField(jce_id=3)
+    sqqtype: types.BYTE = JceField(jce_id=4)
+    status: types.BYTE = JceField(jce_id=5)
+    member_level: types.BYTE = JceField(bytes(1), jce_id=6)
+    is_mqq_online: types.BOOL = JceField(False, jce_id=7)
+    sqq_online_state: types.BYTE = JceField(bytes(1), jce_id=8)
+    is_iphone_online: types.BOOL = JceField(False, jce_id=9)
+    detail_status_flag: types.BYTE = JceField(jce_id=10)
+    sqq_online_state_v2: types.BYTE = JceField(bytes(1), jce_id=11)
+    show_name: types.STRING = JceField("", jce_id=12)
+    is_remark: types.BOOL = JceField(False, jce_id=13)
+    nick: types.STRING = JceField("", jce_id=14)
+    special_flag: types.BYTE = JceField(bytes(1), jce_id=15)
+    im_group_id: types.BYTES = JceField(bytes(), jce_id=16)
+    msf_group_id: types.BYTES = JceField(bytes(), jce_id=17)
+    term_type: types.INT32 = JceField(0, jce_id=18)
+    vip_info: Optional[VipBaseInfo] = JceField(None, jce_id=19)
+    network: types.BYTE = JceField(bytes(1), jce_id=20)
+    ring: types.BYTES = JceField(bytes(), jce_id=21)
+    abi_flag: types.INT64 = JceField(0, jce_id=22)
+    face_addon_id: types.INT64 = JceField(0, jce_id=23)
+    network_type: types.INT32 = JceField(0, jce_id=24)
+    vip_font: types.INT64 = JceField(0, jce_id=25)
+    icon_type: types.INT32 = JceField(0, jce_id=26)
+    term_description: types.STRING = JceField("", jce_id=27)
+    color_ring: types.INT64 = JceField(0, jce_id=28)
+    apollo_flag: types.BYTE = JceField(bytes(1), jce_id=29)
+    apollo_timestamp: types.INT64 = JceField(0, jce_id=30)
+    sex: types.BYTE = JceField(bytes(1), jce_id=31)
+    founder_font: types.INT64 = JceField(0, jce_id=32)
+    eim_id: types.STRING = JceField("", jce_id=33)
+    eim_mobile: types.STRING = JceField("", jce_id=34)
+    olympic_torch: types.BYTE = JceField(bytes(1), jce_id=35)
+    apollo_sign_time: types.INT64 = JceField(0, jce_id=36)
+    lavi_uin: types.INT64 = JceField(0, jce_id=37)
+    tag_update_time: types.INT64 = JceField(0, jce_id=38)
+    game_last_login_time: types.INT64 = JceField(0, jce_id=39)
+    game_app_id: types.INT64 = JceField(0, jce_id=40)
+    card_id: types.BYTES = JceField(bytes(), jce_id=41)
+    bit_set: types.INT64 = JceField(0, jce_id=42)
+    king_of_glory_flag: types.BYTE = JceField(bytes(1), jce_id=43)
+    king_of_glory_rank: types.INT64 = JceField(0, jce_id=44)
+    master_uin: types.STRING = JceField("", jce_id=45)
+    last_medal_update_time: types.INT64 = JceField(0, jce_id=46)
+    face_store_id: types.INT64 = JceField(0, jce_id=47)
+    font_effect: types.INT64 = JceField(0, jce_id=48)
+    dov_id: types.STRING = JceField("", jce_id=49)
+    both_flag: types.INT64 = JceField(0, jce_id=50)
+    centi_show_3d_flag: types.BYTE = JceField(bytes(1), jce_id=51)
+    intimate_info: types.BYTES = JceField(bytes(), jce_id=52)
+    show_nameplate: types.BYTE = JceField(bytes(1), jce_id=53)
+    new_lover_diamond_flag: types.BYTE = JceField(bytes(1), jce_id=54)
+    ext_sns_friend_data: types.BYTES = JceField(bytes(), jce_id=55)
+    mutual_mark_data: types.BYTES = JceField(bytes(), jce_id=56)
+    ext_online_status: types.INT64 = JceField(0, jce_id=57)
+    battery_status: types.INT64 = JceField(0, jce_id=58)
+    music_info: types.BYTES = JceField(bytes(), jce_id=59)
+    poi_info: types.BYTES = JceField(bytes(), jce_id=60)
+    ext_online_business_info: types.BYTES = JceField(bytes(), jce_id=61)
+
+
+class GroupInfo(JceStruct):
+    """Group Info Jce Packet.
+
+    Note:
+        Source: friendlist.GroupInfo
+    """
+
+    group_id: types.BYTE = JceField(jce_id=0)
+    group_name: types.STRING = JceField(jce_id=1)
+    friend_count: types.INT32 = JceField(jce_id=2)
+    online_friend_count: types.INT32 = JceField(jce_id=3)
+    seq_id: types.BYTE = JceField(bytes(1), jce_id=4)
+    sqq_online_count: types.INT32 = JceField(0, jce_id=5)
+
+
+class FriendListSubSrvRspCode(JceStruct):
+    """Friend List Sub Service Response Code Jce Packet.
+
+    Note:
+        Source: friendlist.FriendListSubSrvRspCode
+    """
+
+    get_mutual_mark_rsp_code: types.INT16 = JceField(0, jce_id=0)
+    get_intimate_info_rsp_code: types.INT16 = JceField(0, jce_id=1)
+
+
+class FriendListReq(JceStruct):
+    """Get Friend List Request Jce Packet.
+
+    Note:
+        Source: friendlist.GetFriendListReq
+    """
+
+    request_type: types.INT32 = JceField(jce_id=0)
+    if_reflush: types.BOOL = JceField(jce_id=1)
+    uin: types.INT64 = JceField(jce_id=2)
+    start_index: types.INT16 = JceField(jce_id=3)
+    friend_count: types.INT16 = JceField(jce_id=4)
+    group_id: types.BYTE = JceField(jce_id=5)
+    if_get_group_info: types.BOOL = JceField(jce_id=6)
+    group_start_index: types.INT8 = JceField(jce_id=7)
+    group_count: types.INT8 = JceField(jce_id=8)
+    if_get_msf_group: types.BOOL = JceField(jce_id=9)
+    if_show_term_type: types.BOOL = JceField(jce_id=10)
+    version: types.INT64 = JceField(jce_id=11)
+    uin_list: Optional[types.LIST[types.INT64]] = JceField(None, jce_id=12)
+    app_type: types.INT32 = JceField(0, jce_id=13)
+    if_get_dovid: types.BOOL = JceField(False, jce_id=14)
+    if_get_both_flag: types.BOOL = JceField(False, jce_id=15)
+    d50_req: Optional[types.BYTES] = JceField(None, jce_id=16)
+    d6b_req: Optional[types.BYTES] = JceField(None, jce_id=17)
+    sns_type_list: Optional[types.LIST[types.INT64]] = JceField(None, jce_id=18)
+
+
+class FriendListResp(JceStruct):
+    """Friend List Response Jce Packet.
+
+    Note:
+        Source: friendlist.GetFriendListResp
+    """
+
+    request_type: types.INT32 = JceField(jce_id=0)
+    if_reflush: types.BOOL = JceField(jce_id=1)
+    uin: types.INT64 = JceField(jce_id=2)
+    start_index: types.INT16 = JceField(jce_id=3)
+    get_friend_count: types.INT16 = JceField(jce_id=4)
+    total_friend_count: types.INT16 = JceField(jce_id=5)
+    friend_count: types.INT16 = JceField(jce_id=6)
+    friend_info: types.LIST[FriendInfo] = JceField(jce_id=7)
+    group_id: types.BYTE = JceField(0, jce_id=8)
+    if_get_group_info: types.BOOL = JceField(jce_id=9)
+    group_start_index: types.INT8 = JceField(0, jce_id=10)
+    get_group_count: types.INT8 = JceField(0, jce_id=11)
+    total_group_count: types.INT8 = JceField(0, jce_id=12)
+    group_count: types.INT8 = JceField(0, jce_id=13)
+    group_info: types.LIST[GroupInfo] = JceField([], jce_id=14)
+    result: types.INT32 = JceField(jce_id=15)
+    error_code: types.INT16 = JceField(0, jce_id=16)
+    online_friend_count: types.INT16 = JceField(0, jce_id=17)
+    server_time: types.INT64 = JceField(0, jce_id=18)
+    sqq_online_count: types.INT16 = JceField(0, jce_id=19)
+    msf_group_info: types.LIST[GroupInfo] = JceField([], jce_id=20)
+    resp_type: types.BYTE = JceField(bytes(1), jce_id=21)
+    has_other_resp_type: types.BOOL = JceField(False, jce_id=22)
+    self_info: Optional[FriendInfo] = JceField(None, jce_id=23)
+    show_pc_icon: types.BOOL = JceField(False, jce_id=24)
+    get_ext_sns_rsp_code: types.INT16 = JceField(0, jce_id=25)
+    sub_srv_rsp_code: Optional[FriendListSubSrvRspCode] = JceField(
+        None, jce_id=26
+    )
+
+
+# Troop
 class StTroopNum(JceStruct):
     """St Troop(Group) Number Jce Packet.
 

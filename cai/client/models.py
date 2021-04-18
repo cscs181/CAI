@@ -1,6 +1,6 @@
-"""Application Client SigInfo.
+"""Application Client Info Releated Models.
 
-This module is used to define account siginfo data.
+This module is used to define account info data models.
 
 :Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
@@ -10,13 +10,13 @@ This module is used to define account siginfo data.
 """
 import time
 from typing import Dict
-
 from dataclasses import dataclass, field
 
 
 @dataclass
 class SigInfo:
-    """
+    """Account Siginfo.
+
     Note:
         Source: oicq.wlogin_sdk.sharemem.WloginSigInfo
     """

@@ -6,13 +6,11 @@ cai.pb.oicq package
    :undoc-members:
    :show-inheritance:
 
-Submodules
-----------
+Subpackages
+-----------
 
-cai.pb.oicq.cmd0x769\_pb2 module
---------------------------------
+.. toctree::
+   :maxdepth: 4
 
-.. automodule:: cai.pb.oicq.cmd0x769_pb2
-   :members:
-   :undoc-members:
-   :show-inheritance:
+   cai.pb.oicq.cmd0x769
+   cai.pb.oicq.cmd0xd50

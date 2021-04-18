@@ -38,18 +38,18 @@ cai.client.event module
    :undoc-members:
    :show-inheritance:
 
-cai.client.packet module
+cai.client.models module
 ------------------------
 
-.. automodule:: cai.client.packet
+.. automodule:: cai.client.models
    :members:
    :undoc-members:
    :show-inheritance:
 
-cai.client.siginfo module
--------------------------
+cai.client.packet module
+------------------------
 
-.. automodule:: cai.client.siginfo
+.. automodule:: cai.client.packet
    :members:
    :undoc-members:
    :show-inheritance:

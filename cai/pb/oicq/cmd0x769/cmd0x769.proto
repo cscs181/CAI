@@ -1,4 +1,5 @@
 syntax = "proto2";
+package oicq.cmd0x769;
 
 message CPU {
   optional string model = 1;

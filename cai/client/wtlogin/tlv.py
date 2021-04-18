@@ -16,9 +16,9 @@ from typing import Any, List, Dict, Union
 
 from rtea import qqtea_encrypt, qqtea_decrypt
 
-from cai.settings.device import get_device
 from cai.utils.binary import Packet
-from cai.pb.wtlogin.data_pb2 import DeviceReport
+from cai.pb.wtlogin import DeviceReport
+from cai.settings.device import get_device
 
 DEVICE = get_device()
 

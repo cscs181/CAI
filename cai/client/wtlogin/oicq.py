@@ -8,7 +8,6 @@ This module is used to build and handle OICQ packets.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import time
 import struct
 from dataclasses import dataclass
 from typing import Any, Dict, Union, Optional

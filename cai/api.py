@@ -106,6 +106,8 @@ async def login(uin: int, password_md5: Optional[bytes] = None) -> Client:
         await client.register()
         # force refresh group list
         await client.get_group_list(False)
+        # force refresh friend list
+        await client.get_friend_list(False)
     except LoginException:
         raise
     except Exception:
@@ -253,6 +255,26 @@ async def set_status(
         battery_status,
         is_power_connected,
     )
+
+
+async def get_friend_list(cache: bool = True, uin: Optional[int] = None):
+    """Get account friend list.
+
+    This function wraps the :meth:`~cai.client.client.Client.get_friend_list`
+    method of the client.
+
+    Args:
+        cache (bool, optional):  Use cached friend list. Defaults to True.
+        uin (Optional[int], optional): Account of the client want to change.
+            Defaults to None.
+
+    Raises:
+        RuntimeError: Error response type got. This should not happen.
+        ApiResponseError: Get friend list failed.
+        FriendListException: Get friend list returned non-zero ret code.
+    """
+    client = get_client(uin)
+    return await client.get_friend_list(cache)
 
 
 async def get_group_list(cache: bool = True, uin: Optional[int] = None):

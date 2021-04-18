@@ -72,7 +72,7 @@ class FriendListEvent(Event):
 
 @dataclass
 class FriendListSuccess(FriendListEvent):
-    response: ...
+    response: FriendListResp
 
 
 @dataclass

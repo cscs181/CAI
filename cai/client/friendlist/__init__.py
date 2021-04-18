@@ -13,6 +13,9 @@ from typing import Optional, TYPE_CHECKING
 from jce import types
 
 from .event import (
+    FriendListEvent,
+    FriendListSuccess,
+    FriendListFail,
     TroopListEvent,
     TroopListSuccess,
     TroopListFail,
@@ -64,11 +67,11 @@ def encode_get_friend_list(
 
     req = FriendListReq(
         request_type=3,
-        if_flush=friend_index <= 0,
+        if_reflush=friend_index <= 0,
         uin=uin,
         start_index=friend_index,
         friend_count=friend_count,
-        group_id=0,
+        group_id=bytes(1),
         if_get_group_info=group_count <= 0,
         group_start_index=group_index,
         group_count=group_count,
@@ -97,9 +100,16 @@ def encode_get_friend_list(
     return packet
 
 
-# TODO
-async def handle_friend_list(client: "Client", packet: IncomingPacket):
-    ...
+async def handle_friend_list(
+    client: "Client", packet: IncomingPacket
+) -> "FriendListEvent":
+    return FriendListEvent.decode_response(
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
+    )
 
 
 def encode_get_troop_list(
@@ -171,8 +181,13 @@ def encode_get_troop_member_list() -> Packet:
 
 
 __all__ = [
+    "encode_get_friend_list",
+    "handle_friend_list",
     "encode_get_troop_list",
     "handle_troop_list",
+    "FriendListEvent",
+    "FriendListSuccess",
+    "FriendListFail",
     "TroopListEvent",
     "TroopListSuccess",
     "TroopListFail",

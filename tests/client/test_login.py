@@ -11,7 +11,9 @@ import cai.settings.protocol as protocol
 # clear cache
 for module in list(sys.modules.keys()):
     if module.startswith("cai") and not module in [
-        "cai.settings.device", "cai.settings.protocol", "cai.log"
+        "cai.settings.device",
+        "cai.settings.protocol",
+        "cai.log",
     ]:
         del sys.modules[module]
 
@@ -39,15 +41,15 @@ mock_device = unittest.mock.patch.object(
             incremental="V12.0.19.0.RKBCNXM",
             release="11",
             codename="REL",
-            sdk=30
+            sdk=30,
         ),
         sim="T-Mobile",
         os_type="android",
         apn="wifi",
         _imsi_md5="0f63d5c351fd1d75a29d88cae86d315d",
         _tgtgt_md5="c4e512e6924e4872e552e861a914d49a",
-        _guid_md5=None
-    )
+        _guid_md5=None,
+    ),
 )
 mock_protocol = unittest.mock.patch.object(
     protocol,
@@ -60,16 +62,30 @@ mock_protocol = unittest.mock.patch.object(
         build_time=1595836208,
         apk_sign=bytes(
             [
-                170, 57, 120, 244, 31, 217, 111, 249, 145, 74, 102, 158, 24,
-                100, 116, 199
+                170,
+                57,
+                120,
+                244,
+                31,
+                217,
+                111,
+                249,
+                145,
+                74,
+                102,
+                158,
+                24,
+                100,
+                116,
+                199,
             ]
         ),
         sdk_version="6.0.0.2433",
         sso_version=12,
         bitmap=150470524,
         main_sigmap=1970400,
-        sub_sigmap=66560
-    )
+        sub_sigmap=66560,
+    ),
 )
 
 with mock_device:
@@ -79,7 +95,6 @@ with mock_device:
 
 
 class TestEncodeLoginRequest(unittest.IsolatedAsyncioTestCase):
-
     def log(self, level: int, message: str, *args, exc_info=False, **kwargs):
         message = "| TestEncodeLoginRequest | " + message
         return logger.log(level, message, *args, exc_info=exc_info, **kwargs)
@@ -94,9 +109,12 @@ class TestEncodeLoginRequest(unittest.IsolatedAsyncioTestCase):
         self.log(logging.INFO, "test encode login request")
         # ensure encode has no error
         packet = encode_login_request9(
-            10, bytes(16), bytes([0x02, 0xB0, 0x5B, 0x8B]),
-            f"|{get_device().imei}|A8.2.7.27f6ea96".encode(), 123456,
-            md5("123456".encode()).digest()
+            10,
+            bytes(16),
+            bytes([0x02, 0xB0, 0x5B, 0x8B]),
+            f"|{get_device().imei}|A8.2.7.27f6ea96".encode(),
+            123456,
+            md5("123456".encode()).digest(),
         )
         # print(packet.hex())
 

@@ -74,6 +74,14 @@ class Friend(JsonableDataclass):
 
 
 @dataclass
+class FriendGroup(JsonableDataclass):
+    group_id: int
+    group_name: str
+    friend_count: int
+    online_friend_count: int
+
+
+@dataclass
 class Group(JsonableDataclass):
     group_uin: int
     group_code: int

@@ -101,7 +101,7 @@ async def get_sso_list() -> SsoServerResponse:
             b"Content-Length: " + str(len(buffer)).encode() + b"\r\n"
             b"\r\n" + buffer
         )
-        conn.write_bytes(query)
+        conn.write(query)
         conn.write_eof()
         resp_bytes = await conn.read_all()
         response = http.client.HTTPResponse(

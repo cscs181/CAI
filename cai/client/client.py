@@ -290,7 +290,7 @@ class Client:
         self._seq = (self._seq + 1) % 0x7FFF
         return self._seq
 
-    def send(
+    async def send(
         self, seq: int, command_name: str, packet: Union[bytes, Packet]
     ) -> None:
         """Send a packet with the given sequence but not wait for the response.
@@ -304,7 +304,7 @@ class Client:
             None.
         """
         logger.debug(f"--> {seq}: {command_name}")
-        self.connection.write_bytes(packet)
+        await self.connection.awrite(packet)
 
     async def send_and_wait(
         self,
@@ -324,7 +324,7 @@ class Client:
         Returns:
             Event: Response.
         """
-        self.send(seq, command_name, packet)
+        await self.send(seq, command_name, packet)
         return await self._receive_store.fetch(seq, timeout)
 
     async def receive(self):

@@ -117,12 +117,16 @@ class Connection:
             ) from e
         return data
 
-    def write_bytes(self, data: Union[bytes, Packet]):
-        return self._writer.write(data)  # type: ignore
+    def write(self, data: Union[bytes, Packet]):
+        self._writer.write(data)  # type: ignore
 
     def write_eof(self):
         if self._writer.can_write_eof():
             self._writer.write_eof()
+
+    async def awrite(self, data: Union[bytes, Packet]):
+        self._writer.write(data)  # type: ignore
+        await self._writer.drain()
 
 
 def connect(

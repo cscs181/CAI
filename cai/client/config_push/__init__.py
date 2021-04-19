@@ -99,7 +99,7 @@ async def handle_config_push_request(
             event.jcebuf,
             event.large_seq,
         )
-        client.send(seq, "ConfigPushSvc.PushResp", resp_packet)
+        await client.send(seq, "ConfigPushSvc.PushResp", resp_packet)
 
     return event
 

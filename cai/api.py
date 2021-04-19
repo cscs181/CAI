@@ -10,12 +10,14 @@ This module wraps the client methods to provide easier control (high-level api).
 """
 
 import asyncio
-from typing import Dict, Optional, Callable, Awaitable
+from typing import List, Dict, Optional, Callable, Awaitable
 
 from cai.log import logger
 from cai.exceptions import LoginException, ClientNotAvailable
 from cai.client import (
     Client,
+    Friend,
+    Group,
     HANDLERS,
     Event,
     IncomingPacket,
@@ -257,7 +259,9 @@ async def set_status(
     )
 
 
-async def get_friend_list(cache: bool = True, uin: Optional[int] = None):
+async def get_friend_list(
+    cache: bool = True, uin: Optional[int] = None
+) -> List[Friend]:
     """Get account friend list.
 
     This function wraps the :meth:`~cai.client.client.Client.get_friend_list`
@@ -268,6 +272,9 @@ async def get_friend_list(cache: bool = True, uin: Optional[int] = None):
         uin (Optional[int], optional): Account of the client want to change.
             Defaults to None.
 
+    Returns:
+        List of :obj:`~cai.client.models.Friend`
+
     Raises:
         RuntimeError: Error response type got. This should not happen.
         ApiResponseError: Get friend list failed.
@@ -277,7 +284,9 @@ async def get_friend_list(cache: bool = True, uin: Optional[int] = None):
     return await client.get_friend_list(cache)
 
 
-async def get_group_list(cache: bool = True, uin: Optional[int] = None):
+async def get_group_list(
+    cache: bool = True, uin: Optional[int] = None
+) -> List[Group]:
     """Get account group list.
 
     This function wraps the :meth:`~cai.client.client.Client.get_group_list`
@@ -287,6 +296,9 @@ async def get_group_list(cache: bool = True, uin: Optional[int] = None):
         cache (bool, optional):  Use cached group list. Defaults to True.
         uin (Optional[int], optional): Account of the client want to change.
             Defaults to None.
+
+    Returns:
+        List of :obj:`~cai.client.models.Group`
 
     Raises:
         RuntimeError: Error response type got. This should not happen.

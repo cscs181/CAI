@@ -72,10 +72,10 @@ from cai.exceptions import (
 )
 
 from cai.log import logger
-from .models import SigInfo
 from .packet import IncomingPacket
 from cai.utils.binary import Packet
 from cai.utils.future import FutureStore
+from .models import SigInfo, Friend, Group
 from .event import Event, _packet_to_event
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
@@ -103,8 +103,8 @@ class Client:
         self._age: Optional[int] = None
         self._gender: Optional[int] = None
         self._status: Optional[OnlineStatus] = None
-        self._friend_list: List[Any] = []
-        self._group_list: List[StTroopNum] = []
+        self._friend_list: List[Friend] = []
+        self._group_list: List[Group] = []
         self._other_clients: List[Any] = []
 
         # server info
@@ -797,7 +797,7 @@ class Client:
 
         self._heartbeat_enabled = False
 
-    async def get_friend_list(self, cache: bool = True) -> List:
+    async def get_friend_list(self, cache: bool = True) -> List[Friend]:
         """Get Friend List.
 
         Return cached friend list if cache is ``True``.
@@ -806,7 +806,7 @@ class Client:
             cache (bool, optional): Use cached friend list. Defaults to True.
 
         Returns:
-            List of :obj:`~cai.client.friendlist.jce.StTroopNum`
+            List of :obj:`~cai.client.models.Friend`
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -817,7 +817,7 @@ class Client:
             return self._friend_list
 
         total_count = 0xFFFFFFFF_FFFFFFFF
-        friend_list = []
+        friend_list: List[Friend] = []
         while len(friend_list) < total_count:
             seq = self.next_seq()
             packet = encode_get_friend_list(
@@ -835,7 +835,12 @@ class Client:
             if not isinstance(response, FriendListEvent):
                 raise RuntimeError("Invalid get friend list response type!")
             if isinstance(response, FriendListSuccess):
-                friend_list.extend(response.response.friend_info)
+                friend_list.extend(
+                    map(
+                        lambda x: Friend.from_dict(x.dict()),
+                        response.response.friend_info,
+                    )
+                )
                 total_count = response.response.total_friend_count
                 continue
             elif isinstance(response, FriendListFail):
@@ -853,13 +858,18 @@ class Client:
 
     async def _handle_group_list_response(
         self, response: Event, try_times: int = 1
-    ) -> List[StTroopNum]:
+    ) -> List[Group]:
         if not isinstance(response, TroopListEvent):
             raise RuntimeError("Invalid get group list response type!")
 
-        group_list = []
+        group_list: List[Group] = []
         if isinstance(response, TroopListSuccess):
-            group_list.extend(response.response.troop_list)
+            group_list.extend(
+                map(
+                    lambda x: Group.from_dict(x.dict()),
+                    response.response.troop_list,
+                )
+            )
             if response.response.cookies and try_times:
                 seq = self.next_seq()
                 packet = encode_get_troop_list(
@@ -891,7 +901,7 @@ class Client:
             response.command_name,
         )
 
-    async def get_group_list(self, cache: bool = True) -> List[StTroopNum]:
+    async def get_group_list(self, cache: bool = True) -> List[Group]:
         """Get Group List.
 
         Return cached group list if cache is ``True``.
@@ -900,7 +910,7 @@ class Client:
             cache (bool, optional): Use cached group list. Defaults to True.
 
         Returns:
-            List of :obj:`~cai.client.friendlist.jce.StTroopNum`
+            List of :obj:`~cai.client.models.Group`
 
         Raises:
             RuntimeError: Error response type got. This should not happen.

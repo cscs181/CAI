@@ -50,7 +50,7 @@ class FriendInfo(JceStruct):
     """
 
     friend_uin: types.INT64 = JceField(jce_id=0)
-    group_id: types.BYTE = JceField(jce_id=1)
+    group_id: types.INT8 = JceField(jce_id=1)
     face_id: types.INT16 = JceField(jce_id=2)
     remark: types.STRING = JceField(jce_id=3)
     sqqtype: types.BYTE = JceField(jce_id=4)
@@ -80,7 +80,7 @@ class FriendInfo(JceStruct):
     color_ring: types.INT64 = JceField(0, jce_id=28)
     apollo_flag: types.BYTE = JceField(bytes(1), jce_id=29)
     apollo_timestamp: types.INT64 = JceField(0, jce_id=30)
-    sex: types.BYTE = JceField(bytes(1), jce_id=31)
+    sex: types.INT8 = JceField(0, jce_id=31)
     founder_font: types.INT64 = JceField(0, jce_id=32)
     eim_id: types.STRING = JceField("", jce_id=33)
     eim_mobile: types.STRING = JceField("", jce_id=34)
@@ -120,7 +120,7 @@ class GroupInfo(JceStruct):
         Source: friendlist.GroupInfo
     """
 
-    group_id: types.BYTE = JceField(jce_id=0)
+    group_id: types.INT8 = JceField(jce_id=0)
     group_name: types.STRING = JceField(jce_id=1)
     friend_count: types.INT32 = JceField(jce_id=2)
     online_friend_count: types.INT32 = JceField(jce_id=3)

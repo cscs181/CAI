@@ -12,6 +12,8 @@ import time
 from typing import Dict
 from dataclasses import dataclass, field
 
+from cai.utils.dataclass import JsonableDataclass
+
 
 @dataclass
 class SigInfo:
@@ -50,3 +52,46 @@ class SigInfo:
     def s_key(self, value: bytes):
         self._s_key = value
         self.s_key_expire_time = int(time.time()) + 21600
+
+
+@dataclass
+class Friend(JsonableDataclass):
+    friend_uin: int
+    group_id: int
+    face_id: int
+    remark: str
+    is_mqq_online: bool
+    is_iphone_online: bool
+    show_name: str
+    is_remark: bool
+    nick: str
+    # vip_info
+    network_type: int
+    vip_font: int
+    term_description: str
+    sex: int
+    battery_status: int
+
+
+@dataclass
+class Group(JsonableDataclass):
+    group_uin: int
+    group_code: int
+    group_name: str
+    group_memo: str
+    shutup_timestamp: int
+    my_shutup_timestamp: int
+    member_num: int
+    group_owner_uin: int
+    cmd_uin_join_time: int
+    max_group_member_num: int
+
+    @property
+    def group_id(self) -> int:
+        """:obj:`int`: Group ID. Same as :obj:`~.Group.group_uin`."""
+        return self.group_uin
+
+    @property
+    def join_time(self) -> int:
+        """:obj:`int`: Group join time. Same as :obj:`~.Group.cmd_uin_join_time`."""
+        return self.cmd_uin_join_time

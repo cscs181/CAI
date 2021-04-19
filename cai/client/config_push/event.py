@@ -45,7 +45,7 @@ class ConfigPushEvent(Event):
 
         packet = RequestPacketVersion2.decode(data)
         push = PushReq.decode(
-            packet.data["PushReq"]["ConfigPush.PushReq"][1:-1]
+            packet.data["PushReq"]["ConfigPush.PushReq"][1:-1]  # type: ignore
         )
         if push.type == 1:
             list = SsoServerPushList.decode(push.jcebuf)

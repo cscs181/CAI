@@ -116,7 +116,7 @@ async def get_sso_list() -> SsoServerResponse:
     data: bytes = qqtea_decrypt(response.read(), key)
     resp_packet = RequestPacketVersion3.decode(data)
     server_info = SsoServerResponse.decode(
-        resp_packet.data["HttpServerListRes"][1:-1]
+        resp_packet.data["HttpServerListRes"][1:-1]  # type: ignore
     )
     return server_info
 

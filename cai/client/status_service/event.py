@@ -9,7 +9,7 @@ This module is used to parse StatSvc response packets into event.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import Union, Optional
+from typing import Optional
 from dataclasses import dataclass
 
 from .jce import SvcRespRegister
@@ -45,7 +45,7 @@ class SvcRegisterResponse(Event):
         try:
             resp_packet = RequestPacketVersion3.decode(data)
             svc_register_response = SvcRespRegister.decode(
-                resp_packet.data["SvcRespRegister"][
+                resp_packet.data["SvcRespRegister"][  # type: ignore
                     "QQService.SvcRespRegister"
                 ][1:-1]
             )

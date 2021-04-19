@@ -45,7 +45,7 @@ class FriendListEvent(Event):
         try:
             resp_packet = RequestPacketVersion3.decode(data)
             friend_list_response = FriendListResp.decode(
-                resp_packet.data["FLRESP"][1:-1]
+                resp_packet.data["FLRESP"][1:-1]  # type: ignore
             )
             if friend_list_response.result == 1:
                 return FriendListFail(
@@ -109,7 +109,7 @@ class TroopListEvent(Event):
         try:
             resp_packet = RequestPacketVersion3.decode(data)
             troop_list_response = TroopListRespV2.decode(
-                resp_packet.data["GetTroopListRespV2"][1:-1]
+                resp_packet.data["GetTroopListRespV2"][1:-1]  # type: ignore
             )
             if troop_list_response.result == 1:
                 return TroopListFail(

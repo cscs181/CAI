@@ -16,11 +16,12 @@ from cai.log import logger
 from cai.exceptions import LoginException, ClientNotAvailable
 from cai.client import (
     Client,
-    Friend,
-    Group,
     HANDLERS,
     Event,
     IncomingPacket,
+    Friend,
+    FriendGroup,
+    Group,
     OnlineStatus,
     RegPushReason,
 )
@@ -282,6 +283,31 @@ async def get_friend_list(
     """
     client = get_client(uin)
     return await client.get_friend_list(cache)
+
+
+async def get_friend_group_list(
+    cache: bool = True, uin: Optional[int] = None
+) -> List[FriendGroup]:
+    """Get account friend group list.
+
+    This function wraps the :meth:`~cai.client.client.Client.get_friend_group_list`
+    method of the client.
+
+    Args:
+        cache (bool, optional):  Use cached friend group list. Defaults to True.
+        uin (Optional[int], optional): Account of the client want to change.
+            Defaults to None.
+
+    Returns:
+        List of :obj:`~cai.client.models.FriendGroup`
+
+    Raises:
+        RuntimeError: Error response type got. This should not happen.
+        ApiResponseError: Get friend group list failed.
+        FriendListException: Get friend group list returned non-zero ret code.
+    """
+    client = get_client(uin)
+    return await client.get_friend_group_list(cache)
 
 
 async def get_group_list(

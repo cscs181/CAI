@@ -72,7 +72,7 @@ def encode_get_friend_list(
         start_index=friend_index,
         friend_count=friend_count,
         group_id=bytes(1),
-        if_get_group_info=group_count <= 0,
+        if_get_group_info=group_count > 0,
         group_start_index=group_index,
         group_count=group_count,
         if_get_msf_group=False,

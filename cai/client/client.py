@@ -75,11 +75,11 @@ from cai.log import logger
 from .packet import IncomingPacket
 from cai.utils.binary import Packet
 from cai.utils.future import FutureStore
-from .models import SigInfo, Friend, Group
 from .event import Event, _packet_to_event
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.connection import connect, Connection
+from .models import SigInfo, Friend, FriendGroup, Group
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
@@ -104,6 +104,7 @@ class Client:
         self._gender: Optional[int] = None
         self._status: Optional[OnlineStatus] = None
         self._friend_list: List[Friend] = []
+        self._friend_group_list: List[FriendGroup] = []
         self._group_list: List[Group] = []
         self._other_clients: List[Any] = []
 
@@ -797,6 +798,58 @@ class Client:
 
         self._heartbeat_enabled = False
 
+    async def _refresh_friend_list(self):
+        friend_count = 0xFFFFFFFF_FFFFFFFF
+        group_count = 0xFFFFFFFF_FFFFFFFF
+        friend_list: List[Friend] = []
+        group_list: List[FriendGroup] = []
+        while len(friend_list) < friend_count or len(group_list) < group_count:
+            seq = self.next_seq()
+            packet = encode_get_friend_list(
+                seq,
+                self._session_id,
+                self.uin,
+                self._siginfo.d2key,
+                len(friend_list),
+                200 if len(friend_list) < friend_count else 0,
+                len(group_list),
+                100 if len(group_list) < group_count else 0,
+            )
+            response = await self.send_and_wait(
+                seq, "friendlist.GetFriendListReq", packet
+            )
+
+            if not isinstance(response, FriendListEvent):
+                raise RuntimeError("Invalid get friend list response type!")
+            if isinstance(response, FriendListSuccess):
+                friend_list.extend(
+                    map(
+                        lambda x: Friend.from_dict(x.dict()),
+                        response.response.friend_info,
+                    )
+                )
+                group_list.extend(
+                    map(
+                        lambda x: FriendGroup.from_dict(x.dict()),
+                        response.response.group_info,
+                    )
+                )
+                friend_count = response.response.total_friend_count
+                group_count = response.response.total_group_count
+                continue
+            elif isinstance(response, FriendListFail):
+                raise FriendListException(
+                    response.uin, response.result, response.message
+                )
+            raise ApiResponseError(
+                response.uin,
+                response.seq,
+                response.ret_code,
+                response.command_name,
+            )
+        self._friend_list = friend_list
+        self._friend_group_list = group_list
+
     async def get_friend_list(self, cache: bool = True) -> List[Friend]:
         """Get Friend List.
 
@@ -816,45 +869,32 @@ class Client:
         if cache and self._friend_list:
             return self._friend_list
 
-        total_count = 0xFFFFFFFF_FFFFFFFF
-        friend_list: List[Friend] = []
-        while len(friend_list) < total_count:
-            seq = self.next_seq()
-            packet = encode_get_friend_list(
-                seq,
-                self._session_id,
-                self.uin,
-                self._siginfo.d2key,
-                len(friend_list),
-                200,
-            )
-            response = await self.send_and_wait(
-                seq, "friendlist.GetFriendListReq", packet
-            )
+        await self._refresh_friend_list()
+        return self._friend_list
 
-            if not isinstance(response, FriendListEvent):
-                raise RuntimeError("Invalid get friend list response type!")
-            if isinstance(response, FriendListSuccess):
-                friend_list.extend(
-                    map(
-                        lambda x: Friend.from_dict(x.dict()),
-                        response.response.friend_info,
-                    )
-                )
-                total_count = response.response.total_friend_count
-                continue
-            elif isinstance(response, FriendListFail):
-                raise FriendListException(
-                    response.uin, response.result, response.message
-                )
-            raise ApiResponseError(
-                response.uin,
-                response.seq,
-                response.ret_code,
-                response.command_name,
-            )
-        self._friend_list = friend_list
-        return friend_list
+    async def get_friend_group_list(
+        self, cache: bool = True
+    ) -> List[FriendGroup]:
+        """Get Friend Group List.
+
+        Return cached friend list if cache is ``True``.
+
+        Args:
+            cache (bool, optional): Use cached friend group list. Defaults to True.
+
+        Returns:
+            List of :obj:`~cai.client.models.FriendGroup`
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Get friend group list failed.
+            FriendListException: Get friend group list returned non-zero ret code.
+        """
+        if cache and self._friend_group_list:
+            return self._friend_group_list
+
+        await self._refresh_friend_list()
+        return self._friend_group_list
 
     async def _handle_group_list_response(
         self, response: Event, try_times: int = 1

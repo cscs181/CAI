@@ -10,7 +10,8 @@ This module is used to build dataclass related tools.
 """
 import json
 import copy
-from dataclasses import _is_dataclass_instance, fields, MISSING, is_dataclass  # type: ignore
+from typing_extensions import get_origin, get_args
+from dataclasses import fields, MISSING, is_dataclass
 from typing import (
     IO,
     Any,
@@ -29,7 +30,7 @@ JSON = Union[Dict[str, "JSON"], List["JSON"], str, int, float, bool, None]
 
 
 def _asdict(obj: Any) -> Any:
-    if _is_dataclass_instance(obj):
+    if is_dataclass(obj):
         result = []
         for f in fields(obj):
             value = _asdict(getattr(obj, f.name))
@@ -70,6 +71,8 @@ def _fromdict(cls, kvs):
 
         field_value = kvs.get(field.name, MISSING)
         field_type = field.type
+        field_origin = get_origin(field_type)
+        field_args = get_args(field_type)
         if field_value is MISSING:
             continue
 
@@ -79,11 +82,9 @@ def _fromdict(cls, kvs):
             else:
                 value = _fromdict(field_type, field_value)
             init_kwargs[field.name] = value
-        elif hasattr(field_type, "__origin__") and issubclass(
-            field_type.__origin__, Mapping
-        ):
-            k_type, v_type = getattr(field_type, "__args__", (Any, Any))
-            init_kwargs[field.name] = field_type.__origin__(
+        elif field_origin and issubclass(field_origin, Mapping):
+            k_type, v_type = field_args or (Any, Any)
+            init_kwargs[field.name] = field_origin(
                 zip(
                     [
                         (
@@ -94,18 +95,14 @@ def _fromdict(cls, kvs):
                     ]
                 )
             )  # type: ignore
-        elif hasattr(field_type, "__origin__") and issubclass(
-            field_type.__origin__, Collection
-        ):
-            type_ = getattr(field_type, "__args__", (Any,))[0]
-            init_kwargs[field.name] = field_type.__origin__(
+        elif field_origin and issubclass(field_origin, Collection):
+            type_ = field_args[0] or Any
+            init_kwargs[field.name] = field_origin(
                 _convert_type(type_, value) for value in field_value
             )  # type: ignore
-        elif (
-            hasattr(field_type, "__origin__") and field_type.__origin__ is Union
-        ):
+        elif field_origin is Union:
             value = field_value
-            for type_ in field_type.__args__:
+            for type_ in field_args:
                 try:
                     value = _convert_type(type_, field_value)
                     break

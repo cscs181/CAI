@@ -9,10 +9,13 @@ This module is used to define account info data models.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import time
-from typing import Dict
+from typing import Dict, TYPE_CHECKING
 from dataclasses import dataclass, field
 
 from cai.utils.dataclass import JsonableDataclass
+
+if TYPE_CHECKING:
+    from cai.client import Client
 
 
 @dataclass
@@ -72,6 +75,13 @@ class Friend(JsonableDataclass):
     sex: int
     battery_status: int
 
+    _client: "Client"
+
+    def __eq__(self, o: object) -> bool:
+        if isinstance(o, Friend):
+            return o.friend_uin == self.friend_uin
+        return super().__eq__(o)
+
 
 @dataclass
 class FriendGroup(JsonableDataclass):
@@ -79,6 +89,8 @@ class FriendGroup(JsonableDataclass):
     group_name: str
     friend_count: int
     online_friend_count: int
+
+    _client: "Client"
 
 
 @dataclass
@@ -94,10 +106,35 @@ class Group(JsonableDataclass):
     cmd_uin_join_time: int
     max_group_member_num: int
 
+    _client: "Client"
+
+    def __eq__(self, o: object) -> bool:
+        if isinstance(o, Group):
+            return o.group_id == self.group_id
+        return super().__eq__(o)
+
     @property
     def group_id(self) -> int:
-        """:obj:`int`: Group ID. Same as :obj:`~.Group.group_uin`."""
-        return self.group_uin
+        """:obj:`int`: Group ID.
+
+        Caculated by :obj:`~.Group.group_uin` and :obj:`~.Group.group_code`.
+        """
+        left = self.group_code // 1000000
+        if 0 <= left <= 10:
+            left += 202
+        elif 11 <= left <= 19:
+            left += 480 - 11
+        elif 20 <= left <= 66:
+            left += 2100 - 20
+        elif 67 <= left <= 156:
+            left += 2010 - 67
+        elif 157 <= left <= 209:
+            left += 2147 - 157
+        elif 210 <= left <= 309:
+            left += 4100 - 210
+        elif 310 <= left <= 499:
+            left += 3800 - 310
+        return left * 1000000 + self.group_code % 1000000
 
     @property
     def join_time(self) -> int:

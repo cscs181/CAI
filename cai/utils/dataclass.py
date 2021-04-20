@@ -128,7 +128,7 @@ class JsonableDataclass:
         return kvs
 
     @classmethod
-    def from_dict(cls: Type[T], kvs: Dict[str, JSON]) -> T:
+    def from_dict(cls: Type[T], kvs: Dict[str, Any]) -> T:
         return _fromdict(cls, kvs)
 
     def to_json(

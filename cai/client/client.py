@@ -134,6 +134,9 @@ class Client:
         self._siginfo: SigInfo = SigInfo()
         self._receive_store: FutureStore[int, Event] = FutureStore()
 
+    def __str__(self) -> str:
+        return f"<cai client object for {self.uin}>"
+
     @property
     def uin(self) -> int:
         """
@@ -824,13 +827,17 @@ class Client:
             if isinstance(response, FriendListSuccess):
                 friend_list.extend(
                     map(
-                        lambda x: Friend.from_dict(x.dict()),
+                        lambda x: Friend.from_dict(
+                            {**x.dict(), "_client": self}
+                        ),
                         response.response.friend_info,
                     )
                 )
                 group_list.extend(
                     map(
-                        lambda x: FriendGroup.from_dict(x.dict()),
+                        lambda x: FriendGroup.from_dict(
+                            {**x.dict(), "_client": self}
+                        ),
                         response.response.group_info,
                     )
                 )
@@ -849,6 +856,28 @@ class Client:
             )
         self._friend_list = friend_list
         self._friend_group_list = group_list
+
+    async def get_friend(self, uin: int, cache: bool = True) -> Friend:
+        """Get Friend.
+
+        Return cached friend if cache is ``True``.
+
+        Args:
+            uin (int): Friend uin.
+            cache (bool, optional): Use cached friend list. Defaults to True.
+
+        Returns:
+            Friend
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Get friend list failed.
+            FriendListException: Get friend list returned non-zero ret code.
+        """
+        if not cache:
+            await self._refresh_friend_list()
+
+        return next(filter(lambda x: x.friend_uin == uin, self._friend_list))
 
     async def get_friend_list(self, cache: bool = True) -> List[Friend]:
         """Get Friend List.
@@ -872,12 +901,38 @@ class Client:
         await self._refresh_friend_list()
         return self._friend_list
 
+    async def get_friend_group(
+        self, group_id: int, cache: bool = True
+    ) -> FriendGroup:
+        """Get Friend Group.
+
+        Return cached friend group if cache is ``True``.
+
+        Args:
+            group_id (int): Friend group id.
+            cache (bool, optional): Use cached friend group list. Defaults to True.
+
+        Returns:
+            FriendGroup
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Get friend group list failed.
+            FriendListException: Get friend group list returned non-zero ret code.
+        """
+        if not cache:
+            await self._refresh_friend_list()
+
+        return next(
+            filter(lambda x: x.group_id == group_id, self._friend_group_list)
+        )
+
     async def get_friend_group_list(
         self, cache: bool = True
     ) -> List[FriendGroup]:
         """Get Friend Group List.
 
-        Return cached friend list if cache is ``True``.
+        Return cached friend group list if cache is ``True``.
 
         Args:
             cache (bool, optional): Use cached friend group list. Defaults to True.
@@ -906,7 +961,7 @@ class Client:
         if isinstance(response, TroopListSuccess):
             group_list.extend(
                 map(
-                    lambda x: Group.from_dict(x.dict()),
+                    lambda x: Group.from_dict({**x.dict(), "_client": self}),
                     response.response.troop_list,
                 )
             )
@@ -941,6 +996,38 @@ class Client:
             response.command_name,
         )
 
+    async def _refresh_group_list(self):
+        seq = self.next_seq()
+        packet = encode_get_troop_list(
+            seq, self._session_id, self.uin, self._siginfo.d2key
+        )
+        response = await self.send_and_wait(
+            seq, "friendlist.GetTroopListReqV2", packet
+        )
+        group_list = await self._handle_group_list_response(response)
+        self._group_list = group_list
+
+    async def get_group(self, group_id: int, cache: bool = True) -> Group:
+        """Get Group.
+
+        Return cached group if cache is ``True``.
+
+        Args:
+            cache (bool, optional): Use cached group list. Defaults to True.
+
+        Returns:
+            Group
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Get group list failed.
+            GroupListException: Get group list returned non-zero ret code.
+        """
+        if not cache:
+            await self._refresh_group_list()
+
+        return next(filter(lambda x: x.group_id == group_id, self._group_list))
+
     async def get_group_list(self, cache: bool = True) -> List[Group]:
         """Get Group List.
 
@@ -960,11 +1047,5 @@ class Client:
         if cache and self._group_list:
             return self._group_list
 
-        seq = self.next_seq()
-        packet = encode_get_troop_list(
-            seq, self._session_id, self.uin, self._siginfo.d2key
-        )
-        response = await self.send_and_wait(
-            seq, "friendlist.GetTroopListReqV2", packet
-        )
-        return await self._handle_group_list_response(response)
+        await self._refresh_group_list()
+        return self._group_list

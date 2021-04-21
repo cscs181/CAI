@@ -369,3 +369,21 @@ class TroopListRespV2(JceStruct):
     favorite_group: types.LIST[StFavoriteGroup] = JceField([], jce_id=8)
     troop_list_ext: types.LIST[StTroopNum] = JceField([], jce_id=9)
     group_info_ext: types.LIST[types.INT64] = JceField([], jce_id=10)
+
+
+# Troop Member
+class TroopMemberListReq(JceStruct):
+    """Get Troop(Group) Member List Request Jce Packet.
+
+    Note:
+        Source: friendlist.GetTroopMemberListReq
+    """
+
+    uin: types.INT64 = JceField(jce_id=0)
+    group_code: types.INT64 = JceField(jce_id=1)
+    next_uin: types.INT64 = JceField(jce_id=2)
+    group_uin: types.INT64 = JceField(jce_id=3)
+    version: types.INT64 = JceField(jce_id=4)
+    request_type: types.INT64 = JceField(0, jce_id=5)
+    get_list_appoint_time: types.INT64 = JceField(0, jce_id=6)
+    rich_card_name_version: types.BYTE = JceField(bytes(1), jce_id=7)

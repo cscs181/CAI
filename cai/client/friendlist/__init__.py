@@ -24,7 +24,12 @@ from cai.utils.binary import Packet
 from cai.pb.oicq.cmd0xd50 import ReqBody
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
-from .jce import FriendListReq, StTroopNum, TroopListReqV2Simplify
+from .jce import (
+    FriendListReq,
+    StTroopNum,
+    TroopListReqV2Simplify,
+    TroopMemberListReq,
+)
 
 
 if TYPE_CHECKING:
@@ -175,8 +180,59 @@ async def handle_troop_list(
     )
 
 
+def encode_get_troop_member_list(
+    seq: int,
+    session_id: bytes,
+    uin: int,
+    d2key: bytes,
+    group_uin: int,
+    group_code: int,
+    next_uin: int = 0,
+) -> Packet:
+    """Build get troop member list packet.
+
+    Called in ``com.tencent.mobileqq.troop.handler.TroopMemberInfoHandler.a``.
+
+    command name: ``friendlist.getTroopMemberList``
+
+    Note:
+        Source: com.tencent.mobileqq.service.troop.TroopSender.c
+
+    Args:
+        seq (int): Packet sequence.
+        session_id (bytes): Session ID.
+        uin (int): User QQ number.
+        d2key (bytes): Siginfo d2 key.
+        group_uin (int): Group uin number.
+        group_code (int): Group code number.
+        next_uin (int, optional): Next uin number. Defaults to 0.
+
+    Returns:
+        Packet: getTroopMemberList simplified packet.
+    """
+    COMMAND_NAME = "friendlist.getTroopMemberList"
+
+    req = TroopMemberListReq(
+        uin=uin,
+        group_code=group_code,
+        next_uin=next_uin,
+        group_uin=group_uin,
+        version=3,
+    )
+    payload = TroopMemberListReq.to_bytes(0, req)
+    req_packet = RequestPacketVersion3(
+        servant_name="mqq.IMService.FriendListServiceServantObj",
+        func_name="GetTroopMemberListReq",
+        data=types.MAP({types.STRING("GTML"): types.BYTES(payload)}),
+    ).encode()
+    packet = UniPacket.build(
+        uin, seq, COMMAND_NAME, session_id, 1, req_packet, d2key
+    )
+    return packet
+
+
 # TODO
-def encode_get_troop_member_list() -> Packet:
+async def handle_troop_member_list(client: "Client", packet: IncomingPacket):
     ...
 
 

@@ -541,7 +541,7 @@ class TlvEncoder:
                     )
                     data.append(cls._pack_lv(domain[index2 + 1 :].encode()))
                 except Exception:
-                    pass
+                    continue
         return cls._pack_tlv(0x511, struct.pack(">H", len(_domains)), *data)
 
     @classmethod

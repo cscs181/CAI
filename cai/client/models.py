@@ -59,6 +59,22 @@ class SigInfo:
 
 @dataclass
 class Friend(JsonableDataclass):
+    __json_fields__ = (
+        "friend_uin",
+        "group_id",
+        "face_id",
+        "remark",
+        "is_mqq_online",
+        "is_iphone_online",
+        "show_name",
+        "is_remark",
+        "nick",
+        "network_type",
+        "vip_font",
+        "term_description",
+        "sex",
+        "battery_status",
+    )
     friend_uin: int
     group_id: int
     face_id: int
@@ -85,6 +101,12 @@ class Friend(JsonableDataclass):
 
 @dataclass
 class FriendGroup(JsonableDataclass):
+    __json_fields__ = (
+        "group_id",
+        "group_name",
+        "friend_count",
+        "online_friend_count",
+    )
     group_id: int
     group_name: str
     friend_count: int
@@ -95,6 +117,18 @@ class FriendGroup(JsonableDataclass):
 
 @dataclass
 class Group(JsonableDataclass):
+    __json_fields__ = (
+        "group_uin",
+        "group_code",
+        "group_name",
+        "group_memo",
+        "shutup_timestamp",
+        "my_shutup_timestamp",
+        "member_num",
+        "group_owner_uin",
+        "cmd_uin_join_time",
+        "max_group_member_num",
+    )
     group_uin: int
     group_code: int
     group_name: str

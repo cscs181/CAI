@@ -47,13 +47,14 @@ from .friendlist import (
     handle_friend_list,
     encode_get_troop_list,
     handle_troop_list,
+    encode_get_troop_member_list,
+    handle_troop_member_list,
     FriendListEvent,
     FriendListSuccess,
     FriendListFail,
     TroopListEvent,
     TroopListSuccess,
     TroopListFail,
-    StTroopNum,
 )
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
@@ -91,6 +92,7 @@ HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "Heartbeat.Alive": handle_heartbeat,
     "friendlist.GetFriendListReq": handle_friend_list,
     "friendlist.GetTroopListReqV2": handle_troop_list,
+    "friendlist.GetTroopMemberListReq": handle_troop_member_list,
 }
 
 
@@ -954,6 +956,11 @@ class Client:
     async def _handle_group_list_response(
         self, response: Event, try_times: int = 1
     ) -> List[Group]:
+        """Handle Group List Response.
+
+        Note:
+            Source: com.tencent.mobileqq.troop.handler.TroopListHandler.a
+        """
         if not isinstance(response, TroopListEvent):
             raise RuntimeError("Invalid get group list response type!")
 

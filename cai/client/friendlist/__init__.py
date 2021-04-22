@@ -19,6 +19,9 @@ from .event import (
     TroopListEvent,
     TroopListSuccess,
     TroopListFail,
+    TroopMemberListEvent,
+    TroopMemberListSuccess,
+    TroopMemberListFail,
 )
 from cai.utils.binary import Packet
 from cai.pb.oicq.cmd0xd50 import ReqBody
@@ -26,7 +29,6 @@ from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
 from .jce import (
     FriendListReq,
-    StTroopNum,
     TroopListReqV2Simplify,
     TroopMemberListReq,
 )
@@ -231,9 +233,16 @@ def encode_get_troop_member_list(
     return packet
 
 
-# TODO
-async def handle_troop_member_list(client: "Client", packet: IncomingPacket):
-    ...
+async def handle_troop_member_list(
+    client: "Client", packet: IncomingPacket
+) -> TroopMemberListEvent:
+    return TroopMemberListEvent.decode_response(
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
+    )
 
 
 __all__ = [
@@ -241,11 +250,15 @@ __all__ = [
     "handle_friend_list",
     "encode_get_troop_list",
     "handle_troop_list",
+    "encode_get_troop_member_list",
+    "handle_troop_member_list",
     "FriendListEvent",
     "FriendListSuccess",
     "FriendListFail",
     "TroopListEvent",
     "TroopListSuccess",
     "TroopListFail",
-    "StTroopNum",
+    "TroopMemberListEvent",
+    "TroopMemberListSuccess",
+    "TroopMemberListFail",
 ]

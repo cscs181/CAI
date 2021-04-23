@@ -12,6 +12,7 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
+   cai.api
    cai.client
    cai.connection
    cai.pb
@@ -21,14 +22,6 @@ Subpackages
 
 Submodules
 ----------
-
-cai.api module
---------------
-
-.. automodule:: cai.api
-   :members:
-   :undoc-members:
-   :show-inheritance:
 
 cai.exceptions module
 ---------------------

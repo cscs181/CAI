@@ -9,8 +9,9 @@ This module is used to define account info data models.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import time
-from typing import Dict, TYPE_CHECKING
+from enum import Enum
 from dataclasses import dataclass, field
+from typing import List, Dict, TYPE_CHECKING
 
 from cai.utils.dataclass import JsonableDataclass
 
@@ -91,12 +92,19 @@ class Friend(JsonableDataclass):
     sex: int
     battery_status: int
 
-    _client: "Client"
+    _client: "Client" = field(repr=False)
 
     def __eq__(self, o: object) -> bool:
         if isinstance(o, Friend):
             return o.friend_uin == self.friend_uin
         return super().__eq__(o)
+
+    @property
+    def uin(self) -> int:
+        return self.friend_uin
+
+    async def get_group(self) -> "FriendGroup":
+        return await self._client.get_friend_group(group_id=self.group_id)
 
 
 @dataclass
@@ -112,7 +120,7 @@ class FriendGroup(JsonableDataclass):
     friend_count: int
     online_friend_count: int
 
-    _client: "Client"
+    _client: "Client" = field(repr=False)
 
 
 @dataclass
@@ -140,7 +148,10 @@ class Group(JsonableDataclass):
     cmd_uin_join_time: int
     max_group_member_num: int
 
-    _client: "Client"
+    _client: "Client" = field(repr=False)
+    _cached_member_list: List["GroupMember"] = field(
+        default_factory=list, repr=False
+    )
 
     def __eq__(self, o: object) -> bool:
         if isinstance(o, Group):
@@ -174,3 +185,70 @@ class Group(JsonableDataclass):
     def join_time(self) -> int:
         """:obj:`int`: Group join time. Same as :obj:`~.Group.cmd_uin_join_time`."""
         return self.cmd_uin_join_time
+
+    async def get_members(self, cache: bool = True) -> List["GroupMember"]:
+        return await self._client.get_group_member_list(self, cache)
+
+
+class GroupMemberRole(str, Enum):
+    owner = "owner"
+    admin = "admin"
+    member = "member"
+
+
+@dataclass
+class GroupMember(JsonableDataclass):
+    __json_fields__ = (
+        "member_uin",
+        "age",
+        "gender",
+        "nick",
+        "show_name",
+        "name",
+        "phone",
+        "email",
+        "memo",
+        "member_level",
+        "join_time",
+        "last_speak_time",
+        "flag",
+        "concerned",
+        "shielded",
+        "special_title",
+        "special_title_expire_time",
+        "shutup_timestamp",
+    )
+    member_uin: int
+    age: int
+    gender: int
+    nick: str
+    show_name: str
+    name: str
+    phone: str
+    email: str
+    memo: str
+    member_level: int
+    join_time: int
+    last_speak_time: int
+    flag: int
+    concerned: bool
+    shielded: bool
+    special_title: str
+    special_title_expire_time: int
+    shutup_timestamp: int
+
+    _client: "Client" = field(repr=False)
+    _group: Group = field(repr=False)
+
+    @property
+    def uin(self) -> int:
+        return self.member_uin
+
+    @property
+    def role(self) -> GroupMemberRole:
+        if self.member_uin == self._group.group_owner_uin:
+            return GroupMemberRole("owner")
+        elif self.flag:
+            return GroupMemberRole("admin")
+        else:
+            return GroupMemberRole("member")

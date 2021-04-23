@@ -195,7 +195,7 @@ def encode_get_troop_member_list(
 
     Called in ``com.tencent.mobileqq.troop.handler.TroopMemberInfoHandler.a``.
 
-    command name: ``friendlist.getTroopMemberList``
+    command name: ``friendlist.GetTroopMemberListReq``
 
     Note:
         Source: com.tencent.mobileqq.service.troop.TroopSender.c
@@ -212,7 +212,7 @@ def encode_get_troop_member_list(
     Returns:
         Packet: getTroopMemberList simplified packet.
     """
-    COMMAND_NAME = "friendlist.getTroopMemberList"
+    COMMAND_NAME = "friendlist.GetTroopMemberListReq"
 
     req = TroopMemberListReq(
         uin=uin,

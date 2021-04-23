@@ -3,26 +3,28 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
+*******************************
 Welcome to cai's documentation!
-===============================
+*******************************
 
-.. toctree::
-   :maxdepth: 2
-   :caption: Contents:
-
-Code Examples
---------------
+Examples
+=============
 
 :doc:`Example Code </examples/index>`
 
 Api Reference
---------------
+=============
 
-:ref:`modindex`
+:doc:`Api Reference </py-modindex>`
 
-.. Indices and tables
-.. ==================
+.. toctree::
+   :maxdepth: 2
+   :caption: Examples
 
-.. * :ref:`genindex`
-.. * :ref:`modindex`
-.. * :ref:`search`
+   examples/index
+
+.. toctree::
+   :maxdepth: 1
+   :caption: Api Reference
+
+   py-modindex

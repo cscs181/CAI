@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from cai.client.event import Event
 from cai.utils.jce import RequestPacketVersion3
 
-from .jce import FriendListResp, TroopListRespV2
+from .jce import FriendListResp, TroopListRespV2, TroopMemberListResp
 
 
 @dataclass
@@ -47,7 +47,7 @@ class FriendListEvent(Event):
             friend_list_response = FriendListResp.decode(
                 resp_packet.data["FLRESP"][1:-1]  # type: ignore
             )
-            if friend_list_response.result == 1:
+            if friend_list_response.result != 0:
                 return FriendListFail(
                     uin,
                     seq,
@@ -111,7 +111,7 @@ class TroopListEvent(Event):
             troop_list_response = TroopListRespV2.decode(
                 resp_packet.data["GetTroopListRespV2"][1:-1]  # type: ignore
             )
-            if troop_list_response.result == 1:
+            if troop_list_response.result != 0:
                 return TroopListFail(
                     uin,
                     seq,
@@ -141,5 +141,69 @@ class TroopListSuccess(TroopListEvent):
 
 @dataclass
 class TroopListFail(TroopListEvent):
+    result: int
+    message: str
+
+
+@dataclass
+class TroopMemberListEvent(Event):
+    @classmethod
+    def decode_response(
+        cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
+    ) -> "TroopMemberListEvent":
+        """Decode troop member list response.
+
+        Note:
+            Source: com.tencent.mobileqq.service.troop.TroopReceiver.e
+
+        Args:
+            uin (int): User QQ
+            seq (int): Sequence number of the response packet.
+            ret_code (int): Return code of the response.
+            command_name (str): Command name of the response.
+            data (bytes): Payload data of the response.
+
+        Returns:
+            TroopMemberListSuccess: Troop member list success.
+            TroopMemberListFail: Troop member list failed.
+        """
+        if ret_code != 0 or not data:
+            return TroopMemberListEvent(uin, seq, ret_code, command_name)
+
+        try:
+            resp_packet = RequestPacketVersion3.decode(data)
+            troop_member_list_response = TroopMemberListResp.decode(
+                resp_packet.data["GTMLRESP"][1:-1]  # type: ignore
+            )
+            if troop_member_list_response.result != 0:
+                return TroopMemberListFail(
+                    uin,
+                    seq,
+                    ret_code,
+                    command_name,
+                    troop_member_list_response.result,
+                    "Troop list returns non-zero result code",
+                )
+            return TroopMemberListSuccess(
+                uin, seq, ret_code, command_name, troop_member_list_response
+            )
+        except Exception as e:
+            return TroopMemberListFail(
+                uin,
+                seq,
+                ret_code,
+                command_name,
+                -1,
+                f"Error when decoding response! {repr(e)}",
+            )
+
+
+@dataclass
+class TroopMemberListSuccess(TroopMemberListEvent):
+    response: TroopMemberListResp
+
+
+@dataclass
+class TroopMemberListFail(TroopMemberListEvent):
     result: int
     message: str

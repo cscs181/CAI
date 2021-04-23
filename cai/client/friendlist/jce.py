@@ -369,3 +369,100 @@ class TroopListRespV2(JceStruct):
     favorite_group: types.LIST[StFavoriteGroup] = JceField([], jce_id=8)
     troop_list_ext: types.LIST[StTroopNum] = JceField([], jce_id=9)
     group_info_ext: types.LIST[types.INT64] = JceField([], jce_id=10)
+
+
+# Troop Member
+class QzoneUserInfo(JceStruct):
+    """Qzone User Info Jce Packet.
+
+    Note:
+        Source: friendlist.QzoneUserInfo
+    """
+
+    star_state: types.INT32 = JceField(0, jce_id=0)
+    extend_info: types.MAP[types.STRING, types.STRING] = JceField({}, jce_id=1)
+
+
+class StTroopMemberInfo(JceStruct):
+    """St Troop(Group) Member Info Jce Packet.
+
+    Note:
+        Source: friendlist.stTroopMemberInfo
+    """
+
+    member_uin: types.INT64 = JceField(jce_id=0)
+    face_id: types.INT16 = JceField(jce_id=1)
+    age: types.INT8 = JceField(jce_id=2)
+    gender: types.INT8 = JceField(jce_id=3)
+    nick: types.STRING = JceField(jce_id=4)
+    status: types.BYTE = JceField(jce_id=5)
+    show_name: types.STRING = JceField("", jce_id=6)
+    name: types.STRING = JceField("", jce_id=8)
+    cgender: types.BYTE = JceField(bytes(1), jce_id=9)
+    phone: types.STRING = JceField("", jce_id=10)
+    email: types.STRING = JceField("", jce_id=11)
+    memo: types.STRING = JceField("", jce_id=12)
+    auto_remark: types.STRING = JceField("", jce_id=13)
+    member_level: types.INT64 = JceField(0, jce_id=14)
+    join_time: types.INT64 = JceField(0, jce_id=15)
+    last_speak_time: types.INT64 = JceField(0, jce_id=16)
+    credit_level: types.INT64 = JceField(0, jce_id=17)
+    flag: types.INT64 = JceField(0, jce_id=18)
+    flag_ext: types.INT64 = JceField(0, jce_id=19)
+    point: types.INT64 = JceField(0, jce_id=20)
+    concerned: types.BOOL = JceField(False, jce_id=21)
+    shielded: types.BOOL = JceField(False, jce_id=22)
+    special_title: types.STRING = JceField("", jce_id=23)
+    special_title_expire_time: types.INT64 = JceField(0, jce_id=24)
+    bytes_job: types.STRING = JceField("", jce_id=25)
+    apollo_flag: types.BYTE = JceField(bytes(1), jce_id=26)
+    apollo_timestamp: types.INT64 = JceField(0, jce_id=27)
+    global_group_level: types.INT64 = JceField(0, jce_id=28)
+    title_id: types.INT64 = JceField(0, jce_id=29)
+    shutup_timestamp: types.INT64 = JceField(0, jce_id=30)
+    global_group_point: types.INT64 = JceField(0, jce_id=31)
+    qzone_user_info: Optional[QzoneUserInfo] = JceField(None, jce_id=32)
+    rich_card_name_version: types.BYTE = JceField(bytes(1), jce_id=33)
+    vip_type: types.INT64 = JceField(0, jce_id=34)
+    vip_level: types.INT64 = JceField(0, jce_id=35)
+    big_club_level: types.INT64 = JceField(0, jce_id=36)
+    big_club_flag: types.INT64 = JceField(0, jce_id=37)
+    nameplate: types.INT64 = JceField(0, jce_id=38)
+    group_honor: types.BYTES = JceField(bytes(), jce_id=39)
+    vec_name: types.BYTES = JceField(bytes(), jce_id=40)
+    rich_flag: types.BYTE = JceField(bytes(1), jce_id=41)
+
+
+class TroopMemberListReq(JceStruct):
+    """Get Troop(Group) Member List Request Jce Packet.
+
+    Note:
+        Source: friendlist.GetTroopMemberListReq
+    """
+
+    uin: types.INT64 = JceField(jce_id=0)
+    group_code: types.INT64 = JceField(jce_id=1)
+    next_uin: types.INT64 = JceField(jce_id=2)
+    group_uin: types.INT64 = JceField(jce_id=3)
+    version: types.INT64 = JceField(jce_id=4)
+    request_type: types.INT64 = JceField(0, jce_id=5)
+    get_list_appoint_time: types.INT64 = JceField(0, jce_id=6)
+    rich_card_name_version: types.BYTE = JceField(bytes(1), jce_id=7)
+
+
+class TroopMemberListResp(JceStruct):
+    """Get Troop(Group) Member List Response Jce Packet.
+
+    Note:
+        Source: friendlist.GetTroopMemberListResp
+    """
+
+    uin: types.INT64 = JceField(jce_id=0)
+    group_code: types.INT64 = JceField(jce_id=1)
+    group_uin: types.INT64 = JceField(jce_id=2)
+    troop_member: types.LIST[StTroopMemberInfo] = JceField(jce_id=3)
+    next_uin: types.INT64 = JceField(jce_id=4)
+    result: types.INT32 = JceField(jce_id=5)
+    error_code: types.INT16 = JceField(0, jce_id=6)
+    office_mode: types.INT64 = JceField(0, jce_id=7)
+    next_get_time: types.INT64 = JceField(0, jce_id=8)

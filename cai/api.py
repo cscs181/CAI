@@ -10,7 +10,7 @@ This module wraps the client methods to provide easier control (high-level api).
 """
 
 import asyncio
-from typing import List, Dict, Optional, Callable, Awaitable
+from typing import List, Dict, Union, Optional, Callable, Awaitable
 
 from cai.log import logger
 from cai.exceptions import LoginException, ClientNotAvailable
@@ -22,6 +22,7 @@ from cai.client import (
     Friend,
     FriendGroup,
     Group,
+    GroupMember,
     OnlineStatus,
     RegPushReason,
 )
@@ -260,6 +261,33 @@ async def set_status(
     )
 
 
+async def get_friend(
+    friend_uin: int, cache: bool = True, uin: Optional[int] = None
+) -> Friend:
+    """Get account friend.
+
+    This function wraps the :meth:`~cai.client.client.Client.get_friend`
+    method of the client.
+
+    Args:
+        friend_uin (int): Friend account uin.
+        cache (bool, optional):  Use cached friend list. Defaults to True.
+        uin (Optional[int], optional): Account of the client want to use.
+            Defaults to None.
+
+    Returns:
+        Friend: Friend object.
+
+    Raises:
+        RuntimeError: Error response type got. This should not happen.
+        ApiResponseError: Get friend list failed.
+        FriendListException: Get friend list returned non-zero ret code.
+        FriendNotExist: Friend not found in friend list.
+    """
+    client = get_client(uin)
+    return await client.get_friend(friend_uin, cache)
+
+
 async def get_friend_list(
     cache: bool = True, uin: Optional[int] = None
 ) -> List[Friend]:
@@ -270,7 +298,7 @@ async def get_friend_list(
 
     Args:
         cache (bool, optional):  Use cached friend list. Defaults to True.
-        uin (Optional[int], optional): Account of the client want to change.
+        uin (Optional[int], optional): Account of the client want to use.
             Defaults to None.
 
     Returns:
@@ -285,6 +313,33 @@ async def get_friend_list(
     return await client.get_friend_list(cache)
 
 
+async def get_friend_group(
+    group_id: int, cache: bool = True, uin: Optional[int] = None
+) -> FriendGroup:
+    """Get Friend Group.
+
+    This function wraps the :meth:`~cai.client.client.Client.get_friend_group`
+    method of the client.
+
+    Args:
+        group_id (int): Friend group id.
+        cache (bool, optional):  Use cached friend group list. Defaults to True.
+        uin (Optional[int], optional): Account of the client want to use.
+            Defaults to None.
+
+    Returns:
+        FriendGroup: Friend group object.
+
+    Raises:
+        RuntimeError: Error response type got. This should not happen.
+        ApiResponseError: Get friend list failed.
+        FriendListException: Get friend list returned non-zero ret code.
+        FriendGroupNotExist: Friend group not found in friend group list.
+    """
+    client = get_client(uin)
+    return await client.get_friend_group(group_id, cache)
+
+
 async def get_friend_group_list(
     cache: bool = True, uin: Optional[int] = None
 ) -> List[FriendGroup]:
@@ -295,11 +350,11 @@ async def get_friend_group_list(
 
     Args:
         cache (bool, optional):  Use cached friend group list. Defaults to True.
-        uin (Optional[int], optional): Account of the client want to change.
+        uin (Optional[int], optional): Account of the client want to use.
             Defaults to None.
 
     Returns:
-        List of :obj:`~cai.client.models.FriendGroup`
+        List[FriendGroup]: Friend group list.
 
     Raises:
         RuntimeError: Error response type got. This should not happen.
@@ -308,6 +363,33 @@ async def get_friend_group_list(
     """
     client = get_client(uin)
     return await client.get_friend_group_list(cache)
+
+
+async def get_group(
+    group_id: int, cache: bool = True, uin: Optional[int] = None
+) -> Group:
+    """Get Group.
+
+    This function wraps the :meth:`~cai.client.client.Client.get_group`
+    method of the client.
+
+    Args:
+        group_id (int): Group id.
+        cache (bool, optional):  Use cached friend group list. Defaults to True.
+        uin (Optional[int], optional): Account of the client want to use.
+            Defaults to None.
+
+    Returns:
+        Group: Group object.
+
+    Raises:
+        RuntimeError: Error response type got. This should not happen.
+        ApiResponseError: Get friend list failed.
+        FriendListException: Get friend list returned non-zero ret code.
+        GroupNotExist: Group not found in friend group list.
+    """
+    client = get_client(uin)
+    return await client.get_group(group_id, cache)
 
 
 async def get_group_list(
@@ -319,12 +401,12 @@ async def get_group_list(
     method of the client.
 
     Args:
-        cache (bool, optional):  Use cached group list. Defaults to True.
-        uin (Optional[int], optional): Account of the client want to change.
+        cache (bool, optional): Use cached group list. Defaults to True.
+        uin (Optional[int], optional): Account of the client want to use.
             Defaults to None.
 
     Returns:
-        List of :obj:`~cai.client.models.Group`
+        List[Group]: Group list.
 
     Raises:
         RuntimeError: Error response type got. This should not happen.
@@ -333,6 +415,32 @@ async def get_group_list(
     """
     client = get_client(uin)
     return await client.get_group_list(cache)
+
+
+async def get_group_member_list(
+    group: Union[int, Group], cache: bool = True, uin: Optional[int] = None
+) -> List[GroupMember]:
+    """Get account group member list.
+
+    This function wraps the :meth:`~cai.client.client.Client.get_group_member_list`
+    method of the client.
+
+    Args:
+        group (Union[int, Group]): Group id or group object want to get members.
+        cache (bool, optional): Use cached group list. Defaults to True.
+        uin (Optional[int], optional): Account of the client want to use.
+            Defaults to None.
+
+    Returns:
+        List[GroupMember]: Group member list.
+
+    Raises:
+        RuntimeError: Error response type got. This should not happen.
+        ApiResponseError: Get group list failed.
+        GroupMemberListException: Get group member list returned non-zero ret code.
+    """
+    client = get_client(uin)
+    return await client.get_group_member_list(group, cache)
 
 
 def register_packet_handler(
@@ -366,5 +474,13 @@ __all__ = [
     "submit_slider_ticket",
     "request_sms",
     "submit_sms",
+    "set_status",
+    "get_friend",
+    "get_friend_list",
+    "get_friend_group",
+    "get_friend_group_list",
+    "get_group",
+    "get_group_list",
+    "get_group_member_list",
     "register_packet_handler",
 ]

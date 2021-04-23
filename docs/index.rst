@@ -3,17 +3,16 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-*******************************
 Welcome to cai's documentation!
-*******************************
+===============================
 
 Examples
-=============
+--------
 
 :doc:`Example Code </examples/index>`
 
 Api Reference
-=============
+-------------
 
 :doc:`Api Reference </py-modindex>`
 

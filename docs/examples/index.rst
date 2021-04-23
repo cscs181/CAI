@@ -1,10 +1,9 @@
-********
 Examples
-********
+========
 
 
 Login
-=====
+-----
 
 .. literalinclude:: ../../examples/login.py
     :language: python
@@ -12,7 +11,7 @@ Login
 
 
 Friend and Group
-================
+----------------
 
 .. literalinclude:: ../../examples/friend_group.py
     :language: python

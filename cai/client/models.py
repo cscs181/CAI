@@ -92,7 +92,7 @@ class Friend(JsonableDataclass):
     sex: int
     battery_status: int
 
-    _client: "Client" = field(repr=False)
+    _client: "Client" = field(repr=False, compare=False)
 
     def __eq__(self, o: object) -> bool:
         if isinstance(o, Friend):
@@ -120,7 +120,16 @@ class FriendGroup(JsonableDataclass):
     friend_count: int
     online_friend_count: int
 
-    _client: "Client" = field(repr=False)
+    _client: "Client" = field(repr=False, compare=False)
+
+    def __eq__(self, o: object) -> bool:
+        if isinstance(o, FriendGroup):
+            return (
+                o.group_id == self.group_id
+                and o.group_name == self.group_name
+                and o._client.uin == self._client.uin
+            )
+        return super().__eq__(o)
 
 
 @dataclass
@@ -148,9 +157,9 @@ class Group(JsonableDataclass):
     cmd_uin_join_time: int
     max_group_member_num: int
 
-    _client: "Client" = field(repr=False)
+    _client: "Client" = field(repr=False, compare=False)
     _cached_member_list: List["GroupMember"] = field(
-        default_factory=list, repr=False
+        default_factory=list, repr=False, compare=False
     )
 
     def __eq__(self, o: object) -> bool:
@@ -237,8 +246,13 @@ class GroupMember(JsonableDataclass):
     special_title_expire_time: int
     shutup_timestamp: int
 
-    _client: "Client" = field(repr=False)
+    _client: "Client" = field(repr=False, compare=False)
     _group: Group = field(repr=False)
+
+    def __eq__(self, o: object) -> bool:
+        if isinstance(o, GroupMember):
+            return o.member_uin == self.member_uin and o._group == self._group
+        return super().__eq__(o)
 
     @property
     def uin(self) -> int:
@@ -252,3 +266,7 @@ class GroupMember(JsonableDataclass):
             return GroupMemberRole("admin")
         else:
             return GroupMemberRole("member")
+
+    @property
+    def group(self) -> Group:
+        return self._group

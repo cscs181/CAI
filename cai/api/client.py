@@ -91,9 +91,8 @@ async def set_status(
         RegisterException: Register Failed.
     """
     client = get_client(uin)
-    await client.register(
+    await client.set_status(
         status,
-        RegPushReason.SetOnlineStatus,
         battery_status,
         is_power_connected,
     )

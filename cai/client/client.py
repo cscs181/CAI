@@ -820,6 +820,8 @@ class Client:
             raise RegisterException(
                 response.uin, response.ret_code, response.message or ""
             )
+        elif isinstance(response, RegisterSuccess):
+            return response
 
         raise ApiResponseError(
             response.uin, response.seq, response.ret_code, response.command_name

@@ -10,6 +10,14 @@ Login
     :linenos:
 
 
+Set Client Status
+-----------------
+
+.. literalinclude:: ../../examples/set_status.py
+    :language: python
+    :linenos:
+
+
 Friend and Group
 ----------------
 

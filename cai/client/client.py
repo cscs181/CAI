@@ -35,6 +35,7 @@ from .wtlogin import (
 )
 from .status_service import (
     encode_register,
+    encode_set_status,
     handle_register_response,
     OnlineStatus,
     RegPushReason,
@@ -95,6 +96,7 @@ HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "wtlogin.login": handle_oicq_response,
     "wtlogin.exchange_emp": handle_oicq_response,
     "StatSvc.register": handle_register_response,
+    "StatSvc.SetStatusFromClient": handle_register_response,
     "ConfigPushSvc.PushReq": handle_config_push_request,
     "Heartbeat.Alive": handle_heartbeat,
     "friendlist.GetFriendListReq": handle_friend_list,
@@ -720,8 +722,6 @@ class Client:
         self,
         status: OnlineStatus = OnlineStatus.Online,
         register_reason: RegPushReason = RegPushReason.AppRegister,
-        battery_status: Optional[int] = None,
-        is_power_connected: bool = False,
     ) -> RegisterSuccess:
         """Register app client and get login status.
 
@@ -732,8 +732,6 @@ class Client:
                 :attr:`~cai.client.status_service.OnlineStatus.Online`.
             register_reason (RegPushReason, optional): Register reason. Defaults to
                 :attr:`~cai.client.status_service.RegPushReason.AppRegister`.
-            battery_status (Optional[int], optional): Battery capacity. Defaults to ``None``.
-            is_power_connected (bool, optional): Is power connected to phone. Defaults to ``False``.
 
         Returns:
             RegisterSuccess: Register success response.
@@ -751,11 +749,8 @@ class Client:
             self._siginfo.tgt,
             self._siginfo.d2,
             self._siginfo.d2key,
-            7 if status == OnlineStatus.Online else 0,
             status,
             register_reason,
-            battery_status,
-            is_power_connected,
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
 
@@ -768,6 +763,64 @@ class Client:
             )
         elif isinstance(response, RegisterSuccess):
             asyncio.create_task(self.heartbeat())
+            return response
+
+        raise ApiResponseError(
+            response.uin, response.seq, response.ret_code, response.command_name
+        )
+
+    async def set_status(
+        self,
+        status: Union[int, OnlineStatus],
+        battery_status: Optional[int] = None,
+        is_power_connected: bool = False,
+    ) -> RegisterSuccess:
+        """Register app client and get login status.
+
+        This should be called after :meth:`.Client.login` successed.
+
+        Args:
+            status (OnlineStatus, optional): Client status. Defaults to
+                :attr:`~cai.client.status_service.OnlineStatus.Online`.
+            register_reason (RegPushReason, optional): Register reason. Defaults to
+                :attr:`~cai.client.status_service.RegPushReason.AppRegister`.
+            battery_status (Optional[int], optional): Battery capacity.
+                Only works when status is :obj:`.OnlineStatus.Battery`. Defaults to None.
+            is_power_connected (bool, optional): Is power connected to phone.
+                Only works when status is :obj:`.OnlineStatus.Battery`. Defaults to False.
+
+        Returns:
+            RegisterSuccess: Register success response.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Register failed.
+        """
+        seq = self.next_seq()
+        packet = encode_set_status(
+            seq,
+            self._session_id,
+            self._ksid,
+            self.uin,
+            self._siginfo.tgt,
+            self._siginfo.d2,
+            self._siginfo.d2key,
+            status,
+            battery_status,
+            is_power_connected,
+        )
+        response = await self.send_and_wait(
+            seq, "StatSvc.SetStatusFromClient", packet
+        )
+
+        if not isinstance(response, SvcRegisterResponse):
+            raise RuntimeError("Invalid set status response type!")
+
+        if isinstance(response, RegisterFail):
+            raise RegisterException(
+                response.uin, response.ret_code, response.message or ""
+            )
+        elif isinstance(response, RegisterSuccess):
             return response
 
         raise ApiResponseError(

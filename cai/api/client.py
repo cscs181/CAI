@@ -8,13 +8,12 @@
 """
 
 import asyncio
-from typing import Optional
+from typing import Union, Optional
 
 from . import _clients
 from cai.client import (
     Client,
     OnlineStatus,
-    RegPushReason,
 )
 from cai.exceptions import ClientNotAvailable
 
@@ -65,7 +64,7 @@ async def close_all() -> None:
 
 
 async def set_status(
-    status: OnlineStatus,
+    status: Union[int, OnlineStatus],
     battery_status: Optional[int] = None,
     is_power_connected: bool = False,
     uin: Optional[int] = None,
@@ -91,9 +90,8 @@ async def set_status(
         RegisterException: Register Failed.
     """
     client = get_client(uin)
-    await client.register(
+    await client.set_status(
         status,
-        RegPushReason.SetOnlineStatus,
         battery_status,
         is_power_connected,
     )

@@ -13,17 +13,16 @@ from types import TracebackType
 from typing import Any, Type, Union, Optional
 
 from cai.utils.binary import Packet
-from cai.utils.coroutine import _ContextManager
+from cai.utils.coroutine import ContextManager
 
 
 class Connection:
-
     def __init__(
         self,
         host: str,
         port: int,
         ssl: bool = False,
-        timeout: Optional[float] = None
+        timeout: Optional[float] = None,
     ) -> None:
         self._host = host
         self._port = port
@@ -54,8 +53,10 @@ class Connection:
         return self
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException], traceback: Optional[TracebackType]
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
     ) -> None:
         await self.close()
         return
@@ -64,7 +65,7 @@ class Connection:
         try:
             self._reader, self._writer = await asyncio.wait_for(
                 asyncio.open_connection(self._host, self._port, ssl=self._ssl),
-                self.timeout
+                self.timeout,
             )
         except Exception as e:
             if self._writer:
@@ -116,22 +117,23 @@ class Connection:
             ) from e
         return data
 
-    def write_bytes(self, data: Union[bytes, Packet]):
-        return self._writer.write(data)  # type: ignore
+    def write(self, data: Union[bytes, Packet]):
+        self._writer.write(data)  # type: ignore
 
     def write_eof(self):
         if self._writer.can_write_eof():
             self._writer.write_eof()
 
+    async def awrite(self, data: Union[bytes, Packet]):
+        self._writer.write(data)  # type: ignore
+        await self._writer.drain()
+
 
 def connect(
-    host: str,
-    port: int,
-    ssl: bool = False,
-    timeout: Optional[float] = None
-) -> _ContextManager[Any, Any, Connection]:
+    host: str, port: int, ssl: bool = False, timeout: Optional[float] = None
+) -> ContextManager[Any, Any, Connection]:
     coro = _connect(host, port, ssl=ssl, timeout=timeout)
-    return _ContextManager(coro)
+    return ContextManager(coro)
 
 
 async def _connect(*args, **kwargs):

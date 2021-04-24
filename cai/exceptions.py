@@ -94,7 +94,9 @@ class LoginCaptchaNeeded(LoginException):
         self.captcha_sign = captcha_sign
 
     def __repr__(self) -> str:
-        return f"LoginCaptchaException(uin={self.uin}, captcha_image=<raw_bytes>)"
+        return (
+            f"LoginCaptchaException(uin={self.uin}, captcha_image=<raw_bytes>)"
+        )
 
 
 class LoginAccountFrozen(LoginException):
@@ -111,8 +113,11 @@ class LoginDeviceLocked(LoginException):
     """Device lock checking is needed"""
 
     def __init__(
-        self, uin: int, sms_phone: Optional[str], verify_url: Optional[str],
-        message: Optional[str]
+        self,
+        uin: int,
+        sms_phone: Optional[str],
+        verify_url: Optional[str],
+        message: Optional[str],
     ):
         self.uin = uin
         self.sms_phone = sms_phone
@@ -136,8 +141,9 @@ class LoginSMSRequestError(LoginException):
         return f"LoginSMSRequestError(uin={self.uin})"
 
 
+# register
 class RegisterException(ApiException):
-    """Base Exception for Register"""
+    """Exception for Register"""
 
     def __init__(self, uin: int, status: int, message: str = ""):
         self.uin = uin
@@ -146,3 +152,80 @@ class RegisterException(ApiException):
 
     def __repr__(self) -> str:
         return f"RegisterException(uin={self.uin}, status={self.status}, message={self.message})"
+
+
+# friendlist
+class BaseFriendListException(ApiException):
+    """Base Exception for Friend List"""
+
+
+class FriendListException(BaseFriendListException):
+    """Exception for Friend List"""
+
+    def __init__(self, uin: int, status: int, message: str = ""):
+        self.uin = uin
+        self.status = status
+        self.message = message
+
+    def __repr__(self) -> str:
+        return f"FriendListException(uin={self.uin}, status={self.status}, message={self.message})"
+
+
+class FriendNotExist(ApiException):
+    """Exception for Friend Not Exist"""
+
+    def __init__(self, uin: int, friend_uin: int):
+        self.uin = uin
+        self.friend_uin = friend_uin
+
+    def __repr__(self) -> str:
+        return f"FriendNotExist(uin={self.uin}, friend_uin={self.friend_uin})"
+
+
+class FriendGroupNotExist(ApiException):
+    """Exception for Friend Group Not Exist"""
+
+    def __init__(self, uin: int, group_id: int):
+        self.uin = uin
+        self.group_id = group_id
+
+    def __repr__(self) -> str:
+        return f"FriendGroupNotExist(uin={self.uin}, group_id={self.group_id})"
+
+
+class GroupListException(BaseFriendListException):
+    """Exception for Group List"""
+
+    def __init__(self, uin: int, status: int, message: str = ""):
+        self.uin = uin
+        self.status = status
+        self.message = message
+
+    def __repr__(self) -> str:
+        return f"GroupListException(uin={self.uin}, status={self.status}, message={self.message})"
+
+
+class GroupNotExist(ApiException):
+    """Exception for Group Not Exist"""
+
+    def __init__(self, uin: int, group_uin: int):
+        self.uin = uin
+        self.group_uin = group_uin
+
+    def __repr__(self) -> str:
+        return f"GroupNotExist(uin={self.uin}, group_uin={self.group_uin})"
+
+
+class GroupMemberListException(BaseFriendListException):
+    """Exception for Group Member List"""
+
+    def __init__(self, uin: int, status: int, message: str = ""):
+        self.uin = uin
+        self.status = status
+        self.message = message
+
+    def __repr__(self) -> str:
+        return (
+            f"GroupMemberListException(uin={self.uin}, "
+            f"status={self.status}, message={self.message})"
+        )

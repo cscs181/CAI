@@ -8,7 +8,6 @@ This module is used to build and handle OICQ packets.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import time
 import struct
 from dataclasses import dataclass
 from typing import Any, Dict, Union, Optional
@@ -27,8 +26,11 @@ class OICQRequest(Packet):
 
     @classmethod
     def build_encoded(
-        cls, uin: int, command_id: int, encoded: Union[bytes, Packet],
-        encoder_id: int
+        cls,
+        uin: int,
+        command_id: int,
+        encoded: Union[bytes, Packet],
+        encoder_id: int,
     ) -> "OICQRequest":
         return cls().write(
             struct.pack(
@@ -44,16 +46,15 @@ class OICQRequest(Packet):
                 0,  # oicq.wlogin_sdk.request.oicq_request.m
                 2,
                 0,
-                0
+                0,
             ),
             encoded,
-            bytes([3])
+            bytes([3]),
         )
 
 
 @dataclass
 class OICQResponse(Event):
-
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
@@ -85,12 +86,11 @@ class OICQResponse(Event):
 
         data_ = Packet(data)
 
-        offset = 0
-        sub_command = data_.read_uint16(offset)
-        offset += 2
-        status = data_.read_uint8(offset)
-        offset += 1 + 2
-        _tlv_map = TlvDecoder.decode(data_, offset)
+        sub_command, status, _tlv_bytes = (
+            data_.start().uint16().uint8().offset(2).remain().execute()
+        )
+
+        _tlv_map = TlvDecoder.decode(_tlv_bytes)
 
         if status == 0:
             return LoginSuccess(
@@ -131,8 +131,14 @@ class UnknownLoginStatus(OICQResponse):
     t402: Optional[bytes]
 
     def __init__(
-        self, uin: int, seq: int, ret_code: int, command_name: str,
-        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+        self,
+        uin: int,
+        seq: int,
+        ret_code: int,
+        command_name: str,
+        sub_command: int,
+        status: int,
+        _tlv_map: Dict[int, Any],
     ):
         super().__init__(uin, seq, ret_code, command_name)
         self.sub_command = sub_command
@@ -175,8 +181,14 @@ class LoginSuccess(UnknownLoginStatus):
     t530: Optional[bytes]
 
     def __init__(
-        self, uin: int, seq: int, ret_code: int, command_name: str,
-        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+        self,
+        uin: int,
+        seq: int,
+        ret_code: int,
+        command_name: str,
+        sub_command: int,
+        status: int,
+        _tlv_map: Dict[int, Any],
     ):
         super().__init__(
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map
@@ -190,19 +202,19 @@ class LoginSuccess(UnknownLoginStatus):
         self.ip_address = t119.get(0x130, {}).get("ip_address")
         self.t528 = t119.get(0x528)
         self.t530 = t119.get(0x530)
-        self.tgt_key = t119[0x10d]
-        self.user_st_key = t119[0x10e]
-        self.tgt = t119[0x10a]
+        self.tgt_key = t119[0x10D]
+        self.user_st_key = t119[0x10E]
+        self.tgt = t119[0x10A]
         self.user_st = t119[0x114]
-        self.nick = t119.get(0x11a, {}).get("nick")
-        self.age = t119.get(0x11a, {}).get("age")
-        self.gender = t119.get(0x11a, {}).get("gender")
+        self.nick = t119.get(0x11A, {}).get("nick")
+        self.age = t119.get(0x11A, {}).get("age")
+        self.gender = t119.get(0x11A, {}).get("gender")
         self.user_st_web_sig = t119[0x103]
         self.ksid = t119.get(0x108)
         self.s_key = t119[0x120]
         self.pwd_flag = t119.get(0x186, {}).get("pwd_flag")
         self.encrypted_a1 = t119[0x106]
-        self.no_pic_sig = t119[0x16a]
+        self.no_pic_sig = t119[0x16A]
 
         self.d2 = t119[0x143]
         self.d2key = t119[0x305]
@@ -217,12 +229,18 @@ class LoginSuccess(UnknownLoginStatus):
 class NeedCaptcha(UnknownLoginStatus):
     t104: bytes
     verify_url: str
-    captcha_image: bytes
     captcha_sign: bytes
+    captcha_image: bytes
 
     def __init__(
-        self, uin: int, seq: int, ret_code: int, command_name: str,
-        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+        self,
+        uin: int,
+        seq: int,
+        ret_code: int,
+        command_name: str,
+        sub_command: int,
+        status: int,
+        _tlv_map: Dict[int, Any],
     ):
         super().__init__(
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map
@@ -233,17 +251,24 @@ class NeedCaptcha(UnknownLoginStatus):
         self.verify_url = _tlv_map.get(0x192, b"").decode()
         if 0x165 in _tlv_map:
             data = Packet(_tlv_map[0x165])
-            sign_length = data.read_uint16()
-            self.captcha_sign = data.read_bytes(sign_length, 4)
-            self.captcha_image = data[4 + sign_length:]
+            sign, image = (
+                data.start().bytes_with_length(2, 4).remain().execute()
+            )
+            self.captcha_sign = sign[2:]
+            self.captcha_image = bytes(image)
 
 
 @dataclass
 class AccountFrozen(UnknownLoginStatus):
-
     def __init__(
-        self, uin: int, seq: int, ret_code: int, command_name: str,
-        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+        self,
+        uin: int,
+        seq: int,
+        ret_code: int,
+        command_name: str,
+        sub_command: int,
+        status: int,
+        _tlv_map: Dict[int, Any],
     ):
         super().__init__(
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map
@@ -260,29 +285,40 @@ class DeviceLocked(UnknownLoginStatus):
     t174: Optional[bytes]
 
     def __init__(
-        self, uin: int, seq: int, ret_code: int, command_name: str,
-        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+        self,
+        uin: int,
+        seq: int,
+        ret_code: int,
+        command_name: str,
+        sub_command: int,
+        status: int,
+        _tlv_map: Dict[int, Any],
     ):
         super().__init__(
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map
         )
         self.sms_phone = None
         self.verify_url = _tlv_map.get(0x204, b"").decode() or None
-        self.message = _tlv_map.get(0x17e, b"").decode() or None
+        self.message = _tlv_map.get(0x17E, b"").decode() or None
         self.rand_seed = _tlv_map.get(0x403)
         self.t104 = _tlv_map.get(0x104)
         self.t174 = _tlv_map.get(0x174)
         if self.t174:
             t178 = Packet(_tlv_map[0x178])
-            self.sms_phone = t178.read_bytes(t178.read_int32(), 4).decode()
+            self.sms_phone = t178.start().string(4).execute()[0]
 
 
 @dataclass
 class TooManySMSRequest(UnknownLoginStatus):
-
     def __init__(
-        self, uin: int, seq: int, ret_code: int, command_name: str,
-        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+        self,
+        uin: int,
+        seq: int,
+        ret_code: int,
+        command_name: str,
+        sub_command: int,
+        status: int,
+        _tlv_map: Dict[int, Any],
     ):
         super().__init__(
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map
@@ -295,8 +331,14 @@ class DeviceLockLogin(UnknownLoginStatus):
     t104: Optional[bytes]
 
     def __init__(
-        self, uin: int, seq: int, ret_code: int, command_name: str,
-        sub_command: int, status: int, _tlv_map: Dict[int, Any]
+        self,
+        uin: int,
+        seq: int,
+        ret_code: int,
+        command_name: str,
+        sub_command: int,
+        status: int,
+        _tlv_map: Dict[int, Any],
     ):
         super().__init__(
             uin, seq, ret_code, command_name, sub_command, status, _tlv_map

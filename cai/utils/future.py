@@ -6,7 +6,6 @@ VT = TypeVar("VT")
 
 
 class FutureStore(Generic[KT, VT]):
-
     def __init__(self):
         # Generic Future is supported since py3.9
         self._futures: Dict[KT, "asyncio.Future[VT]"] = {}
@@ -59,9 +58,11 @@ class FutureStore(Generic[KT, VT]):
         return self._futures[seq].exception()
 
     async def fetch(self, seq: KT, timeout: Optional[float] = None) -> VT:
-        future = self.store_seq(
-            seq
-        ) if seq not in self._futures else self._futures[seq]
+        future = (
+            self.store_seq(seq)
+            if seq not in self._futures
+            else self._futures[seq]
+        )
         try:
             return await asyncio.wait_for(future, timeout)
         finally:

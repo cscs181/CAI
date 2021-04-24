@@ -1,4 +1,5 @@
 syntax = "proto2";
+package wtlogin;
 
 // oicq/wlogin_sdk/pb/device_report.java
 message DeviceReport {
@@ -11,4 +12,15 @@ message DeviceReport {
   optional string android_id = 7;
   optional string base_band = 8;
   optional string inner_version = 9;
+}
+
+// oicq/wlogin_sdk/pb/sec_trans.java
+message SecTransInfo {
+  optional string phone_brand = 1;
+  optional string model_type = 2;
+  optional string wifi_mac = 3;
+  optional string bssid = 4;
+  optional string os_language = 5;
+  optional uint32 qq_language = 6;
+  optional string gps_location = 7;
 }

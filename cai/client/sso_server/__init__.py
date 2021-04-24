@@ -60,8 +60,22 @@ async def get_sso_list() -> SsoServerResponse:
     protocol = get_protocol()
     key = bytes(
         [
-            0xF0, 0x44, 0x1F, 0x5F, 0xF4, 0x2D, 0xA5, 0x8F, 0xDC, 0xF7, 0x94,
-            0x9A, 0xBA, 0x62, 0xD4, 0x11
+            0xF0,
+            0x44,
+            0x1F,
+            0x5F,
+            0xF4,
+            0x2D,
+            0xA5,
+            0x8F,
+            0xDC,
+            0xF7,
+            0x94,
+            0x9A,
+            0xBA,
+            0x62,
+            0xD4,
+            0x11,
         ]
     )
     payload = SsoServerRequest.to_bytes(
@@ -72,7 +86,7 @@ async def get_sso_list() -> SsoServerResponse:
         func_name="HttpServerListReq",
         data=types.MAP(
             {types.STRING("HttpServerListReq"): types.BYTES(payload)}
-        )
+        ),
     ).encode(with_length=True)
     buffer: bytes = qqtea_encrypt(req_packet, key)
     async with connect("configsvr.msf.3g.qq.com", 443, ssl=True) as conn:
@@ -87,7 +101,7 @@ async def get_sso_list() -> SsoServerResponse:
             b"Content-Length: " + str(len(buffer)).encode() + b"\r\n"
             b"\r\n" + buffer
         )
-        conn.write_bytes(query)
+        conn.write(query)
         conn.write_eof()
         resp_bytes = await conn.read_all()
         response = http.client.HTTPResponse(
@@ -102,14 +116,13 @@ async def get_sso_list() -> SsoServerResponse:
     data: bytes = qqtea_decrypt(response.read(), key)
     resp_packet = RequestPacketVersion3.decode(data)
     server_info = SsoServerResponse.decode(
-        resp_packet.data["HttpServerListRes"][1:-1]
+        resp_packet.data["HttpServerListRes"][1:-1]  # type: ignore
     )
     return server_info
 
 
 async def quality_test(
-    servers: Iterable[SsoServer],
-    threshold: float = 500.
+    servers: Iterable[SsoServer], threshold: float = 500.0
 ) -> List[Tuple[SsoServer, float]]:
     """Test given servers' quality by tcp latency.
 
@@ -123,8 +136,9 @@ async def quality_test(
     """
     servers_ = list(servers)
     tasks = [tcp_latency_test(server.host, server.port) for server in servers_]
-    result: List[Union[float, Exception]
-                ] = await asyncio.gather(*tasks, return_exceptions=True)
+    result: List[Union[float, Exception]] = await asyncio.gather(
+        *tasks, return_exceptions=True
+    )
     success_servers = [
         (server, latency)
         for server, latency in zip(servers_, result)
@@ -136,7 +150,7 @@ async def quality_test(
 async def get_sso_server(
     cache: bool = True,
     cache_server_list: bool = True,
-    exclude: Optional[Container[str]] = None
+    exclude: Optional[Container[str]] = None,
 ) -> SsoServer:
     """Get the best sso server
 

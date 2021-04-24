@@ -48,10 +48,27 @@ class DeviceInfo(JsonableDataclass):
     #     "fingerprint", "wifi_bssid"
     # )
     __json_fields__ = (
-        "product", "device", "board", "brand", "model", "bootloader", "boot_id",
-        "proc_version", "baseband", "vendor_name", "vendor_os_name",
-        "mac_address", "ip_address", "wifi_ssid", "imei", "android_id",
-        "version", "sim", "os_type", "apn", "_imsi_md5"
+        "product",
+        "device",
+        "board",
+        "brand",
+        "model",
+        "bootloader",
+        "boot_id",
+        "proc_version",
+        "baseband",
+        "vendor_name",
+        "vendor_os_name",
+        "mac_address",
+        "ip_address",
+        "wifi_ssid",
+        "imei",
+        "android_id",
+        "version",
+        "sim",
+        "os_type",
+        "apn",
+        "_imsi_md5",
     )
 
     product: str
@@ -109,8 +126,9 @@ class DeviceInfo(JsonableDataclass):
     @property
     def guid(self) -> bytes:
         if not self._guid_md5:
-            self._guid_md5 = md5((self.android_id + self.mac_address).encode()
-                                ).digest()
+            self._guid_md5 = md5(
+                (self.android_id + self.mac_address).encode()
+            ).digest()
         return self._guid_md5
 
 
@@ -120,7 +138,7 @@ def _get_local_mac_address() -> int:
 
 def new_mac_address() -> str:
     addr = hex(_get_local_mac_address()).upper()
-    return ":".join(addr[x:x + 2] for x in range(2, 14, 2))
+    return ":".join(addr[x : x + 2] for x in range(2, 14, 2))
 
 
 def _get_imei_sign(imei: str) -> str:
@@ -135,7 +153,10 @@ def _get_imei_sign(imei: str) -> str:
 
 
 def new_imei() -> str:
-    imei = f"86{random.randint(100, 9999):04d}0{random.randint(1000000, 9999999):07d}"
+    imei = (
+        f"86{random.randint(100, 9999):04d}0"
+        f"{random.randint(1_00_00_00, 9_99_99_99):07d}"
+    )
     return imei + _get_imei_sign(imei)
 
 
@@ -148,24 +169,28 @@ def new_boot_id() -> str:
 
 
 def new_proc_version() -> str:
-    return f"Linux version 4.19.71-{random.randint(0x10000000, 0xffffffff):x} (android-build@github.com)"
+    return (
+        "Linux version 4.19.71-"
+        f"{random.randint(0x10_00_00_00, 0xff_ff_ff_ff):x}"
+        " (android-build@github.com)"
+    )
 
 
 def new_ip_address() -> str:
-    return f"10.0.{random.randint(0,99)}.{random.randint(0,99)}"
+    return f"10.0.{random.randint(0, 99)}.{random.randint(0, 99)}"
 
 
 def new_version(
     incremental: Optional[str] = None,
     release: Optional[str] = None,
     codename: Optional[str] = None,
-    sdk: Optional[int] = None
+    sdk: Optional[int] = None,
 ) -> Version:
     return Version(
         incremental=incremental or "V12.0.19.0.RKBCNXM",
         release=release or "11",
         codename=codename or "REL",
-        sdk=sdk or 30
+        sdk=sdk or 30,
     )
 
 
@@ -184,7 +209,7 @@ def new_device(
     wifi_ssid: Optional[str] = None,
     imei: Optional[str] = None,
     android_id: Optional[str] = None,
-    version: Optional[Version] = None
+    version: Optional[Version] = None,
 ) -> DeviceInfo:
     return DeviceInfo(
         product=product or "missi",
@@ -203,7 +228,7 @@ def new_device(
         wifi_ssid=wifi_ssid or "<unknown ssid>",
         imei=imei or new_imei(),
         android_id=android_id or new_android_id(),
-        version=version or new_version()
+        version=version or new_version(),
     )
 
 
@@ -224,11 +249,10 @@ def get_device(cache: bool = True) -> DeviceInfo:
             except Exception as e:
                 backup_file = f"{Storage.device_file}.{int(time.time())}.bak"
                 logger.error(
-                    "Error when loading device info from config file:\n\n" +
-                    repr(e) +
-                    f"\n\nRegenerating device info in `{Storage.device_file}`! "
-                    +
-                    f"The original device info has been backed up in `{backup_file}`."
+                    "Error when loading device info from config file:\n\n"
+                    + repr(e)
+                    + f"\n\nRegenerating device info in `{Storage.device_file}`! "
+                    + f"The original device info has been backed up in `{backup_file}`."
                 )
                 f.seek(0)
                 with open(backup_file, "w") as fb:

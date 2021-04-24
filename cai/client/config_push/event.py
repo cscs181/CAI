@@ -19,7 +19,6 @@ from .jce import PushReq, SsoServerPushList, FileServerPushList
 
 @dataclass
 class ConfigPushEvent(Event):
-
     @classmethod
     def decode_push_req(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
@@ -46,25 +45,42 @@ class ConfigPushEvent(Event):
 
         packet = RequestPacketVersion2.decode(data)
         push = PushReq.decode(
-            packet.data["PushReq"]["ConfigPush.PushReq"][1:-1]
+            packet.data["PushReq"]["ConfigPush.PushReq"][1:-1]  # type: ignore
         )
         if push.type == 1:
             list = SsoServerPushList.decode(push.jcebuf)
             return SsoServerPushEvent(
-                uin, seq, ret_code, command_name, push.type, push.jcebuf,
-                push.large_seq, list
+                uin,
+                seq,
+                ret_code,
+                command_name,
+                push.type,
+                push.jcebuf,
+                push.large_seq,
+                list,
             )
         elif push.type == 2:
             list = FileServerPushList.decode(push.jcebuf)
             return FileServerPushEvent(
-                uin, seq, ret_code, command_name, push.type, push.jcebuf,
-                push.large_seq, list
+                uin,
+                seq,
+                ret_code,
+                command_name,
+                push.type,
+                push.jcebuf,
+                push.large_seq,
+                list,
             )
         elif push.type == 3:
             # LogAction, do nothing
             return LogActionPushEvent(
-                uin, seq, ret_code, command_name, push.type, push.jcebuf,
-                push.large_seq
+                uin,
+                seq,
+                ret_code,
+                command_name,
+                push.type,
+                push.jcebuf,
+                push.large_seq,
             )
         return ConfigPushEvent(uin, seq, ret_code, command_name)
 

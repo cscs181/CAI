@@ -10,14 +10,21 @@ This module is used to build coroutine related tools.
 """
 from types import TracebackType
 from collections.abc import Coroutine
-from typing import Type, Generic, TypeVar, Optional, AsyncContextManager, Coroutine as CoroutineGeneric
+from typing import (
+    Type,
+    Generic,
+    TypeVar,
+    Optional,
+    AsyncContextManager,
+    Coroutine as CoroutineGeneric,
+)
 
 TY = TypeVar("TY")
 TS = TypeVar("TS")
 TR = TypeVar("TR", bound=AsyncContextManager)
 
 
-class _ContextManager(Coroutine, Generic[TY, TS, TR]):
+class ContextManager(Coroutine, Generic[TY, TS, TR]):
 
     __slots__ = ("_coro", "_obj")
 
@@ -53,8 +60,10 @@ class _ContextManager(Coroutine, Generic[TY, TS, TR]):
         return self._obj
 
     async def __aexit__(
-        self, exc_type: Optional[Type[BaseException]],
-        exc_value: Optional[BaseException], traceback: Optional[TracebackType]
+        self,
+        exc_type: Optional[Type[BaseException]],
+        exc_value: Optional[BaseException],
+        traceback: Optional[TracebackType],
     ):
         await self._obj.__aexit__(exc_type, exc_value, traceback)
         self._obj = None

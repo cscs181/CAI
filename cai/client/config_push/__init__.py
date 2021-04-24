@@ -19,8 +19,11 @@ from .jce import PushResp, FileServerPushList
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
 from .event import (
-    ConfigPushEvent, _ConfigPushEventBase, SsoServerPushEvent,
-    FileServerPushEvent, LogActionPushEvent
+    ConfigPushEvent,
+    _ConfigPushEventBase,
+    SsoServerPushEvent,
+    FileServerPushEvent,
+    LogActionPushEvent,
 )
 
 if TYPE_CHECKING:
@@ -28,8 +31,13 @@ if TYPE_CHECKING:
 
 
 def encode_config_push_response(
-    uin: int, seq: int, session_id: bytes, d2key: bytes, type: int,
-    jcebuf: bytes, large_seq: int
+    uin: int,
+    seq: int,
+    session_id: bytes,
+    d2key: bytes,
+    type: int,
+    jcebuf: bytes,
+    large_seq: int,
 ) -> Packet:
     """Build config push response packet.
 
@@ -56,7 +64,7 @@ def encode_config_push_response(
     resp_packet = RequestPacketVersion3(
         servant_name="QQService.ConfigPushSvc.MainServant",
         func_name="PushResp",
-        data=types.MAP({types.STRING("PushResp"): types.BYTES(payload)})
+        data=types.MAP({types.STRING("PushResp"): types.BYTES(payload)}),
     ).encode()
     packet = UniPacket.build(
         uin, seq, COMMAND_NAME, session_id, 1, resp_packet, d2key
@@ -69,8 +77,11 @@ async def handle_config_push_request(
     client: "Client", packet: IncomingPacket
 ) -> ConfigPushEvent:
     event = ConfigPushEvent.decode_push_req(
-        packet.uin, packet.seq, packet.ret_code, packet.command_name,
-        packet.data
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
     )
     if isinstance(event, SsoServerPushEvent):
         logger.debug(f"ConfigPush: Got new server addresses.")
@@ -80,15 +91,24 @@ async def handle_config_push_request(
     if isinstance(event, _ConfigPushEventBase):
         seq = client.next_seq()
         resp_packet = encode_config_push_response(
-            client.uin, seq, client._session_id, client._siginfo.d2key,
-            event.type, event.jcebuf, event.large_seq
+            client.uin,
+            seq,
+            client._session_id,
+            client._siginfo.d2key,
+            event.type,
+            event.jcebuf,
+            event.large_seq,
         )
-        client.send(seq, "ConfigPushSvc.PushResp", resp_packet)
+        await client.send(seq, "ConfigPushSvc.PushResp", resp_packet)
 
     return event
 
 
 __all__ = [
-    "handle_config_push_request", "FileServerPushList", "ConfigPushEvent",
-    "SsoServerPushEvent", "FileServerPushEvent", "LogActionPushEvent"
+    "handle_config_push_request",
+    "FileServerPushList",
+    "ConfigPushEvent",
+    "SsoServerPushEvent",
+    "FileServerPushEvent",
+    "LogActionPushEvent",
 ]

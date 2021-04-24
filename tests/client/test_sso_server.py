@@ -3,11 +3,15 @@ import unittest
 import ipaddress
 
 from cai.log import logger
-from cai.client.sso_server import get_sso_list, get_sso_server, SsoServer, SsoServerResponse
+from cai.client.sso_server import (
+    get_sso_list,
+    get_sso_server,
+    SsoServer,
+    SsoServerResponse,
+)
 
 
 class TestSsoServer(unittest.IsolatedAsyncioTestCase):
-
     def log(self, level: int, message: str, *args, exc_info=False, **kwargs):
         message = "| TestSsoServer | " + message
         return logger.log(level, message, *args, exc_info=exc_info, **kwargs)

@@ -314,6 +314,11 @@ async def handle_register_response(
     return response
 
 
+# TODO
+async def handle_request_offline(client: "Client", packet: IncomingPacket):
+    ...
+
+
 __all__ = [
     "encode_register",
     "handle_register_response",

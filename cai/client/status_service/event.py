@@ -12,9 +12,9 @@ This module is used to parse StatSvc response packets into event.
 from typing import Optional
 from dataclasses import dataclass
 
-from .jce import SvcRespRegister
 from cai.client.event import Event
 from cai.utils.jce import RequestPacketVersion3
+from .jce import SvcRespRegister, RequestMSFForceOffline
 
 
 @dataclass
@@ -70,3 +70,52 @@ class RegisterFail(SvcRegisterResponse):
 @dataclass
 class RegisterSuccess(SvcRegisterResponse):
     response: SvcRespRegister
+
+
+@dataclass
+class MSFForceOfflineEvent(Event):
+    @classmethod
+    def decode_response(
+        cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
+    ) -> "MSFForceOfflineEvent":
+        """Decode StatSvc MSF Offline request.
+
+        Note:
+            Source: com.tencent.mobileqq.msf.core.af.a
+
+        Args:
+            uin (int): User QQ
+            seq (int): Sequence number of the response packet.
+            ret_code (int): Return code of the response.
+            command_name (str): Command name of the response.
+            data (bytes): Payload data of the response.
+        """
+        if ret_code != 0 or not data:
+            return MSFForceOfflineEvent(uin, seq, ret_code, command_name)
+
+        try:
+            req_packet = RequestPacketVersion3.decode(data)
+            msf_offline_request = RequestMSFForceOffline.decode(
+                req_packet.data["RequestMSFForceOffline"][1:-1]  # type: ignore
+            )
+            return MSFForceOffline(
+                uin, seq, ret_code, command_name, msf_offline_request
+            )
+        except Exception as e:
+            return MSFForceOfflineError(
+                uin,
+                seq,
+                ret_code,
+                command_name,
+                f"Error when decoding response! {repr(e)}",
+            )
+
+
+@dataclass
+class MSFForceOffline(MSFForceOfflineEvent):
+    request: RequestMSFForceOffline
+
+
+@dataclass
+class MSFForceOfflineError(MSFForceOfflineEvent):
+    message: str

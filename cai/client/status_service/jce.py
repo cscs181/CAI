@@ -197,3 +197,20 @@ class SvcRespRegister(JceStruct):
     """:obj:`~jce.types.INT64`: client battery status get interval."""
     client_auto_status_interval: types.INT64 = JceField(600, jce_id=19)
     """:obj:`~jce.types.INT64`: client status get interval."""
+
+
+class RequestMSFForceOffline(JceStruct):
+    uin: types.INT64 = JceField(jce_id=0)
+    seq_no: types.INT64 = JceField(jce_id=1)
+    kick_type: types.INT8 = JceField(jce_id=2)
+    info: types.STRING = JceField(jce_id=3)
+    title: types.STRING = JceField("", jce_id=4)
+    sig_kick: types.BYTE = JceField(bytes(1), jce_id=5)
+    sig_kick_data: types.BYTES = JceField(bytes(), jce_id=6)
+    same_device: types.BOOL = JceField(False, jce_id=7)
+
+
+class ResponseMSFForceOffline(JceStruct):
+    uin: types.INT64 = JceField(jce_id=0)
+    seq_no: types.INT64 = JceField(jce_id=1)
+    c: types.BYTE = JceField(jce_id=2)

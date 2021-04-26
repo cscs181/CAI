@@ -26,3 +26,8 @@ async def encode_get_message() -> Packet:
 # TODO
 async def handle_push_notify(client: "Client", packet: IncomingPacket):
     ...
+
+
+# TODO
+async def handle_force_offline(client: "Client", packet: IncomingPacket):
+    ...

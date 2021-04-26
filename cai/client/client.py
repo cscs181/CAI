@@ -37,6 +37,7 @@ from .status_service import (
     encode_register,
     encode_set_status,
     handle_register_response,
+    handle_request_offline,
     OnlineStatus,
     RegPushReason,
     SvcRegisterResponse,
@@ -60,6 +61,7 @@ from .friendlist import (
     TroopMemberListSuccess,
     TroopMemberListFail,
 )
+from .message_service import handle_force_offline
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
 
@@ -97,11 +99,13 @@ HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "wtlogin.exchange_emp": handle_oicq_response,
     "StatSvc.register": handle_register_response,
     "StatSvc.SetStatusFromClient": handle_register_response,
+    "StatSvc.ReqMSFOffline": handle_request_offline,
     "ConfigPushSvc.PushReq": handle_config_push_request,
     "Heartbeat.Alive": handle_heartbeat,
     "friendlist.GetFriendListReq": handle_friend_list,
     "friendlist.GetTroopListReqV2": handle_troop_list,
     "friendlist.GetTroopMemberListReq": handle_troop_member_list,
+    "MessageSvc.PushForceOffline": handle_force_offline,
 }
 
 

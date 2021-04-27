@@ -804,10 +804,7 @@ class Client:
         packet = encode_set_status(
             seq,
             self._session_id,
-            self._ksid,
             self.uin,
-            self._siginfo.tgt,
-            self._siginfo.d2,
             self._siginfo.d2key,
             status,
             battery_status,

@@ -13,7 +13,7 @@ from typing import Optional
 from dataclasses import dataclass
 
 from cai.client.event import Event
-from cai.utils.jce import RequestPacketVersion3
+from cai.utils.jce import RequestPacketVersion2, RequestPacketVersion3
 from .jce import SvcRespRegister, RequestMSFForceOffline
 
 
@@ -43,7 +43,7 @@ class SvcRegisterResponse(Event):
             return SvcRegisterResponse(uin, seq, ret_code, command_name)
 
         try:
-            resp_packet = RequestPacketVersion3.decode(data)
+            resp_packet = RequestPacketVersion2.decode(data)
             svc_register_response = SvcRespRegister.decode(
                 resp_packet.data["SvcRespRegister"][  # type: ignore
                     "QQService.SvcRespRegister"

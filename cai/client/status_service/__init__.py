@@ -22,7 +22,12 @@ from cai.settings.protocol import get_protocol
 from cai.utils.jce import RequestPacketVersion3
 from cai.pb.oicq.cmd0x769 import ConfigSeq, ReqBody
 from .jce import SvcReqRegister, ResponseMSFForceOffline
-from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
+from cai.client.packet import (
+    CSsoBodyPacket,
+    CSsoDataPacket,
+    UniPacket,
+    IncomingPacket,
+)
 from .event import (
     SvcRegisterResponse,
     RegisterSuccess,
@@ -238,10 +243,7 @@ def encode_register(
 def encode_set_status(
     seq: int,
     session_id: bytes,
-    ksid: bytes,
     uin: int,
-    tgt: bytes,
-    d2: bytes,
     d2key: bytes,
     status: Union[int, OnlineStatus],
     battery_status: Optional[int] = None,
@@ -259,10 +261,7 @@ def encode_set_status(
     Args:
         seq (int): Packet sequence.
         session_id (bytes): Session ID.
-        ksid (bytes): KSID of client.
         uin (int): User QQ number.
-        tgt (bytes): Siginfo tgt.
-        d2 (bytes): Siginfo d2.
         d2key (bytes): Siginfo d2 key.
         status (Union[int, OnlineStatus]): Online status.
         reg_push_reason (Union[str, RegPushReason]): Reg push reason.
@@ -290,17 +289,9 @@ def encode_set_status(
         func_name="SvcReqRegister",
         data=types.MAP({types.STRING("SvcReqRegister"): types.BYTES(payload)}),
     ).encode()
-    sso_packet = CSsoBodyPacket.build(
-        seq,
-        SUB_APP_ID,
-        COMMAND_NAME,
-        DEVICE.imei,
-        session_id,
-        ksid,
-        body=req_packet,
-        extra_data=tgt,
+    packet = UniPacket.build(
+        uin, seq, COMMAND_NAME, session_id, 1, req_packet, d2key
     )
-    packet = CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
     return packet
 
 

@@ -200,6 +200,12 @@ class SvcRespRegister(JceStruct):
 
 
 class RequestMSFForceOffline(JceStruct):
+    """StatSvc MSF Force offline Request jce packet.
+
+    Note:
+        Source: com.tencent.msf.service.protocol.push.RequestMSFForceOffline
+    """
+
     uin: types.INT64 = JceField(jce_id=0)
     seq_no: types.INT64 = JceField(jce_id=1)
     kick_type: types.INT8 = JceField(jce_id=2)
@@ -211,6 +217,12 @@ class RequestMSFForceOffline(JceStruct):
 
 
 class ResponseMSFForceOffline(JceStruct):
+    """StatSvc MSF Force offline Response jce packet.
+
+    Note:
+        Source: com.tencent.msf.service.protocol.push.C35829b
+    """
+
     uin: types.INT64 = JceField(jce_id=0)
     seq_no: types.INT64 = JceField(jce_id=1)
     c: types.BYTE = JceField(jce_id=2)

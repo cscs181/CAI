@@ -15,6 +15,7 @@ from typing import Union, Optional, TYPE_CHECKING
 
 from jce import types
 
+from cai.log import logger
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
@@ -390,6 +391,11 @@ async def handle_request_offline(
         packet.ret_code,
         packet.command_name,
         packet.data,
+    )
+    logger.error(
+        f"Client {client.uin} force offline: " + request.request.info
+        if isinstance(request, MSFForceOffline)
+        else "Unknown reason."
     )
     if isinstance(request, MSFForceOffline):
         seq = client.next_seq()

@@ -374,7 +374,7 @@ class Client:
                 self._receive_store.store_result(packet.seq, packet)
                 # TODO: broadcast packet
             except ConnectionAbortedError:
-                logger.debug("Connection closed")
+                logger.debug(f"Client {self.uin} connection closed")
             except Exception as e:
                 # TODO: handle exception
                 logger.exception(e)

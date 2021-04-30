@@ -16,6 +16,9 @@ from cai.utils.binary import Packet
 from cai.client.packet import IncomingPacket
 from cai.client.status_service import OnlineStatus
 from .event import (
+    PushNotifyEvent,
+    PushNotify,
+    PushNotifyError,
     PushForceOfflineEvent,
     PushForceOffline,
     PushForceOfflineError,
@@ -30,9 +33,18 @@ async def encode_get_message() -> Packet:
     ...
 
 
-# TODO
-async def handle_push_notify(client: "Client", packet: IncomingPacket):
-    ...
+async def handle_push_notify(
+    client: "Client", packet: IncomingPacket
+) -> PushNotifyEvent:
+    notify = PushNotifyEvent.decode_response(
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
+    )
+    print(notify)
+    return notify
 
 
 # MessageSvc.PushForceOffline
@@ -57,6 +69,10 @@ async def handle_force_offline(
 
 
 __all__ = [
+    "handle_push_notify",
+    "PushNotifyEvent",
+    "PushNotify",
+    "PushNotifyError",
     "handle_force_offline",
     "PushForceOfflineEvent",
     "PushForceOffline",

@@ -61,7 +61,7 @@ from .friendlist import (
     TroopMemberListSuccess,
     TroopMemberListFail,
 )
-from .message_service import handle_force_offline
+from .message_service import handle_push_notify, handle_force_offline
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
 
@@ -105,6 +105,7 @@ HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "friendlist.GetFriendListReq": handle_friend_list,
     "friendlist.GetTroopListReqV2": handle_troop_list,
     "friendlist.GetTroopMemberListReq": handle_troop_member_list,
+    "MessageSvc.PushNotify": handle_push_notify,
     "MessageSvc.PushForceOffline": handle_force_offline,
 }
 

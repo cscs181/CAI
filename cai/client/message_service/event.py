@@ -9,7 +9,7 @@ This module is used to parse MessageSvc response packets into event.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import Optional
+import traceback
 from dataclasses import dataclass
 
 from cai.client.event import Event
@@ -39,7 +39,9 @@ class PushNotifyEvent(Event):
             return PushNotifyEvent(uin, seq, ret_code, command_name)
 
         try:
-            req_packet = RequestPacketVersion2.decode(data)
+            # data offset 4 in source? test get 15
+            # req_packet = RequestPacketVersion2.decode(data[4:])
+            req_packet = RequestPacketVersion2.decode(data[15:])
             push_offline_request = RequestPushNotify.decode(
                 req_packet.data["req_PushNotify"][  # type: ignore
                     "PushNotifyPack.RequestPushNotify"
@@ -49,6 +51,7 @@ class PushNotifyEvent(Event):
                 uin, seq, ret_code, command_name, push_offline_request
             )
         except Exception as e:
+            traceback.print_exc()
             return PushNotifyError(
                 uin,
                 seq,

@@ -1,6 +1,6 @@
-"""Protocol Buffer Model Category.
+"""IM OIDB Protocol Buffer Model Category.
 
-This module is used to store all protobuf files.
+This module is used to store all oidb protobuf files.
 
 Generate all protobuf file using:
 

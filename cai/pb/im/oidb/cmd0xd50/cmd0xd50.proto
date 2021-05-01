@@ -1,5 +1,7 @@
 syntax = "proto2";
-package oicq.cmd0xd50;
+package im.oidb.cmd0xd50;
+
+// tencent/im/oidb/cmd0xd50/Oidb_0xd50.java
 
 message ExtSnsFrdData {
   optional uint64 frd_uin = 1;

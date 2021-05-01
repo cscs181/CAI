@@ -16,6 +16,7 @@ from jce import JceStruct, JceField, types
 from cai.client.qq_service.jce import StShareData
 
 
+# Push Notify
 class CPicInfo(JceStruct):
     """MessageSvc Online Push CPic Info jce packet.
 
@@ -90,6 +91,7 @@ class RequestPushNotify(JceStruct):
     svrip: types.INT64 = JceField(0, jce_id=13)
 
 
+# Push Force Offline
 class RequestPushForceOffline(JceStruct):
     """MessageSvc Push Force Offline Request jce packet.
 

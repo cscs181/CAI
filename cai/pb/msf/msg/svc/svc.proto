@@ -1,0 +1,669 @@
+syntax = "proto2";
+package msf.msg.svc;
+
+// msf/msgsvc/msg_svc.java
+
+import "cai/pb/msf/msg/comm/comm.proto";
+import "cai/pb/msf/msg/ctrl/ctrl.proto";
+import "cai/pb/im/msg/msg_body/msg_body.proto";
+import "cai/pb/im/msg/msg_head/msg_head.proto";
+import "cai/pb/im/msg/receipt/receipt.proto";
+
+message AccostTmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+  optional bool reply = 3;
+}
+
+message AddressListTmp {
+  optional string fromPhone = 1;
+  optional string toPhone = 2;
+  optional uint64 toUin = 3;
+  optional bytes sig = 4;
+  optional uint32 fromContactSize = 5;
+}
+
+message AuthTmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+}
+
+message BsnsTmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+}
+
+message BusinessWPATmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+  optional bytes sigt = 3;
+}
+
+message C2C {
+  optional uint64 toUin = 1;
+}
+
+message CommTmp {
+  optional uint64 toUin = 1;
+  optional uint32 c2CType = 2;
+  optional uint32 svrType = 3;
+  optional bytes sig = 4;
+  optional bytes reserved = 5;
+}
+
+message Dis {
+  optional uint64 disUin = 1;
+}
+
+message DisTmp {
+  optional uint64 disUin = 1;
+  optional uint64 toUin = 2;
+}
+
+message Grp {
+  optional uint64 groupCode = 1;
+}
+
+message GrpTmp {
+  optional uint64 groupUin = 1;
+  optional uint64 toUin = 2;
+}
+
+message MsgSendInfo {
+  optional uint32 receiver = 1;
+}
+
+message MultiMsgAssist {
+  repeated RoutingHead repeatedRouting = 1;
+  optional uint32 use = 2;
+  optional uint64 tempId = 3;
+  optional uint64 vedioLen = 4;
+  optional bytes redbagId = 5;
+  optional uint64 redbagAmount = 6;
+  optional uint32 hasReadbag = 7;
+  optional uint32 hasVedio = 8;
+}
+
+message NearByAssistantTmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+  optional bool reply = 3;
+}
+
+message NearByDatingTmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+  optional bool reply = 3;
+}
+
+message PbBindUinGetMsgReq {
+  optional uint64 bindUin = 1;
+  optional bytes bindUinSig = 2;
+  optional uint32 syncFlag = 3;
+  optional bytes syncCookie = 4;
+}
+
+message PbBindUinMsgReadedConfirmReq {
+  optional bytes syncCookie = 1;
+  optional uint64 bindUin = 2;
+}
+
+message PbBindUinMsgReadedConfirmResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional bytes syncCookie = 3;
+  optional uint64 bindUin = 4;
+}
+
+message PbBindUinUnReadMsgNumReq {
+  optional uint64 bindUin = 1;
+  optional bytes syncCookie = 2;
+}
+
+message PbBindUinUnReadMsgNumResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint64 bindUin = 3;
+  optional uint32 num = 4;
+}
+
+message PbC2CMsgWithDrawReq {
+  repeated MsgInfo info = 1;
+  optional uint32 longMessageFlag = 2;
+  optional bytes reserved = 3;
+  optional uint32 subCmd = 4;
+
+  message MsgInfo {
+    optional uint64 fromUin = 1;
+    optional uint64 toUin = 2;
+    optional uint32 msgSeq = 3;
+    optional uint64 msgUid = 4;
+    optional uint64 msgTime = 5;
+    optional uint32 msgRandom = 6;
+    optional uint32 pkgNum = 7;
+    optional uint32 pkgIndex = 8;
+    optional uint32 divSeq = 9;
+    optional uint32 msgType = 10;
+    optional RoutingHead routingHead = 20;
+  }
+}
+
+message PbC2CMsgWithDrawResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  repeated MsgStatus status = 3;
+  optional uint32 subCmd = 4;
+  optional WithDrawWordingInfo wordingInfo = 5;
+}
+
+message MsgStatus {
+  optional PbC2CMsgWithDrawReq.MsgInfo info = 1;
+  optional uint32 status = 2;
+}
+
+message PbC2CReadedReportReq {
+  optional bytes syncCookie = 1;
+  repeated UinPairReadInfo pairInfo = 2;
+}
+
+message UinPairReadInfo {
+  optional uint64 peerUin = 1;
+  optional uint32 lastReadTime = 2;
+  optional bytes crmSig = 3;
+  optional uint32 peerType = 4;
+  optional uint32 chatType = 5;
+  optional uint64 cpid = 6;
+  optional uint32 aioType = 7;
+  optional uint64 toTinyId = 9;
+}
+
+message PbC2CReadedReportResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional bytes syncCookie = 3;
+}
+
+message PbC2CUnReadMsgNumReq {
+}
+
+message PbC2CUnReadMsgNumResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint32 num = 3;
+}
+
+message PbDelRoamMsgReq {
+  optional C2CMsg c2CMsg = 1;
+  optional GrpMsg grpMsg = 2;
+  optional DisMsg disMsg = 3;
+}
+
+message C2CMsg {
+  optional uint64 fromUin = 1;
+  optional uint64 peerUin = 2;
+  optional uint32 time = 3;
+  optional uint32 random = 4;
+  optional uint32 seq = 5;
+}
+
+message DisMsg {
+  optional uint64 discussUin = 1;
+  optional uint64 seq = 2;
+}
+
+message GrpMsg {
+  optional uint64 groupCode = 1;
+  optional uint64 seq = 2;
+  optional uint32 resvFlag = 3;
+}
+
+message PbDelRoamMsgResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+}
+
+message PbDeleteMsgReq {
+  repeated MsgItem msgItems = 1;
+}
+
+message MsgItem {
+  optional uint64 fromUin = 1;
+  optional uint64 toUin = 2;
+  optional uint32 type = 3;
+  optional uint32 seq = 4;
+  optional uint64 uid = 5;
+  optional bytes sig = 7;
+}
+
+message PbDeleteMsgResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+}
+
+message PbDiscussReadedReportReq {
+  optional uint64 confUin = 1;
+  optional uint64 lastReadSeq = 2;
+}
+
+message PbDiscussReadedReportResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint64 confUin = 3;
+  optional uint64 memberSeq = 4;
+  optional uint64 confSeq = 5;
+}
+
+message PbGetDiscussMsgReq {
+  optional uint64 discussUin = 1;
+  optional uint64 endSeq = 2;
+  optional uint64 beginSeq = 3;
+  optional uint64 lastGetTime = 4;
+  optional uint64 discussInfoSeq = 5;
+  optional uint32 filter = 6;
+  optional uint64 memberSeq = 7;
+}
+
+message PbGetDiscussMsgResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint64 discussUin = 3;
+  optional uint64 returnEndSeq = 4;
+  optional uint64 returnBeginSeq = 5;
+  repeated comm.Msg msg = 6;
+  optional uint64 lastGetTime = 7;
+  optional uint64 discussInfoSeq = 8;
+}
+
+message PbGetGroupMsgReq {
+  optional uint64 groupCode = 1;
+  optional uint64 beginSeq = 2;
+  optional uint64 endSeq = 3;
+  optional uint32 filter = 4;
+  optional uint64 memberSeq = 5;
+  optional bool publicGroup = 6;
+  optional uint32 shieldFlag = 7;
+  optional uint32 saveTrafficFlag = 8;
+}
+
+message PbGetGroupMsgResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint64 groupCode = 3;
+  optional uint64 returnBeginSeq = 4;
+  optional uint64 returnEndSeq = 5;
+  repeated comm.Msg msg = 6;
+}
+
+message PbGetMsgReq {
+  optional uint32 syncFlag = 1;
+  optional bytes syncCookie = 2;
+  optional uint32 rambleFlag = 3;
+  optional uint32 latestRambleNumber = 4;
+  optional uint32 otherRambleNumber = 5;
+  optional uint32 onlineSyncFlag = 6;
+  optional uint32 contextFlag = 7;
+  optional uint32 whisperSessionId = 8;
+  optional uint32 reqType = 9;
+  optional bytes pubaccountCookie = 10;
+  optional bytes ctrlBuf = 11;
+  optional bytes serverBuf = 12;
+}
+
+message PbGetMsgResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional bytes syncCookie = 3;
+  optional uint32 syncFlag = 4;
+  repeated comm.UinPairMsg uinPairMsgs = 5;
+  optional uint64 bindUin = 6;
+  optional uint32 rspType = 7;
+  optional bytes pubaccountCookie = 8;
+  optional bool isPartialSync = 9;
+  optional bytes ctrlBuf = 10;
+}
+
+message PbGetOneDayRoamMsgReq {
+  optional uint64 peerUin = 1;
+  optional uint64 lastMsgtime = 2;
+  optional uint64 random = 3;
+  optional uint32 readCnt = 4;
+}
+
+message PbGetOneDayRoamMsgResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint64 peerUin = 3;
+  optional uint64 lastMsgtime = 4;
+  optional uint64 random = 5;
+  repeated comm.Msg msg = 6;
+  optional uint32 iscomplete = 7;
+}
+
+message PbGetRoamMsgReq {
+  optional uint64 peerUin = 1;
+  optional uint64 lastMsgtime = 2;
+  optional uint64 random = 3;
+  optional uint32 readCnt = 4;
+  optional uint32 checkPwd = 5;
+  optional bytes sig = 6;
+  optional bytes pwd = 7;
+  optional uint32 subcmd = 8;
+  optional uint64 beginMsgtime = 9;
+  optional uint32 reqType = 10;
+}
+
+message PbGetRoamMsgResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint64 peerUin = 3;
+  optional uint64 lastMsgtime = 4;
+  optional uint64 random = 5;
+  repeated comm.Msg msg = 6;
+  optional bytes sig = 7;
+}
+
+message PbGroupMsgWithDrawReq {
+  optional uint32 subCmd = 1;
+  optional uint32 groupType = 2;
+  optional uint64 groupCode = 3;
+  repeated MessageInfo list = 4;
+  optional bytes userdef = 5;
+}
+
+message MessageInfo {
+  optional uint32 msgSeq = 1;
+  optional uint32 msgRandom = 2;
+  optional uint32 msgType = 3;
+  optional uint32 resvFlag = 4;
+}
+
+message PbGroupMsgWithDrawResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint32 subCmd = 3;
+  optional uint32 groupType = 4;
+  optional uint64 groupCode = 5;
+  repeated MessageResult failedMsgList = 6;
+  optional bytes userdef = 7;
+  optional WithDrawWordingInfo wordingInfo = 8;
+}
+
+message MessageResult {
+  optional uint32 result = 1;
+  optional uint32 msgSeq = 2;
+  optional uint32 msgTime = 3;
+  optional uint32 msgRandom = 4;
+  optional bytes errMsg = 5;
+  optional uint32 msgType = 6;
+}
+
+message PbGroupReadedReportReq {
+  optional uint64 groupCode = 1;
+  optional uint64 lastReadSeq = 2;
+}
+
+message PbGroupReadedReportResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint64 groupCode = 3;
+  optional uint64 memberSeq = 4;
+  optional uint64 groupMsgSeq = 5;
+}
+
+message PbInputNotifyInfo {
+  optional uint64 toUin = 1;
+  optional uint32 ime = 2;
+  optional uint32 notifyFlag = 3;
+  optional bytes pbReserve = 4;
+  optional bytes iosPushWording = 5;
+}
+
+message PbMsgReadedReportReq {
+  repeated PbGroupReadedReportReq grpReadReport = 1;
+  repeated PbDiscussReadedReportReq disReadReport = 2;
+  optional PbC2CReadedReportReq c2CReadReport = 3;
+  optional PbBindUinMsgReadedConfirmReq bindUinReadReport = 4;
+}
+
+message PbMsgReadedReportResp {
+  repeated PbGroupReadedReportResp grpReadReport = 1;
+  repeated PbDiscussReadedReportResp disReadReport = 2;
+  optional PbC2CReadedReportResp c2CReadReport = 3;
+  optional PbBindUinMsgReadedConfirmResp bindUinReadReport = 4;
+}
+
+message PbMsgWithDrawReq {
+  repeated PbC2CMsgWithDrawReq c2CWithDraw = 1;
+  repeated PbGroupMsgWithDrawReq groupWithDraw = 2;
+}
+
+message PbMsgWithDrawResp {
+  repeated PbC2CMsgWithDrawResp c2CWithDraw = 1;
+  repeated PbGroupMsgWithDrawResp groupWithDraw = 2;
+}
+
+message PbPullDiscussMsgSeqReq {
+  repeated DiscussInfoReq discussInfoReq = 1;
+}
+
+message DiscussInfoReq {
+  optional uint64 confUin = 1;
+  optional uint64 lastSeq = 2;
+}
+
+message PbPullDiscussMsgSeqResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  repeated DiscussInfoResp discussInfoResp = 3;
+}
+
+message DiscussInfoResp {
+  optional uint64 confUin = 1;
+  optional uint64 memberSeq = 2;
+  optional uint64 confSeq = 3;
+}
+
+message PbPullGroupMsgSeqReq {
+  repeated GroupInfoReq groupInfoReq = 1;
+}
+
+message GroupInfoReq {
+  optional uint64 groupCode = 1;
+  optional uint64 lastSeq = 2;
+}
+
+message PbPullGroupMsgSeqResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  repeated GroupInfoResp groupInfoResp = 3;
+}
+
+message GroupInfoResp {
+  optional uint64 groupCode = 1;
+  optional uint64 memberSeq = 2;
+  optional uint64 groupSeq = 3;
+}
+
+message PbSearchRoamMsgInCloudReq {
+  optional bytes serializeReqbody = 1;
+}
+
+message PbSearchRoamMsgInCloudResp {
+  repeated comm.Msg msg = 1;
+  optional bytes serializeRspbody = 2;
+}
+
+message PbSendMsgReq {
+  optional RoutingHead routingHead = 1;
+  optional comm.ContentHead contentHead = 2;
+  optional im.msg.msg_body.MsgBody body = 3;
+  optional uint32 seq = 4;
+  optional uint32 rand = 5;
+  optional bytes syncCookie = 6;
+  optional comm.AppShareInfo appShare = 7;
+  optional uint32 via = 8;
+  optional uint32 dataStatist = 9;
+  optional MultiMsgAssist multiMsgAssist = 10;
+  optional PbInputNotifyInfo inputNotifyInfo = 11;
+  optional ctrl.MsgCtrl ctrl = 12;
+  optional im.msg.receipt.ReceiptReq receiptReq = 13;
+  optional uint32 multiSendSeq = 14;
+}
+
+message PbSendMsgResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint32 sendTime = 3;
+  optional uint32 svrbusyWaitTime = 4;
+  optional MsgSendInfo sendInfo = 5;
+  optional uint32 errtype = 6;
+  optional TransSvrInfo transSvrInfo = 7;
+  optional im.msg.receipt.ReceiptResp receiptResp = 8;
+  optional uint32 textAnalysisResult = 9;
+  optional uint32 msgInfoFlag = 10;
+}
+
+message PbThirdQQUnReadMsgNumReq {
+  repeated ThirdQQReqInfo thirdqqReqInfo = 1;
+  optional uint32 source = 2;
+}
+
+message ThirdQQReqInfo {
+  optional uint64 thirdUin = 1;
+  optional bytes thirdUinSig = 2;
+  optional bytes thirdUinCookie = 3;
+}
+
+message PbThirdQQUnReadMsgNumResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  repeated ThirdQQRespInfo thirdqqRespInfo = 3;
+  optional uint32 interval = 4;
+}
+
+message ThirdQQRespInfo {
+  optional uint64 thirdUin = 1;
+  optional bytes thirdUinCookie = 2;
+  optional uint32 num = 3;
+  optional uint32 flag = 4;
+  optional uint32 redbagTime = 5;
+  optional uint32 status = 6;
+  optional uint32 lastMsgTime = 7;
+}
+
+message PbUnReadMsgSeqReq {
+  optional PbC2CUnReadMsgNumReq c2CUnreadInfo = 1;
+  repeated PbBindUinUnReadMsgNumReq binduinUnreadInfo = 2;
+  optional PbPullGroupMsgSeqReq groupUnreadInfo = 3;
+  optional PbPullDiscussMsgSeqReq discussUnreadInfo = 4;
+  optional PbThirdQQUnReadMsgNumReq thirdqqUnreadInfo = 5;
+}
+
+message PbUnReadMsgSeqResp {
+  optional PbC2CUnReadMsgNumResp c2CUnreadInfo = 1;
+  repeated PbBindUinUnReadMsgNumResp binduinUnreadInfo = 2;
+  optional PbPullGroupMsgSeqResp groupUnreadInfo = 3;
+  optional PbPullDiscussMsgSeqResp discussUnreadInfo = 4;
+  optional PbThirdQQUnReadMsgNumResp thirdqqUnreadInfo = 5;
+}
+
+message PubGroupTmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+  optional uint64 groupUin = 3;
+}
+
+message PublicPlat {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+}
+
+message QQQueryBusinessTmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+}
+
+message RichStatusTmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+}
+
+message RoutingHead {
+  optional C2C c2C = 1;
+  optional Grp grp = 2;
+  optional GrpTmp grpTmp = 3;
+  optional Dis dis = 4;
+  optional DisTmp disTmp = 5;
+  optional WPATmp wpaTmp = 6;
+  // optional SecretFileHead secretFile = 7;
+  optional PublicPlat publicPlat = 8;
+  optional TransMsg transMsg = 9;
+  optional AddressListTmp addressList = 10;
+  optional RichStatusTmp richStatusTmp = 11;
+  optional TransCmd transCmd = 12;
+  optional AccostTmp accostTmp = 13;
+  optional PubGroupTmp pubGroupTmp = 14;
+  optional Trans0x211 trans_0X211 = 15;
+  optional BusinessWPATmp businessWpaTmp = 16;
+  optional AuthTmp authTmp = 17;
+  optional BsnsTmp bsnsTmp = 18;
+  optional QQQueryBusinessTmp qqQuerybusinessTmp = 19;
+  optional NearByDatingTmp nearbyDatingTmp = 20;
+  optional NearByAssistantTmp nearbyAssistantTmp = 21;
+  optional CommTmp commTmp = 22;
+}
+
+// message SecretFileHead {
+//   optional SubMsgType0xc1.MsgBody secretFileMsg = 1;
+//   optional SubMsgType0x1a.MsgBody secretFileStatus = 2;
+// }
+
+message Trans0x211 {
+  optional uint64 toUin = 1;
+  optional uint32 ccCmd = 2;
+  optional im.msg.msg_head.InstCtrl instCtrl = 3;
+  optional bytes sig = 4;
+  optional uint32 c2CType = 5;
+  optional uint32 serviceType = 6;
+  optional uint32 datalineFlag = 7;
+}
+
+message TransCmd {
+  optional uint64 toUin = 1;
+  optional uint32 type = 2;
+}
+
+message TransMsg {
+  optional uint64 toUin = 1;
+  optional uint32 c2CCmd = 2;
+}
+
+message TransReq {
+  optional int32 command = 1;
+  optional uint32 reqTag = 2;
+  optional bytes reqBuff = 3;
+}
+
+message TransResp {
+  optional uint32 result = 1;
+  optional string errmsg = 2;
+  optional uint32 respTag = 3;
+  optional bytes respBuff = 4;
+}
+
+message TransSvrInfo {
+  optional uint32 subType = 1;
+  optional int32 retCode = 2;
+  optional bytes errMsg = 3;
+  optional bytes transInfo = 4;
+}
+
+message WPATmp {
+  optional uint64 toUin = 1;
+  optional bytes sig = 2;
+}
+
+message WithDrawWordingInfo {
+  optional int32 itemId = 1;
+  optional string itemName = 2;
+}

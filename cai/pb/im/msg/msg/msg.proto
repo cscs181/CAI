@@ -1,0 +1,65 @@
+syntax = "proto2";
+package im.msg.msg;
+
+// tencent/im/msg/im_msg.java
+
+import "cai/pb/im/msg/common/common.proto";
+import "cai/pb/im/msg/msg_body/msg_body.proto";
+
+message C2C {
+  optional common.User sender = 1;
+  optional common.User receiver = 2;
+  optional C2CRelation c2CRelation = 3;
+}
+
+message C2CRelation {
+  optional uint32 c2CType = 1;
+  optional common.GroupInfo groupInfo = 2;
+  optional common.Token token = 3;
+}
+
+message ContentHead {
+  optional uint32 pkgNum = 1;
+  optional uint32 pkgIndex = 2;
+  optional uint32 seq = 3;
+  optional uint32 dateTime = 4;
+  optional uint32 type = 5;
+  optional uint32 divSeq = 6;
+  optional uint64 msgdbUin = 7;
+  optional uint32 msgdbSeq = 8;
+  optional uint32 wordMsgSeq = 9;
+  optional uint32 rand = 10;
+}
+
+message Group {
+  optional common.User sender = 1;
+  optional common.User receiver = 2;
+  optional common.GroupInfo groupInfo = 3;
+}
+
+message Msg {
+  optional MsgHead head = 1;
+  optional msg_body.MsgBody body = 2;
+}
+
+message MsgHead {
+  optional RoutingHead routingHead = 1;
+  optional ContentHead contentHead = 2;
+  optional bytes gbkTmpMsgBody = 3;
+}
+
+message MsgSendReq {
+  optional Msg msg = 1;
+  optional bytes buMsg = 2;
+  optional uint32 tailId = 3;
+  optional uint32 connMsgFlag = 4;
+  optional bytes cookie = 5;
+}
+
+message MsgSendResp {
+}
+
+message RoutingHead {
+  optional C2C c2C = 1;
+  optional Group group = 2;
+}

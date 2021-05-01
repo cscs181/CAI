@@ -24,7 +24,7 @@ from .event import (
     TroopMemberListFail,
 )
 from cai.utils.binary import Packet
-from cai.pb.oicq.cmd0xd50 import ReqBody
+from cai.pb.im.oidb.cmd0xd50 import ReqBody
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
 from .jce import (

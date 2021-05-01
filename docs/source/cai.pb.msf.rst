@@ -1,7 +1,7 @@
-cai.pb package
-==============
+cai.pb.msf package
+==================
 
-.. automodule:: cai.pb
+.. automodule:: cai.pb.msf
    :members:
    :undoc-members:
    :show-inheritance:
@@ -12,6 +12,4 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   cai.pb.im
-   cai.pb.msf
-   cai.pb.wtlogin
+   cai.pb.msf.msg

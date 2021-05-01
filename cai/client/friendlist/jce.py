@@ -226,7 +226,7 @@ class StTroopNum(JceStruct):
     group_flag_ext4: types.INT64 = JceField(0, jce_id=35)
     appeal_deadline: types.INT64 = JceField(0, jce_id=36)
     group_flag: types.INT64 = JceField(0, jce_id=37)
-    group_remark: types.INT64 = JceField(0, jce_id=38)
+    group_remark: types.BYTES = JceField(bytes(), jce_id=38)
 
 
 class StTroopNumSimplify(JceStruct):

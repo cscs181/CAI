@@ -1,6 +1,6 @@
-"""Protocol Buffer Model Category.
+"""Message Service Protocol Buffer Model Category.
 
-This module is used to store all protobuf files.
+This module is used to store all message service protobuf files.
 
 Generate all protobuf file using:
 
@@ -14,3 +14,5 @@ Generate all protobuf file using:
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
+
+from .svc_pb2 import *

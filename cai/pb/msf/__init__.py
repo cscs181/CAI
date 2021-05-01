@@ -1,6 +1,6 @@
-"""Protocol Buffer Model Category.
+"""MSF Protocol Buffer Model Category.
 
-This module is used to store all protobuf files.
+This module is used to store all msf protobuf files.
 
 Generate all protobuf file using:
 

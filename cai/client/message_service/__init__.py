@@ -36,6 +36,12 @@ async def encode_get_message() -> Packet:
 async def handle_push_notify(
     client: "Client", packet: IncomingPacket
 ) -> PushNotifyEvent:
+    """Handle Push Notify Event.
+
+    Note:
+        Source:
+        com.tencent.mobileqq.app.handler.receivesuccess.MessageSvcPushNotify.
+    """
     notify = PushNotifyEvent.decode_response(
         packet.uin,
         packet.seq,
@@ -43,7 +49,16 @@ async def handle_push_notify(
         packet.command_name,
         packet.data,
     )
-    print(notify)
+    if isinstance(notify, PushNotify):
+        # sub account
+        # if notify.notify.general_flag & 8 == 8:
+        #     sub_uin = notify.notify.binded_uin
+        # ping
+        if notify.notify.ping_flag == 1:
+            # send OnlinePush.RespPush response
+            # com.tencent.mobileqq.app.BaseMessageHandler.a
+            pass
+
     return notify
 
 

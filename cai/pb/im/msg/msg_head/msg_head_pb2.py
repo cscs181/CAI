@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto2',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n%cai/pb/im/msg/msg_head/msg_head.proto\x12\x0fim.msg.msg_head\"\xc9\x01\n\x07\x43\x32\x43Head\x12\r\n\x05toUin\x18\x01 \x01(\x04\x12\x0f\n\x07\x66romUin\x18\x02 \x01(\x04\x12\x0e\n\x06\x63\x63Type\x18\x03 \x01(\r\x12\r\n\x05\x63\x63\x43md\x18\x04 \x01(\r\x12\x12\n\nauthPicSig\x18\x05 \x01(\x0c\x12\x0f\n\x07\x61uthSig\x18\x06 \x01(\x0c\x12\x0f\n\x07\x61uthBuf\x18\x07 \x01(\x0c\x12\x12\n\nserverTime\x18\x08 \x01(\r\x12\x12\n\nclientTime\x18\t \x01(\r\x12\x0c\n\x04rand\x18\n \x01(\r\x12\x13\n\x0bphoneNumber\x18\x0b \x01(\t\"\xaa\x03\n\x06\x43SHead\x12\x0b\n\x03uin\x18\x01 \x01(\x04\x12\x0f\n\x07\x63ommand\x18\x02 \x01(\r\x12\x0b\n\x03seq\x18\x03 \x01(\r\x12\x0f\n\x07version\x18\x04 \x01(\r\x12\x12\n\nretryTimes\x18\x05 \x01(\r\x12\x12\n\nclientType\x18\x06 \x01(\r\x12\r\n\x05pubno\x18\x07 \x01(\r\x12\x0f\n\x07localid\x18\x08 \x01(\r\x12\x10\n\x08timezone\x18\t \x01(\r\x12\x10\n\x08\x63lientIp\x18\n \x01(\x07\x12\x12\n\nclientPort\x18\x0b \x01(\r\x12\x0e\n\x06\x63onnIp\x18\x0c \x01(\x07\x12\x10\n\x08\x63onnPort\x18\r \x01(\r\x12\x13\n\x0binterfaceIp\x18\x0e \x01(\x07\x12\x15\n\rinterfacePort\x18\x0f \x01(\r\x12\x10\n\x08\x61\x63tualIp\x18\x10 \x01(\x07\x12\x0c\n\x04\x66lag\x18\x11 \x01(\r\x12\x11\n\ttimestamp\x18\x12 \x01(\x07\x12\x0e\n\x06subcmd\x18\x13 \x01(\r\x12\x0e\n\x06result\x18\x14 \x01(\r\x12\r\n\x05\x61ppId\x18\x15 \x01(\r\x12\x12\n\ninstanceId\x18\x16 \x01(\r\x12\x11\n\tsessionId\x18\x17 \x01(\x04\x12\r\n\x05idcId\x18\x18 \x01(\r\"\x82\x01\n\tDeltaHead\x12\x10\n\x08totalLen\x18\x01 \x01(\x04\x12\x0e\n\x06offset\x18\x02 \x01(\x04\x12\x11\n\tackOffset\x18\x03 \x01(\x04\x12\x0e\n\x06\x63ookie\x18\x04 \x01(\x0c\x12\x11\n\tackCookie\x18\x05 \x01(\x0c\x12\x0e\n\x06result\x18\x06 \x01(\r\x12\r\n\x05\x66lags\x18\x07 \x01(\r\"\x97\x03\n\x04Head\x12\x10\n\x08headType\x18\x01 \x01(\r\x12\'\n\x06\x63sHead\x18\x02 \x01(\x0b\x32\x17.im.msg.msg_head.CSHead\x12)\n\x07s2CHead\x18\x03 \x01(\x0b\x32\x18.im.msg.msg_head.S2CHead\x12\x33\n\x0chttpconnHead\x18\x04 \x01(\x0b\x32\x1d.im.msg.msg_head.HttpConnHead\x12\x11\n\tpaintFlag\x18\x05 \x01(\r\x12+\n\x08loginSig\x18\x06 \x01(\x0b\x32\x19.im.msg.msg_head.LoginSig\x12-\n\tdeltaHead\x18\x07 \x01(\x0b\x32\x1a.im.msg.msg_head.DeltaHead\x12)\n\x07\x63\x32\x43Head\x18\x08 \x01(\x0b\x32\x18.im.msg.msg_head.C2CHead\x12-\n\tsconnHead\x18\t \x01(\x0b\x32\x1a.im.msg.msg_head.SConnHead\x12+\n\x08instCtrl\x18\n \x01(\x0b\x32\x19.im.msg.msg_head.InstCtrl\"\x87\x04\n\x0cHttpConnHead\x12\x0b\n\x03uin\x18\x01 \x01(\x04\x12\x0f\n\x07\x63ommand\x18\x02 \x01(\r\x12\x12\n\nsubCommand\x18\x03 \x01(\r\x12\x0b\n\x03seq\x18\x04 \x01(\r\x12\x0f\n\x07version\x18\x05 \x01(\r\x12\x12\n\nretryTimes\x18\x06 \x01(\r\x12\x12\n\nclientType\x18\x07 \x01(\r\x12\r\n\x05pubNo\x18\x08 \x01(\r\x12\x0f\n\x07localId\x18\t \x01(\r\x12\x10\n\x08timeZone\x18\n \x01(\r\x12\x10\n\x08\x63lientIp\x18\x0b \x01(\x07\x12\x12\n\nclientPort\x18\x0c \x01(\r\x12\x10\n\x08qzhttpIp\x18\r \x01(\x07\x12\x12\n\nqzhttpPort\x18\x0e \x01(\r\x12\r\n\x05sppIp\x18\x0f \x01(\x07\x12\x0f\n\x07sppPort\x18\x10 \x01(\r\x12\x0c\n\x04\x66lag\x18\x11 \x01(\r\x12\x0b\n\x03key\x18\x12 \x01(\x0c\x12\x14\n\x0c\x63ompressType\x18\x13 \x01(\r\x12\x12\n\noriginSize\x18\x14 \x01(\r\x12\x11\n\terrorCode\x18\x15 \x01(\r\x12.\n\x08redirect\x18\x16 \x01(\x0b\x32\x1c.im.msg.msg_head.RedirectMsg\x12\x11\n\tcommandId\x18\x17 \x01(\r\x12\x14\n\x0cserviceCmdid\x18\x18 \x01(\r\x12\x30\n\x08oidbhead\x18\x19 \x01(\x0b\x32\x1e.im.msg.msg_head.TransOidbHead\"\x96\x01\n\x08InstCtrl\x12-\n\nsendToInst\x18\x01 \x03(\x0b\x32\x19.im.msg.msg_head.InstInfo\x12.\n\x0b\x65xcludeInst\x18\x02 \x03(\x0b\x32\x19.im.msg.msg_head.InstInfo\x12+\n\x08\x66romInst\x18\x03 \x01(\x0b\x32\x19.im.msg.msg_head.InstInfo\"T\n\x08InstInfo\x12\x0e\n\x06\x61pppid\x18\x01 \x01(\r\x12\x0e\n\x06instid\x18\x02 \x01(\r\x12\x10\n\x08platform\x18\x03 \x01(\r\x12\x16\n\x0e\x65numDeviceType\x18\n \x01(\r\"%\n\x08LoginSig\x12\x0c\n\x04type\x18\x01 \x01(\r\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"\x80\x01\n\x0bRedirectMsg\x12\x16\n\x0elastRedirectIp\x18\x01 \x01(\x07\x12\x18\n\x10lastRedirectPort\x18\x02 \x01(\r\x12\x12\n\nredirectIp\x18\x03 \x01(\x07\x12\x14\n\x0credirectPort\x18\x04 \x01(\r\x12\x15\n\rredirectCount\x18\x05 \x01(\r\"\x81\x01\n\x07S2CHead\x12\x12\n\nsubMsgtype\x18\x01 \x01(\r\x12\x0f\n\x07msgType\x18\x02 \x01(\r\x12\x0f\n\x07\x66romUin\x18\x03 \x01(\x04\x12\r\n\x05msgId\x18\x04 \x01(\r\x12\x0f\n\x07relayIp\x18\x05 \x01(\x07\x12\x11\n\trelayPort\x18\x06 \x01(\r\x12\r\n\x05toUin\x18\x07 \x01(\x04\"\x0b\n\tSConnHead\"W\n\rTransOidbHead\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\r\x12\x13\n\x0bserviceType\x18\x02 \x01(\r\x12\x0e\n\x06result\x18\x03 \x01(\r\x12\x10\n\x08\x65rrorMsg\x18\x04 \x01(\t'
+  serialized_pb=b'\n%cai/pb/im/msg/msg_head/msg_head.proto\x12\x0fim.msg.msg_head\"\xd4\x01\n\x07\x43\x32\x43Head\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x10\n\x08\x66rom_uin\x18\x02 \x01(\x04\x12\x0f\n\x07\x63\x63_type\x18\x03 \x01(\r\x12\x0e\n\x06\x63\x63_cmd\x18\x04 \x01(\r\x12\x14\n\x0c\x61uth_pic_sig\x18\x05 \x01(\x0c\x12\x10\n\x08\x61uth_sig\x18\x06 \x01(\x0c\x12\x10\n\x08\x61uth_buf\x18\x07 \x01(\x0c\x12\x13\n\x0bserver_time\x18\x08 \x01(\r\x12\x13\n\x0b\x63lient_time\x18\t \x01(\r\x12\x0c\n\x04rand\x18\n \x01(\r\x12\x14\n\x0cphone_number\x18\x0b \x01(\t\"\xb7\x03\n\x06\x43SHead\x12\x0b\n\x03uin\x18\x01 \x01(\x04\x12\x0f\n\x07\x63ommand\x18\x02 \x01(\r\x12\x0b\n\x03seq\x18\x03 \x01(\r\x12\x0f\n\x07version\x18\x04 \x01(\r\x12\x13\n\x0bretry_times\x18\x05 \x01(\r\x12\x13\n\x0b\x63lient_type\x18\x06 \x01(\r\x12\r\n\x05pubno\x18\x07 \x01(\r\x12\x0f\n\x07localid\x18\x08 \x01(\r\x12\x10\n\x08timezone\x18\t \x01(\r\x12\x11\n\tclient_ip\x18\n \x01(\x07\x12\x13\n\x0b\x63lient_port\x18\x0b \x01(\r\x12\x0f\n\x07\x63onn_ip\x18\x0c \x01(\x07\x12\x11\n\tconn_port\x18\r \x01(\r\x12\x14\n\x0cinterface_ip\x18\x0e \x01(\x07\x12\x16\n\x0einterface_port\x18\x0f \x01(\r\x12\x11\n\tactual_ip\x18\x10 \x01(\x07\x12\x0c\n\x04\x66lag\x18\x11 \x01(\r\x12\x11\n\ttimestamp\x18\x12 \x01(\x07\x12\x0e\n\x06subcmd\x18\x13 \x01(\r\x12\x0e\n\x06result\x18\x14 \x01(\r\x12\x0e\n\x06\x61pp_id\x18\x15 \x01(\r\x12\x13\n\x0binstance_id\x18\x16 \x01(\r\x12\x12\n\nsession_id\x18\x17 \x01(\x04\x12\x0e\n\x06idc_id\x18\x18 \x01(\r\"\x85\x01\n\tDeltaHead\x12\x11\n\ttotal_len\x18\x01 \x01(\x04\x12\x0e\n\x06offset\x18\x02 \x01(\x04\x12\x12\n\nack_offset\x18\x03 \x01(\x04\x12\x0e\n\x06\x63ookie\x18\x04 \x01(\x0c\x12\x12\n\nack_cookie\x18\x05 \x01(\x0c\x12\x0e\n\x06result\x18\x06 \x01(\r\x12\r\n\x05\x66lags\x18\x07 \x01(\r\"\xa1\x03\n\x04Head\x12\x11\n\thead_type\x18\x01 \x01(\r\x12(\n\x07\x63s_head\x18\x02 \x01(\x0b\x32\x17.im.msg.msg_head.CSHead\x12*\n\x08s2c_head\x18\x03 \x01(\x0b\x32\x18.im.msg.msg_head.S2CHead\x12\x34\n\rhttpconn_head\x18\x04 \x01(\x0b\x32\x1d.im.msg.msg_head.HttpConnHead\x12\x12\n\npaint_flag\x18\x05 \x01(\r\x12,\n\tlogin_sig\x18\x06 \x01(\x0b\x32\x19.im.msg.msg_head.LoginSig\x12.\n\ndelta_head\x18\x07 \x01(\x0b\x32\x1a.im.msg.msg_head.DeltaHead\x12*\n\x08\x63\x32\x63_head\x18\x08 \x01(\x0b\x32\x18.im.msg.msg_head.C2CHead\x12.\n\nsconn_head\x18\t \x01(\x0b\x32\x1a.im.msg.msg_head.SConnHead\x12,\n\tinst_ctrl\x18\n \x01(\x0b\x32\x19.im.msg.msg_head.InstCtrl\"\x98\x04\n\x0cHttpConnHead\x12\x0b\n\x03uin\x18\x01 \x01(\x04\x12\x0f\n\x07\x63ommand\x18\x02 \x01(\r\x12\x13\n\x0bsub_command\x18\x03 \x01(\r\x12\x0b\n\x03seq\x18\x04 \x01(\r\x12\x0f\n\x07version\x18\x05 \x01(\r\x12\x13\n\x0bretry_times\x18\x06 \x01(\r\x12\x13\n\x0b\x63lient_type\x18\x07 \x01(\r\x12\x0e\n\x06pub_no\x18\x08 \x01(\r\x12\x10\n\x08local_id\x18\t \x01(\r\x12\x11\n\ttime_zone\x18\n \x01(\r\x12\x11\n\tclient_ip\x18\x0b \x01(\x07\x12\x13\n\x0b\x63lient_port\x18\x0c \x01(\r\x12\x11\n\tqzhttp_ip\x18\r \x01(\x07\x12\x13\n\x0bqzhttp_port\x18\x0e \x01(\r\x12\x0e\n\x06spp_ip\x18\x0f \x01(\x07\x12\x10\n\x08spp_port\x18\x10 \x01(\r\x12\x0c\n\x04\x66lag\x18\x11 \x01(\r\x12\x0b\n\x03key\x18\x12 \x01(\x0c\x12\x15\n\rcompress_type\x18\x13 \x01(\r\x12\x13\n\x0borigin_size\x18\x14 \x01(\r\x12\x12\n\nerror_code\x18\x15 \x01(\r\x12.\n\x08redirect\x18\x16 \x01(\x0b\x32\x1c.im.msg.msg_head.RedirectMsg\x12\x12\n\ncommand_id\x18\x17 \x01(\r\x12\x15\n\rservice_cmdid\x18\x18 \x01(\r\x12\x30\n\x08oidbhead\x18\x19 \x01(\x0b\x32\x1e.im.msg.msg_head.TransOidbHead\"\x9a\x01\n\x08InstCtrl\x12/\n\x0csend_to_inst\x18\x01 \x03(\x0b\x32\x19.im.msg.msg_head.InstInfo\x12/\n\x0c\x65xclude_inst\x18\x02 \x03(\x0b\x32\x19.im.msg.msg_head.InstInfo\x12,\n\tfrom_inst\x18\x03 \x01(\x0b\x32\x19.im.msg.msg_head.InstInfo\"V\n\x08InstInfo\x12\x0e\n\x06\x61pppid\x18\x01 \x01(\r\x12\x0e\n\x06instid\x18\x02 \x01(\r\x12\x10\n\x08platform\x18\x03 \x01(\r\x12\x18\n\x10\x65num_device_type\x18\n \x01(\r\"%\n\x08LoginSig\x12\x0c\n\x04type\x18\x01 \x01(\r\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"\x87\x01\n\x0bRedirectMsg\x12\x18\n\x10last_redirect_ip\x18\x01 \x01(\x07\x12\x1a\n\x12last_redirect_port\x18\x02 \x01(\r\x12\x13\n\x0bredirect_ip\x18\x03 \x01(\x07\x12\x15\n\rredirect_port\x18\x04 \x01(\r\x12\x16\n\x0eredirect_count\x18\x05 \x01(\r\"\x88\x01\n\x07S2CHead\x12\x13\n\x0bsub_msgtype\x18\x01 \x01(\r\x12\x10\n\x08msg_type\x18\x02 \x01(\r\x12\x10\n\x08\x66rom_uin\x18\x03 \x01(\x04\x12\x0e\n\x06msg_id\x18\x04 \x01(\r\x12\x10\n\x08relay_ip\x18\x05 \x01(\x07\x12\x12\n\nrelay_port\x18\x06 \x01(\r\x12\x0e\n\x06to_uin\x18\x07 \x01(\x04\"\x0b\n\tSConnHead\"Y\n\rTransOidbHead\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\r\x12\x14\n\x0cservice_type\x18\x02 \x01(\r\x12\x0e\n\x06result\x18\x03 \x01(\r\x12\x11\n\terror_msg\x18\x04 \x01(\t'
 )
 
 
@@ -34,63 +34,63 @@ _C2CHEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='toUin', full_name='im.msg.msg_head.C2CHead.toUin', index=0,
+      name='to_uin', full_name='im.msg.msg_head.C2CHead.to_uin', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fromUin', full_name='im.msg.msg_head.C2CHead.fromUin', index=1,
+      name='from_uin', full_name='im.msg.msg_head.C2CHead.from_uin', index=1,
       number=2, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='ccType', full_name='im.msg.msg_head.C2CHead.ccType', index=2,
+      name='cc_type', full_name='im.msg.msg_head.C2CHead.cc_type', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='ccCmd', full_name='im.msg.msg_head.C2CHead.ccCmd', index=3,
+      name='cc_cmd', full_name='im.msg.msg_head.C2CHead.cc_cmd', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='authPicSig', full_name='im.msg.msg_head.C2CHead.authPicSig', index=4,
+      name='auth_pic_sig', full_name='im.msg.msg_head.C2CHead.auth_pic_sig', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='authSig', full_name='im.msg.msg_head.C2CHead.authSig', index=5,
+      name='auth_sig', full_name='im.msg.msg_head.C2CHead.auth_sig', index=5,
       number=6, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='authBuf', full_name='im.msg.msg_head.C2CHead.authBuf', index=6,
+      name='auth_buf', full_name='im.msg.msg_head.C2CHead.auth_buf', index=6,
       number=7, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='serverTime', full_name='im.msg.msg_head.C2CHead.serverTime', index=7,
+      name='server_time', full_name='im.msg.msg_head.C2CHead.server_time', index=7,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clientTime', full_name='im.msg.msg_head.C2CHead.clientTime', index=8,
+      name='client_time', full_name='im.msg.msg_head.C2CHead.client_time', index=8,
       number=9, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -104,7 +104,7 @@ _C2CHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='phoneNumber', full_name='im.msg.msg_head.C2CHead.phoneNumber', index=10,
+      name='phone_number', full_name='im.msg.msg_head.C2CHead.phone_number', index=10,
       number=11, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -123,7 +123,7 @@ _C2CHEAD = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=59,
-  serialized_end=260,
+  serialized_end=271,
 )
 
 
@@ -164,14 +164,14 @@ _CSHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='retryTimes', full_name='im.msg.msg_head.CSHead.retryTimes', index=4,
+      name='retry_times', full_name='im.msg.msg_head.CSHead.retry_times', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clientType', full_name='im.msg.msg_head.CSHead.clientType', index=5,
+      name='client_type', full_name='im.msg.msg_head.CSHead.client_type', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -199,49 +199,49 @@ _CSHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clientIp', full_name='im.msg.msg_head.CSHead.clientIp', index=9,
+      name='client_ip', full_name='im.msg.msg_head.CSHead.client_ip', index=9,
       number=10, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clientPort', full_name='im.msg.msg_head.CSHead.clientPort', index=10,
+      name='client_port', full_name='im.msg.msg_head.CSHead.client_port', index=10,
       number=11, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='connIp', full_name='im.msg.msg_head.CSHead.connIp', index=11,
+      name='conn_ip', full_name='im.msg.msg_head.CSHead.conn_ip', index=11,
       number=12, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='connPort', full_name='im.msg.msg_head.CSHead.connPort', index=12,
+      name='conn_port', full_name='im.msg.msg_head.CSHead.conn_port', index=12,
       number=13, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='interfaceIp', full_name='im.msg.msg_head.CSHead.interfaceIp', index=13,
+      name='interface_ip', full_name='im.msg.msg_head.CSHead.interface_ip', index=13,
       number=14, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='interfacePort', full_name='im.msg.msg_head.CSHead.interfacePort', index=14,
+      name='interface_port', full_name='im.msg.msg_head.CSHead.interface_port', index=14,
       number=15, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='actualIp', full_name='im.msg.msg_head.CSHead.actualIp', index=15,
+      name='actual_ip', full_name='im.msg.msg_head.CSHead.actual_ip', index=15,
       number=16, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -276,28 +276,28 @@ _CSHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='appId', full_name='im.msg.msg_head.CSHead.appId', index=20,
+      name='app_id', full_name='im.msg.msg_head.CSHead.app_id', index=20,
       number=21, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='instanceId', full_name='im.msg.msg_head.CSHead.instanceId', index=21,
+      name='instance_id', full_name='im.msg.msg_head.CSHead.instance_id', index=21,
       number=22, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sessionId', full_name='im.msg.msg_head.CSHead.sessionId', index=22,
+      name='session_id', full_name='im.msg.msg_head.CSHead.session_id', index=22,
       number=23, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='idcId', full_name='im.msg.msg_head.CSHead.idcId', index=23,
+      name='idc_id', full_name='im.msg.msg_head.CSHead.idc_id', index=23,
       number=24, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -315,8 +315,8 @@ _CSHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=263,
-  serialized_end=689,
+  serialized_start=274,
+  serialized_end=713,
 )
 
 
@@ -329,7 +329,7 @@ _DELTAHEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='totalLen', full_name='im.msg.msg_head.DeltaHead.totalLen', index=0,
+      name='total_len', full_name='im.msg.msg_head.DeltaHead.total_len', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -343,7 +343,7 @@ _DELTAHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='ackOffset', full_name='im.msg.msg_head.DeltaHead.ackOffset', index=2,
+      name='ack_offset', full_name='im.msg.msg_head.DeltaHead.ack_offset', index=2,
       number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -357,7 +357,7 @@ _DELTAHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='ackCookie', full_name='im.msg.msg_head.DeltaHead.ackCookie', index=4,
+      name='ack_cookie', full_name='im.msg.msg_head.DeltaHead.ack_cookie', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -389,8 +389,8 @@ _DELTAHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=692,
-  serialized_end=822,
+  serialized_start=716,
+  serialized_end=849,
 )
 
 
@@ -403,70 +403,70 @@ _HEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='headType', full_name='im.msg.msg_head.Head.headType', index=0,
+      name='head_type', full_name='im.msg.msg_head.Head.head_type', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='csHead', full_name='im.msg.msg_head.Head.csHead', index=1,
+      name='cs_head', full_name='im.msg.msg_head.Head.cs_head', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='s2CHead', full_name='im.msg.msg_head.Head.s2CHead', index=2,
+      name='s2c_head', full_name='im.msg.msg_head.Head.s2c_head', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='httpconnHead', full_name='im.msg.msg_head.Head.httpconnHead', index=3,
+      name='httpconn_head', full_name='im.msg.msg_head.Head.httpconn_head', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='paintFlag', full_name='im.msg.msg_head.Head.paintFlag', index=4,
+      name='paint_flag', full_name='im.msg.msg_head.Head.paint_flag', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='loginSig', full_name='im.msg.msg_head.Head.loginSig', index=5,
+      name='login_sig', full_name='im.msg.msg_head.Head.login_sig', index=5,
       number=6, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='deltaHead', full_name='im.msg.msg_head.Head.deltaHead', index=6,
+      name='delta_head', full_name='im.msg.msg_head.Head.delta_head', index=6,
       number=7, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='c2CHead', full_name='im.msg.msg_head.Head.c2CHead', index=7,
+      name='c2c_head', full_name='im.msg.msg_head.Head.c2c_head', index=7,
       number=8, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sconnHead', full_name='im.msg.msg_head.Head.sconnHead', index=8,
+      name='sconn_head', full_name='im.msg.msg_head.Head.sconn_head', index=8,
       number=9, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='instCtrl', full_name='im.msg.msg_head.Head.instCtrl', index=9,
+      name='inst_ctrl', full_name='im.msg.msg_head.Head.inst_ctrl', index=9,
       number=10, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -484,8 +484,8 @@ _HEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=825,
-  serialized_end=1232,
+  serialized_start=852,
+  serialized_end=1269,
 )
 
 
@@ -512,7 +512,7 @@ _HTTPCONNHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='subCommand', full_name='im.msg.msg_head.HttpConnHead.subCommand', index=2,
+      name='sub_command', full_name='im.msg.msg_head.HttpConnHead.sub_command', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -533,77 +533,77 @@ _HTTPCONNHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='retryTimes', full_name='im.msg.msg_head.HttpConnHead.retryTimes', index=5,
+      name='retry_times', full_name='im.msg.msg_head.HttpConnHead.retry_times', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clientType', full_name='im.msg.msg_head.HttpConnHead.clientType', index=6,
+      name='client_type', full_name='im.msg.msg_head.HttpConnHead.client_type', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='pubNo', full_name='im.msg.msg_head.HttpConnHead.pubNo', index=7,
+      name='pub_no', full_name='im.msg.msg_head.HttpConnHead.pub_no', index=7,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='localId', full_name='im.msg.msg_head.HttpConnHead.localId', index=8,
+      name='local_id', full_name='im.msg.msg_head.HttpConnHead.local_id', index=8,
       number=9, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='timeZone', full_name='im.msg.msg_head.HttpConnHead.timeZone', index=9,
+      name='time_zone', full_name='im.msg.msg_head.HttpConnHead.time_zone', index=9,
       number=10, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clientIp', full_name='im.msg.msg_head.HttpConnHead.clientIp', index=10,
+      name='client_ip', full_name='im.msg.msg_head.HttpConnHead.client_ip', index=10,
       number=11, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clientPort', full_name='im.msg.msg_head.HttpConnHead.clientPort', index=11,
+      name='client_port', full_name='im.msg.msg_head.HttpConnHead.client_port', index=11,
       number=12, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='qzhttpIp', full_name='im.msg.msg_head.HttpConnHead.qzhttpIp', index=12,
+      name='qzhttp_ip', full_name='im.msg.msg_head.HttpConnHead.qzhttp_ip', index=12,
       number=13, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='qzhttpPort', full_name='im.msg.msg_head.HttpConnHead.qzhttpPort', index=13,
+      name='qzhttp_port', full_name='im.msg.msg_head.HttpConnHead.qzhttp_port', index=13,
       number=14, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sppIp', full_name='im.msg.msg_head.HttpConnHead.sppIp', index=14,
+      name='spp_ip', full_name='im.msg.msg_head.HttpConnHead.spp_ip', index=14,
       number=15, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sppPort', full_name='im.msg.msg_head.HttpConnHead.sppPort', index=15,
+      name='spp_port', full_name='im.msg.msg_head.HttpConnHead.spp_port', index=15,
       number=16, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -624,21 +624,21 @@ _HTTPCONNHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='compressType', full_name='im.msg.msg_head.HttpConnHead.compressType', index=18,
+      name='compress_type', full_name='im.msg.msg_head.HttpConnHead.compress_type', index=18,
       number=19, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='originSize', full_name='im.msg.msg_head.HttpConnHead.originSize', index=19,
+      name='origin_size', full_name='im.msg.msg_head.HttpConnHead.origin_size', index=19,
       number=20, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='errorCode', full_name='im.msg.msg_head.HttpConnHead.errorCode', index=20,
+      name='error_code', full_name='im.msg.msg_head.HttpConnHead.error_code', index=20,
       number=21, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -652,14 +652,14 @@ _HTTPCONNHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='commandId', full_name='im.msg.msg_head.HttpConnHead.commandId', index=22,
+      name='command_id', full_name='im.msg.msg_head.HttpConnHead.command_id', index=22,
       number=23, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='serviceCmdid', full_name='im.msg.msg_head.HttpConnHead.serviceCmdid', index=23,
+      name='service_cmdid', full_name='im.msg.msg_head.HttpConnHead.service_cmdid', index=23,
       number=24, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -684,8 +684,8 @@ _HTTPCONNHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1235,
-  serialized_end=1754,
+  serialized_start=1272,
+  serialized_end=1808,
 )
 
 
@@ -698,21 +698,21 @@ _INSTCTRL = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='sendToInst', full_name='im.msg.msg_head.InstCtrl.sendToInst', index=0,
+      name='send_to_inst', full_name='im.msg.msg_head.InstCtrl.send_to_inst', index=0,
       number=1, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='excludeInst', full_name='im.msg.msg_head.InstCtrl.excludeInst', index=1,
+      name='exclude_inst', full_name='im.msg.msg_head.InstCtrl.exclude_inst', index=1,
       number=2, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fromInst', full_name='im.msg.msg_head.InstCtrl.fromInst', index=2,
+      name='from_inst', full_name='im.msg.msg_head.InstCtrl.from_inst', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -730,8 +730,8 @@ _INSTCTRL = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1757,
-  serialized_end=1907,
+  serialized_start=1811,
+  serialized_end=1965,
 )
 
 
@@ -765,7 +765,7 @@ _INSTINFO = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='enumDeviceType', full_name='im.msg.msg_head.InstInfo.enumDeviceType', index=3,
+      name='enum_device_type', full_name='im.msg.msg_head.InstInfo.enum_device_type', index=3,
       number=10, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -783,8 +783,8 @@ _INSTINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1909,
-  serialized_end=1993,
+  serialized_start=1967,
+  serialized_end=2053,
 )
 
 
@@ -822,8 +822,8 @@ _LOGINSIG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1995,
-  serialized_end=2032,
+  serialized_start=2055,
+  serialized_end=2092,
 )
 
 
@@ -836,35 +836,35 @@ _REDIRECTMSG = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='lastRedirectIp', full_name='im.msg.msg_head.RedirectMsg.lastRedirectIp', index=0,
+      name='last_redirect_ip', full_name='im.msg.msg_head.RedirectMsg.last_redirect_ip', index=0,
       number=1, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='lastRedirectPort', full_name='im.msg.msg_head.RedirectMsg.lastRedirectPort', index=1,
+      name='last_redirect_port', full_name='im.msg.msg_head.RedirectMsg.last_redirect_port', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='redirectIp', full_name='im.msg.msg_head.RedirectMsg.redirectIp', index=2,
+      name='redirect_ip', full_name='im.msg.msg_head.RedirectMsg.redirect_ip', index=2,
       number=3, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='redirectPort', full_name='im.msg.msg_head.RedirectMsg.redirectPort', index=3,
+      name='redirect_port', full_name='im.msg.msg_head.RedirectMsg.redirect_port', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='redirectCount', full_name='im.msg.msg_head.RedirectMsg.redirectCount', index=4,
+      name='redirect_count', full_name='im.msg.msg_head.RedirectMsg.redirect_count', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -882,8 +882,8 @@ _REDIRECTMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2035,
-  serialized_end=2163,
+  serialized_start=2095,
+  serialized_end=2230,
 )
 
 
@@ -896,49 +896,49 @@ _S2CHEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='subMsgtype', full_name='im.msg.msg_head.S2CHead.subMsgtype', index=0,
+      name='sub_msgtype', full_name='im.msg.msg_head.S2CHead.sub_msgtype', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='msgType', full_name='im.msg.msg_head.S2CHead.msgType', index=1,
+      name='msg_type', full_name='im.msg.msg_head.S2CHead.msg_type', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fromUin', full_name='im.msg.msg_head.S2CHead.fromUin', index=2,
+      name='from_uin', full_name='im.msg.msg_head.S2CHead.from_uin', index=2,
       number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='msgId', full_name='im.msg.msg_head.S2CHead.msgId', index=3,
+      name='msg_id', full_name='im.msg.msg_head.S2CHead.msg_id', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='relayIp', full_name='im.msg.msg_head.S2CHead.relayIp', index=4,
+      name='relay_ip', full_name='im.msg.msg_head.S2CHead.relay_ip', index=4,
       number=5, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='relayPort', full_name='im.msg.msg_head.S2CHead.relayPort', index=5,
+      name='relay_port', full_name='im.msg.msg_head.S2CHead.relay_port', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='toUin', full_name='im.msg.msg_head.S2CHead.toUin', index=6,
+      name='to_uin', full_name='im.msg.msg_head.S2CHead.to_uin', index=6,
       number=7, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -956,8 +956,8 @@ _S2CHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2166,
-  serialized_end=2295,
+  serialized_start=2233,
+  serialized_end=2369,
 )
 
 
@@ -981,8 +981,8 @@ _SCONNHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2297,
-  serialized_end=2308,
+  serialized_start=2371,
+  serialized_end=2382,
 )
 
 
@@ -1002,7 +1002,7 @@ _TRANSOIDBHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='serviceType', full_name='im.msg.msg_head.TransOidbHead.serviceType', index=1,
+      name='service_type', full_name='im.msg.msg_head.TransOidbHead.service_type', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -1016,7 +1016,7 @@ _TRANSOIDBHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='errorMsg', full_name='im.msg.msg_head.TransOidbHead.errorMsg', index=3,
+      name='error_msg', full_name='im.msg.msg_head.TransOidbHead.error_msg', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -1034,23 +1034,23 @@ _TRANSOIDBHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2310,
-  serialized_end=2397,
+  serialized_start=2384,
+  serialized_end=2473,
 )
 
-_HEAD.fields_by_name['csHead'].message_type = _CSHEAD
-_HEAD.fields_by_name['s2CHead'].message_type = _S2CHEAD
-_HEAD.fields_by_name['httpconnHead'].message_type = _HTTPCONNHEAD
-_HEAD.fields_by_name['loginSig'].message_type = _LOGINSIG
-_HEAD.fields_by_name['deltaHead'].message_type = _DELTAHEAD
-_HEAD.fields_by_name['c2CHead'].message_type = _C2CHEAD
-_HEAD.fields_by_name['sconnHead'].message_type = _SCONNHEAD
-_HEAD.fields_by_name['instCtrl'].message_type = _INSTCTRL
+_HEAD.fields_by_name['cs_head'].message_type = _CSHEAD
+_HEAD.fields_by_name['s2c_head'].message_type = _S2CHEAD
+_HEAD.fields_by_name['httpconn_head'].message_type = _HTTPCONNHEAD
+_HEAD.fields_by_name['login_sig'].message_type = _LOGINSIG
+_HEAD.fields_by_name['delta_head'].message_type = _DELTAHEAD
+_HEAD.fields_by_name['c2c_head'].message_type = _C2CHEAD
+_HEAD.fields_by_name['sconn_head'].message_type = _SCONNHEAD
+_HEAD.fields_by_name['inst_ctrl'].message_type = _INSTCTRL
 _HTTPCONNHEAD.fields_by_name['redirect'].message_type = _REDIRECTMSG
 _HTTPCONNHEAD.fields_by_name['oidbhead'].message_type = _TRANSOIDBHEAD
-_INSTCTRL.fields_by_name['sendToInst'].message_type = _INSTINFO
-_INSTCTRL.fields_by_name['excludeInst'].message_type = _INSTINFO
-_INSTCTRL.fields_by_name['fromInst'].message_type = _INSTINFO
+_INSTCTRL.fields_by_name['send_to_inst'].message_type = _INSTINFO
+_INSTCTRL.fields_by_name['exclude_inst'].message_type = _INSTINFO
+_INSTCTRL.fields_by_name['from_inst'].message_type = _INSTINFO
 DESCRIPTOR.message_types_by_name['C2CHead'] = _C2CHEAD
 DESCRIPTOR.message_types_by_name['CSHead'] = _CSHEAD
 DESCRIPTOR.message_types_by_name['DeltaHead'] = _DELTAHEAD

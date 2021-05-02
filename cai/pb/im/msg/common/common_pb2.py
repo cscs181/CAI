@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto2',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n!cai/pb/im/msg/common/common.proto\x12\rim.msg.common\"/\n\tGroupInfo\x12\x0f\n\x07groupId\x18\x01 \x01(\x04\x12\x11\n\tgroupType\x18\x02 \x01(\r\"F\n\tSignature\x12\x0f\n\x07keyType\x18\x01 \x01(\r\x12\x14\n\x0csessionAppId\x18\x02 \x01(\r\x12\x12\n\nsessionKey\x18\x03 \x01(\x0c\":\n\x05Token\x12\x0b\n\x03\x62uf\x18\x01 \x01(\x0c\x12\x0f\n\x07\x63\x32\x43Type\x18\x02 \x01(\r\x12\x13\n\x0bserviceType\x18\x03 \x01(\r\"\xb7\x01\n\x04User\x12\x0b\n\x03uin\x18\x01 \x01(\x04\x12\r\n\x05\x61ppId\x18\x02 \x01(\r\x12\x12\n\ninstanceId\x18\x03 \x01(\r\x12\x0f\n\x07\x61ppType\x18\x04 \x01(\r\x12\x10\n\x08\x63lientIp\x18\x05 \x01(\x07\x12\x0f\n\x07version\x18\x06 \x01(\r\x12\x13\n\x0bphoneNumber\x18\x07 \x01(\t\x12\x12\n\nplatformId\x18\x08 \x01(\r\x12\x10\n\x08language\x18\t \x01(\r\x12\x10\n\x08\x65quipKey\x18\n \x01(\x0c'
+  serialized_pb=b'\n!cai/pb/im/msg/common/common.proto\x12\rim.msg.common\"1\n\tGroupInfo\x12\x10\n\x08group_id\x18\x01 \x01(\x04\x12\x12\n\ngroup_type\x18\x02 \x01(\r\"J\n\tSignature\x12\x10\n\x08key_type\x18\x01 \x01(\r\x12\x16\n\x0esession_app_id\x18\x02 \x01(\r\x12\x13\n\x0bsession_key\x18\x03 \x01(\x0c\"<\n\x05Token\x12\x0b\n\x03\x62uf\x18\x01 \x01(\x0c\x12\x10\n\x08\x63\x32\x63_type\x18\x02 \x01(\r\x12\x14\n\x0cservice_type\x18\x03 \x01(\r\"\xbe\x01\n\x04User\x12\x0b\n\x03uin\x18\x01 \x01(\x04\x12\x0e\n\x06\x61pp_id\x18\x02 \x01(\r\x12\x13\n\x0binstance_id\x18\x03 \x01(\r\x12\x10\n\x08\x61pp_type\x18\x04 \x01(\r\x12\x11\n\tclient_ip\x18\x05 \x01(\x07\x12\x0f\n\x07version\x18\x06 \x01(\r\x12\x14\n\x0cphone_number\x18\x07 \x01(\t\x12\x13\n\x0bplatform_id\x18\x08 \x01(\r\x12\x10\n\x08language\x18\t \x01(\r\x12\x11\n\tequip_key\x18\n \x01(\x0c'
 )
 
 
@@ -34,14 +34,14 @@ _GROUPINFO = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='groupId', full_name='im.msg.common.GroupInfo.groupId', index=0,
+      name='group_id', full_name='im.msg.common.GroupInfo.group_id', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupType', full_name='im.msg.common.GroupInfo.groupType', index=1,
+      name='group_type', full_name='im.msg.common.GroupInfo.group_type', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -60,7 +60,7 @@ _GROUPINFO = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=52,
-  serialized_end=99,
+  serialized_end=101,
 )
 
 
@@ -73,21 +73,21 @@ _SIGNATURE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='keyType', full_name='im.msg.common.Signature.keyType', index=0,
+      name='key_type', full_name='im.msg.common.Signature.key_type', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sessionAppId', full_name='im.msg.common.Signature.sessionAppId', index=1,
+      name='session_app_id', full_name='im.msg.common.Signature.session_app_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sessionKey', full_name='im.msg.common.Signature.sessionKey', index=2,
+      name='session_key', full_name='im.msg.common.Signature.session_key', index=2,
       number=3, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -105,8 +105,8 @@ _SIGNATURE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=101,
-  serialized_end=171,
+  serialized_start=103,
+  serialized_end=177,
 )
 
 
@@ -126,14 +126,14 @@ _TOKEN = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='c2CType', full_name='im.msg.common.Token.c2CType', index=1,
+      name='c2c_type', full_name='im.msg.common.Token.c2c_type', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='serviceType', full_name='im.msg.common.Token.serviceType', index=2,
+      name='service_type', full_name='im.msg.common.Token.service_type', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -151,8 +151,8 @@ _TOKEN = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=173,
-  serialized_end=231,
+  serialized_start=179,
+  serialized_end=239,
 )
 
 
@@ -172,28 +172,28 @@ _USER = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='appId', full_name='im.msg.common.User.appId', index=1,
+      name='app_id', full_name='im.msg.common.User.app_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='instanceId', full_name='im.msg.common.User.instanceId', index=2,
+      name='instance_id', full_name='im.msg.common.User.instance_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='appType', full_name='im.msg.common.User.appType', index=3,
+      name='app_type', full_name='im.msg.common.User.app_type', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='clientIp', full_name='im.msg.common.User.clientIp', index=4,
+      name='client_ip', full_name='im.msg.common.User.client_ip', index=4,
       number=5, type=7, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -207,14 +207,14 @@ _USER = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='phoneNumber', full_name='im.msg.common.User.phoneNumber', index=6,
+      name='phone_number', full_name='im.msg.common.User.phone_number', index=6,
       number=7, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='platformId', full_name='im.msg.common.User.platformId', index=7,
+      name='platform_id', full_name='im.msg.common.User.platform_id', index=7,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -228,7 +228,7 @@ _USER = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='equipKey', full_name='im.msg.common.User.equipKey', index=9,
+      name='equip_key', full_name='im.msg.common.User.equip_key', index=9,
       number=10, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -246,8 +246,8 @@ _USER = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=234,
-  serialized_end=417,
+  serialized_start=242,
+  serialized_end=432,
 )
 
 DESCRIPTOR.message_types_by_name['GroupInfo'] = _GROUPINFO

@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto2',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n#cai/pb/im/msg/receipt/receipt.proto\x12\x0eim.msg.receipt\"L\n\x07MsgInfo\x12\x0f\n\x07\x66romUin\x18\x01 \x01(\x04\x12\r\n\x05toUin\x18\x02 \x01(\x04\x12\x0e\n\x06msgSeq\x18\x03 \x01(\r\x12\x11\n\tmsgRandom\x18\x04 \x01(\r\"\x1f\n\x0bReceiptInfo\x12\x10\n\x08readTime\x18\x01 \x01(\x04\"D\n\nReceiptReq\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\r\x12%\n\x04info\x18\x02 \x01(\x0b\x32\x17.im.msg.receipt.MsgInfo\"P\n\x0bReceiptResp\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\r\x12\x30\n\x0breceiptInfo\x18\x02 \x01(\x0b\x32\x1b.im.msg.receipt.ReceiptInfo'
+  serialized_pb=b'\n#cai/pb/im/msg/receipt/receipt.proto\x12\x0eim.msg.receipt\"P\n\x07MsgInfo\x12\x10\n\x08\x66rom_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\x12\x0f\n\x07msg_seq\x18\x03 \x01(\r\x12\x12\n\nmsg_random\x18\x04 \x01(\r\" \n\x0bReceiptInfo\x12\x11\n\tread_time\x18\x01 \x01(\x04\"D\n\nReceiptReq\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\r\x12%\n\x04info\x18\x02 \x01(\x0b\x32\x17.im.msg.receipt.MsgInfo\"Q\n\x0bReceiptResp\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\r\x12\x31\n\x0creceipt_info\x18\x02 \x01(\x0b\x32\x1b.im.msg.receipt.ReceiptInfo'
 )
 
 
@@ -34,28 +34,28 @@ _MSGINFO = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='fromUin', full_name='im.msg.receipt.MsgInfo.fromUin', index=0,
+      name='from_uin', full_name='im.msg.receipt.MsgInfo.from_uin', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='toUin', full_name='im.msg.receipt.MsgInfo.toUin', index=1,
+      name='to_uin', full_name='im.msg.receipt.MsgInfo.to_uin', index=1,
       number=2, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='msgSeq', full_name='im.msg.receipt.MsgInfo.msgSeq', index=2,
+      name='msg_seq', full_name='im.msg.receipt.MsgInfo.msg_seq', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='msgRandom', full_name='im.msg.receipt.MsgInfo.msgRandom', index=3,
+      name='msg_random', full_name='im.msg.receipt.MsgInfo.msg_random', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -74,7 +74,7 @@ _MSGINFO = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=55,
-  serialized_end=131,
+  serialized_end=135,
 )
 
 
@@ -87,7 +87,7 @@ _RECEIPTINFO = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='readTime', full_name='im.msg.receipt.ReceiptInfo.readTime', index=0,
+      name='read_time', full_name='im.msg.receipt.ReceiptInfo.read_time', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -105,8 +105,8 @@ _RECEIPTINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=133,
-  serialized_end=164,
+  serialized_start=137,
+  serialized_end=169,
 )
 
 
@@ -144,8 +144,8 @@ _RECEIPTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=166,
-  serialized_end=234,
+  serialized_start=171,
+  serialized_end=239,
 )
 
 
@@ -165,7 +165,7 @@ _RECEIPTRESP = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='receiptInfo', full_name='im.msg.receipt.ReceiptResp.receiptInfo', index=1,
+      name='receipt_info', full_name='im.msg.receipt.ReceiptResp.receipt_info', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -183,12 +183,12 @@ _RECEIPTRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=236,
-  serialized_end=316,
+  serialized_start=241,
+  serialized_end=322,
 )
 
 _RECEIPTREQ.fields_by_name['info'].message_type = _MSGINFO
-_RECEIPTRESP.fields_by_name['receiptInfo'].message_type = _RECEIPTINFO
+_RECEIPTRESP.fields_by_name['receipt_info'].message_type = _RECEIPTINFO
 DESCRIPTOR.message_types_by_name['MsgInfo'] = _MSGINFO
 DESCRIPTOR.message_types_by_name['ReceiptInfo'] = _RECEIPTINFO
 DESCRIPTOR.message_types_by_name['ReceiptReq'] = _RECEIPTREQ

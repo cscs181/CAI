@@ -4,31 +4,31 @@ package im.msg.common;
 // tencent/im/msg/im_common.java
 
 message GroupInfo {
-  optional uint64 groupId = 1;
-  optional uint32 groupType = 2;
+  optional uint64 group_id = 1;
+  optional uint32 group_type = 2;
 }
 
 message Signature {
-  optional uint32 keyType = 1;
-  optional uint32 sessionAppId = 2;
-  optional bytes sessionKey = 3;
+  optional uint32 key_type = 1;
+  optional uint32 session_app_id = 2;
+  optional bytes session_key = 3;
 }
 
 message Token {
   optional bytes buf = 1;
-  optional uint32 c2CType = 2;
-  optional uint32 serviceType = 3;
+  optional uint32 c2c_type = 2;
+  optional uint32 service_type = 3;
 }
 
 message User {
   optional uint64 uin = 1;
-  optional uint32 appId = 2;
-  optional uint32 instanceId = 3;
-  optional uint32 appType = 4;
-  optional fixed32 clientIp = 5;
+  optional uint32 app_id = 2;
+  optional uint32 instance_id = 3;
+  optional uint32 app_type = 4;
+  optional fixed32 client_ip = 5;
   optional uint32 version = 6;
-  optional string phoneNumber = 7;
-  optional uint32 platformId = 8;
+  optional string phone_number = 7;
+  optional uint32 platform_id = 8;
   optional uint32 language = 9;
-  optional bytes equipKey = 10;
+  optional bytes equip_key = 10;
 }

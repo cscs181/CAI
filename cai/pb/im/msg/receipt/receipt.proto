@@ -2,14 +2,14 @@ syntax = "proto2";
 package im.msg.receipt;
 
 message MsgInfo {
-  optional uint64 fromUin = 1;
-  optional uint64 toUin = 2;
-  optional uint32 msgSeq = 3;
-  optional uint32 msgRandom = 4;
+  optional uint64 from_uin = 1;
+  optional uint64 to_uin = 2;
+  optional uint32 msg_seq = 3;
+  optional uint32 msg_random = 4;
 }
 
 message ReceiptInfo {
-  optional uint64 readTime = 1;
+  optional uint64 read_time = 1;
 }
 
 message ReceiptReq {
@@ -19,5 +19,5 @@ message ReceiptReq {
 
 message ReceiptResp {
   optional uint32 command = 1;
-  optional ReceiptInfo receiptInfo = 2;
+  optional ReceiptInfo receipt_info = 2;
 }

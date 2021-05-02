@@ -41,6 +41,9 @@ exclude = '''
 ^/cai/pb/
 '''
 
+[tool.pyright]
+ignore = [".vscode/*.py", "**/site-packages/**/*.py", "cai/pb/**/*_pb2.py"]
+
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"

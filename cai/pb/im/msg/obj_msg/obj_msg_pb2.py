@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto2',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n#cai/pb/im/msg/obj_msg/obj_msg.proto\x12\x0eim.msg.obj_msg\"N\n\x0eMsgContentInfo\x12\x15\n\rContentInfoId\x18\x01 \x01(\x0c\x12%\n\x04\x66ile\x18\x02 \x01(\x0b\x32\x17.im.msg.obj_msg.MsgFile\"\x90\x01\n\x07MsgFile\x12\r\n\x05\x62usId\x18\x01 \x01(\r\x12\x10\n\x08\x66ilePath\x18\x02 \x01(\x0c\x12\x10\n\x08\x66ileSize\x18\x03 \x01(\x04\x12\x10\n\x08\x66ileName\x18\x04 \x01(\t\x12\x10\n\x08\x64\x65\x61\x64Time\x18\x05 \x01(\x03\x12\x10\n\x08\x66ileSha1\x18\x06 \x01(\x0c\x12\x0b\n\x03\x65xt\x18\x07 \x01(\x0c\x12\x0f\n\x07\x66ileMd5\x18\x08 \x01(\x0c\"I\n\x06MsgPic\x12\x13\n\x0bsmallPicUrl\x18\x01 \x01(\x0c\x12\x16\n\x0eoriginalPicUrl\x18\x02 \x01(\x0c\x12\x12\n\nlocalPicId\x18\x03 \x01(\r\"\xbb\x01\n\x06ObjMsg\x12\x0f\n\x07msgType\x18\x01 \x01(\r\x12\r\n\x05title\x18\x02 \x01(\x0c\x12\x0f\n\x07\x61\x62stact\x18\x03 \x03(\x0c\x12\x10\n\x08titleExt\x18\x05 \x01(\x0c\x12#\n\x03pic\x18\x06 \x03(\x0b\x32\x16.im.msg.obj_msg.MsgPic\x12\x33\n\x0b\x63ontentInfo\x18\x07 \x03(\x0b\x32\x1e.im.msg.obj_msg.MsgContentInfo\x12\x14\n\x0creportIdShow\x18\x08 \x01(\r'
+  serialized_pb=b'\n#cai/pb/im/msg/obj_msg/obj_msg.proto\x12\x0eim.msg.obj_msg\"P\n\x0eMsgContentInfo\x12\x17\n\x0f\x63ontent_info_id\x18\x01 \x01(\x0c\x12%\n\x04\x66ile\x18\x02 \x01(\x0b\x32\x17.im.msg.obj_msg.MsgFile\"\x97\x01\n\x07MsgFile\x12\x0e\n\x06\x62us_id\x18\x01 \x01(\r\x12\x11\n\tfile_path\x18\x02 \x01(\x0c\x12\x11\n\tfile_size\x18\x03 \x01(\x04\x12\x11\n\tfile_name\x18\x04 \x01(\t\x12\x11\n\tdead_time\x18\x05 \x01(\x03\x12\x11\n\tfile_sha1\x18\x06 \x01(\x0c\x12\x0b\n\x03\x65xt\x18\x07 \x01(\x0c\x12\x10\n\x08\x66ile_md5\x18\x08 \x01(\x0c\"O\n\x06MsgPic\x12\x15\n\rsmall_pic_url\x18\x01 \x01(\x0c\x12\x18\n\x10original_pic_url\x18\x02 \x01(\x0c\x12\x14\n\x0clocal_pic_id\x18\x03 \x01(\r\"\xc0\x01\n\x06ObjMsg\x12\x10\n\x08msg_type\x18\x01 \x01(\r\x12\r\n\x05title\x18\x02 \x01(\x0c\x12\x0f\n\x07\x61\x62stact\x18\x03 \x03(\x0c\x12\x11\n\ttitle_ext\x18\x05 \x01(\x0c\x12#\n\x03pic\x18\x06 \x03(\x0b\x32\x16.im.msg.obj_msg.MsgPic\x12\x34\n\x0c\x63ontent_info\x18\x07 \x03(\x0b\x32\x1e.im.msg.obj_msg.MsgContentInfo\x12\x16\n\x0ereport_id_show\x18\x08 \x01(\r'
 )
 
 
@@ -34,7 +34,7 @@ _MSGCONTENTINFO = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='ContentInfoId', full_name='im.msg.obj_msg.MsgContentInfo.ContentInfoId', index=0,
+      name='content_info_id', full_name='im.msg.obj_msg.MsgContentInfo.content_info_id', index=0,
       number=1, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -60,7 +60,7 @@ _MSGCONTENTINFO = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=55,
-  serialized_end=133,
+  serialized_end=135,
 )
 
 
@@ -73,42 +73,42 @@ _MSGFILE = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='busId', full_name='im.msg.obj_msg.MsgFile.busId', index=0,
+      name='bus_id', full_name='im.msg.obj_msg.MsgFile.bus_id', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='filePath', full_name='im.msg.obj_msg.MsgFile.filePath', index=1,
+      name='file_path', full_name='im.msg.obj_msg.MsgFile.file_path', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fileSize', full_name='im.msg.obj_msg.MsgFile.fileSize', index=2,
+      name='file_size', full_name='im.msg.obj_msg.MsgFile.file_size', index=2,
       number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fileName', full_name='im.msg.obj_msg.MsgFile.fileName', index=3,
+      name='file_name', full_name='im.msg.obj_msg.MsgFile.file_name', index=3,
       number=4, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='deadTime', full_name='im.msg.obj_msg.MsgFile.deadTime', index=4,
+      name='dead_time', full_name='im.msg.obj_msg.MsgFile.dead_time', index=4,
       number=5, type=3, cpp_type=2, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fileSha1', full_name='im.msg.obj_msg.MsgFile.fileSha1', index=5,
+      name='file_sha1', full_name='im.msg.obj_msg.MsgFile.file_sha1', index=5,
       number=6, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -122,7 +122,7 @@ _MSGFILE = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fileMd5', full_name='im.msg.obj_msg.MsgFile.fileMd5', index=7,
+      name='file_md5', full_name='im.msg.obj_msg.MsgFile.file_md5', index=7,
       number=8, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -140,8 +140,8 @@ _MSGFILE = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=136,
-  serialized_end=280,
+  serialized_start=138,
+  serialized_end=289,
 )
 
 
@@ -154,21 +154,21 @@ _MSGPIC = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='smallPicUrl', full_name='im.msg.obj_msg.MsgPic.smallPicUrl', index=0,
+      name='small_pic_url', full_name='im.msg.obj_msg.MsgPic.small_pic_url', index=0,
       number=1, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='originalPicUrl', full_name='im.msg.obj_msg.MsgPic.originalPicUrl', index=1,
+      name='original_pic_url', full_name='im.msg.obj_msg.MsgPic.original_pic_url', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='localPicId', full_name='im.msg.obj_msg.MsgPic.localPicId', index=2,
+      name='local_pic_id', full_name='im.msg.obj_msg.MsgPic.local_pic_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -186,8 +186,8 @@ _MSGPIC = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=282,
-  serialized_end=355,
+  serialized_start=291,
+  serialized_end=370,
 )
 
 
@@ -200,7 +200,7 @@ _OBJMSG = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='msgType', full_name='im.msg.obj_msg.ObjMsg.msgType', index=0,
+      name='msg_type', full_name='im.msg.obj_msg.ObjMsg.msg_type', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -221,7 +221,7 @@ _OBJMSG = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='titleExt', full_name='im.msg.obj_msg.ObjMsg.titleExt', index=3,
+      name='title_ext', full_name='im.msg.obj_msg.ObjMsg.title_ext', index=3,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -235,14 +235,14 @@ _OBJMSG = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='contentInfo', full_name='im.msg.obj_msg.ObjMsg.contentInfo', index=5,
+      name='content_info', full_name='im.msg.obj_msg.ObjMsg.content_info', index=5,
       number=7, type=11, cpp_type=10, label=3,
       has_default_value=False, default_value=[],
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='reportIdShow', full_name='im.msg.obj_msg.ObjMsg.reportIdShow', index=6,
+      name='report_id_show', full_name='im.msg.obj_msg.ObjMsg.report_id_show', index=6,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -260,13 +260,13 @@ _OBJMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=358,
-  serialized_end=545,
+  serialized_start=373,
+  serialized_end=565,
 )
 
 _MSGCONTENTINFO.fields_by_name['file'].message_type = _MSGFILE
 _OBJMSG.fields_by_name['pic'].message_type = _MSGPIC
-_OBJMSG.fields_by_name['contentInfo'].message_type = _MSGCONTENTINFO
+_OBJMSG.fields_by_name['content_info'].message_type = _MSGCONTENTINFO
 DESCRIPTOR.message_types_by_name['MsgContentInfo'] = _MSGCONTENTINFO
 DESCRIPTOR.message_types_by_name['MsgFile'] = _MSGFILE
 DESCRIPTOR.message_types_by_name['MsgPic'] = _MSGPIC

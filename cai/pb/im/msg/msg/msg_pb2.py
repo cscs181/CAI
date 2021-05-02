@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto2',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1b\x63\x61i/pb/im/msg/msg/msg.proto\x12\nim.msg.msg\x1a!cai/pb/im/msg/common/common.proto\x1a%cai/pb/im/msg/msg_body/msg_body.proto\"\x7f\n\x03\x43\x32\x43\x12#\n\x06sender\x18\x01 \x01(\x0b\x32\x13.im.msg.common.User\x12%\n\x08receiver\x18\x02 \x01(\x0b\x32\x13.im.msg.common.User\x12,\n\x0b\x63\x32\x43Relation\x18\x03 \x01(\x0b\x32\x17.im.msg.msg.C2CRelation\"p\n\x0b\x43\x32\x43Relation\x12\x0f\n\x07\x63\x32\x43Type\x18\x01 \x01(\r\x12+\n\tgroupInfo\x18\x02 \x01(\x0b\x32\x18.im.msg.common.GroupInfo\x12#\n\x05token\x18\x03 \x01(\x0b\x32\x14.im.msg.common.Token\"\xb2\x01\n\x0b\x43ontentHead\x12\x0e\n\x06pkgNum\x18\x01 \x01(\r\x12\x10\n\x08pkgIndex\x18\x02 \x01(\r\x12\x0b\n\x03seq\x18\x03 \x01(\r\x12\x10\n\x08\x64\x61teTime\x18\x04 \x01(\r\x12\x0c\n\x04type\x18\x05 \x01(\r\x12\x0e\n\x06\x64ivSeq\x18\x06 \x01(\r\x12\x10\n\x08msgdbUin\x18\x07 \x01(\x04\x12\x10\n\x08msgdbSeq\x18\x08 \x01(\r\x12\x12\n\nwordMsgSeq\x18\t \x01(\r\x12\x0c\n\x04rand\x18\n \x01(\r\"\x80\x01\n\x05Group\x12#\n\x06sender\x18\x01 \x01(\x0b\x32\x13.im.msg.common.User\x12%\n\x08receiver\x18\x02 \x01(\x0b\x32\x13.im.msg.common.User\x12+\n\tgroupInfo\x18\x03 \x01(\x0b\x32\x18.im.msg.common.GroupInfo\"P\n\x03Msg\x12!\n\x04head\x18\x01 \x01(\x0b\x32\x13.im.msg.msg.MsgHead\x12&\n\x04\x62ody\x18\x02 \x01(\x0b\x32\x18.im.msg.msg_body.MsgBody\"|\n\x07MsgHead\x12,\n\x0broutingHead\x18\x01 \x01(\x0b\x32\x17.im.msg.msg.RoutingHead\x12,\n\x0b\x63ontentHead\x18\x02 \x01(\x0b\x32\x17.im.msg.msg.ContentHead\x12\x15\n\rgbkTmpMsgBody\x18\x03 \x01(\x0c\"n\n\nMsgSendReq\x12\x1c\n\x03msg\x18\x01 \x01(\x0b\x32\x0f.im.msg.msg.Msg\x12\r\n\x05\x62uMsg\x18\x02 \x01(\x0c\x12\x0e\n\x06tailId\x18\x03 \x01(\r\x12\x13\n\x0b\x63onnMsgFlag\x18\x04 \x01(\r\x12\x0e\n\x06\x63ookie\x18\x05 \x01(\x0c\"\r\n\x0bMsgSendResp\"M\n\x0bRoutingHead\x12\x1c\n\x03\x63\x32\x43\x18\x01 \x01(\x0b\x32\x0f.im.msg.msg.C2C\x12 \n\x05group\x18\x02 \x01(\x0b\x32\x11.im.msg.msg.Group'
+  serialized_pb=b'\n\x1b\x63\x61i/pb/im/msg/msg/msg.proto\x12\nim.msg.msg\x1a!cai/pb/im/msg/common/common.proto\x1a%cai/pb/im/msg/msg_body/msg_body.proto\"\x80\x01\n\x03\x43\x32\x43\x12#\n\x06sender\x18\x01 \x01(\x0b\x32\x13.im.msg.common.User\x12%\n\x08receiver\x18\x02 \x01(\x0b\x32\x13.im.msg.common.User\x12-\n\x0c\x63\x32\x63_relation\x18\x03 \x01(\x0b\x32\x17.im.msg.msg.C2CRelation\"r\n\x0b\x43\x32\x43Relation\x12\x10\n\x08\x63\x32\x63_type\x18\x01 \x01(\r\x12,\n\ngroup_info\x18\x02 \x01(\x0b\x32\x18.im.msg.common.GroupInfo\x12#\n\x05token\x18\x03 \x01(\x0b\x32\x14.im.msg.common.Token\"\xba\x01\n\x0b\x43ontentHead\x12\x0f\n\x07pkg_num\x18\x01 \x01(\r\x12\x11\n\tpkg_index\x18\x02 \x01(\r\x12\x0b\n\x03seq\x18\x03 \x01(\r\x12\x11\n\tdate_time\x18\x04 \x01(\r\x12\x0c\n\x04type\x18\x05 \x01(\r\x12\x0f\n\x07\x64iv_seq\x18\x06 \x01(\r\x12\x11\n\tmsgdb_uin\x18\x07 \x01(\x04\x12\x11\n\tmsgdb_seq\x18\x08 \x01(\r\x12\x14\n\x0cword_msg_seq\x18\t \x01(\r\x12\x0c\n\x04rand\x18\n \x01(\r\"\x81\x01\n\x05Group\x12#\n\x06sender\x18\x01 \x01(\x0b\x32\x13.im.msg.common.User\x12%\n\x08receiver\x18\x02 \x01(\x0b\x32\x13.im.msg.common.User\x12,\n\ngroup_info\x18\x03 \x01(\x0b\x32\x18.im.msg.common.GroupInfo\"P\n\x03Msg\x12!\n\x04head\x18\x01 \x01(\x0b\x32\x13.im.msg.msg.MsgHead\x12&\n\x04\x62ody\x18\x02 \x01(\x0b\x32\x18.im.msg.msg_body.MsgBody\"\x81\x01\n\x07MsgHead\x12-\n\x0crouting_head\x18\x01 \x01(\x0b\x32\x17.im.msg.msg.RoutingHead\x12-\n\x0c\x63ontent_head\x18\x02 \x01(\x0b\x32\x17.im.msg.msg.ContentHead\x12\x18\n\x10gbk_tmp_msg_body\x18\x03 \x01(\x0c\"r\n\nMsgSendReq\x12\x1c\n\x03msg\x18\x01 \x01(\x0b\x32\x0f.im.msg.msg.Msg\x12\x0e\n\x06\x62u_msg\x18\x02 \x01(\x0c\x12\x0f\n\x07tail_id\x18\x03 \x01(\r\x12\x15\n\rconn_msg_flag\x18\x04 \x01(\r\x12\x0e\n\x06\x63ookie\x18\x05 \x01(\x0c\"\r\n\x0bMsgSendResp\"N\n\x0bRoutingHead\x12\x1d\n\x04\x63\x32_c\x18\x01 \x01(\x0b\x32\x0f.im.msg.msg.C2C\x12 \n\x05group\x18\x02 \x01(\x0b\x32\x11.im.msg.msg.Group'
   ,
   dependencies=[cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2.DESCRIPTOR,cai_dot_pb_dot_im_dot_msg_dot_msg__body_dot_msg__body__pb2.DESCRIPTOR,])
 
@@ -51,7 +51,7 @@ _C2C = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='c2CRelation', full_name='im.msg.msg.C2C.c2CRelation', index=2,
+      name='c2c_relation', full_name='im.msg.msg.C2C.c2c_relation', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -69,8 +69,8 @@ _C2C = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=117,
-  serialized_end=244,
+  serialized_start=118,
+  serialized_end=246,
 )
 
 
@@ -83,14 +83,14 @@ _C2CRELATION = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='c2CType', full_name='im.msg.msg.C2CRelation.c2CType', index=0,
+      name='c2c_type', full_name='im.msg.msg.C2CRelation.c2c_type', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupInfo', full_name='im.msg.msg.C2CRelation.groupInfo', index=1,
+      name='group_info', full_name='im.msg.msg.C2CRelation.group_info', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -115,8 +115,8 @@ _C2CRELATION = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=246,
-  serialized_end=358,
+  serialized_start=248,
+  serialized_end=362,
 )
 
 
@@ -129,14 +129,14 @@ _CONTENTHEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='pkgNum', full_name='im.msg.msg.ContentHead.pkgNum', index=0,
+      name='pkg_num', full_name='im.msg.msg.ContentHead.pkg_num', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='pkgIndex', full_name='im.msg.msg.ContentHead.pkgIndex', index=1,
+      name='pkg_index', full_name='im.msg.msg.ContentHead.pkg_index', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -150,7 +150,7 @@ _CONTENTHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='dateTime', full_name='im.msg.msg.ContentHead.dateTime', index=3,
+      name='date_time', full_name='im.msg.msg.ContentHead.date_time', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -164,28 +164,28 @@ _CONTENTHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='divSeq', full_name='im.msg.msg.ContentHead.divSeq', index=5,
+      name='div_seq', full_name='im.msg.msg.ContentHead.div_seq', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='msgdbUin', full_name='im.msg.msg.ContentHead.msgdbUin', index=6,
+      name='msgdb_uin', full_name='im.msg.msg.ContentHead.msgdb_uin', index=6,
       number=7, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='msgdbSeq', full_name='im.msg.msg.ContentHead.msgdbSeq', index=7,
+      name='msgdb_seq', full_name='im.msg.msg.ContentHead.msgdb_seq', index=7,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='wordMsgSeq', full_name='im.msg.msg.ContentHead.wordMsgSeq', index=8,
+      name='word_msg_seq', full_name='im.msg.msg.ContentHead.word_msg_seq', index=8,
       number=9, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -210,8 +210,8 @@ _CONTENTHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=361,
-  serialized_end=539,
+  serialized_start=365,
+  serialized_end=551,
 )
 
 
@@ -238,7 +238,7 @@ _GROUP = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupInfo', full_name='im.msg.msg.Group.groupInfo', index=2,
+      name='group_info', full_name='im.msg.msg.Group.group_info', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -256,8 +256,8 @@ _GROUP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=542,
-  serialized_end=670,
+  serialized_start=554,
+  serialized_end=683,
 )
 
 
@@ -295,8 +295,8 @@ _MSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=672,
-  serialized_end=752,
+  serialized_start=685,
+  serialized_end=765,
 )
 
 
@@ -309,21 +309,21 @@ _MSGHEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='routingHead', full_name='im.msg.msg.MsgHead.routingHead', index=0,
+      name='routing_head', full_name='im.msg.msg.MsgHead.routing_head', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='contentHead', full_name='im.msg.msg.MsgHead.contentHead', index=1,
+      name='content_head', full_name='im.msg.msg.MsgHead.content_head', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='gbkTmpMsgBody', full_name='im.msg.msg.MsgHead.gbkTmpMsgBody', index=2,
+      name='gbk_tmp_msg_body', full_name='im.msg.msg.MsgHead.gbk_tmp_msg_body', index=2,
       number=3, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -341,8 +341,8 @@ _MSGHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=754,
-  serialized_end=878,
+  serialized_start=768,
+  serialized_end=897,
 )
 
 
@@ -362,21 +362,21 @@ _MSGSENDREQ = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='buMsg', full_name='im.msg.msg.MsgSendReq.buMsg', index=1,
+      name='bu_msg', full_name='im.msg.msg.MsgSendReq.bu_msg', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='tailId', full_name='im.msg.msg.MsgSendReq.tailId', index=2,
+      name='tail_id', full_name='im.msg.msg.MsgSendReq.tail_id', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='connMsgFlag', full_name='im.msg.msg.MsgSendReq.connMsgFlag', index=3,
+      name='conn_msg_flag', full_name='im.msg.msg.MsgSendReq.conn_msg_flag', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -401,8 +401,8 @@ _MSGSENDREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=880,
-  serialized_end=990,
+  serialized_start=899,
+  serialized_end=1013,
 )
 
 
@@ -426,8 +426,8 @@ _MSGSENDRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=992,
-  serialized_end=1005,
+  serialized_start=1015,
+  serialized_end=1028,
 )
 
 
@@ -440,7 +440,7 @@ _ROUTINGHEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='c2C', full_name='im.msg.msg.RoutingHead.c2C', index=0,
+      name='c2_c', full_name='im.msg.msg.RoutingHead.c2_c', index=0,
       number=1, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -465,24 +465,24 @@ _ROUTINGHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1007,
-  serialized_end=1084,
+  serialized_start=1030,
+  serialized_end=1108,
 )
 
 _C2C.fields_by_name['sender'].message_type = cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2._USER
 _C2C.fields_by_name['receiver'].message_type = cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2._USER
-_C2C.fields_by_name['c2CRelation'].message_type = _C2CRELATION
-_C2CRELATION.fields_by_name['groupInfo'].message_type = cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2._GROUPINFO
+_C2C.fields_by_name['c2c_relation'].message_type = _C2CRELATION
+_C2CRELATION.fields_by_name['group_info'].message_type = cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2._GROUPINFO
 _C2CRELATION.fields_by_name['token'].message_type = cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2._TOKEN
 _GROUP.fields_by_name['sender'].message_type = cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2._USER
 _GROUP.fields_by_name['receiver'].message_type = cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2._USER
-_GROUP.fields_by_name['groupInfo'].message_type = cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2._GROUPINFO
+_GROUP.fields_by_name['group_info'].message_type = cai_dot_pb_dot_im_dot_msg_dot_common_dot_common__pb2._GROUPINFO
 _MSG.fields_by_name['head'].message_type = _MSGHEAD
 _MSG.fields_by_name['body'].message_type = cai_dot_pb_dot_im_dot_msg_dot_msg__body_dot_msg__body__pb2._MSGBODY
-_MSGHEAD.fields_by_name['routingHead'].message_type = _ROUTINGHEAD
-_MSGHEAD.fields_by_name['contentHead'].message_type = _CONTENTHEAD
+_MSGHEAD.fields_by_name['routing_head'].message_type = _ROUTINGHEAD
+_MSGHEAD.fields_by_name['content_head'].message_type = _CONTENTHEAD
 _MSGSENDREQ.fields_by_name['msg'].message_type = _MSG
-_ROUTINGHEAD.fields_by_name['c2C'].message_type = _C2C
+_ROUTINGHEAD.fields_by_name['c2_c'].message_type = _C2C
 _ROUTINGHEAD.fields_by_name['group'].message_type = _GROUP
 DESCRIPTOR.message_types_by_name['C2C'] = _C2C
 DESCRIPTOR.message_types_by_name['C2CRelation'] = _C2CRELATION

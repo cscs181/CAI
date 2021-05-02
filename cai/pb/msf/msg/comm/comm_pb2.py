@@ -21,7 +21,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto2',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1e\x63\x61i/pb/msf/msg/comm/comm.proto\x12\x0cmsf.msg.comm\x1a%cai/pb/im/msg/msg_body/msg_body.proto\x1a%cai/pb/im/msg/msg_head/msg_head.proto\"n\n\x0c\x41ppShareInfo\x12\x12\n\nappshareId\x18\x01 \x01(\r\x12\x16\n\x0e\x61ppshareCookie\x18\x02 \x01(\x0c\x12\x32\n\x10\x61ppshareResource\x18\x03 \x01(\x0b\x32\x18.msf.msg.comm.PluginInfo\"\x8c\x02\n\rC2CTmpMsgHead\x12\x0f\n\x07\x63\x32\x43Type\x18\x01 \x01(\r\x12\x13\n\x0bserviceType\x18\x02 \x01(\r\x12\x10\n\x08groupUin\x18\x03 \x01(\x04\x12\x11\n\tgroupCode\x18\x04 \x01(\x04\x12\x0b\n\x03sig\x18\x05 \x01(\x0c\x12\x0f\n\x07sigType\x18\x06 \x01(\r\x12\x11\n\tfromPhone\x18\x07 \x01(\t\x12\x0f\n\x07toPhone\x18\x08 \x01(\t\x12\x13\n\x0blockDisplay\x18\t \x01(\r\x12\x15\n\rdirectionFlag\x18\n \x01(\r\x12\x10\n\x08reserved\x18\x0b \x01(\x0c\x12\x14\n\x0c\x62usinessName\x18\x0e \x01(\x0c\x12\x1a\n\x12\x62usinessSubContent\x18\x0f \x01(\x0c\"R\n\x0b\x43ontentHead\x12\x0e\n\x06pkgNum\x18\x01 \x01(\r\x12\x10\n\x08pkgIndex\x18\x02 \x01(\r\x12\x0e\n\x06\x64ivSeq\x18\x03 \x01(\r\x12\x11\n\tautoReply\x18\x04 \x01(\r\"z\n\x0b\x44iscussInfo\x12\x12\n\ndiscussUin\x18\x01 \x01(\x04\x12\x13\n\x0b\x64iscussType\x18\x02 \x01(\r\x12\x16\n\x0e\x64iscussInfoSeq\x18\x03 \x01(\x04\x12\x15\n\rdiscussRemark\x18\x04 \x01(\x0c\x12\x13\n\x0b\x64iscussName\x18\x05 \x01(\x0c\"e\n\x0f\x45xtGroupKeyInfo\x12\x11\n\tcurMaxSeq\x18\x01 \x01(\r\x12\x0f\n\x07\x63urTime\x18\x02 \x01(\x04\x12\x18\n\x10operateByParents\x18\x03 \x01(\r\x12\x14\n\x0c\x65xtGroupInfo\x18\x04 \x01(\x0c\"\xab\x01\n\tGroupInfo\x12\x11\n\tgroupCode\x18\x01 \x01(\x04\x12\x11\n\tgroupType\x18\x02 \x01(\r\x12\x14\n\x0cgroupInfoSeq\x18\x03 \x01(\x04\x12\x11\n\tgroupCard\x18\x04 \x01(\x0c\x12\x11\n\tgroupRank\x18\x05 \x01(\x0c\x12\x12\n\ngroupLevel\x18\x06 \x01(\r\x12\x15\n\rgroupCardType\x18\x07 \x01(\r\x12\x11\n\tgroupName\x18\x08 \x01(\x0c\"\xb4\x01\n\x03Msg\x12#\n\x04head\x18\x01 \x01(\x0b\x32\x15.msf.msg.comm.MsgHead\x12.\n\x0b\x63ontentHead\x18\x02 \x01(\x0b\x32\x19.msf.msg.comm.ContentHead\x12&\n\x04\x62ody\x18\x03 \x01(\x0b\x32\x18.im.msg.msg_body.MsgBody\x12\x30\n\x0c\x61ppshareInfo\x18\x04 \x01(\x0b\x32\x1a.msf.msg.comm.AppShareInfo\"\xcb\x05\n\x07MsgHead\x12\x0f\n\x07\x66romUin\x18\x01 \x01(\x04\x12\r\n\x05toUin\x18\x02 \x01(\x04\x12\x0c\n\x04type\x18\x03 \x01(\r\x12\x0e\n\x06\x63\x32\x43\x43md\x18\x04 \x01(\r\x12\x0b\n\x03seq\x18\x05 \x01(\r\x12\x0c\n\x04time\x18\x06 \x01(\r\x12\x0b\n\x03uid\x18\x07 \x01(\x04\x12\x32\n\rc2CTmpMsgHead\x18\x08 \x01(\x0b\x32\x1b.msf.msg.comm.C2CTmpMsgHead\x12*\n\tgroupInfo\x18\t \x01(\x0b\x32\x17.msf.msg.comm.GroupInfo\x12\x11\n\tfromAppid\x18\n \x01(\r\x12\x12\n\nfromInstid\x18\x0b \x01(\r\x12\x12\n\nuserActive\x18\x0c \x01(\r\x12.\n\x0b\x64iscussInfo\x18\r \x01(\x0b\x32\x19.msf.msg.comm.DiscussInfo\x12\x10\n\x08\x66romNick\x18\x0e \x01(\t\x12\x0f\n\x07\x61uthUin\x18\x0f \x01(\x04\x12\x10\n\x08\x61uthNick\x18\x10 \x01(\t\x12\x0c\n\x04\x66lag\x18\x11 \x01(\r\x12\x12\n\nauthRemark\x18\x12 \x01(\t\x12\x11\n\tgroupName\x18\x13 \x01(\t\x12\x34\n\x0emutiltransHead\x18\x14 \x01(\x0b\x32\x1c.msf.msg.comm.MutilTransHead\x12+\n\x08instCtrl\x18\x15 \x01(\x0b\x32\x19.im.msg.msg_head.InstCtrl\x12\"\n\x1apublicAccountGroupSendFlag\x18\x16 \x01(\r\x12\x18\n\x10wseqInC2CMsghead\x18\x17 \x01(\r\x12\x0c\n\x04\x63pid\x18\x18 \x01(\x04\x12\x36\n\x0f\x65xtGroupKeyInfo\x18\x19 \x01(\x0b\x32\x1d.msf.msg.comm.ExtGroupKeyInfo\x12\x1b\n\x13multiCompatibleText\x18\x1a \x01(\t\x12\x0f\n\x07\x61uthSex\x18\x1b \x01(\r\x12\x10\n\x08isSrcMsg\x18\x1c \x01(\x08\"3\n\x0cMsgType0x210\x12\x12\n\nsubMsgType\x18\x01 \x01(\r\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\"/\n\x0eMutilTransHead\x12\x0e\n\x06status\x18\x01 \x01(\r\x12\r\n\x05msgId\x18\x02 \x01(\r\"\xcb\x01\n\nPluginInfo\x12\r\n\x05resId\x18\x01 \x01(\r\x12\x0f\n\x07pkgName\x18\x02 \x01(\t\x12\x0e\n\x06newVer\x18\x03 \x01(\r\x12\x0f\n\x07resType\x18\x04 \x01(\r\x12\x0f\n\x07lanType\x18\x05 \x01(\r\x12\x10\n\x08priority\x18\x06 \x01(\r\x12\x0f\n\x07resName\x18\x07 \x01(\t\x12\x0f\n\x07resDesc\x18\x08 \x01(\t\x12\x11\n\tresUrlBig\x18\t \x01(\t\x12\x13\n\x0bresUrlSmall\x18\n \x01(\t\x12\x0f\n\x07resConf\x18\x0b \x01(\t\"%\n\x08Uin2Nick\x12\x0b\n\x03uin\x18\x01 \x01(\x04\x12\x0c\n\x04nick\x18\x02 \x01(\t\"\xc7\x01\n\nUinPairMsg\x12\x14\n\x0clastReadTime\x18\x01 \x01(\r\x12\x0f\n\x07peerUin\x18\x02 \x01(\x04\x12\x11\n\tcompleted\x18\x03 \x01(\r\x12\x1e\n\x03msg\x18\x04 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x14\n\x0cunreadMsgNum\x18\x05 \x01(\r\x12\x0f\n\x07\x63\x32\x43Type\x18\x08 \x01(\r\x12\x13\n\x0bserviceType\x18\t \x01(\r\x12\x11\n\tpbReserve\x18\n \x01(\x0c\x12\x10\n\x08toTinyId\x18\x0b \x01(\x04'
+  serialized_pb=b'\n\x1e\x63\x61i/pb/msf/msg/comm/comm.proto\x12\x0cmsf.msg.comm\x1a%cai/pb/im/msg/msg_body/msg_body.proto\x1a%cai/pb/im/msg/msg_head/msg_head.proto\"q\n\x0c\x41ppShareInfo\x12\x13\n\x0b\x61ppshare_id\x18\x01 \x01(\r\x12\x17\n\x0f\x61ppshare_cookie\x18\x02 \x01(\x0c\x12\x33\n\x11\x61ppshare_resource\x18\x03 \x01(\x0b\x32\x18.msf.msg.comm.PluginInfo\"\x98\x02\n\rC2CTmpMsgHead\x12\x10\n\x08\x63\x32\x63_type\x18\x01 \x01(\r\x12\x14\n\x0cservice_type\x18\x02 \x01(\r\x12\x11\n\tgroup_uin\x18\x03 \x01(\x04\x12\x12\n\ngroup_code\x18\x04 \x01(\x04\x12\x0b\n\x03sig\x18\x05 \x01(\x0c\x12\x10\n\x08sig_type\x18\x06 \x01(\r\x12\x12\n\nfrom_phone\x18\x07 \x01(\t\x12\x10\n\x08to_phone\x18\x08 \x01(\t\x12\x14\n\x0clock_display\x18\t \x01(\r\x12\x16\n\x0e\x64irection_flag\x18\n \x01(\r\x12\x10\n\x08reserved\x18\x0b \x01(\x0c\x12\x15\n\rbusiness_name\x18\x0e \x01(\x0c\x12\x1c\n\x14\x62usiness_sub_content\x18\x0f \x01(\x0c\"V\n\x0b\x43ontentHead\x12\x0f\n\x07pkg_num\x18\x01 \x01(\r\x12\x11\n\tpkg_index\x18\x02 \x01(\r\x12\x0f\n\x07\x64iv_seq\x18\x03 \x01(\r\x12\x12\n\nauto_reply\x18\x04 \x01(\r\"\x80\x01\n\x0b\x44iscussInfo\x12\x13\n\x0b\x64iscuss_uin\x18\x01 \x01(\x04\x12\x14\n\x0c\x64iscuss_type\x18\x02 \x01(\r\x12\x18\n\x10\x64iscuss_info_seq\x18\x03 \x01(\x04\x12\x16\n\x0e\x64iscuss_remark\x18\x04 \x01(\x0c\x12\x14\n\x0c\x64iscuss_name\x18\x05 \x01(\x0c\"l\n\x0f\x45xtGroupKeyInfo\x12\x13\n\x0b\x63ur_max_seq\x18\x01 \x01(\r\x12\x10\n\x08\x63ur_time\x18\x02 \x01(\x04\x12\x1a\n\x12operate_by_parents\x18\x03 \x01(\r\x12\x16\n\x0e\x65xt_group_info\x18\x04 \x01(\x0c\"\xb5\x01\n\tGroupInfo\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x12\n\ngroup_type\x18\x02 \x01(\r\x12\x16\n\x0egroup_info_seq\x18\x03 \x01(\x04\x12\x12\n\ngroup_card\x18\x04 \x01(\x0c\x12\x12\n\ngroup_rank\x18\x05 \x01(\x0c\x12\x13\n\x0bgroup_level\x18\x06 \x01(\r\x12\x17\n\x0fgroup_card_type\x18\x07 \x01(\r\x12\x12\n\ngroup_name\x18\x08 \x01(\x0c\"\xb6\x01\n\x03Msg\x12#\n\x04head\x18\x01 \x01(\x0b\x32\x15.msf.msg.comm.MsgHead\x12/\n\x0c\x63ontent_head\x18\x02 \x01(\x0b\x32\x19.msf.msg.comm.ContentHead\x12&\n\x04\x62ody\x18\x03 \x01(\x0b\x32\x18.im.msg.msg_body.MsgBody\x12\x31\n\rappshare_info\x18\x04 \x01(\x0b\x32\x1a.msf.msg.comm.AppShareInfo\"\xec\x05\n\x07MsgHead\x12\x10\n\x08\x66rom_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\x12\x0c\n\x04type\x18\x03 \x01(\r\x12\x0f\n\x07\x63\x32\x63_cmd\x18\x04 \x01(\r\x12\x0b\n\x03seq\x18\x05 \x01(\r\x12\x0c\n\x04time\x18\x06 \x01(\r\x12\x0b\n\x03uid\x18\x07 \x01(\x04\x12\x35\n\x10\x63\x32\x63_tmp_msg_head\x18\x08 \x01(\x0b\x32\x1b.msf.msg.comm.C2CTmpMsgHead\x12+\n\ngroup_info\x18\t \x01(\x0b\x32\x17.msf.msg.comm.GroupInfo\x12\x12\n\nfrom_appid\x18\n \x01(\r\x12\x13\n\x0b\x66rom_instid\x18\x0b \x01(\r\x12\x13\n\x0buser_active\x18\x0c \x01(\r\x12/\n\x0c\x64iscuss_info\x18\r \x01(\x0b\x32\x19.msf.msg.comm.DiscussInfo\x12\x11\n\tfrom_nick\x18\x0e \x01(\t\x12\x10\n\x08\x61uth_uin\x18\x0f \x01(\x04\x12\x11\n\tauth_nick\x18\x10 \x01(\t\x12\x0c\n\x04\x66lag\x18\x11 \x01(\r\x12\x13\n\x0b\x61uth_remark\x18\x12 \x01(\t\x12\x12\n\ngroup_name\x18\x13 \x01(\t\x12\x35\n\x0fmutiltrans_head\x18\x14 \x01(\x0b\x32\x1c.msf.msg.comm.MutilTransHead\x12,\n\tinst_ctrl\x18\x15 \x01(\x0b\x32\x19.im.msg.msg_head.InstCtrl\x12&\n\x1epublic_account_group_send_flag\x18\x16 \x01(\r\x12\x1b\n\x13wseq_in_c2c_msghead\x18\x17 \x01(\r\x12\x0c\n\x04\x63pid\x18\x18 \x01(\x04\x12\x39\n\x12\x65xt_group_key_info\x18\x19 \x01(\x0b\x32\x1d.msf.msg.comm.ExtGroupKeyInfo\x12\x1d\n\x15multi_compatible_text\x18\x1a \x01(\t\x12\x10\n\x08\x61uth_sex\x18\x1b \x01(\r\x12\x12\n\nis_src_msg\x18\x1c \x01(\x08\"5\n\x0cMsgType0x210\x12\x14\n\x0csub_msg_type\x18\x01 \x01(\r\x12\x0f\n\x07\x63ontent\x18\x02 \x01(\x0c\"0\n\x0eMutilTransHead\x12\x0e\n\x06status\x18\x01 \x01(\r\x12\x0e\n\x06msg_id\x18\x02 \x01(\r\"\xd7\x01\n\nPluginInfo\x12\x0e\n\x06res_id\x18\x01 \x01(\r\x12\x10\n\x08pkg_name\x18\x02 \x01(\t\x12\x0f\n\x07new_ver\x18\x03 \x01(\r\x12\x10\n\x08res_type\x18\x04 \x01(\r\x12\x10\n\x08lan_type\x18\x05 \x01(\r\x12\x10\n\x08priority\x18\x06 \x01(\r\x12\x10\n\x08res_name\x18\x07 \x01(\t\x12\x10\n\x08res_desc\x18\x08 \x01(\t\x12\x13\n\x0bres_url_big\x18\t \x01(\t\x12\x15\n\rres_url_small\x18\n \x01(\t\x12\x10\n\x08res_conf\x18\x0b \x01(\t\"%\n\x08Uin2Nick\x12\x0b\n\x03uin\x18\x01 \x01(\x04\x12\x0c\n\x04nick\x18\x02 \x01(\t\"\xd1\x01\n\nUinPairMsg\x12\x16\n\x0elast_read_time\x18\x01 \x01(\r\x12\x10\n\x08peer_uin\x18\x02 \x01(\x04\x12\x11\n\tcompleted\x18\x03 \x01(\r\x12\x1e\n\x03msg\x18\x04 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x16\n\x0eunread_msg_num\x18\x05 \x01(\r\x12\x10\n\x08\x63\x32\x63_type\x18\x08 \x01(\r\x12\x14\n\x0cservice_type\x18\t \x01(\r\x12\x12\n\npb_reserve\x18\n \x01(\x0c\x12\x12\n\nto_tiny_id\x18\x0b \x01(\x04'
   ,
   dependencies=[cai_dot_pb_dot_im_dot_msg_dot_msg__body_dot_msg__body__pb2.DESCRIPTOR,cai_dot_pb_dot_im_dot_msg_dot_msg__head_dot_msg__head__pb2.DESCRIPTOR,])
 
@@ -37,21 +37,21 @@ _APPSHAREINFO = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='appshareId', full_name='msf.msg.comm.AppShareInfo.appshareId', index=0,
+      name='appshare_id', full_name='msf.msg.comm.AppShareInfo.appshare_id', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='appshareCookie', full_name='msf.msg.comm.AppShareInfo.appshareCookie', index=1,
+      name='appshare_cookie', full_name='msf.msg.comm.AppShareInfo.appshare_cookie', index=1,
       number=2, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='appshareResource', full_name='msf.msg.comm.AppShareInfo.appshareResource', index=2,
+      name='appshare_resource', full_name='msf.msg.comm.AppShareInfo.appshare_resource', index=2,
       number=3, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -70,7 +70,7 @@ _APPSHAREINFO = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=126,
-  serialized_end=236,
+  serialized_end=239,
 )
 
 
@@ -83,28 +83,28 @@ _C2CTMPMSGHEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='c2CType', full_name='msf.msg.comm.C2CTmpMsgHead.c2CType', index=0,
+      name='c2c_type', full_name='msf.msg.comm.C2CTmpMsgHead.c2c_type', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='serviceType', full_name='msf.msg.comm.C2CTmpMsgHead.serviceType', index=1,
+      name='service_type', full_name='msf.msg.comm.C2CTmpMsgHead.service_type', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupUin', full_name='msf.msg.comm.C2CTmpMsgHead.groupUin', index=2,
+      name='group_uin', full_name='msf.msg.comm.C2CTmpMsgHead.group_uin', index=2,
       number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupCode', full_name='msf.msg.comm.C2CTmpMsgHead.groupCode', index=3,
+      name='group_code', full_name='msf.msg.comm.C2CTmpMsgHead.group_code', index=3,
       number=4, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -118,35 +118,35 @@ _C2CTMPMSGHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='sigType', full_name='msf.msg.comm.C2CTmpMsgHead.sigType', index=5,
+      name='sig_type', full_name='msf.msg.comm.C2CTmpMsgHead.sig_type', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fromPhone', full_name='msf.msg.comm.C2CTmpMsgHead.fromPhone', index=6,
+      name='from_phone', full_name='msf.msg.comm.C2CTmpMsgHead.from_phone', index=6,
       number=7, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='toPhone', full_name='msf.msg.comm.C2CTmpMsgHead.toPhone', index=7,
+      name='to_phone', full_name='msf.msg.comm.C2CTmpMsgHead.to_phone', index=7,
       number=8, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='lockDisplay', full_name='msf.msg.comm.C2CTmpMsgHead.lockDisplay', index=8,
+      name='lock_display', full_name='msf.msg.comm.C2CTmpMsgHead.lock_display', index=8,
       number=9, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='directionFlag', full_name='msf.msg.comm.C2CTmpMsgHead.directionFlag', index=9,
+      name='direction_flag', full_name='msf.msg.comm.C2CTmpMsgHead.direction_flag', index=9,
       number=10, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -160,14 +160,14 @@ _C2CTMPMSGHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='businessName', full_name='msf.msg.comm.C2CTmpMsgHead.businessName', index=11,
+      name='business_name', full_name='msf.msg.comm.C2CTmpMsgHead.business_name', index=11,
       number=14, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='businessSubContent', full_name='msf.msg.comm.C2CTmpMsgHead.businessSubContent', index=12,
+      name='business_sub_content', full_name='msf.msg.comm.C2CTmpMsgHead.business_sub_content', index=12,
       number=15, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -185,8 +185,8 @@ _C2CTMPMSGHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=239,
-  serialized_end=507,
+  serialized_start=242,
+  serialized_end=522,
 )
 
 
@@ -199,28 +199,28 @@ _CONTENTHEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='pkgNum', full_name='msf.msg.comm.ContentHead.pkgNum', index=0,
+      name='pkg_num', full_name='msf.msg.comm.ContentHead.pkg_num', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='pkgIndex', full_name='msf.msg.comm.ContentHead.pkgIndex', index=1,
+      name='pkg_index', full_name='msf.msg.comm.ContentHead.pkg_index', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='divSeq', full_name='msf.msg.comm.ContentHead.divSeq', index=2,
+      name='div_seq', full_name='msf.msg.comm.ContentHead.div_seq', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='autoReply', full_name='msf.msg.comm.ContentHead.autoReply', index=3,
+      name='auto_reply', full_name='msf.msg.comm.ContentHead.auto_reply', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -238,8 +238,8 @@ _CONTENTHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=509,
-  serialized_end=591,
+  serialized_start=524,
+  serialized_end=610,
 )
 
 
@@ -252,35 +252,35 @@ _DISCUSSINFO = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='discussUin', full_name='msf.msg.comm.DiscussInfo.discussUin', index=0,
+      name='discuss_uin', full_name='msf.msg.comm.DiscussInfo.discuss_uin', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='discussType', full_name='msf.msg.comm.DiscussInfo.discussType', index=1,
+      name='discuss_type', full_name='msf.msg.comm.DiscussInfo.discuss_type', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='discussInfoSeq', full_name='msf.msg.comm.DiscussInfo.discussInfoSeq', index=2,
+      name='discuss_info_seq', full_name='msf.msg.comm.DiscussInfo.discuss_info_seq', index=2,
       number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='discussRemark', full_name='msf.msg.comm.DiscussInfo.discussRemark', index=3,
+      name='discuss_remark', full_name='msf.msg.comm.DiscussInfo.discuss_remark', index=3,
       number=4, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='discussName', full_name='msf.msg.comm.DiscussInfo.discussName', index=4,
+      name='discuss_name', full_name='msf.msg.comm.DiscussInfo.discuss_name', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -298,8 +298,8 @@ _DISCUSSINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=593,
-  serialized_end=715,
+  serialized_start=613,
+  serialized_end=741,
 )
 
 
@@ -312,28 +312,28 @@ _EXTGROUPKEYINFO = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='curMaxSeq', full_name='msf.msg.comm.ExtGroupKeyInfo.curMaxSeq', index=0,
+      name='cur_max_seq', full_name='msf.msg.comm.ExtGroupKeyInfo.cur_max_seq', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='curTime', full_name='msf.msg.comm.ExtGroupKeyInfo.curTime', index=1,
+      name='cur_time', full_name='msf.msg.comm.ExtGroupKeyInfo.cur_time', index=1,
       number=2, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='operateByParents', full_name='msf.msg.comm.ExtGroupKeyInfo.operateByParents', index=2,
+      name='operate_by_parents', full_name='msf.msg.comm.ExtGroupKeyInfo.operate_by_parents', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='extGroupInfo', full_name='msf.msg.comm.ExtGroupKeyInfo.extGroupInfo', index=3,
+      name='ext_group_info', full_name='msf.msg.comm.ExtGroupKeyInfo.ext_group_info', index=3,
       number=4, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -351,8 +351,8 @@ _EXTGROUPKEYINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=717,
-  serialized_end=818,
+  serialized_start=743,
+  serialized_end=851,
 )
 
 
@@ -365,56 +365,56 @@ _GROUPINFO = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='groupCode', full_name='msf.msg.comm.GroupInfo.groupCode', index=0,
+      name='group_code', full_name='msf.msg.comm.GroupInfo.group_code', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupType', full_name='msf.msg.comm.GroupInfo.groupType', index=1,
+      name='group_type', full_name='msf.msg.comm.GroupInfo.group_type', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupInfoSeq', full_name='msf.msg.comm.GroupInfo.groupInfoSeq', index=2,
+      name='group_info_seq', full_name='msf.msg.comm.GroupInfo.group_info_seq', index=2,
       number=3, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupCard', full_name='msf.msg.comm.GroupInfo.groupCard', index=3,
+      name='group_card', full_name='msf.msg.comm.GroupInfo.group_card', index=3,
       number=4, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupRank', full_name='msf.msg.comm.GroupInfo.groupRank', index=4,
+      name='group_rank', full_name='msf.msg.comm.GroupInfo.group_rank', index=4,
       number=5, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupLevel', full_name='msf.msg.comm.GroupInfo.groupLevel', index=5,
+      name='group_level', full_name='msf.msg.comm.GroupInfo.group_level', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupCardType', full_name='msf.msg.comm.GroupInfo.groupCardType', index=6,
+      name='group_card_type', full_name='msf.msg.comm.GroupInfo.group_card_type', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupName', full_name='msf.msg.comm.GroupInfo.groupName', index=7,
+      name='group_name', full_name='msf.msg.comm.GroupInfo.group_name', index=7,
       number=8, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
@@ -432,8 +432,8 @@ _GROUPINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=821,
-  serialized_end=992,
+  serialized_start=854,
+  serialized_end=1035,
 )
 
 
@@ -453,7 +453,7 @@ _MSG = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='contentHead', full_name='msf.msg.comm.Msg.contentHead', index=1,
+      name='content_head', full_name='msf.msg.comm.Msg.content_head', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -467,7 +467,7 @@ _MSG = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='appshareInfo', full_name='msf.msg.comm.Msg.appshareInfo', index=3,
+      name='appshare_info', full_name='msf.msg.comm.Msg.appshare_info', index=3,
       number=4, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -485,8 +485,8 @@ _MSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=995,
-  serialized_end=1175,
+  serialized_start=1038,
+  serialized_end=1220,
 )
 
 
@@ -499,14 +499,14 @@ _MSGHEAD = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='fromUin', full_name='msf.msg.comm.MsgHead.fromUin', index=0,
+      name='from_uin', full_name='msf.msg.comm.MsgHead.from_uin', index=0,
       number=1, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='toUin', full_name='msf.msg.comm.MsgHead.toUin', index=1,
+      name='to_uin', full_name='msf.msg.comm.MsgHead.to_uin', index=1,
       number=2, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -520,7 +520,7 @@ _MSGHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='c2CCmd', full_name='msf.msg.comm.MsgHead.c2CCmd', index=3,
+      name='c2c_cmd', full_name='msf.msg.comm.MsgHead.c2c_cmd', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -548,63 +548,63 @@ _MSGHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='c2CTmpMsgHead', full_name='msf.msg.comm.MsgHead.c2CTmpMsgHead', index=7,
+      name='c2c_tmp_msg_head', full_name='msf.msg.comm.MsgHead.c2c_tmp_msg_head', index=7,
       number=8, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupInfo', full_name='msf.msg.comm.MsgHead.groupInfo', index=8,
+      name='group_info', full_name='msf.msg.comm.MsgHead.group_info', index=8,
       number=9, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fromAppid', full_name='msf.msg.comm.MsgHead.fromAppid', index=9,
+      name='from_appid', full_name='msf.msg.comm.MsgHead.from_appid', index=9,
       number=10, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fromInstid', full_name='msf.msg.comm.MsgHead.fromInstid', index=10,
+      name='from_instid', full_name='msf.msg.comm.MsgHead.from_instid', index=10,
       number=11, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='userActive', full_name='msf.msg.comm.MsgHead.userActive', index=11,
+      name='user_active', full_name='msf.msg.comm.MsgHead.user_active', index=11,
       number=12, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='discussInfo', full_name='msf.msg.comm.MsgHead.discussInfo', index=12,
+      name='discuss_info', full_name='msf.msg.comm.MsgHead.discuss_info', index=12,
       number=13, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='fromNick', full_name='msf.msg.comm.MsgHead.fromNick', index=13,
+      name='from_nick', full_name='msf.msg.comm.MsgHead.from_nick', index=13,
       number=14, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='authUin', full_name='msf.msg.comm.MsgHead.authUin', index=14,
+      name='auth_uin', full_name='msf.msg.comm.MsgHead.auth_uin', index=14,
       number=15, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='authNick', full_name='msf.msg.comm.MsgHead.authNick', index=15,
+      name='auth_nick', full_name='msf.msg.comm.MsgHead.auth_nick', index=15,
       number=16, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -618,42 +618,42 @@ _MSGHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='authRemark', full_name='msf.msg.comm.MsgHead.authRemark', index=17,
+      name='auth_remark', full_name='msf.msg.comm.MsgHead.auth_remark', index=17,
       number=18, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='groupName', full_name='msf.msg.comm.MsgHead.groupName', index=18,
+      name='group_name', full_name='msf.msg.comm.MsgHead.group_name', index=18,
       number=19, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='mutiltransHead', full_name='msf.msg.comm.MsgHead.mutiltransHead', index=19,
+      name='mutiltrans_head', full_name='msf.msg.comm.MsgHead.mutiltrans_head', index=19,
       number=20, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='instCtrl', full_name='msf.msg.comm.MsgHead.instCtrl', index=20,
+      name='inst_ctrl', full_name='msf.msg.comm.MsgHead.inst_ctrl', index=20,
       number=21, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='publicAccountGroupSendFlag', full_name='msf.msg.comm.MsgHead.publicAccountGroupSendFlag', index=21,
+      name='public_account_group_send_flag', full_name='msf.msg.comm.MsgHead.public_account_group_send_flag', index=21,
       number=22, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='wseqInC2CMsghead', full_name='msf.msg.comm.MsgHead.wseqInC2CMsghead', index=22,
+      name='wseq_in_c2c_msghead', full_name='msf.msg.comm.MsgHead.wseq_in_c2c_msghead', index=22,
       number=23, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -667,28 +667,28 @@ _MSGHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='extGroupKeyInfo', full_name='msf.msg.comm.MsgHead.extGroupKeyInfo', index=24,
+      name='ext_group_key_info', full_name='msf.msg.comm.MsgHead.ext_group_key_info', index=24,
       number=25, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='multiCompatibleText', full_name='msf.msg.comm.MsgHead.multiCompatibleText', index=25,
+      name='multi_compatible_text', full_name='msf.msg.comm.MsgHead.multi_compatible_text', index=25,
       number=26, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='authSex', full_name='msf.msg.comm.MsgHead.authSex', index=26,
+      name='auth_sex', full_name='msf.msg.comm.MsgHead.auth_sex', index=26,
       number=27, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='isSrcMsg', full_name='msf.msg.comm.MsgHead.isSrcMsg', index=27,
+      name='is_src_msg', full_name='msf.msg.comm.MsgHead.is_src_msg', index=27,
       number=28, type=8, cpp_type=7, label=1,
       has_default_value=False, default_value=False,
       message_type=None, enum_type=None, containing_type=None,
@@ -706,8 +706,8 @@ _MSGHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1178,
-  serialized_end=1893,
+  serialized_start=1223,
+  serialized_end=1971,
 )
 
 
@@ -720,7 +720,7 @@ _MSGTYPE0X210 = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='subMsgType', full_name='msf.msg.comm.MsgType0x210.subMsgType', index=0,
+      name='sub_msg_type', full_name='msf.msg.comm.MsgType0x210.sub_msg_type', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -745,8 +745,8 @@ _MSGTYPE0X210 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1895,
-  serialized_end=1946,
+  serialized_start=1973,
+  serialized_end=2026,
 )
 
 
@@ -766,7 +766,7 @@ _MUTILTRANSHEAD = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='msgId', full_name='msf.msg.comm.MutilTransHead.msgId', index=1,
+      name='msg_id', full_name='msf.msg.comm.MutilTransHead.msg_id', index=1,
       number=2, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -784,8 +784,8 @@ _MUTILTRANSHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1948,
-  serialized_end=1995,
+  serialized_start=2028,
+  serialized_end=2076,
 )
 
 
@@ -798,35 +798,35 @@ _PLUGININFO = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='resId', full_name='msf.msg.comm.PluginInfo.resId', index=0,
+      name='res_id', full_name='msf.msg.comm.PluginInfo.res_id', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='pkgName', full_name='msf.msg.comm.PluginInfo.pkgName', index=1,
+      name='pkg_name', full_name='msf.msg.comm.PluginInfo.pkg_name', index=1,
       number=2, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='newVer', full_name='msf.msg.comm.PluginInfo.newVer', index=2,
+      name='new_ver', full_name='msf.msg.comm.PluginInfo.new_ver', index=2,
       number=3, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resType', full_name='msf.msg.comm.PluginInfo.resType', index=3,
+      name='res_type', full_name='msf.msg.comm.PluginInfo.res_type', index=3,
       number=4, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='lanType', full_name='msf.msg.comm.PluginInfo.lanType', index=4,
+      name='lan_type', full_name='msf.msg.comm.PluginInfo.lan_type', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -840,35 +840,35 @@ _PLUGININFO = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resName', full_name='msf.msg.comm.PluginInfo.resName', index=6,
+      name='res_name', full_name='msf.msg.comm.PluginInfo.res_name', index=6,
       number=7, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resDesc', full_name='msf.msg.comm.PluginInfo.resDesc', index=7,
+      name='res_desc', full_name='msf.msg.comm.PluginInfo.res_desc', index=7,
       number=8, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resUrlBig', full_name='msf.msg.comm.PluginInfo.resUrlBig', index=8,
+      name='res_url_big', full_name='msf.msg.comm.PluginInfo.res_url_big', index=8,
       number=9, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resUrlSmall', full_name='msf.msg.comm.PluginInfo.resUrlSmall', index=9,
+      name='res_url_small', full_name='msf.msg.comm.PluginInfo.res_url_small', index=9,
       number=10, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resConf', full_name='msf.msg.comm.PluginInfo.resConf', index=10,
+      name='res_conf', full_name='msf.msg.comm.PluginInfo.res_conf', index=10,
       number=11, type=9, cpp_type=9, label=1,
       has_default_value=False, default_value=b"".decode('utf-8'),
       message_type=None, enum_type=None, containing_type=None,
@@ -886,8 +886,8 @@ _PLUGININFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=1998,
-  serialized_end=2201,
+  serialized_start=2079,
+  serialized_end=2294,
 )
 
 
@@ -925,8 +925,8 @@ _UIN2NICK = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2203,
-  serialized_end=2240,
+  serialized_start=2296,
+  serialized_end=2333,
 )
 
 
@@ -939,14 +939,14 @@ _UINPAIRMSG = _descriptor.Descriptor(
   create_key=_descriptor._internal_create_key,
   fields=[
     _descriptor.FieldDescriptor(
-      name='lastReadTime', full_name='msf.msg.comm.UinPairMsg.lastReadTime', index=0,
+      name='last_read_time', full_name='msf.msg.comm.UinPairMsg.last_read_time', index=0,
       number=1, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='peerUin', full_name='msf.msg.comm.UinPairMsg.peerUin', index=1,
+      name='peer_uin', full_name='msf.msg.comm.UinPairMsg.peer_uin', index=1,
       number=2, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -967,35 +967,35 @@ _UINPAIRMSG = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='unreadMsgNum', full_name='msf.msg.comm.UinPairMsg.unreadMsgNum', index=4,
+      name='unread_msg_num', full_name='msf.msg.comm.UinPairMsg.unread_msg_num', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='c2CType', full_name='msf.msg.comm.UinPairMsg.c2CType', index=5,
+      name='c2c_type', full_name='msf.msg.comm.UinPairMsg.c2c_type', index=5,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='serviceType', full_name='msf.msg.comm.UinPairMsg.serviceType', index=6,
+      name='service_type', full_name='msf.msg.comm.UinPairMsg.service_type', index=6,
       number=9, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='pbReserve', full_name='msf.msg.comm.UinPairMsg.pbReserve', index=7,
+      name='pb_reserve', full_name='msf.msg.comm.UinPairMsg.pb_reserve', index=7,
       number=10, type=12, cpp_type=9, label=1,
       has_default_value=False, default_value=b"",
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='toTinyId', full_name='msf.msg.comm.UinPairMsg.toTinyId', index=8,
+      name='to_tiny_id', full_name='msf.msg.comm.UinPairMsg.to_tiny_id', index=8,
       number=11, type=4, cpp_type=4, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -1013,21 +1013,21 @@ _UINPAIRMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=2243,
-  serialized_end=2442,
+  serialized_start=2336,
+  serialized_end=2545,
 )
 
-_APPSHAREINFO.fields_by_name['appshareResource'].message_type = _PLUGININFO
+_APPSHAREINFO.fields_by_name['appshare_resource'].message_type = _PLUGININFO
 _MSG.fields_by_name['head'].message_type = _MSGHEAD
-_MSG.fields_by_name['contentHead'].message_type = _CONTENTHEAD
+_MSG.fields_by_name['content_head'].message_type = _CONTENTHEAD
 _MSG.fields_by_name['body'].message_type = cai_dot_pb_dot_im_dot_msg_dot_msg__body_dot_msg__body__pb2._MSGBODY
-_MSG.fields_by_name['appshareInfo'].message_type = _APPSHAREINFO
-_MSGHEAD.fields_by_name['c2CTmpMsgHead'].message_type = _C2CTMPMSGHEAD
-_MSGHEAD.fields_by_name['groupInfo'].message_type = _GROUPINFO
-_MSGHEAD.fields_by_name['discussInfo'].message_type = _DISCUSSINFO
-_MSGHEAD.fields_by_name['mutiltransHead'].message_type = _MUTILTRANSHEAD
-_MSGHEAD.fields_by_name['instCtrl'].message_type = cai_dot_pb_dot_im_dot_msg_dot_msg__head_dot_msg__head__pb2._INSTCTRL
-_MSGHEAD.fields_by_name['extGroupKeyInfo'].message_type = _EXTGROUPKEYINFO
+_MSG.fields_by_name['appshare_info'].message_type = _APPSHAREINFO
+_MSGHEAD.fields_by_name['c2c_tmp_msg_head'].message_type = _C2CTMPMSGHEAD
+_MSGHEAD.fields_by_name['group_info'].message_type = _GROUPINFO
+_MSGHEAD.fields_by_name['discuss_info'].message_type = _DISCUSSINFO
+_MSGHEAD.fields_by_name['mutiltrans_head'].message_type = _MUTILTRANSHEAD
+_MSGHEAD.fields_by_name['inst_ctrl'].message_type = cai_dot_pb_dot_im_dot_msg_dot_msg__head_dot_msg__head__pb2._INSTCTRL
+_MSGHEAD.fields_by_name['ext_group_key_info'].message_type = _EXTGROUPKEYINFO
 _UINPAIRMSG.fields_by_name['msg'].message_type = _MSG
 DESCRIPTOR.message_types_by_name['AppShareInfo'] = _APPSHAREINFO
 DESCRIPTOR.message_types_by_name['C2CTmpMsgHead'] = _C2CTMPMSGHEAD

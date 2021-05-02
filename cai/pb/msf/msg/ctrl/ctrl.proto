@@ -5,7 +5,7 @@ package msf.msg.ctrl;
 
 message MsgCtrl {
   optional uint32 flag = 1;
-  optional ResvResvInfo resvResvInfo = 2;
+  optional ResvResvInfo resv_resv_info = 2;
 }
 
 message ResvResvInfo {
@@ -13,8 +13,8 @@ message ResvResvInfo {
   optional bytes reserv1 = 2;
   optional uint64 reserv2 = 3;
   optional uint64 reserv3 = 4;
-  optional uint32 createTime = 5;
-  optional uint32 picHeight = 6;
-  optional uint32 picWidth = 7;
-  optional uint32 resvFlag = 8;
+  optional uint32 create_time = 5;
+  optional uint32 pic_height = 6;
+  optional uint32 pic_width = 7;
+  optional uint32 resv_flag = 8;
 }

@@ -7,120 +7,120 @@ import "cai/pb/im/msg/msg_body/msg_body.proto";
 import "cai/pb/im/msg/msg_head/msg_head.proto";
 
 message AppShareInfo {
-  optional uint32 appshareId = 1;
-  optional bytes appshareCookie = 2;
-  optional PluginInfo appshareResource = 3;
+  optional uint32 appshare_id = 1;
+  optional bytes appshare_cookie = 2;
+  optional PluginInfo appshare_resource = 3;
 }
 
 message C2CTmpMsgHead {
-  optional uint32 c2CType = 1;
-  optional uint32 serviceType = 2;
-  optional uint64 groupUin = 3;
-  optional uint64 groupCode = 4;
+  optional uint32 c2c_type = 1;
+  optional uint32 service_type = 2;
+  optional uint64 group_uin = 3;
+  optional uint64 group_code = 4;
   optional bytes sig = 5;
-  optional uint32 sigType = 6;
-  optional string fromPhone = 7;
-  optional string toPhone = 8;
-  optional uint32 lockDisplay = 9;
-  optional uint32 directionFlag = 10;
+  optional uint32 sig_type = 6;
+  optional string from_phone = 7;
+  optional string to_phone = 8;
+  optional uint32 lock_display = 9;
+  optional uint32 direction_flag = 10;
   optional bytes reserved = 11;
-  optional bytes businessName = 14;
-  optional bytes businessSubContent = 15;
+  optional bytes business_name = 14;
+  optional bytes business_sub_content = 15;
 }
 
 message ContentHead {
-  optional uint32 pkgNum = 1;
-  optional uint32 pkgIndex = 2;
-  optional uint32 divSeq = 3;
-  optional uint32 autoReply = 4;
+  optional uint32 pkg_num = 1;
+  optional uint32 pkg_index = 2;
+  optional uint32 div_seq = 3;
+  optional uint32 auto_reply = 4;
 }
 
 message DiscussInfo {
-  optional uint64 discussUin = 1;
-  optional uint32 discussType = 2;
-  optional uint64 discussInfoSeq = 3;
-  optional bytes discussRemark = 4;
-  optional bytes discussName = 5;
+  optional uint64 discuss_uin = 1;
+  optional uint32 discuss_type = 2;
+  optional uint64 discuss_info_seq = 3;
+  optional bytes discuss_remark = 4;
+  optional bytes discuss_name = 5;
 }
 
 message ExtGroupKeyInfo {
-  optional uint32 curMaxSeq = 1;
-  optional uint64 curTime = 2;
-  optional uint32 operateByParents = 3;
-  optional bytes extGroupInfo = 4;
+  optional uint32 cur_max_seq = 1;
+  optional uint64 cur_time = 2;
+  optional uint32 operate_by_parents = 3;
+  optional bytes ext_group_info = 4;
 }
 
 message GroupInfo {
-  optional uint64 groupCode = 1;
-  optional uint32 groupType = 2;
-  optional uint64 groupInfoSeq = 3;
-  optional bytes groupCard = 4;
-  optional bytes groupRank = 5;
-  optional uint32 groupLevel = 6;
-  optional uint32 groupCardType = 7;
-  optional bytes groupName = 8;
+  optional uint64 group_code = 1;
+  optional uint32 group_type = 2;
+  optional uint64 group_info_seq = 3;
+  optional bytes group_card = 4;
+  optional bytes group_rank = 5;
+  optional uint32 group_level = 6;
+  optional uint32 group_card_type = 7;
+  optional bytes group_name = 8;
 }
 
 message Msg {
   optional MsgHead head = 1;
-  optional ContentHead contentHead = 2;
+  optional ContentHead content_head = 2;
   optional im.msg.msg_body.MsgBody body = 3;
-  optional AppShareInfo appshareInfo = 4;
+  optional AppShareInfo appshare_info = 4;
 }
 
 message MsgHead {
-  optional uint64 fromUin = 1;
-  optional uint64 toUin = 2;
+  optional uint64 from_uin = 1;
+  optional uint64 to_uin = 2;
   optional uint32 type = 3;
-  optional uint32 c2CCmd = 4;
+  optional uint32 c2c_cmd = 4;
   optional uint32 seq = 5;
   optional uint32 time = 6;
   optional uint64 uid = 7;
-  optional C2CTmpMsgHead c2CTmpMsgHead = 8;
-  optional GroupInfo groupInfo = 9;
-  optional uint32 fromAppid = 10;
-  optional uint32 fromInstid = 11;
-  optional uint32 userActive = 12;
-  optional DiscussInfo discussInfo = 13;
-  optional string fromNick = 14;
-  optional uint64 authUin = 15;
-  optional string authNick = 16;
+  optional C2CTmpMsgHead c2c_tmp_msg_head = 8;
+  optional GroupInfo group_info = 9;
+  optional uint32 from_appid = 10;
+  optional uint32 from_instid = 11;
+  optional uint32 user_active = 12;
+  optional DiscussInfo discuss_info = 13;
+  optional string from_nick = 14;
+  optional uint64 auth_uin = 15;
+  optional string auth_nick = 16;
   optional uint32 flag = 17;
-  optional string authRemark = 18;
-  optional string groupName = 19;
-  optional MutilTransHead mutiltransHead = 20;
-  optional im.msg.msg_head.InstCtrl instCtrl = 21;
-  optional uint32 publicAccountGroupSendFlag = 22;
-  optional uint32 wseqInC2CMsghead = 23;
+  optional string auth_remark = 18;
+  optional string group_name = 19;
+  optional MutilTransHead mutiltrans_head = 20;
+  optional im.msg.msg_head.InstCtrl inst_ctrl = 21;
+  optional uint32 public_account_group_send_flag = 22;
+  optional uint32 wseq_in_c2c_msghead = 23;
   optional uint64 cpid = 24;
-  optional ExtGroupKeyInfo extGroupKeyInfo = 25;
-  optional string multiCompatibleText = 26;
-  optional uint32 authSex = 27;
-  optional bool isSrcMsg = 28;
+  optional ExtGroupKeyInfo ext_group_key_info = 25;
+  optional string multi_compatible_text = 26;
+  optional uint32 auth_sex = 27;
+  optional bool is_src_msg = 28;
 }
 
 message MsgType0x210 {
-  optional uint32 subMsgType = 1;
+  optional uint32 sub_msg_type = 1;
   optional bytes content = 2;
 }
 
 message MutilTransHead {
   optional uint32 status = 1;
-  optional uint32 msgId = 2;
+  optional uint32 msg_id = 2;
 }
 
 message PluginInfo {
-  optional uint32 resId = 1;
-  optional string pkgName = 2;
-  optional uint32 newVer = 3;
-  optional uint32 resType = 4;
-  optional uint32 lanType = 5;
+  optional uint32 res_id = 1;
+  optional string pkg_name = 2;
+  optional uint32 new_ver = 3;
+  optional uint32 res_type = 4;
+  optional uint32 lan_type = 5;
   optional uint32 priority = 6;
-  optional string resName = 7;
-  optional string resDesc = 8;
-  optional string resUrlBig = 9;
-  optional string resUrlSmall = 10;
-  optional string resConf = 11;
+  optional string res_name = 7;
+  optional string res_desc = 8;
+  optional string res_url_big = 9;
+  optional string res_url_small = 10;
+  optional string res_conf = 11;
 }
 
 message Uin2Nick {
@@ -129,13 +129,13 @@ message Uin2Nick {
 }
 
 message UinPairMsg {
-  optional uint32 lastReadTime = 1;
-  optional uint64 peerUin = 2;
+  optional uint32 last_read_time = 1;
+  optional uint64 peer_uin = 2;
   optional uint32 completed = 3;
   repeated Msg msg = 4;
-  optional uint32 unreadMsgNum = 5;
-  optional uint32 c2CType = 8;
-  optional uint32 serviceType = 9;
-  optional bytes pbReserve = 10;
-  optional uint64 toTinyId = 11;
+  optional uint32 unread_msg_num = 5;
+  optional uint32 c2c_type = 8;
+  optional uint32 service_type = 9;
+  optional bytes pb_reserve = 10;
+  optional uint64 to_tiny_id = 11;
 }

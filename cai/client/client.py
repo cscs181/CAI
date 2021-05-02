@@ -61,7 +61,12 @@ from .friendlist import (
     TroopMemberListSuccess,
     TroopMemberListFail,
 )
-from .message_service import handle_push_notify, handle_force_offline
+from .message_service import (
+    SyncFlag,
+    handle_get_message,
+    handle_push_notify,
+    handle_force_offline,
+)
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
 
@@ -105,6 +110,7 @@ HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "friendlist.GetFriendListReq": handle_friend_list,
     "friendlist.GetTroopListReqV2": handle_troop_list,
     "friendlist.GetTroopMemberListReq": handle_troop_member_list,
+    "MessageSvc.PbGetMsg": handle_get_message,
     "MessageSvc.PushNotify": handle_push_notify,
     "MessageSvc.PushForceOffline": handle_force_offline,
 }
@@ -148,6 +154,8 @@ class Client:
         self._t530: bytes = bytes()
 
         self._siginfo: SigInfo = SigInfo()
+        self._sync_cookie: bytes = bytes()
+        self._pubaccount_cookie: bytes = bytes()
         self._receive_store: FutureStore[int, Event] = FutureStore()
 
     def __str__(self) -> str:

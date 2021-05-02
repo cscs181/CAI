@@ -12,6 +12,15 @@ from typing import Optional, TYPE_CHECKING
 
 from jce import types
 
+from cai.utils.binary import Packet
+from cai.pb.im.oidb.cmd0xd50 import ReqBody
+from cai.utils.jce import RequestPacketVersion3
+from cai.client.packet import UniPacket, IncomingPacket
+from .jce import (
+    FriendListReq,
+    TroopListReqV2Simplify,
+    TroopMemberListReq,
+)
 from .event import (
     FriendListEvent,
     FriendListSuccess,
@@ -22,15 +31,6 @@ from .event import (
     TroopMemberListEvent,
     TroopMemberListSuccess,
     TroopMemberListFail,
-)
-from cai.utils.binary import Packet
-from cai.pb.im.oidb.cmd0xd50 import ReqBody
-from cai.utils.jce import RequestPacketVersion3
-from cai.client.packet import UniPacket, IncomingPacket
-from .jce import (
-    FriendListReq,
-    TroopListReqV2Simplify,
-    TroopMemberListReq,
 )
 
 

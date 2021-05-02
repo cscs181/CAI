@@ -19,7 +19,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto2',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1e\x63\x61i/pb/msf/msg/ctrl/ctrl.proto\x12\x0cmsf.msg.ctrl\"I\n\x07MsgCtrl\x12\x0c\n\x04\x66lag\x18\x01 \x01(\r\x12\x30\n\x0cresvResvInfo\x18\x02 \x01(\x0b\x32\x1a.msf.msg.ctrl.ResvResvInfo\"\x9a\x01\n\x0cResvResvInfo\x12\x0c\n\x04\x66lag\x18\x01 \x01(\r\x12\x0f\n\x07reserv1\x18\x02 \x01(\x0c\x12\x0f\n\x07reserv2\x18\x03 \x01(\x04\x12\x0f\n\x07reserv3\x18\x04 \x01(\x04\x12\x12\n\ncreateTime\x18\x05 \x01(\r\x12\x11\n\tpicHeight\x18\x06 \x01(\r\x12\x10\n\x08picWidth\x18\x07 \x01(\r\x12\x10\n\x08resvFlag\x18\x08 \x01(\r'
+  serialized_pb=b'\n\x1e\x63\x61i/pb/msf/msg/ctrl/ctrl.proto\x12\x0cmsf.msg.ctrl\"K\n\x07MsgCtrl\x12\x0c\n\x04\x66lag\x18\x01 \x01(\r\x12\x32\n\x0eresv_resv_info\x18\x02 \x01(\x0b\x32\x1a.msf.msg.ctrl.ResvResvInfo\"\x9e\x01\n\x0cResvResvInfo\x12\x0c\n\x04\x66lag\x18\x01 \x01(\r\x12\x0f\n\x07reserv1\x18\x02 \x01(\x0c\x12\x0f\n\x07reserv2\x18\x03 \x01(\x04\x12\x0f\n\x07reserv3\x18\x04 \x01(\x04\x12\x13\n\x0b\x63reate_time\x18\x05 \x01(\r\x12\x12\n\npic_height\x18\x06 \x01(\r\x12\x11\n\tpic_width\x18\x07 \x01(\r\x12\x11\n\tresv_flag\x18\x08 \x01(\r'
 )
 
 
@@ -41,7 +41,7 @@ _MSGCTRL = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resvResvInfo', full_name='msf.msg.ctrl.MsgCtrl.resvResvInfo', index=1,
+      name='resv_resv_info', full_name='msf.msg.ctrl.MsgCtrl.resv_resv_info', index=1,
       number=2, type=11, cpp_type=10, label=1,
       has_default_value=False, default_value=None,
       message_type=None, enum_type=None, containing_type=None,
@@ -60,7 +60,7 @@ _MSGCTRL = _descriptor.Descriptor(
   oneofs=[
   ],
   serialized_start=48,
-  serialized_end=121,
+  serialized_end=123,
 )
 
 
@@ -101,28 +101,28 @@ _RESVRESVINFO = _descriptor.Descriptor(
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='createTime', full_name='msf.msg.ctrl.ResvResvInfo.createTime', index=4,
+      name='create_time', full_name='msf.msg.ctrl.ResvResvInfo.create_time', index=4,
       number=5, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='picHeight', full_name='msf.msg.ctrl.ResvResvInfo.picHeight', index=5,
+      name='pic_height', full_name='msf.msg.ctrl.ResvResvInfo.pic_height', index=5,
       number=6, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='picWidth', full_name='msf.msg.ctrl.ResvResvInfo.picWidth', index=6,
+      name='pic_width', full_name='msf.msg.ctrl.ResvResvInfo.pic_width', index=6,
       number=7, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
       is_extension=False, extension_scope=None,
       serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
     _descriptor.FieldDescriptor(
-      name='resvFlag', full_name='msf.msg.ctrl.ResvResvInfo.resvFlag', index=7,
+      name='resv_flag', full_name='msf.msg.ctrl.ResvResvInfo.resv_flag', index=7,
       number=8, type=13, cpp_type=3, label=1,
       has_default_value=False, default_value=0,
       message_type=None, enum_type=None, containing_type=None,
@@ -140,11 +140,11 @@ _RESVRESVINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=124,
-  serialized_end=278,
+  serialized_start=126,
+  serialized_end=284,
 )
 
-_MSGCTRL.fields_by_name['resvResvInfo'].message_type = _RESVRESVINFO
+_MSGCTRL.fields_by_name['resv_resv_info'].message_type = _RESVRESVINFO
 DESCRIPTOR.message_types_by_name['MsgCtrl'] = _MSGCTRL
 DESCRIPTOR.message_types_by_name['ResvResvInfo'] = _RESVRESVINFO
 _sym_db.RegisterFileDescriptor(DESCRIPTOR)

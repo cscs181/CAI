@@ -4,33 +4,33 @@ package im.msg.obj_msg;
 // tencent/im/msg/obj_msg.java
 
 message MsgContentInfo {
-  optional bytes ContentInfoId = 1;
+  optional bytes content_info_id = 1;
   optional MsgFile file = 2;
 }
 
 message MsgFile {
-  optional uint32 busId = 1;
-  optional bytes filePath = 2;
-  optional uint64 fileSize = 3;
-  optional string fileName = 4;
-  optional int64 deadTime = 5;
-  optional bytes fileSha1 = 6;
+  optional uint32 bus_id = 1;
+  optional bytes file_path = 2;
+  optional uint64 file_size = 3;
+  optional string file_name = 4;
+  optional int64 dead_time = 5;
+  optional bytes file_sha1 = 6;
   optional bytes ext = 7;
-  optional bytes fileMd5 = 8;
+  optional bytes file_md5 = 8;
 }
 
 message MsgPic {
-  optional bytes smallPicUrl = 1;
-  optional bytes originalPicUrl = 2;
-  optional uint32 localPicId = 3;
+  optional bytes small_pic_url = 1;
+  optional bytes original_pic_url = 2;
+  optional uint32 local_pic_id = 3;
 }
 
 message ObjMsg {
-  optional uint32 msgType = 1;
+  optional uint32 msg_type = 1;
   optional bytes title = 2;
   repeated bytes abstact = 3;
-  optional bytes titleExt = 5;
+  optional bytes title_ext = 5;
   repeated MsgPic pic = 6;
-  repeated MsgContentInfo contentInfo = 7;
-  optional uint32 reportIdShow = 8;
+  repeated MsgContentInfo content_info = 7;
+  optional uint32 report_id_show = 8;
 }

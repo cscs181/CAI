@@ -14,6 +14,8 @@ import secrets
 import asyncio
 from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
 
+from cachetools import TTLCache
+
 from .sso_server import get_sso_server, SsoServer
 from .wtlogin import (
     encode_login_request2_captcha,
@@ -62,14 +64,12 @@ from .friendlist import (
     TroopMemberListFail,
 )
 from .message_service import (
-    SyncFlag,
     handle_get_message,
     handle_push_notify,
     handle_force_offline,
 )
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
-
 from cai.exceptions import (
     ApiResponseError,
     LoginException,
@@ -156,6 +156,7 @@ class Client:
         self._siginfo: SigInfo = SigInfo()
         self._sync_cookie: bytes = bytes()
         self._pubaccount_cookie: bytes = bytes()
+        self._msg_cache: TTLCache = TTLCache(maxsize=1024, ttl=3600)
         self._receive_store: FutureStore[int, Event] = FutureStore()
 
     def __str__(self) -> str:

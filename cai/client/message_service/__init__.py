@@ -10,11 +10,15 @@ This module is used to build and handle message service related packet.
 """
 
 from enum import IntEnum
-from typing import Union, Optional, TYPE_CHECKING
+from typing import List, Union, Optional, TYPE_CHECKING
 
 from cai.log import logger
 from cai.utils.binary import Packet
-from cai.pb.msf.msg.svc import PbGetMsgReq
+from cai.pb.msf.msg.svc import (
+    PbGetMsgReq,
+    PbDeleteMsgReq,
+    PbDeleteMsgResp,
+)
 from cai.client.status_service import OnlineStatus
 from cai.client.packet import UniPacket, IncomingPacket
 from .event import (
@@ -48,6 +52,7 @@ def encode_get_message(
     sync_flag: Union[int, SyncFlag] = SyncFlag.START,
     sync_cookie: Optional[bytes] = None,
     online_sync_flag: int = 0,
+    pubaccount_cookie: Optional[bytes] = None,
     server_buf: Optional[bytes] = None,
 ) -> Packet:
     """Build get message packet.
@@ -69,6 +74,8 @@ def encode_get_message(
             Defaults to :obj:`SyncFlag.START`.
         sync_cookie (Optional[bytes], optional): Sync cookie. Defaults to None.
         online_sync_flag (int, optional): Online sync flag. Defaults to 0.
+        pubaccount_cookie (Optional[bytes], optional): Pubaccount cookie.
+            Defaults to None.
         server_buf (Optional[bytes], optional): Server buf from ``PushNotify``.
             Defaults to None.
 
@@ -86,6 +93,7 @@ def encode_get_message(
         online_sync_flag=online_sync_flag,
         context_flag=1,
         req_type=request_type,
+        pubaccount_cookie=pubaccount_cookie,
         server_buf=server_buf,
     ).SerializeToString()
     packet = UniPacket.build(
@@ -120,9 +128,99 @@ async def handle_get_message(
             client._pubaccount_cookie = resp.response.pubaccount_cookie
 
         if resp.response.sync_flag < SyncFlag.STOP:
-            # TODO: continue sync
-            ...
+            seq = client.next_seq()
+            continue_packet = encode_get_message(
+                seq,
+                client._session_id,
+                client.uin,
+                client._siginfo.d2key,
+                request_type=resp.response.rsp_type,
+                sync_flag=resp.response.sync_flag,
+                sync_cookie=resp.response.rsp_type != 2
+                and client._sync_cookie
+                or None,
+                pubaccount_cookie=resp.response.rsp_type == 2
+                and client._pubaccount_cookie
+                or None,
+            )
+            await client.send(seq, "MessageSvc.PbGetMsg", continue_packet)
+
+        delete_msgs: List[PbDeleteMsgReq.MsgItem] = []
+        for pair_msgs in resp.response.uin_pair_msgs:
+            last_read_time = pair_msgs.last_read_time & 0xFFFFFFFF
+            for message in pair_msgs.msg:
+                delete_msgs.append(
+                    PbDeleteMsgReq.MsgItem(
+                        from_uin=message.head.from_uin,
+                        to_uin=message.head.to_uin,
+                        type=message.head.type,
+                        seq=message.head.seq,
+                        uid=message.head.uid,
+                    )
+                )
+
+                if message.head.to_uin != client.uin:
+                    continue
+                if message.head.time < last_read_time:
+                    continue
+
+                key = (
+                    f"{message.head.from_uin}"
+                    f"{message.head.type}"
+                    f"{message.head.time}"
+                )
+                if key in client._msg_cache:
+                    continue
+                client._msg_cache[key] = None
+
+                # TODO: process message
+                print(message)
+        if delete_msgs:
+            seq = client.next_seq()
+            del_packet = encode_delete_message(
+                seq,
+                client._session_id,
+                client.uin,
+                client._siginfo.d2key,
+                delete_msgs,
+            )
+            await client.send(seq, "MessageSvc.PbDeleteMsg", del_packet)
     return resp
+
+
+def encode_delete_message(
+    seq: int,
+    session_id: bytes,
+    uin: int,
+    d2key: bytes,
+    items: List[PbDeleteMsgReq.MsgItem],
+) -> Packet:
+    """Build delete message packet.
+
+    Called in ``com.tencent.mobileqq.app.MessageHandler.a``.
+
+    command name: ``MessageSvc.PbDeleteMsg``
+
+    Note:
+        Source: com.tencent.mobileqq.app.MessageHandler.a
+
+    Args:
+        seq (int): Packet sequence.
+        session_id (bytes): Session ID.
+        uin (int): User QQ number.
+        d2key (bytes): Siginfo d2 key.
+        items (List[PbDeleteMsgReq.MsgItem]): List of message items.
+
+    Returns:
+        Packet: PbDeleteMsg packet.
+    """
+    COMMAND_NAME = "MessageSvc.PbDeleteMsg"
+
+    payload = PbDeleteMsgReq(msg_items=items).SerializeToString()
+    packet = UniPacket.build(
+        uin, seq, COMMAND_NAME, session_id, 1, payload, d2key
+    )
+    return packet
 
 
 async def handle_push_notify(
@@ -154,17 +252,28 @@ async def handle_push_notify(
         # pb get msg
         # com.tencent.mobileqq.app.MessageHandler.a
         seq = client.next_seq()
-        get_msg_packet = encode_get_message(
-            seq,
-            client._session_id,
-            client.uin,
-            client._siginfo.d2key,
-            0,
-            SyncFlag.START,
-            None,
-            1,
-            notify.notify.server_buf,
-        )
+        if client._sync_cookie:
+            get_msg_packet = encode_get_message(
+                seq,
+                client._session_id,
+                client.uin,
+                client._siginfo.d2key,
+                request_type=1,
+                sync_flag=SyncFlag.START,
+                sync_cookie=client._sync_cookie,
+            )
+        else:
+            get_msg_packet = encode_get_message(
+                seq,
+                client._session_id,
+                client.uin,
+                client._siginfo.d2key,
+                request_type=0,
+                sync_flag=SyncFlag.START,
+                sync_cookie=None,
+                online_sync_flag=1,
+                server_buf=notify.notify.server_buf,
+            )
         await client.send(seq, "MessageSvc.PbGetMsg", get_msg_packet)
 
     return notify
@@ -195,6 +304,9 @@ __all__ = [
     "SyncFlag",
     "encode_get_message",
     "handle_get_message",
+    "GetMessageEvent",
+    "GetMessageSuccess",
+    "GetMessageFail",
     "handle_push_notify",
     "PushNotifyEvent",
     "PushNotify",

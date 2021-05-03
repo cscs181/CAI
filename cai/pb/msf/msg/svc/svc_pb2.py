@@ -24,7 +24,7 @@ DESCRIPTOR = _descriptor.FileDescriptor(
   syntax='proto2',
   serialized_options=None,
   create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1c\x63\x61i/pb/msf/msg/svc/svc.proto\x12\x0bmsf.msg.svc\x1a\x1e\x63\x61i/pb/msf/msg/comm/comm.proto\x1a\x1e\x63\x61i/pb/msf/msg/ctrl/ctrl.proto\x1a%cai/pb/im/msg/msg_body/msg_body.proto\x1a%cai/pb/im/msg/msg_head/msg_head.proto\x1a#cai/pb/im/msg/receipt/receipt.proto\"7\n\tAccostTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\r\n\x05reply\x18\x03 \x01(\x08\"n\n\x0e\x41\x64\x64ressListTmp\x12\x12\n\nfrom_phone\x18\x01 \x01(\t\x12\x10\n\x08to_phone\x18\x02 \x01(\t\x12\x0e\n\x06to_uin\x18\x03 \x01(\x04\x12\x0b\n\x03sig\x18\x04 \x01(\x0c\x12\x19\n\x11\x66rom_contact_size\x18\x05 \x01(\r\"&\n\x07\x41uthTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"&\n\x07\x42snsTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\";\n\x0e\x42usinessWPATmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\x0c\n\x04sigt\x18\x03 \x01(\x0c\"\x15\n\x03\x43\x32\x43\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\"\\\n\x07\x43ommTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x10\n\x08\x63\x32\x63_type\x18\x02 \x01(\r\x12\x10\n\x08svr_type\x18\x03 \x01(\r\x12\x0b\n\x03sig\x18\x04 \x01(\x0c\x12\x10\n\x08reserved\x18\x05 \x01(\x0c\"\x16\n\x03\x44is\x12\x0f\n\x07\x64is_uin\x18\x01 \x01(\x04\")\n\x06\x44isTmp\x12\x0f\n\x07\x64is_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\"\x19\n\x03Grp\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\"+\n\x06GrpTmp\x12\x11\n\tgroup_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\"\x1f\n\x0bMsgSendInfo\x12\x10\n\x08receiver\x18\x01 \x01(\r\"\xc7\x01\n\x0eMultiMsgAssist\x12\x32\n\x10repeated_routing\x18\x01 \x03(\x0b\x32\x18.msf.msg.svc.RoutingHead\x12\x0b\n\x03use\x18\x02 \x01(\r\x12\x0f\n\x07temp_id\x18\x03 \x01(\x04\x12\x11\n\tvedio_len\x18\x04 \x01(\x04\x12\x11\n\tredbag_id\x18\x05 \x01(\x0c\x12\x15\n\rredbag_amount\x18\x06 \x01(\x04\x12\x13\n\x0bhas_readbag\x18\x07 \x01(\r\x12\x11\n\thas_vedio\x18\x08 \x01(\r\"@\n\x12NearByAssistantTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\r\n\x05reply\x18\x03 \x01(\x08\"=\n\x0fNearByDatingTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\r\n\x05reply\x18\x03 \x01(\x08\"d\n\x12PbBindUinGetMsgReq\x12\x10\n\x08\x62ind_uin\x18\x01 \x01(\x04\x12\x14\n\x0c\x62ind_uin_sig\x18\x02 \x01(\x0c\x12\x11\n\tsync_flag\x18\x03 \x01(\r\x12\x13\n\x0bsync_cookie\x18\x04 \x01(\x0c\"E\n\x1cPbBindUinMsgReadedConfirmReq\x12\x13\n\x0bsync_cookie\x18\x01 \x01(\x0c\x12\x10\n\x08\x62ind_uin\x18\x02 \x01(\x04\"f\n\x1dPbBindUinMsgReadedConfirmResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x13\n\x0bsync_cookie\x18\x03 \x01(\x0c\x12\x10\n\x08\x62ind_uin\x18\x04 \x01(\x04\"A\n\x18PbBindUinUnReadMsgNumReq\x12\x10\n\x08\x62ind_uin\x18\x01 \x01(\x04\x12\x13\n\x0bsync_cookie\x18\x02 \x01(\x0c\"Z\n\x19PbBindUinUnReadMsgNumResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08\x62ind_uin\x18\x03 \x01(\x04\x12\x0b\n\x03num\x18\x04 \x01(\r\"\xf8\x02\n\x13PbC2CMsgWithDrawReq\x12\x36\n\x04info\x18\x01 \x03(\x0b\x32(.msf.msg.svc.PbC2CMsgWithDrawReq.MsgInfo\x12\x19\n\x11long_message_flag\x18\x02 \x01(\r\x12\x10\n\x08reserved\x18\x03 \x01(\x0c\x12\x0f\n\x07sub_cmd\x18\x04 \x01(\r\x1a\xea\x01\n\x07MsgInfo\x12\x10\n\x08\x66rom_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\x12\x0f\n\x07msg_seq\x18\x03 \x01(\r\x12\x0f\n\x07msg_uid\x18\x04 \x01(\x04\x12\x10\n\x08msg_time\x18\x05 \x01(\x04\x12\x12\n\nmsg_random\x18\x06 \x01(\r\x12\x0f\n\x07pkg_num\x18\x07 \x01(\r\x12\x11\n\tpkg_index\x18\x08 \x01(\r\x12\x0f\n\x07\x64iv_seq\x18\t \x01(\r\x12\x10\n\x08msg_type\x18\n \x01(\r\x12.\n\x0crouting_head\x18\x14 \x01(\x0b\x32\x18.msf.msg.svc.RoutingHead\"\xa7\x01\n\x14PbC2CMsgWithDrawResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12&\n\x06status\x18\x03 \x03(\x0b\x32\x16.msf.msg.svc.MsgStatus\x12\x0f\n\x07sub_cmd\x18\x04 \x01(\r\x12\x36\n\x0cwording_info\x18\x05 \x01(\x0b\x32 .msf.msg.svc.WithDrawWordingInfo\"S\n\tMsgStatus\x12\x36\n\x04info\x18\x01 \x01(\x0b\x32(.msf.msg.svc.PbC2CMsgWithDrawReq.MsgInfo\x12\x0e\n\x06status\x18\x02 \x01(\r\"\\\n\x14PbC2CReadedReportReq\x12\x13\n\x0bsync_cookie\x18\x01 \x01(\x0c\x12/\n\tpair_info\x18\x02 \x03(\x0b\x32\x1c.msf.msg.svc.UinPairReadInfo\"\xa6\x01\n\x0fUinPairReadInfo\x12\x10\n\x08peer_uin\x18\x01 \x01(\x04\x12\x16\n\x0elast_read_time\x18\x02 \x01(\r\x12\x0f\n\x07\x63rm_sig\x18\x03 \x01(\x0c\x12\x11\n\tpeer_type\x18\x04 \x01(\r\x12\x11\n\tchat_type\x18\x05 \x01(\r\x12\x0c\n\x04\x63pid\x18\x06 \x01(\x04\x12\x10\n\x08\x61io_type\x18\x07 \x01(\r\x12\x12\n\nto_tiny_id\x18\t \x01(\x04\"L\n\x15PbC2CReadedReportResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x13\n\x0bsync_cookie\x18\x03 \x01(\x0c\"\x16\n\x14PbC2CUnReadMsgNumReq\"D\n\x15PbC2CUnReadMsgNumResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x0b\n\x03num\x18\x03 \x01(\r\"\x83\x01\n\x0fPbDelRoamMsgReq\x12$\n\x07\x63\x32\x63_msg\x18\x01 \x01(\x0b\x32\x13.msf.msg.svc.C2CMsg\x12$\n\x07grp_msg\x18\x02 \x01(\x0b\x32\x13.msf.msg.svc.GrpMsg\x12$\n\x07\x64is_msg\x18\x03 \x01(\x0b\x32\x13.msf.msg.svc.DisMsg\"W\n\x06\x43\x32\x43Msg\x12\x10\n\x08\x66rom_uin\x18\x01 \x01(\x04\x12\x10\n\x08peer_uin\x18\x02 \x01(\x04\x12\x0c\n\x04time\x18\x03 \x01(\r\x12\x0e\n\x06random\x18\x04 \x01(\r\x12\x0b\n\x03seq\x18\x05 \x01(\r\"*\n\x06\x44isMsg\x12\x13\n\x0b\x64iscuss_uin\x18\x01 \x01(\x04\x12\x0b\n\x03seq\x18\x02 \x01(\x04\"<\n\x06GrpMsg\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x0b\n\x03seq\x18\x02 \x01(\x04\x12\x11\n\tresv_flag\x18\x03 \x01(\r\"2\n\x10PbDelRoamMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\"9\n\x0ePbDeleteMsgReq\x12\'\n\tmsg_items\x18\x01 \x03(\x0b\x32\x14.msf.msg.svc.MsgItem\"`\n\x07MsgItem\x12\x10\n\x08\x66rom_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\x12\x0c\n\x04type\x18\x03 \x01(\r\x12\x0b\n\x03seq\x18\x04 \x01(\r\x12\x0b\n\x03uid\x18\x05 \x01(\x04\x12\x0b\n\x03sig\x18\x07 \x01(\x0c\"1\n\x0fPbDeleteMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\"C\n\x18PbDiscussReadedReportReq\x12\x10\n\x08\x63onf_uin\x18\x01 \x01(\x04\x12\x15\n\rlast_read_seq\x18\x02 \x01(\x04\"s\n\x19PbDiscussReadedReportResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08\x63onf_uin\x18\x03 \x01(\x04\x12\x12\n\nmember_seq\x18\x04 \x01(\x04\x12\x10\n\x08\x63onf_seq\x18\x05 \x01(\x04\"\xa2\x01\n\x12PbGetDiscussMsgReq\x12\x13\n\x0b\x64iscuss_uin\x18\x01 \x01(\x04\x12\x0f\n\x07\x65nd_seq\x18\x02 \x01(\x04\x12\x11\n\tbegin_seq\x18\x03 \x01(\x04\x12\x15\n\rlast_get_time\x18\x04 \x01(\x04\x12\x18\n\x10\x64iscuss_info_seq\x18\x05 \x01(\x04\x12\x0e\n\x06\x66ilter\x18\x06 \x01(\r\x12\x12\n\nmember_seq\x18\x07 \x01(\x04\"\xcd\x01\n\x13PbGetDiscussMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x13\n\x0b\x64iscuss_uin\x18\x03 \x01(\x04\x12\x16\n\x0ereturn_end_seq\x18\x04 \x01(\x04\x12\x18\n\x10return_begin_seq\x18\x05 \x01(\x04\x12\x1e\n\x03msg\x18\x06 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x15\n\rlast_get_time\x18\x07 \x01(\x04\x12\x18\n\x10\x64iscuss_info_seq\x18\x08 \x01(\x04\"\xb4\x01\n\x10PbGetGroupMsgReq\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x11\n\tbegin_seq\x18\x02 \x01(\x04\x12\x0f\n\x07\x65nd_seq\x18\x03 \x01(\x04\x12\x0e\n\x06\x66ilter\x18\x04 \x01(\r\x12\x12\n\nmember_seq\x18\x05 \x01(\x04\x12\x14\n\x0cpublic_group\x18\x06 \x01(\x08\x12\x13\n\x0bshield_flag\x18\x07 \x01(\r\x12\x19\n\x11save_traffic_flag\x18\x08 \x01(\r\"\x99\x01\n\x11PbGetGroupMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x12\n\ngroup_code\x18\x03 \x01(\x04\x12\x18\n\x10return_begin_seq\x18\x04 \x01(\x04\x12\x16\n\x0ereturn_end_seq\x18\x05 \x01(\x04\x12\x1e\n\x03msg\x18\x06 \x03(\x0b\x32\x11.msf.msg.comm.Msg\"\xa4\x02\n\x0bPbGetMsgReq\x12\x11\n\tsync_flag\x18\x01 \x01(\r\x12\x13\n\x0bsync_cookie\x18\x02 \x01(\x0c\x12\x13\n\x0bramble_flag\x18\x03 \x01(\r\x12\x1c\n\x14latest_ramble_number\x18\x04 \x01(\r\x12\x1b\n\x13other_ramble_number\x18\x05 \x01(\r\x12\x18\n\x10online_sync_flag\x18\x06 \x01(\r\x12\x14\n\x0c\x63ontext_flag\x18\x07 \x01(\r\x12\x1a\n\x12whisper_session_id\x18\x08 \x01(\r\x12\x10\n\x08req_type\x18\t \x01(\r\x12\x19\n\x11pubaccount_cookie\x18\n \x01(\x0c\x12\x10\n\x08\x63trl_buf\x18\x0b \x01(\x0c\x12\x12\n\nserver_buf\x18\x0c \x01(\x0c\"\xf1\x01\n\x0cPbGetMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x13\n\x0bsync_cookie\x18\x03 \x01(\x0c\x12\x11\n\tsync_flag\x18\x04 \x01(\r\x12/\n\ruin_pair_msgs\x18\x05 \x03(\x0b\x32\x18.msf.msg.comm.UinPairMsg\x12\x10\n\x08\x62ind_uin\x18\x06 \x01(\x04\x12\x10\n\x08rsp_type\x18\x07 \x01(\r\x12\x19\n\x11pubaccount_cookie\x18\x08 \x01(\x0c\x12\x17\n\x0fis_partial_sync\x18\t \x01(\x08\x12\x10\n\x08\x63trl_buf\x18\n \x01(\x0c\"a\n\x15PbGetOneDayRoamMsgReq\x12\x10\n\x08peer_uin\x18\x01 \x01(\x04\x12\x14\n\x0clast_msgtime\x18\x02 \x01(\x04\x12\x0e\n\x06random\x18\x03 \x01(\x04\x12\x10\n\x08read_cnt\x18\x04 \x01(\r\"\xa4\x01\n\x16PbGetOneDayRoamMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08peer_uin\x18\x03 \x01(\x04\x12\x14\n\x0clast_msgtime\x18\x04 \x01(\x04\x12\x0e\n\x06random\x18\x05 \x01(\x04\x12\x1e\n\x03msg\x18\x06 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x12\n\niscomplete\x18\x07 \x01(\r\"\xc1\x01\n\x0fPbGetRoamMsgReq\x12\x10\n\x08peer_uin\x18\x01 \x01(\x04\x12\x14\n\x0clast_msgtime\x18\x02 \x01(\x04\x12\x0e\n\x06random\x18\x03 \x01(\x04\x12\x10\n\x08read_cnt\x18\x04 \x01(\r\x12\x11\n\tcheck_pwd\x18\x05 \x01(\r\x12\x0b\n\x03sig\x18\x06 \x01(\x0c\x12\x0b\n\x03pwd\x18\x07 \x01(\x0c\x12\x0e\n\x06subcmd\x18\x08 \x01(\r\x12\x15\n\rbegin_msgtime\x18\t \x01(\x04\x12\x10\n\x08req_type\x18\n \x01(\r\"\x97\x01\n\x10PbGetRoamMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08peer_uin\x18\x03 \x01(\x04\x12\x14\n\x0clast_msgtime\x18\x04 \x01(\x04\x12\x0e\n\x06random\x18\x05 \x01(\x04\x12\x1e\n\x03msg\x18\x06 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x0b\n\x03sig\x18\x07 \x01(\x0c\"\x89\x01\n\x15PbGroupMsgWithDrawReq\x12\x0f\n\x07sub_cmd\x18\x01 \x01(\r\x12\x12\n\ngroup_type\x18\x02 \x01(\r\x12\x12\n\ngroup_code\x18\x03 \x01(\x04\x12&\n\x04list\x18\x04 \x03(\x0b\x32\x18.msf.msg.svc.MessageInfo\x12\x0f\n\x07userdef\x18\x05 \x01(\x0c\"W\n\x0bMessageInfo\x12\x0f\n\x07msg_seq\x18\x01 \x01(\r\x12\x12\n\nmsg_random\x18\x02 \x01(\r\x12\x10\n\x08msg_type\x18\x03 \x01(\r\x12\x11\n\tresv_flag\x18\x04 \x01(\r\"\xef\x01\n\x16PbGroupMsgWithDrawResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x0f\n\x07sub_cmd\x18\x03 \x01(\r\x12\x12\n\ngroup_type\x18\x04 \x01(\r\x12\x12\n\ngroup_code\x18\x05 \x01(\x04\x12\x33\n\x0f\x66\x61iled_msg_list\x18\x06 \x03(\x0b\x32\x1a.msf.msg.svc.MessageResult\x12\x0f\n\x07userdef\x18\x07 \x01(\x0c\x12\x36\n\x0cwording_info\x18\x08 \x01(\x0b\x32 .msf.msg.svc.WithDrawWordingInfo\"y\n\rMessageResult\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0f\n\x07msg_seq\x18\x02 \x01(\r\x12\x10\n\x08msg_time\x18\x03 \x01(\r\x12\x12\n\nmsg_random\x18\x04 \x01(\r\x12\x0f\n\x07\x65rr_msg\x18\x05 \x01(\x0c\x12\x10\n\x08msg_type\x18\x06 \x01(\r\"C\n\x16PbGroupReadedReportReq\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x15\n\rlast_read_seq\x18\x02 \x01(\x04\"x\n\x17PbGroupReadedReportResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x12\n\ngroup_code\x18\x03 \x01(\x04\x12\x12\n\nmember_seq\x18\x04 \x01(\x04\x12\x15\n\rgroup_msg_seq\x18\x05 \x01(\x04\"s\n\x11PbInputNotifyInfo\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03ime\x18\x02 \x01(\r\x12\x13\n\x0bnotify_flag\x18\x03 \x01(\r\x12\x12\n\npb_reserve\x18\x04 \x01(\x0c\x12\x18\n\x10ios_push_wording\x18\x05 \x01(\x0c\"\x99\x02\n\x14PbMsgReadedReportReq\x12<\n\x0fgrp_read_report\x18\x01 \x03(\x0b\x32#.msf.msg.svc.PbGroupReadedReportReq\x12>\n\x0f\x64is_read_report\x18\x02 \x03(\x0b\x32%.msf.msg.svc.PbDiscussReadedReportReq\x12:\n\x0f\x63\x32\x63_read_report\x18\x03 \x01(\x0b\x32!.msf.msg.svc.PbC2CReadedReportReq\x12G\n\x14\x62ind_uin_read_report\x18\x04 \x01(\x0b\x32).msf.msg.svc.PbBindUinMsgReadedConfirmReq\"\x9e\x02\n\x15PbMsgReadedReportResp\x12=\n\x0fgrp_read_report\x18\x01 \x03(\x0b\x32$.msf.msg.svc.PbGroupReadedReportResp\x12?\n\x0f\x64is_read_report\x18\x02 \x03(\x0b\x32&.msf.msg.svc.PbDiscussReadedReportResp\x12;\n\x0f\x63\x32\x63_read_report\x18\x03 \x01(\x0b\x32\".msf.msg.svc.PbC2CReadedReportResp\x12H\n\x14\x62ind_uin_read_report\x18\x04 \x01(\x0b\x32*.msf.msg.svc.PbBindUinMsgReadedConfirmResp\"\x88\x01\n\x10PbMsgWithDrawReq\x12\x37\n\rc2c_with_draw\x18\x01 \x03(\x0b\x32 .msf.msg.svc.PbC2CMsgWithDrawReq\x12;\n\x0fgroup_with_draw\x18\x02 \x03(\x0b\x32\".msf.msg.svc.PbGroupMsgWithDrawReq\"\x8b\x01\n\x11PbMsgWithDrawResp\x12\x38\n\rc2c_with_draw\x18\x01 \x03(\x0b\x32!.msf.msg.svc.PbC2CMsgWithDrawResp\x12<\n\x0fgroup_with_draw\x18\x02 \x03(\x0b\x32#.msf.msg.svc.PbGroupMsgWithDrawResp\"O\n\x16PbPullDiscussMsgSeqReq\x12\x35\n\x10\x64iscuss_info_req\x18\x01 \x03(\x0b\x32\x1b.msf.msg.svc.DiscussInfoReq\"4\n\x0e\x44iscussInfoReq\x12\x10\n\x08\x63onf_uin\x18\x01 \x01(\x04\x12\x10\n\x08last_seq\x18\x02 \x01(\x04\"r\n\x17PbPullDiscussMsgSeqResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x37\n\x11\x64iscuss_info_resp\x18\x03 \x03(\x0b\x32\x1c.msf.msg.svc.DiscussInfoResp\"I\n\x0f\x44iscussInfoResp\x12\x10\n\x08\x63onf_uin\x18\x01 \x01(\x04\x12\x12\n\nmember_seq\x18\x02 \x01(\x04\x12\x10\n\x08\x63onf_seq\x18\x03 \x01(\x04\"I\n\x14PbPullGroupMsgSeqReq\x12\x31\n\x0egroup_info_req\x18\x01 \x03(\x0b\x32\x19.msf.msg.svc.GroupInfoReq\"4\n\x0cGroupInfoReq\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x10\n\x08last_seq\x18\x02 \x01(\x04\"l\n\x15PbPullGroupMsgSeqResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x33\n\x0fgroup_info_resp\x18\x03 \x03(\x0b\x32\x1a.msf.msg.svc.GroupInfoResp\"J\n\rGroupInfoResp\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x12\n\nmember_seq\x18\x02 \x01(\x04\x12\x11\n\tgroup_seq\x18\x03 \x01(\x04\"6\n\x19PbSearchRoamMsgInCloudReq\x12\x19\n\x11serialize_reqbody\x18\x01 \x01(\x0c\"W\n\x1aPbSearchRoamMsgInCloudResp\x12\x1e\n\x03msg\x18\x01 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x19\n\x11serialize_rspbody\x18\x02 \x01(\x0c\"\xf9\x03\n\x0cPbSendMsgReq\x12.\n\x0crouting_head\x18\x01 \x01(\x0b\x32\x18.msf.msg.svc.RoutingHead\x12/\n\x0c\x63ontent_head\x18\x02 \x01(\x0b\x32\x19.msf.msg.comm.ContentHead\x12&\n\x04\x62ody\x18\x03 \x01(\x0b\x32\x18.im.msg.msg_body.MsgBody\x12\x0b\n\x03seq\x18\x04 \x01(\r\x12\x0c\n\x04rand\x18\x05 \x01(\r\x12\x13\n\x0bsync_cookie\x18\x06 \x01(\x0c\x12-\n\tapp_share\x18\x07 \x01(\x0b\x32\x1a.msf.msg.comm.AppShareInfo\x12\x0b\n\x03via\x18\x08 \x01(\r\x12\x14\n\x0c\x64\x61ta_statist\x18\t \x01(\r\x12\x35\n\x10multi_msg_assist\x18\n \x01(\x0b\x32\x1b.msf.msg.svc.MultiMsgAssist\x12\x39\n\x11input_notify_info\x18\x0b \x01(\x0b\x32\x1e.msf.msg.svc.PbInputNotifyInfo\x12#\n\x04\x63trl\x18\x0c \x01(\x0b\x32\x15.msf.msg.ctrl.MsgCtrl\x12/\n\x0breceipt_req\x18\r \x01(\x0b\x32\x1a.im.msg.receipt.ReceiptReq\x12\x16\n\x0emulti_send_seq\x18\x0e \x01(\r\"\xb6\x02\n\rPbSendMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x11\n\tsend_time\x18\x03 \x01(\r\x12\x19\n\x11svrbusy_wait_time\x18\x04 \x01(\r\x12+\n\tsend_info\x18\x05 \x01(\x0b\x32\x18.msf.msg.svc.MsgSendInfo\x12\x0f\n\x07\x65rrtype\x18\x06 \x01(\r\x12\x31\n\x0etrans_svr_info\x18\x07 \x01(\x0b\x32\x19.msf.msg.svc.TransSvrInfo\x12\x31\n\x0creceipt_resp\x18\x08 \x01(\x0b\x32\x1b.im.msg.receipt.ReceiptResp\x12\x1c\n\x14text_analysis_result\x18\t \x01(\r\x12\x15\n\rmsg_info_flag\x18\n \x01(\r\"a\n\x18PbThirdQQUnReadMsgNumReq\x12\x35\n\x10thirdqq_req_info\x18\x01 \x03(\x0b\x32\x1b.msf.msg.svc.ThirdQQReqInfo\x12\x0e\n\x06source\x18\x02 \x01(\r\"T\n\x0eThirdQQReqInfo\x12\x11\n\tthird_uin\x18\x01 \x01(\x04\x12\x15\n\rthird_uin_sig\x18\x02 \x01(\x0c\x12\x18\n\x10third_uin_cookie\x18\x03 \x01(\x0c\"\x86\x01\n\x19PbThirdQQUnReadMsgNumResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x37\n\x11thirdqq_resp_info\x18\x03 \x03(\x0b\x32\x1c.msf.msg.svc.ThirdQQRespInfo\x12\x10\n\x08interval\x18\x04 \x01(\r\"\x95\x01\n\x0fThirdQQRespInfo\x12\x11\n\tthird_uin\x18\x01 \x01(\x04\x12\x18\n\x10third_uin_cookie\x18\x02 \x01(\x0c\x12\x0b\n\x03num\x18\x03 \x01(\r\x12\x0c\n\x04\x66lag\x18\x04 \x01(\r\x12\x13\n\x0bredbag_time\x18\x05 \x01(\r\x12\x0e\n\x06status\x18\x06 \x01(\r\x12\x15\n\rlast_msg_time\x18\x07 \x01(\r\"\xd7\x02\n\x11PbUnReadMsgSeqReq\x12:\n\x0f\x63\x32\x63_unread_info\x18\x01 \x01(\x0b\x32!.msf.msg.svc.PbC2CUnReadMsgNumReq\x12\x42\n\x13\x62induin_unread_info\x18\x02 \x03(\x0b\x32%.msf.msg.svc.PbBindUinUnReadMsgNumReq\x12<\n\x11group_unread_info\x18\x03 \x01(\x0b\x32!.msf.msg.svc.PbPullGroupMsgSeqReq\x12@\n\x13\x64iscuss_unread_info\x18\x04 \x01(\x0b\x32#.msf.msg.svc.PbPullDiscussMsgSeqReq\x12\x42\n\x13thirdqq_unread_info\x18\x05 \x01(\x0b\x32%.msf.msg.svc.PbThirdQQUnReadMsgNumReq\"\xdd\x02\n\x12PbUnReadMsgSeqResp\x12;\n\x0f\x63\x32\x63_unread_info\x18\x01 \x01(\x0b\x32\".msf.msg.svc.PbC2CUnReadMsgNumResp\x12\x43\n\x13\x62induin_unread_info\x18\x02 \x03(\x0b\x32&.msf.msg.svc.PbBindUinUnReadMsgNumResp\x12=\n\x11group_unread_info\x18\x03 \x01(\x0b\x32\".msf.msg.svc.PbPullGroupMsgSeqResp\x12\x41\n\x13\x64iscuss_unread_info\x18\x04 \x01(\x0b\x32$.msf.msg.svc.PbPullDiscussMsgSeqResp\x12\x43\n\x13thirdqq_unread_info\x18\x05 \x01(\x0b\x32&.msf.msg.svc.PbThirdQQUnReadMsgNumResp\"=\n\x0bPubGroupTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\x11\n\tgroup_uin\x18\x03 \x01(\x04\")\n\nPublicPlat\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"1\n\x12QQQueryBusinessTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\",\n\rRichStatusTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"\xb8\x07\n\x0bRoutingHead\x12\x1d\n\x03\x63\x32\x63\x18\x01 \x01(\x0b\x32\x10.msf.msg.svc.C2C\x12\x1d\n\x03grp\x18\x02 \x01(\x0b\x32\x10.msf.msg.svc.Grp\x12$\n\x07grp_tmp\x18\x03 \x01(\x0b\x32\x13.msf.msg.svc.GrpTmp\x12\x1d\n\x03\x64is\x18\x04 \x01(\x0b\x32\x10.msf.msg.svc.Dis\x12$\n\x07\x64is_tmp\x18\x05 \x01(\x0b\x32\x13.msf.msg.svc.DisTmp\x12$\n\x07wpa_tmp\x18\x06 \x01(\x0b\x32\x13.msf.msg.svc.WPATmp\x12,\n\x0bpublic_plat\x18\x08 \x01(\x0b\x32\x17.msf.msg.svc.PublicPlat\x12(\n\ttrans_msg\x18\t \x01(\x0b\x32\x15.msf.msg.svc.TransMsg\x12\x31\n\x0c\x61\x64\x64ress_list\x18\n \x01(\x0b\x32\x1b.msf.msg.svc.AddressListTmp\x12\x33\n\x0frich_status_tmp\x18\x0b \x01(\x0b\x32\x1a.msf.msg.svc.RichStatusTmp\x12(\n\ttrans_cmd\x18\x0c \x01(\x0b\x32\x15.msf.msg.svc.TransCmd\x12*\n\naccost_tmp\x18\r \x01(\x0b\x32\x16.msf.msg.svc.AccostTmp\x12/\n\rpub_group_tmp\x18\x0e \x01(\x0b\x32\x18.msf.msg.svc.PubGroupTmp\x12-\n\x0ctrans_0_x211\x18\x0f \x01(\x0b\x32\x17.msf.msg.svc.Trans0x211\x12\x35\n\x10\x62usiness_wpa_tmp\x18\x10 \x01(\x0b\x32\x1b.msf.msg.svc.BusinessWPATmp\x12&\n\x08\x61uth_tmp\x18\x11 \x01(\x0b\x32\x14.msf.msg.svc.AuthTmp\x12&\n\x08\x62sns_tmp\x18\x12 \x01(\x0b\x32\x14.msf.msg.svc.BsnsTmp\x12=\n\x14qq_querybusiness_tmp\x18\x13 \x01(\x0b\x32\x1f.msf.msg.svc.QQQueryBusinessTmp\x12\x37\n\x11nearby_dating_tmp\x18\x14 \x01(\x0b\x32\x1c.msf.msg.svc.NearByDatingTmp\x12=\n\x14nearby_assistant_tmp\x18\x15 \x01(\x0b\x32\x1f.msf.msg.svc.NearByAssistantTmp\x12&\n\x08\x63omm_tmp\x18\x16 \x01(\x0b\x32\x14.msf.msg.svc.CommTmp\"\xa6\x01\n\nTrans0x211\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0e\n\x06\x63\x63_cmd\x18\x02 \x01(\r\x12,\n\tinst_ctrl\x18\x03 \x01(\x0b\x32\x19.im.msg.msg_head.InstCtrl\x12\x0b\n\x03sig\x18\x04 \x01(\x0c\x12\x10\n\x08\x63\x32\x63_type\x18\x05 \x01(\r\x12\x14\n\x0cservice_type\x18\x06 \x01(\r\x12\x15\n\rdataline_flag\x18\x07 \x01(\r\"(\n\x08TransCmd\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0c\n\x04type\x18\x02 \x01(\r\"+\n\x08TransMsg\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0f\n\x07\x63\x32\x63_cmd\x18\x02 \x01(\r\">\n\x08TransReq\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\x05\x12\x0f\n\x07req_tag\x18\x02 \x01(\r\x12\x10\n\x08req_buff\x18\x03 \x01(\x0c\"P\n\tTransResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08resp_tag\x18\x03 \x01(\r\x12\x11\n\tresp_buff\x18\x04 \x01(\x0c\"W\n\x0cTransSvrInfo\x12\x10\n\x08sub_type\x18\x01 \x01(\r\x12\x10\n\x08ret_code\x18\x02 \x01(\x05\x12\x0f\n\x07\x65rr_msg\x18\x03 \x01(\x0c\x12\x12\n\ntrans_info\x18\x04 \x01(\x0c\"%\n\x06WPATmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"9\n\x13WithDrawWordingInfo\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\x12\x11\n\titem_name\x18\x02 \x01(\t'
+  serialized_pb=b'\n\x1c\x63\x61i/pb/msf/msg/svc/svc.proto\x12\x0bmsf.msg.svc\x1a\x1e\x63\x61i/pb/msf/msg/comm/comm.proto\x1a\x1e\x63\x61i/pb/msf/msg/ctrl/ctrl.proto\x1a%cai/pb/im/msg/msg_body/msg_body.proto\x1a%cai/pb/im/msg/msg_head/msg_head.proto\x1a#cai/pb/im/msg/receipt/receipt.proto\"7\n\tAccostTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\r\n\x05reply\x18\x03 \x01(\x08\"n\n\x0e\x41\x64\x64ressListTmp\x12\x12\n\nfrom_phone\x18\x01 \x01(\t\x12\x10\n\x08to_phone\x18\x02 \x01(\t\x12\x0e\n\x06to_uin\x18\x03 \x01(\x04\x12\x0b\n\x03sig\x18\x04 \x01(\x0c\x12\x19\n\x11\x66rom_contact_size\x18\x05 \x01(\r\"&\n\x07\x41uthTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"&\n\x07\x42snsTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\";\n\x0e\x42usinessWPATmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\x0c\n\x04sigt\x18\x03 \x01(\x0c\"\x15\n\x03\x43\x32\x43\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\"\\\n\x07\x43ommTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x10\n\x08\x63\x32\x63_type\x18\x02 \x01(\r\x12\x10\n\x08svr_type\x18\x03 \x01(\r\x12\x0b\n\x03sig\x18\x04 \x01(\x0c\x12\x10\n\x08reserved\x18\x05 \x01(\x0c\"\x16\n\x03\x44is\x12\x0f\n\x07\x64is_uin\x18\x01 \x01(\x04\")\n\x06\x44isTmp\x12\x0f\n\x07\x64is_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\"\x19\n\x03Grp\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\"+\n\x06GrpTmp\x12\x11\n\tgroup_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\"\x1f\n\x0bMsgSendInfo\x12\x10\n\x08receiver\x18\x01 \x01(\r\"\xc7\x01\n\x0eMultiMsgAssist\x12\x32\n\x10repeated_routing\x18\x01 \x03(\x0b\x32\x18.msf.msg.svc.RoutingHead\x12\x0b\n\x03use\x18\x02 \x01(\r\x12\x0f\n\x07temp_id\x18\x03 \x01(\x04\x12\x11\n\tvedio_len\x18\x04 \x01(\x04\x12\x11\n\tredbag_id\x18\x05 \x01(\x0c\x12\x15\n\rredbag_amount\x18\x06 \x01(\x04\x12\x13\n\x0bhas_readbag\x18\x07 \x01(\r\x12\x11\n\thas_vedio\x18\x08 \x01(\r\"@\n\x12NearByAssistantTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\r\n\x05reply\x18\x03 \x01(\x08\"=\n\x0fNearByDatingTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\r\n\x05reply\x18\x03 \x01(\x08\"d\n\x12PbBindUinGetMsgReq\x12\x10\n\x08\x62ind_uin\x18\x01 \x01(\x04\x12\x14\n\x0c\x62ind_uin_sig\x18\x02 \x01(\x0c\x12\x11\n\tsync_flag\x18\x03 \x01(\r\x12\x13\n\x0bsync_cookie\x18\x04 \x01(\x0c\"E\n\x1cPbBindUinMsgReadedConfirmReq\x12\x13\n\x0bsync_cookie\x18\x01 \x01(\x0c\x12\x10\n\x08\x62ind_uin\x18\x02 \x01(\x04\"f\n\x1dPbBindUinMsgReadedConfirmResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x13\n\x0bsync_cookie\x18\x03 \x01(\x0c\x12\x10\n\x08\x62ind_uin\x18\x04 \x01(\x04\"A\n\x18PbBindUinUnReadMsgNumReq\x12\x10\n\x08\x62ind_uin\x18\x01 \x01(\x04\x12\x13\n\x0bsync_cookie\x18\x02 \x01(\x0c\"Z\n\x19PbBindUinUnReadMsgNumResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08\x62ind_uin\x18\x03 \x01(\x04\x12\x0b\n\x03num\x18\x04 \x01(\r\"\xf8\x02\n\x13PbC2CMsgWithDrawReq\x12\x36\n\x04info\x18\x01 \x03(\x0b\x32(.msf.msg.svc.PbC2CMsgWithDrawReq.MsgInfo\x12\x19\n\x11long_message_flag\x18\x02 \x01(\r\x12\x10\n\x08reserved\x18\x03 \x01(\x0c\x12\x0f\n\x07sub_cmd\x18\x04 \x01(\r\x1a\xea\x01\n\x07MsgInfo\x12\x10\n\x08\x66rom_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\x12\x0f\n\x07msg_seq\x18\x03 \x01(\r\x12\x0f\n\x07msg_uid\x18\x04 \x01(\x04\x12\x10\n\x08msg_time\x18\x05 \x01(\x04\x12\x12\n\nmsg_random\x18\x06 \x01(\r\x12\x0f\n\x07pkg_num\x18\x07 \x01(\r\x12\x11\n\tpkg_index\x18\x08 \x01(\r\x12\x0f\n\x07\x64iv_seq\x18\t \x01(\r\x12\x10\n\x08msg_type\x18\n \x01(\r\x12.\n\x0crouting_head\x18\x14 \x01(\x0b\x32\x18.msf.msg.svc.RoutingHead\"\xa7\x01\n\x14PbC2CMsgWithDrawResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12&\n\x06status\x18\x03 \x03(\x0b\x32\x16.msf.msg.svc.MsgStatus\x12\x0f\n\x07sub_cmd\x18\x04 \x01(\r\x12\x36\n\x0cwording_info\x18\x05 \x01(\x0b\x32 .msf.msg.svc.WithDrawWordingInfo\"S\n\tMsgStatus\x12\x36\n\x04info\x18\x01 \x01(\x0b\x32(.msf.msg.svc.PbC2CMsgWithDrawReq.MsgInfo\x12\x0e\n\x06status\x18\x02 \x01(\r\"\\\n\x14PbC2CReadedReportReq\x12\x13\n\x0bsync_cookie\x18\x01 \x01(\x0c\x12/\n\tpair_info\x18\x02 \x03(\x0b\x32\x1c.msf.msg.svc.UinPairReadInfo\"\xa6\x01\n\x0fUinPairReadInfo\x12\x10\n\x08peer_uin\x18\x01 \x01(\x04\x12\x16\n\x0elast_read_time\x18\x02 \x01(\r\x12\x0f\n\x07\x63rm_sig\x18\x03 \x01(\x0c\x12\x11\n\tpeer_type\x18\x04 \x01(\r\x12\x11\n\tchat_type\x18\x05 \x01(\r\x12\x0c\n\x04\x63pid\x18\x06 \x01(\x04\x12\x10\n\x08\x61io_type\x18\x07 \x01(\r\x12\x12\n\nto_tiny_id\x18\t \x01(\x04\"L\n\x15PbC2CReadedReportResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x13\n\x0bsync_cookie\x18\x03 \x01(\x0c\"\x16\n\x14PbC2CUnReadMsgNumReq\"D\n\x15PbC2CUnReadMsgNumResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x0b\n\x03num\x18\x03 \x01(\r\"\x83\x01\n\x0fPbDelRoamMsgReq\x12$\n\x07\x63\x32\x63_msg\x18\x01 \x01(\x0b\x32\x13.msf.msg.svc.C2CMsg\x12$\n\x07grp_msg\x18\x02 \x01(\x0b\x32\x13.msf.msg.svc.GrpMsg\x12$\n\x07\x64is_msg\x18\x03 \x01(\x0b\x32\x13.msf.msg.svc.DisMsg\"W\n\x06\x43\x32\x43Msg\x12\x10\n\x08\x66rom_uin\x18\x01 \x01(\x04\x12\x10\n\x08peer_uin\x18\x02 \x01(\x04\x12\x0c\n\x04time\x18\x03 \x01(\r\x12\x0e\n\x06random\x18\x04 \x01(\r\x12\x0b\n\x03seq\x18\x05 \x01(\r\"*\n\x06\x44isMsg\x12\x13\n\x0b\x64iscuss_uin\x18\x01 \x01(\x04\x12\x0b\n\x03seq\x18\x02 \x01(\x04\"<\n\x06GrpMsg\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x0b\n\x03seq\x18\x02 \x01(\x04\x12\x11\n\tresv_flag\x18\x03 \x01(\r\"2\n\x10PbDelRoamMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\"\xaa\x01\n\x0ePbDeleteMsgReq\x12\x36\n\tmsg_items\x18\x01 \x03(\x0b\x32#.msf.msg.svc.PbDeleteMsgReq.MsgItem\x1a`\n\x07MsgItem\x12\x10\n\x08\x66rom_uin\x18\x01 \x01(\x04\x12\x0e\n\x06to_uin\x18\x02 \x01(\x04\x12\x0c\n\x04type\x18\x03 \x01(\r\x12\x0b\n\x03seq\x18\x04 \x01(\r\x12\x0b\n\x03uid\x18\x05 \x01(\x04\x12\x0b\n\x03sig\x18\x07 \x01(\x0c\"1\n\x0fPbDeleteMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\"C\n\x18PbDiscussReadedReportReq\x12\x10\n\x08\x63onf_uin\x18\x01 \x01(\x04\x12\x15\n\rlast_read_seq\x18\x02 \x01(\x04\"s\n\x19PbDiscussReadedReportResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08\x63onf_uin\x18\x03 \x01(\x04\x12\x12\n\nmember_seq\x18\x04 \x01(\x04\x12\x10\n\x08\x63onf_seq\x18\x05 \x01(\x04\"\xa2\x01\n\x12PbGetDiscussMsgReq\x12\x13\n\x0b\x64iscuss_uin\x18\x01 \x01(\x04\x12\x0f\n\x07\x65nd_seq\x18\x02 \x01(\x04\x12\x11\n\tbegin_seq\x18\x03 \x01(\x04\x12\x15\n\rlast_get_time\x18\x04 \x01(\x04\x12\x18\n\x10\x64iscuss_info_seq\x18\x05 \x01(\x04\x12\x0e\n\x06\x66ilter\x18\x06 \x01(\r\x12\x12\n\nmember_seq\x18\x07 \x01(\x04\"\xcd\x01\n\x13PbGetDiscussMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x13\n\x0b\x64iscuss_uin\x18\x03 \x01(\x04\x12\x16\n\x0ereturn_end_seq\x18\x04 \x01(\x04\x12\x18\n\x10return_begin_seq\x18\x05 \x01(\x04\x12\x1e\n\x03msg\x18\x06 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x15\n\rlast_get_time\x18\x07 \x01(\x04\x12\x18\n\x10\x64iscuss_info_seq\x18\x08 \x01(\x04\"\xb4\x01\n\x10PbGetGroupMsgReq\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x11\n\tbegin_seq\x18\x02 \x01(\x04\x12\x0f\n\x07\x65nd_seq\x18\x03 \x01(\x04\x12\x0e\n\x06\x66ilter\x18\x04 \x01(\r\x12\x12\n\nmember_seq\x18\x05 \x01(\x04\x12\x14\n\x0cpublic_group\x18\x06 \x01(\x08\x12\x13\n\x0bshield_flag\x18\x07 \x01(\r\x12\x19\n\x11save_traffic_flag\x18\x08 \x01(\r\"\x99\x01\n\x11PbGetGroupMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x12\n\ngroup_code\x18\x03 \x01(\x04\x12\x18\n\x10return_begin_seq\x18\x04 \x01(\x04\x12\x16\n\x0ereturn_end_seq\x18\x05 \x01(\x04\x12\x1e\n\x03msg\x18\x06 \x03(\x0b\x32\x11.msf.msg.comm.Msg\"\xa4\x02\n\x0bPbGetMsgReq\x12\x11\n\tsync_flag\x18\x01 \x01(\r\x12\x13\n\x0bsync_cookie\x18\x02 \x01(\x0c\x12\x13\n\x0bramble_flag\x18\x03 \x01(\r\x12\x1c\n\x14latest_ramble_number\x18\x04 \x01(\r\x12\x1b\n\x13other_ramble_number\x18\x05 \x01(\r\x12\x18\n\x10online_sync_flag\x18\x06 \x01(\r\x12\x14\n\x0c\x63ontext_flag\x18\x07 \x01(\r\x12\x1a\n\x12whisper_session_id\x18\x08 \x01(\r\x12\x10\n\x08req_type\x18\t \x01(\r\x12\x19\n\x11pubaccount_cookie\x18\n \x01(\x0c\x12\x10\n\x08\x63trl_buf\x18\x0b \x01(\x0c\x12\x12\n\nserver_buf\x18\x0c \x01(\x0c\"\xf1\x01\n\x0cPbGetMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x13\n\x0bsync_cookie\x18\x03 \x01(\x0c\x12\x11\n\tsync_flag\x18\x04 \x01(\r\x12/\n\ruin_pair_msgs\x18\x05 \x03(\x0b\x32\x18.msf.msg.comm.UinPairMsg\x12\x10\n\x08\x62ind_uin\x18\x06 \x01(\x04\x12\x10\n\x08rsp_type\x18\x07 \x01(\r\x12\x19\n\x11pubaccount_cookie\x18\x08 \x01(\x0c\x12\x17\n\x0fis_partial_sync\x18\t \x01(\x08\x12\x10\n\x08\x63trl_buf\x18\n \x01(\x0c\"a\n\x15PbGetOneDayRoamMsgReq\x12\x10\n\x08peer_uin\x18\x01 \x01(\x04\x12\x14\n\x0clast_msgtime\x18\x02 \x01(\x04\x12\x0e\n\x06random\x18\x03 \x01(\x04\x12\x10\n\x08read_cnt\x18\x04 \x01(\r\"\xa4\x01\n\x16PbGetOneDayRoamMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08peer_uin\x18\x03 \x01(\x04\x12\x14\n\x0clast_msgtime\x18\x04 \x01(\x04\x12\x0e\n\x06random\x18\x05 \x01(\x04\x12\x1e\n\x03msg\x18\x06 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x12\n\niscomplete\x18\x07 \x01(\r\"\xc1\x01\n\x0fPbGetRoamMsgReq\x12\x10\n\x08peer_uin\x18\x01 \x01(\x04\x12\x14\n\x0clast_msgtime\x18\x02 \x01(\x04\x12\x0e\n\x06random\x18\x03 \x01(\x04\x12\x10\n\x08read_cnt\x18\x04 \x01(\r\x12\x11\n\tcheck_pwd\x18\x05 \x01(\r\x12\x0b\n\x03sig\x18\x06 \x01(\x0c\x12\x0b\n\x03pwd\x18\x07 \x01(\x0c\x12\x0e\n\x06subcmd\x18\x08 \x01(\r\x12\x15\n\rbegin_msgtime\x18\t \x01(\x04\x12\x10\n\x08req_type\x18\n \x01(\r\"\x97\x01\n\x10PbGetRoamMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08peer_uin\x18\x03 \x01(\x04\x12\x14\n\x0clast_msgtime\x18\x04 \x01(\x04\x12\x0e\n\x06random\x18\x05 \x01(\x04\x12\x1e\n\x03msg\x18\x06 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x0b\n\x03sig\x18\x07 \x01(\x0c\"\x89\x01\n\x15PbGroupMsgWithDrawReq\x12\x0f\n\x07sub_cmd\x18\x01 \x01(\r\x12\x12\n\ngroup_type\x18\x02 \x01(\r\x12\x12\n\ngroup_code\x18\x03 \x01(\x04\x12&\n\x04list\x18\x04 \x03(\x0b\x32\x18.msf.msg.svc.MessageInfo\x12\x0f\n\x07userdef\x18\x05 \x01(\x0c\"W\n\x0bMessageInfo\x12\x0f\n\x07msg_seq\x18\x01 \x01(\r\x12\x12\n\nmsg_random\x18\x02 \x01(\r\x12\x10\n\x08msg_type\x18\x03 \x01(\r\x12\x11\n\tresv_flag\x18\x04 \x01(\r\"\xef\x01\n\x16PbGroupMsgWithDrawResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x0f\n\x07sub_cmd\x18\x03 \x01(\r\x12\x12\n\ngroup_type\x18\x04 \x01(\r\x12\x12\n\ngroup_code\x18\x05 \x01(\x04\x12\x33\n\x0f\x66\x61iled_msg_list\x18\x06 \x03(\x0b\x32\x1a.msf.msg.svc.MessageResult\x12\x0f\n\x07userdef\x18\x07 \x01(\x0c\x12\x36\n\x0cwording_info\x18\x08 \x01(\x0b\x32 .msf.msg.svc.WithDrawWordingInfo\"y\n\rMessageResult\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0f\n\x07msg_seq\x18\x02 \x01(\r\x12\x10\n\x08msg_time\x18\x03 \x01(\r\x12\x12\n\nmsg_random\x18\x04 \x01(\r\x12\x0f\n\x07\x65rr_msg\x18\x05 \x01(\x0c\x12\x10\n\x08msg_type\x18\x06 \x01(\r\"C\n\x16PbGroupReadedReportReq\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x15\n\rlast_read_seq\x18\x02 \x01(\x04\"x\n\x17PbGroupReadedReportResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x12\n\ngroup_code\x18\x03 \x01(\x04\x12\x12\n\nmember_seq\x18\x04 \x01(\x04\x12\x15\n\rgroup_msg_seq\x18\x05 \x01(\x04\"s\n\x11PbInputNotifyInfo\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03ime\x18\x02 \x01(\r\x12\x13\n\x0bnotify_flag\x18\x03 \x01(\r\x12\x12\n\npb_reserve\x18\x04 \x01(\x0c\x12\x18\n\x10ios_push_wording\x18\x05 \x01(\x0c\"\x99\x02\n\x14PbMsgReadedReportReq\x12<\n\x0fgrp_read_report\x18\x01 \x03(\x0b\x32#.msf.msg.svc.PbGroupReadedReportReq\x12>\n\x0f\x64is_read_report\x18\x02 \x03(\x0b\x32%.msf.msg.svc.PbDiscussReadedReportReq\x12:\n\x0f\x63\x32\x63_read_report\x18\x03 \x01(\x0b\x32!.msf.msg.svc.PbC2CReadedReportReq\x12G\n\x14\x62ind_uin_read_report\x18\x04 \x01(\x0b\x32).msf.msg.svc.PbBindUinMsgReadedConfirmReq\"\x9e\x02\n\x15PbMsgReadedReportResp\x12=\n\x0fgrp_read_report\x18\x01 \x03(\x0b\x32$.msf.msg.svc.PbGroupReadedReportResp\x12?\n\x0f\x64is_read_report\x18\x02 \x03(\x0b\x32&.msf.msg.svc.PbDiscussReadedReportResp\x12;\n\x0f\x63\x32\x63_read_report\x18\x03 \x01(\x0b\x32\".msf.msg.svc.PbC2CReadedReportResp\x12H\n\x14\x62ind_uin_read_report\x18\x04 \x01(\x0b\x32*.msf.msg.svc.PbBindUinMsgReadedConfirmResp\"\x88\x01\n\x10PbMsgWithDrawReq\x12\x37\n\rc2c_with_draw\x18\x01 \x03(\x0b\x32 .msf.msg.svc.PbC2CMsgWithDrawReq\x12;\n\x0fgroup_with_draw\x18\x02 \x03(\x0b\x32\".msf.msg.svc.PbGroupMsgWithDrawReq\"\x8b\x01\n\x11PbMsgWithDrawResp\x12\x38\n\rc2c_with_draw\x18\x01 \x03(\x0b\x32!.msf.msg.svc.PbC2CMsgWithDrawResp\x12<\n\x0fgroup_with_draw\x18\x02 \x03(\x0b\x32#.msf.msg.svc.PbGroupMsgWithDrawResp\"O\n\x16PbPullDiscussMsgSeqReq\x12\x35\n\x10\x64iscuss_info_req\x18\x01 \x03(\x0b\x32\x1b.msf.msg.svc.DiscussInfoReq\"4\n\x0e\x44iscussInfoReq\x12\x10\n\x08\x63onf_uin\x18\x01 \x01(\x04\x12\x10\n\x08last_seq\x18\x02 \x01(\x04\"r\n\x17PbPullDiscussMsgSeqResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x37\n\x11\x64iscuss_info_resp\x18\x03 \x03(\x0b\x32\x1c.msf.msg.svc.DiscussInfoResp\"I\n\x0f\x44iscussInfoResp\x12\x10\n\x08\x63onf_uin\x18\x01 \x01(\x04\x12\x12\n\nmember_seq\x18\x02 \x01(\x04\x12\x10\n\x08\x63onf_seq\x18\x03 \x01(\x04\"I\n\x14PbPullGroupMsgSeqReq\x12\x31\n\x0egroup_info_req\x18\x01 \x03(\x0b\x32\x19.msf.msg.svc.GroupInfoReq\"4\n\x0cGroupInfoReq\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x10\n\x08last_seq\x18\x02 \x01(\x04\"l\n\x15PbPullGroupMsgSeqResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x33\n\x0fgroup_info_resp\x18\x03 \x03(\x0b\x32\x1a.msf.msg.svc.GroupInfoResp\"J\n\rGroupInfoResp\x12\x12\n\ngroup_code\x18\x01 \x01(\x04\x12\x12\n\nmember_seq\x18\x02 \x01(\x04\x12\x11\n\tgroup_seq\x18\x03 \x01(\x04\"6\n\x19PbSearchRoamMsgInCloudReq\x12\x19\n\x11serialize_reqbody\x18\x01 \x01(\x0c\"W\n\x1aPbSearchRoamMsgInCloudResp\x12\x1e\n\x03msg\x18\x01 \x03(\x0b\x32\x11.msf.msg.comm.Msg\x12\x19\n\x11serialize_rspbody\x18\x02 \x01(\x0c\"\xf9\x03\n\x0cPbSendMsgReq\x12.\n\x0crouting_head\x18\x01 \x01(\x0b\x32\x18.msf.msg.svc.RoutingHead\x12/\n\x0c\x63ontent_head\x18\x02 \x01(\x0b\x32\x19.msf.msg.comm.ContentHead\x12&\n\x04\x62ody\x18\x03 \x01(\x0b\x32\x18.im.msg.msg_body.MsgBody\x12\x0b\n\x03seq\x18\x04 \x01(\r\x12\x0c\n\x04rand\x18\x05 \x01(\r\x12\x13\n\x0bsync_cookie\x18\x06 \x01(\x0c\x12-\n\tapp_share\x18\x07 \x01(\x0b\x32\x1a.msf.msg.comm.AppShareInfo\x12\x0b\n\x03via\x18\x08 \x01(\r\x12\x14\n\x0c\x64\x61ta_statist\x18\t \x01(\r\x12\x35\n\x10multi_msg_assist\x18\n \x01(\x0b\x32\x1b.msf.msg.svc.MultiMsgAssist\x12\x39\n\x11input_notify_info\x18\x0b \x01(\x0b\x32\x1e.msf.msg.svc.PbInputNotifyInfo\x12#\n\x04\x63trl\x18\x0c \x01(\x0b\x32\x15.msf.msg.ctrl.MsgCtrl\x12/\n\x0breceipt_req\x18\r \x01(\x0b\x32\x1a.im.msg.receipt.ReceiptReq\x12\x16\n\x0emulti_send_seq\x18\x0e \x01(\r\"\xb6\x02\n\rPbSendMsgResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x11\n\tsend_time\x18\x03 \x01(\r\x12\x19\n\x11svrbusy_wait_time\x18\x04 \x01(\r\x12+\n\tsend_info\x18\x05 \x01(\x0b\x32\x18.msf.msg.svc.MsgSendInfo\x12\x0f\n\x07\x65rrtype\x18\x06 \x01(\r\x12\x31\n\x0etrans_svr_info\x18\x07 \x01(\x0b\x32\x19.msf.msg.svc.TransSvrInfo\x12\x31\n\x0creceipt_resp\x18\x08 \x01(\x0b\x32\x1b.im.msg.receipt.ReceiptResp\x12\x1c\n\x14text_analysis_result\x18\t \x01(\r\x12\x15\n\rmsg_info_flag\x18\n \x01(\r\"a\n\x18PbThirdQQUnReadMsgNumReq\x12\x35\n\x10thirdqq_req_info\x18\x01 \x03(\x0b\x32\x1b.msf.msg.svc.ThirdQQReqInfo\x12\x0e\n\x06source\x18\x02 \x01(\r\"T\n\x0eThirdQQReqInfo\x12\x11\n\tthird_uin\x18\x01 \x01(\x04\x12\x15\n\rthird_uin_sig\x18\x02 \x01(\x0c\x12\x18\n\x10third_uin_cookie\x18\x03 \x01(\x0c\"\x86\x01\n\x19PbThirdQQUnReadMsgNumResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x37\n\x11thirdqq_resp_info\x18\x03 \x03(\x0b\x32\x1c.msf.msg.svc.ThirdQQRespInfo\x12\x10\n\x08interval\x18\x04 \x01(\r\"\x95\x01\n\x0fThirdQQRespInfo\x12\x11\n\tthird_uin\x18\x01 \x01(\x04\x12\x18\n\x10third_uin_cookie\x18\x02 \x01(\x0c\x12\x0b\n\x03num\x18\x03 \x01(\r\x12\x0c\n\x04\x66lag\x18\x04 \x01(\r\x12\x13\n\x0bredbag_time\x18\x05 \x01(\r\x12\x0e\n\x06status\x18\x06 \x01(\r\x12\x15\n\rlast_msg_time\x18\x07 \x01(\r\"\xd7\x02\n\x11PbUnReadMsgSeqReq\x12:\n\x0f\x63\x32\x63_unread_info\x18\x01 \x01(\x0b\x32!.msf.msg.svc.PbC2CUnReadMsgNumReq\x12\x42\n\x13\x62induin_unread_info\x18\x02 \x03(\x0b\x32%.msf.msg.svc.PbBindUinUnReadMsgNumReq\x12<\n\x11group_unread_info\x18\x03 \x01(\x0b\x32!.msf.msg.svc.PbPullGroupMsgSeqReq\x12@\n\x13\x64iscuss_unread_info\x18\x04 \x01(\x0b\x32#.msf.msg.svc.PbPullDiscussMsgSeqReq\x12\x42\n\x13thirdqq_unread_info\x18\x05 \x01(\x0b\x32%.msf.msg.svc.PbThirdQQUnReadMsgNumReq\"\xdd\x02\n\x12PbUnReadMsgSeqResp\x12;\n\x0f\x63\x32\x63_unread_info\x18\x01 \x01(\x0b\x32\".msf.msg.svc.PbC2CUnReadMsgNumResp\x12\x43\n\x13\x62induin_unread_info\x18\x02 \x03(\x0b\x32&.msf.msg.svc.PbBindUinUnReadMsgNumResp\x12=\n\x11group_unread_info\x18\x03 \x01(\x0b\x32\".msf.msg.svc.PbPullGroupMsgSeqResp\x12\x41\n\x13\x64iscuss_unread_info\x18\x04 \x01(\x0b\x32$.msf.msg.svc.PbPullDiscussMsgSeqResp\x12\x43\n\x13thirdqq_unread_info\x18\x05 \x01(\x0b\x32&.msf.msg.svc.PbThirdQQUnReadMsgNumResp\"=\n\x0bPubGroupTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\x12\x11\n\tgroup_uin\x18\x03 \x01(\x04\")\n\nPublicPlat\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"1\n\x12QQQueryBusinessTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\",\n\rRichStatusTmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"\xb8\x07\n\x0bRoutingHead\x12\x1d\n\x03\x63\x32\x63\x18\x01 \x01(\x0b\x32\x10.msf.msg.svc.C2C\x12\x1d\n\x03grp\x18\x02 \x01(\x0b\x32\x10.msf.msg.svc.Grp\x12$\n\x07grp_tmp\x18\x03 \x01(\x0b\x32\x13.msf.msg.svc.GrpTmp\x12\x1d\n\x03\x64is\x18\x04 \x01(\x0b\x32\x10.msf.msg.svc.Dis\x12$\n\x07\x64is_tmp\x18\x05 \x01(\x0b\x32\x13.msf.msg.svc.DisTmp\x12$\n\x07wpa_tmp\x18\x06 \x01(\x0b\x32\x13.msf.msg.svc.WPATmp\x12,\n\x0bpublic_plat\x18\x08 \x01(\x0b\x32\x17.msf.msg.svc.PublicPlat\x12(\n\ttrans_msg\x18\t \x01(\x0b\x32\x15.msf.msg.svc.TransMsg\x12\x31\n\x0c\x61\x64\x64ress_list\x18\n \x01(\x0b\x32\x1b.msf.msg.svc.AddressListTmp\x12\x33\n\x0frich_status_tmp\x18\x0b \x01(\x0b\x32\x1a.msf.msg.svc.RichStatusTmp\x12(\n\ttrans_cmd\x18\x0c \x01(\x0b\x32\x15.msf.msg.svc.TransCmd\x12*\n\naccost_tmp\x18\r \x01(\x0b\x32\x16.msf.msg.svc.AccostTmp\x12/\n\rpub_group_tmp\x18\x0e \x01(\x0b\x32\x18.msf.msg.svc.PubGroupTmp\x12-\n\x0ctrans_0_x211\x18\x0f \x01(\x0b\x32\x17.msf.msg.svc.Trans0x211\x12\x35\n\x10\x62usiness_wpa_tmp\x18\x10 \x01(\x0b\x32\x1b.msf.msg.svc.BusinessWPATmp\x12&\n\x08\x61uth_tmp\x18\x11 \x01(\x0b\x32\x14.msf.msg.svc.AuthTmp\x12&\n\x08\x62sns_tmp\x18\x12 \x01(\x0b\x32\x14.msf.msg.svc.BsnsTmp\x12=\n\x14qq_querybusiness_tmp\x18\x13 \x01(\x0b\x32\x1f.msf.msg.svc.QQQueryBusinessTmp\x12\x37\n\x11nearby_dating_tmp\x18\x14 \x01(\x0b\x32\x1c.msf.msg.svc.NearByDatingTmp\x12=\n\x14nearby_assistant_tmp\x18\x15 \x01(\x0b\x32\x1f.msf.msg.svc.NearByAssistantTmp\x12&\n\x08\x63omm_tmp\x18\x16 \x01(\x0b\x32\x14.msf.msg.svc.CommTmp\"\xa6\x01\n\nTrans0x211\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0e\n\x06\x63\x63_cmd\x18\x02 \x01(\r\x12,\n\tinst_ctrl\x18\x03 \x01(\x0b\x32\x19.im.msg.msg_head.InstCtrl\x12\x0b\n\x03sig\x18\x04 \x01(\x0c\x12\x10\n\x08\x63\x32\x63_type\x18\x05 \x01(\r\x12\x14\n\x0cservice_type\x18\x06 \x01(\r\x12\x15\n\rdataline_flag\x18\x07 \x01(\r\"(\n\x08TransCmd\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0c\n\x04type\x18\x02 \x01(\r\"+\n\x08TransMsg\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0f\n\x07\x63\x32\x63_cmd\x18\x02 \x01(\r\">\n\x08TransReq\x12\x0f\n\x07\x63ommand\x18\x01 \x01(\x05\x12\x0f\n\x07req_tag\x18\x02 \x01(\r\x12\x10\n\x08req_buff\x18\x03 \x01(\x0c\"P\n\tTransResp\x12\x0e\n\x06result\x18\x01 \x01(\r\x12\x0e\n\x06\x65rrmsg\x18\x02 \x01(\t\x12\x10\n\x08resp_tag\x18\x03 \x01(\r\x12\x11\n\tresp_buff\x18\x04 \x01(\x0c\"W\n\x0cTransSvrInfo\x12\x10\n\x08sub_type\x18\x01 \x01(\r\x12\x10\n\x08ret_code\x18\x02 \x01(\x05\x12\x0f\n\x07\x65rr_msg\x18\x03 \x01(\x0c\x12\x12\n\ntrans_info\x18\x04 \x01(\x0c\"%\n\x06WPATmp\x12\x0e\n\x06to_uin\x18\x01 \x01(\x04\x12\x0b\n\x03sig\x18\x02 \x01(\x0c\"9\n\x13WithDrawWordingInfo\x12\x0f\n\x07item_id\x18\x01 \x01(\x05\x12\x11\n\titem_name\x18\x02 \x01(\t'
   ,
   dependencies=[cai_dot_pb_dot_msf_dot_msg_dot_comm_dot_comm__pb2.DESCRIPTOR,cai_dot_pb_dot_msf_dot_msg_dot_ctrl_dot_ctrl__pb2.DESCRIPTOR,cai_dot_pb_dot_im_dot_msg_dot_msg__body_dot_msg__body__pb2.DESCRIPTOR,cai_dot_pb_dot_im_dot_msg_dot_msg__head_dot_msg__head__pb2.DESCRIPTOR,cai_dot_pb_dot_im_dot_msg_dot_receipt_dot_receipt__pb2.DESCRIPTOR,])
 
@@ -1657,6 +1657,72 @@ _PBDELROAMMSGRESP = _descriptor.Descriptor(
 )
 
 
+_PBDELETEMSGREQ_MSGITEM = _descriptor.Descriptor(
+  name='MsgItem',
+  full_name='msf.msg.svc.PbDeleteMsgReq.MsgItem',
+  filename=None,
+  file=DESCRIPTOR,
+  containing_type=None,
+  create_key=_descriptor._internal_create_key,
+  fields=[
+    _descriptor.FieldDescriptor(
+      name='from_uin', full_name='msf.msg.svc.PbDeleteMsgReq.MsgItem.from_uin', index=0,
+      number=1, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='to_uin', full_name='msf.msg.svc.PbDeleteMsgReq.MsgItem.to_uin', index=1,
+      number=2, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='type', full_name='msf.msg.svc.PbDeleteMsgReq.MsgItem.type', index=2,
+      number=3, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='seq', full_name='msf.msg.svc.PbDeleteMsgReq.MsgItem.seq', index=3,
+      number=4, type=13, cpp_type=3, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='uid', full_name='msf.msg.svc.PbDeleteMsgReq.MsgItem.uid', index=4,
+      number=5, type=4, cpp_type=4, label=1,
+      has_default_value=False, default_value=0,
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+    _descriptor.FieldDescriptor(
+      name='sig', full_name='msf.msg.svc.PbDeleteMsgReq.MsgItem.sig', index=5,
+      number=7, type=12, cpp_type=9, label=1,
+      has_default_value=False, default_value=b"",
+      message_type=None, enum_type=None, containing_type=None,
+      is_extension=False, extension_scope=None,
+      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
+  ],
+  extensions=[
+  ],
+  nested_types=[],
+  enum_types=[
+  ],
+  serialized_options=None,
+  is_extendable=False,
+  syntax='proto2',
+  extension_ranges=[],
+  oneofs=[
+  ],
+  serialized_start=3115,
+  serialized_end=3211,
+)
+
 _PBDELETEMSGREQ = _descriptor.Descriptor(
   name='PbDeleteMsgReq',
   full_name='msf.msg.svc.PbDeleteMsgReq',
@@ -1675,7 +1741,7 @@ _PBDELETEMSGREQ = _descriptor.Descriptor(
   ],
   extensions=[
   ],
-  nested_types=[],
+  nested_types=[_PBDELETEMSGREQ_MSGITEM, ],
   enum_types=[
   ],
   serialized_options=None,
@@ -1684,75 +1750,8 @@ _PBDELETEMSGREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3040,
-  serialized_end=3097,
-)
-
-
-_MSGITEM = _descriptor.Descriptor(
-  name='MsgItem',
-  full_name='msf.msg.svc.MsgItem',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='from_uin', full_name='msf.msg.svc.MsgItem.from_uin', index=0,
-      number=1, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='to_uin', full_name='msf.msg.svc.MsgItem.to_uin', index=1,
-      number=2, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='type', full_name='msf.msg.svc.MsgItem.type', index=2,
-      number=3, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='seq', full_name='msf.msg.svc.MsgItem.seq', index=3,
-      number=4, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='uid', full_name='msf.msg.svc.MsgItem.uid', index=4,
-      number=5, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='sig', full_name='msf.msg.svc.MsgItem.sig', index=5,
-      number=7, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=3099,
-  serialized_end=3195,
+  serialized_start=3041,
+  serialized_end=3211,
 )
 
 
@@ -1790,8 +1789,8 @@ _PBDELETEMSGRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3197,
-  serialized_end=3246,
+  serialized_start=3213,
+  serialized_end=3262,
 )
 
 
@@ -1829,8 +1828,8 @@ _PBDISCUSSREADEDREPORTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3248,
-  serialized_end=3315,
+  serialized_start=3264,
+  serialized_end=3331,
 )
 
 
@@ -1889,8 +1888,8 @@ _PBDISCUSSREADEDREPORTRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3317,
-  serialized_end=3432,
+  serialized_start=3333,
+  serialized_end=3448,
 )
 
 
@@ -1963,8 +1962,8 @@ _PBGETDISCUSSMSGREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3435,
-  serialized_end=3597,
+  serialized_start=3451,
+  serialized_end=3613,
 )
 
 
@@ -2044,8 +2043,8 @@ _PBGETDISCUSSMSGRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3600,
-  serialized_end=3805,
+  serialized_start=3616,
+  serialized_end=3821,
 )
 
 
@@ -2125,8 +2124,8 @@ _PBGETGROUPMSGREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3808,
-  serialized_end=3988,
+  serialized_start=3824,
+  serialized_end=4004,
 )
 
 
@@ -2192,8 +2191,8 @@ _PBGETGROUPMSGRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=3991,
-  serialized_end=4144,
+  serialized_start=4007,
+  serialized_end=4160,
 )
 
 
@@ -2301,8 +2300,8 @@ _PBGETMSGREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4147,
-  serialized_end=4439,
+  serialized_start=4163,
+  serialized_end=4455,
 )
 
 
@@ -2396,8 +2395,8 @@ _PBGETMSGRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4442,
-  serialized_end=4683,
+  serialized_start=4458,
+  serialized_end=4699,
 )
 
 
@@ -2449,8 +2448,8 @@ _PBGETONEDAYROAMMSGREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4685,
-  serialized_end=4782,
+  serialized_start=4701,
+  serialized_end=4798,
 )
 
 
@@ -2523,8 +2522,8 @@ _PBGETONEDAYROAMMSGRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4785,
-  serialized_end=4949,
+  serialized_start=4801,
+  serialized_end=4965,
 )
 
 
@@ -2618,8 +2617,8 @@ _PBGETROAMMSGREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=4952,
-  serialized_end=5145,
+  serialized_start=4968,
+  serialized_end=5161,
 )
 
 
@@ -2692,8 +2691,8 @@ _PBGETROAMMSGRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5148,
-  serialized_end=5299,
+  serialized_start=5164,
+  serialized_end=5315,
 )
 
 
@@ -2752,8 +2751,8 @@ _PBGROUPMSGWITHDRAWREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5302,
-  serialized_end=5439,
+  serialized_start=5318,
+  serialized_end=5455,
 )
 
 
@@ -2805,8 +2804,8 @@ _MESSAGEINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5441,
-  serialized_end=5528,
+  serialized_start=5457,
+  serialized_end=5544,
 )
 
 
@@ -2886,8 +2885,8 @@ _PBGROUPMSGWITHDRAWRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5531,
-  serialized_end=5770,
+  serialized_start=5547,
+  serialized_end=5786,
 )
 
 
@@ -2953,8 +2952,8 @@ _MESSAGERESULT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5772,
-  serialized_end=5893,
+  serialized_start=5788,
+  serialized_end=5909,
 )
 
 
@@ -2992,8 +2991,8 @@ _PBGROUPREADEDREPORTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5895,
-  serialized_end=5962,
+  serialized_start=5911,
+  serialized_end=5978,
 )
 
 
@@ -3052,8 +3051,8 @@ _PBGROUPREADEDREPORTRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=5964,
-  serialized_end=6084,
+  serialized_start=5980,
+  serialized_end=6100,
 )
 
 
@@ -3112,8 +3111,8 @@ _PBINPUTNOTIFYINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6086,
-  serialized_end=6201,
+  serialized_start=6102,
+  serialized_end=6217,
 )
 
 
@@ -3165,8 +3164,8 @@ _PBMSGREADEDREPORTREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6204,
-  serialized_end=6485,
+  serialized_start=6220,
+  serialized_end=6501,
 )
 
 
@@ -3218,8 +3217,8 @@ _PBMSGREADEDREPORTRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6488,
-  serialized_end=6774,
+  serialized_start=6504,
+  serialized_end=6790,
 )
 
 
@@ -3257,8 +3256,8 @@ _PBMSGWITHDRAWREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6777,
-  serialized_end=6913,
+  serialized_start=6793,
+  serialized_end=6929,
 )
 
 
@@ -3296,8 +3295,8 @@ _PBMSGWITHDRAWRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=6916,
-  serialized_end=7055,
+  serialized_start=6932,
+  serialized_end=7071,
 )
 
 
@@ -3328,8 +3327,8 @@ _PBPULLDISCUSSMSGSEQREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7057,
-  serialized_end=7136,
+  serialized_start=7073,
+  serialized_end=7152,
 )
 
 
@@ -3367,8 +3366,8 @@ _DISCUSSINFOREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7138,
-  serialized_end=7190,
+  serialized_start=7154,
+  serialized_end=7206,
 )
 
 
@@ -3413,8 +3412,8 @@ _PBPULLDISCUSSMSGSEQRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7192,
-  serialized_end=7306,
+  serialized_start=7208,
+  serialized_end=7322,
 )
 
 
@@ -3459,8 +3458,8 @@ _DISCUSSINFORESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7308,
-  serialized_end=7381,
+  serialized_start=7324,
+  serialized_end=7397,
 )
 
 
@@ -3491,8 +3490,8 @@ _PBPULLGROUPMSGSEQREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7383,
-  serialized_end=7456,
+  serialized_start=7399,
+  serialized_end=7472,
 )
 
 
@@ -3530,8 +3529,8 @@ _GROUPINFOREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7458,
-  serialized_end=7510,
+  serialized_start=7474,
+  serialized_end=7526,
 )
 
 
@@ -3576,8 +3575,8 @@ _PBPULLGROUPMSGSEQRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7512,
-  serialized_end=7620,
+  serialized_start=7528,
+  serialized_end=7636,
 )
 
 
@@ -3622,8 +3621,8 @@ _GROUPINFORESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7622,
-  serialized_end=7696,
+  serialized_start=7638,
+  serialized_end=7712,
 )
 
 
@@ -3654,8 +3653,8 @@ _PBSEARCHROAMMSGINCLOUDREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7698,
-  serialized_end=7752,
+  serialized_start=7714,
+  serialized_end=7768,
 )
 
 
@@ -3693,8 +3692,8 @@ _PBSEARCHROAMMSGINCLOUDRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7754,
-  serialized_end=7841,
+  serialized_start=7770,
+  serialized_end=7857,
 )
 
 
@@ -3816,8 +3815,8 @@ _PBSENDMSGREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=7844,
-  serialized_end=8349,
+  serialized_start=7860,
+  serialized_end=8365,
 )
 
 
@@ -3911,8 +3910,8 @@ _PBSENDMSGRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8352,
-  serialized_end=8662,
+  serialized_start=8368,
+  serialized_end=8678,
 )
 
 
@@ -3950,8 +3949,8 @@ _PBTHIRDQQUNREADMSGNUMREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8664,
-  serialized_end=8761,
+  serialized_start=8680,
+  serialized_end=8777,
 )
 
 
@@ -3996,8 +3995,8 @@ _THIRDQQREQINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8763,
-  serialized_end=8847,
+  serialized_start=8779,
+  serialized_end=8863,
 )
 
 
@@ -4049,8 +4048,8 @@ _PBTHIRDQQUNREADMSGNUMRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8850,
-  serialized_end=8984,
+  serialized_start=8866,
+  serialized_end=9000,
 )
 
 
@@ -4123,8 +4122,8 @@ _THIRDQQRESPINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=8987,
-  serialized_end=9136,
+  serialized_start=9003,
+  serialized_end=9152,
 )
 
 
@@ -4183,8 +4182,8 @@ _PBUNREADMSGSEQREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9139,
-  serialized_end=9482,
+  serialized_start=9155,
+  serialized_end=9498,
 )
 
 
@@ -4243,8 +4242,8 @@ _PBUNREADMSGSEQRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9485,
-  serialized_end=9834,
+  serialized_start=9501,
+  serialized_end=9850,
 )
 
 
@@ -4289,8 +4288,8 @@ _PUBGROUPTMP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9836,
-  serialized_end=9897,
+  serialized_start=9852,
+  serialized_end=9913,
 )
 
 
@@ -4328,8 +4327,8 @@ _PUBLICPLAT = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9899,
-  serialized_end=9940,
+  serialized_start=9915,
+  serialized_end=9956,
 )
 
 
@@ -4367,8 +4366,8 @@ _QQQUERYBUSINESSTMP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9942,
-  serialized_end=9991,
+  serialized_start=9958,
+  serialized_end=10007,
 )
 
 
@@ -4406,8 +4405,8 @@ _RICHSTATUSTMP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=9993,
-  serialized_end=10037,
+  serialized_start=10009,
+  serialized_end=10053,
 )
 
 
@@ -4578,8 +4577,8 @@ _ROUTINGHEAD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=10040,
-  serialized_end=10992,
+  serialized_start=10056,
+  serialized_end=11008,
 )
 
 
@@ -4652,8 +4651,8 @@ _TRANS0X211 = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=10995,
-  serialized_end=11161,
+  serialized_start=11011,
+  serialized_end=11177,
 )
 
 
@@ -4691,8 +4690,8 @@ _TRANSCMD = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11163,
-  serialized_end=11203,
+  serialized_start=11179,
+  serialized_end=11219,
 )
 
 
@@ -4730,8 +4729,8 @@ _TRANSMSG = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11205,
-  serialized_end=11248,
+  serialized_start=11221,
+  serialized_end=11264,
 )
 
 
@@ -4776,8 +4775,8 @@ _TRANSREQ = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11250,
-  serialized_end=11312,
+  serialized_start=11266,
+  serialized_end=11328,
 )
 
 
@@ -4829,8 +4828,8 @@ _TRANSRESP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11314,
-  serialized_end=11394,
+  serialized_start=11330,
+  serialized_end=11410,
 )
 
 
@@ -4882,8 +4881,8 @@ _TRANSSVRINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11396,
-  serialized_end=11483,
+  serialized_start=11412,
+  serialized_end=11499,
 )
 
 
@@ -4921,8 +4920,8 @@ _WPATMP = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11485,
-  serialized_end=11522,
+  serialized_start=11501,
+  serialized_end=11538,
 )
 
 
@@ -4960,8 +4959,8 @@ _WITHDRAWWORDINGINFO = _descriptor.Descriptor(
   extension_ranges=[],
   oneofs=[
   ],
-  serialized_start=11524,
-  serialized_end=11581,
+  serialized_start=11540,
+  serialized_end=11597,
 )
 
 _MULTIMSGASSIST.fields_by_name['repeated_routing'].message_type = _ROUTINGHEAD
@@ -4975,7 +4974,8 @@ _PBC2CREADEDREPORTREQ.fields_by_name['pair_info'].message_type = _UINPAIRREADINF
 _PBDELROAMMSGREQ.fields_by_name['c2c_msg'].message_type = _C2CMSG
 _PBDELROAMMSGREQ.fields_by_name['grp_msg'].message_type = _GRPMSG
 _PBDELROAMMSGREQ.fields_by_name['dis_msg'].message_type = _DISMSG
-_PBDELETEMSGREQ.fields_by_name['msg_items'].message_type = _MSGITEM
+_PBDELETEMSGREQ_MSGITEM.containing_type = _PBDELETEMSGREQ
+_PBDELETEMSGREQ.fields_by_name['msg_items'].message_type = _PBDELETEMSGREQ_MSGITEM
 _PBGETDISCUSSMSGRESP.fields_by_name['msg'].message_type = cai_dot_pb_dot_msf_dot_msg_dot_comm_dot_comm__pb2._MSG
 _PBGETGROUPMSGRESP.fields_by_name['msg'].message_type = cai_dot_pb_dot_msf_dot_msg_dot_comm_dot_comm__pb2._MSG
 _PBGETMSGRESP.fields_by_name['uin_pair_msgs'].message_type = cai_dot_pb_dot_msf_dot_msg_dot_comm_dot_comm__pb2._UINPAIRMSG
@@ -5080,7 +5080,6 @@ DESCRIPTOR.message_types_by_name['DisMsg'] = _DISMSG
 DESCRIPTOR.message_types_by_name['GrpMsg'] = _GRPMSG
 DESCRIPTOR.message_types_by_name['PbDelRoamMsgResp'] = _PBDELROAMMSGRESP
 DESCRIPTOR.message_types_by_name['PbDeleteMsgReq'] = _PBDELETEMSGREQ
-DESCRIPTOR.message_types_by_name['MsgItem'] = _MSGITEM
 DESCRIPTOR.message_types_by_name['PbDeleteMsgResp'] = _PBDELETEMSGRESP
 DESCRIPTOR.message_types_by_name['PbDiscussReadedReportReq'] = _PBDISCUSSREADEDREPORTREQ
 DESCRIPTOR.message_types_by_name['PbDiscussReadedReportResp'] = _PBDISCUSSREADEDREPORTRESP
@@ -5378,18 +5377,19 @@ PbDelRoamMsgResp = _reflection.GeneratedProtocolMessageType('PbDelRoamMsgResp', 
 _sym_db.RegisterMessage(PbDelRoamMsgResp)
 
 PbDeleteMsgReq = _reflection.GeneratedProtocolMessageType('PbDeleteMsgReq', (_message.Message,), {
+
+  'MsgItem' : _reflection.GeneratedProtocolMessageType('MsgItem', (_message.Message,), {
+    'DESCRIPTOR' : _PBDELETEMSGREQ_MSGITEM,
+    '__module__' : 'cai.pb.msf.msg.svc.svc_pb2'
+    # @@protoc_insertion_point(class_scope:msf.msg.svc.PbDeleteMsgReq.MsgItem)
+    })
+  ,
   'DESCRIPTOR' : _PBDELETEMSGREQ,
   '__module__' : 'cai.pb.msf.msg.svc.svc_pb2'
   # @@protoc_insertion_point(class_scope:msf.msg.svc.PbDeleteMsgReq)
   })
 _sym_db.RegisterMessage(PbDeleteMsgReq)
-
-MsgItem = _reflection.GeneratedProtocolMessageType('MsgItem', (_message.Message,), {
-  'DESCRIPTOR' : _MSGITEM,
-  '__module__' : 'cai.pb.msf.msg.svc.svc_pb2'
-  # @@protoc_insertion_point(class_scope:msf.msg.svc.MsgItem)
-  })
-_sym_db.RegisterMessage(MsgItem)
+_sym_db.RegisterMessage(PbDeleteMsgReq.MsgItem)
 
 PbDeleteMsgResp = _reflection.GeneratedProtocolMessageType('PbDeleteMsgResp', (_message.Message,), {
   'DESCRIPTOR' : _PBDELETEMSGRESP,

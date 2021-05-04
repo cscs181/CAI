@@ -14,13 +14,10 @@ from typing import List, Union, Optional, TYPE_CHECKING
 
 from cai.log import logger
 from cai.utils.binary import Packet
-from cai.pb.msf.msg.svc import (
-    PbGetMsgReq,
-    PbDeleteMsgReq,
-    PbDeleteMsgResp,
-)
+from .decoders import MESSAGE_DECODERS
 from cai.client.status_service import OnlineStatus
 from cai.client.packet import UniPacket, IncomingPacket
+from cai.pb.msf.msg.svc import PbGetMsgReq, PbDeleteMsgReq
 from .event import (
     GetMessageEvent,
     GetMessageSuccess,
@@ -108,7 +105,15 @@ async def handle_get_message(
     """Handle Pb Get Message response.
 
     Note:
-        Source: com.tencent.imcore.message.C2CMessageProcessor.b
+        Source:
+
+        com.tencent.imcore.message.C2CMessageProcessor.b
+
+        com.tencent.imcore.message.C2CMessageProcessor.a
+
+        com.tencent.imcore.message.C2CMessageProcessorCallback.a
+
+        com.tencent.imcore.message.DecodeMsg.a
     """
     resp = GetMessageEvent.decode_response(
         packet.uin,
@@ -173,8 +178,15 @@ async def handle_get_message(
                     continue
                 client._msg_cache[key] = None
 
-                # TODO: process message
-                print(message)
+                msg_type = message.head.type
+                Decoder = MESSAGE_DECODERS.get(msg_type, None)
+                if not Decoder:
+                    logger.debug(
+                        "MessageSvc.PbGetMsg: "
+                        f"Received unknown message type {msg_type}."
+                    )
+                decoded_message = Decoder(message)
+                print(decoded_message)
         if delete_msgs:
             seq = client.next_seq()
             del_packet = encode_delete_message(

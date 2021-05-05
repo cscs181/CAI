@@ -36,8 +36,18 @@ class TextElement(Element):
 
 @dataclass
 class FaceElement(Element):
-    index: int
+    id: int
 
     @property
     def type(self) -> str:
         return "face"
+
+
+@dataclass
+class SmallEmojiElement(Element):
+    id: int
+    byte: bytes
+
+    @property
+    def type(self) -> str:
+        return "small_emoji"

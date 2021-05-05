@@ -13,7 +13,13 @@ from typing import List, Dict, Optional, Callable
 
 from cai.log import logger
 from cai.pb.msf.msg.comm import Msg
-from .models import Message, Element, TextElement, FaceElement
+from .models import (
+    Message,
+    Element,
+    TextElement,
+    FaceElement,
+    SmallEmojiElement,
+)
 
 
 class BuddyMessageDecoder:
@@ -74,7 +80,21 @@ class BuddyMessageDecoder:
             elif elem.HasField("face"):
                 res.append(FaceElement(elem.face.index))
             elif elem.HasField("small_emoji"):
-                ...
+                res.append(
+                    SmallEmojiElement(
+                        elem.small_emoji.pack_id_sum,
+                        bytes(
+                            [
+                                0x1FF
+                                if elem.small_emoji.image_type & 0xFFFF == 2
+                                else 0xFF,
+                                elem.small_emoji.pack_id_sum & 0xFFFF,
+                                elem.small_emoji.pack_id_sum >> 16 & 0xFF,
+                                elem.small_emoji.pack_id_sum >> 24,
+                            ]
+                        ),
+                    )
+                )
             elif elem.HasField("common_elem"):
                 ...
 

@@ -9,11 +9,11 @@ This module is used to decode message protobuf.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import Dict, Optional, Callable
+from typing import List, Dict, Optional, Callable
 
 from cai.log import logger
-from .models import Message
 from cai.pb.msf.msg.comm import Msg
+from .models import Message, Element, TextElement, FaceElement
 
 
 class BuddyMessageDecoder:
@@ -67,11 +67,12 @@ class BuddyMessageDecoder:
         auto_reply = message.content_head.auto_reply
         elems = message.body.rich_text.elems
 
+        res: List[Element] = []
         for elem in elems:
             if elem.HasField("text"):
-                ...
+                res.append(TextElement(elem.text.str.decode("utf-8")))
             elif elem.HasField("face"):
-                ...
+                res.append(FaceElement(elem.face.index))
             elif elem.HasField("small_emoji"):
                 ...
             elif elem.HasField("common_elem"):

@@ -9,10 +9,35 @@ This module is used to define message models.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-
+import abc
 from dataclasses import dataclass
 
 
 @dataclass
 class Message:
     type: str
+
+
+class Element(abc.ABC):
+    @property
+    @abc.abstractmethod
+    def type(self) -> str:
+        raise NotImplementedError
+
+
+@dataclass
+class TextElement(Element):
+    content: str
+
+    @property
+    def type(self) -> str:
+        return "text"
+
+
+@dataclass
+class FaceElement(Element):
+    index: int
+
+    @property
+    def type(self) -> str:
+        return "face"

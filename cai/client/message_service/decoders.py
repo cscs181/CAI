@@ -13,8 +13,10 @@ from typing import List, Dict, Optional, Callable
 
 from cai.log import logger
 from cai.pb.msf.msg.comm import Msg
+from cai.pb.im.msg.service.comm_elem import MsgElemInfo_servtype33
 from .models import (
     Message,
+    PrivateMessage,
     Element,
     TextElement,
     FaceElement,
@@ -70,7 +72,7 @@ class BuddyMessageDecoder:
         ):
             return
 
-        auto_reply = message.content_head.auto_reply
+        auto_reply = bool(message.content_head.auto_reply)
         elems = message.body.rich_text.elems
 
         res: List[Element] = []
@@ -83,20 +85,27 @@ class BuddyMessageDecoder:
                 res.append(
                     SmallEmojiElement(
                         elem.small_emoji.pack_id_sum,
-                        bytes(
-                            [
-                                0x1FF
-                                if elem.small_emoji.image_type & 0xFFFF == 2
-                                else 0xFF,
-                                elem.small_emoji.pack_id_sum & 0xFFFF,
-                                elem.small_emoji.pack_id_sum >> 16 & 0xFF,
-                                elem.small_emoji.pack_id_sum >> 24,
-                            ]
-                        ),
+                        # bytes(
+                        #     [
+                        #         0x1FF
+                        #         if elem.small_emoji.image_type & 0xFFFF == 2
+                        #         else 0xFF,
+                        #         elem.small_emoji.pack_id_sum & 0xFFFF,
+                        #         elem.small_emoji.pack_id_sum >> 16 & 0xFF,
+                        #         elem.small_emoji.pack_id_sum >> 24,
+                        #     ]
+                        # ),
                     )
                 )
             elif elem.HasField("common_elem"):
-                ...
+                service_type = elem.common_elem.service_type
+                if service_type == 33:
+                    info = MsgElemInfo_servtype33.FromString(
+                        elem.common_elem.pb_elem
+                    )
+                    res.append(FaceElement(info.index))
+
+        return PrivateMessage(auto_reply, res)
 
 
 MESSAGE_DECODERS: Dict[int, Callable[[Msg], Optional[Message]]] = {

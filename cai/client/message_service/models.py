@@ -10,12 +10,24 @@ This module is used to define message models.
 """
 
 import abc
+from typing import List
 from dataclasses import dataclass
 
 
+class Message(abc.ABC):
+    @property
+    @abc.abstractmethod
+    def type(self) -> str:
+        raise NotImplementedError
+
+
 @dataclass
-class Message:
-    type: str
+class PrivateMessage(Message):
+    auto_reply: bool
+    message: List["Element"]
+
+    def type(self) -> str:
+        return "private_message"
 
 
 class Element(abc.ABC):
@@ -46,7 +58,7 @@ class FaceElement(Element):
 @dataclass
 class SmallEmojiElement(Element):
     id: int
-    byte: bytes
+    # byte: bytes
 
     @property
     def type(self) -> str:

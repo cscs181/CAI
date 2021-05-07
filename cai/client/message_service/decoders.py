@@ -13,7 +13,10 @@ from typing import List, Dict, Optional, Callable
 
 from cai.log import logger
 from cai.pb.msf.msg.comm import Msg
-from cai.pb.im.msg.service.comm_elem import MsgElemInfo_servtype33
+from cai.pb.im.msg.service.comm_elem import (
+    MsgElemInfo_servtype2,
+    MsgElemInfo_servtype33,
+)
 from .models import (
     Message,
     PrivateMessage,
@@ -21,6 +24,7 @@ from .models import (
     TextElement,
     FaceElement,
     SmallEmojiElement,
+    PokeElement,
 )
 
 
@@ -76,15 +80,20 @@ class BuddyMessageDecoder:
         elems = message.body.rich_text.elems
 
         res: List[Element] = []
-        for elem in elems:
+        index = 0
+        while index < len(elems):
+            elem = elems[index]
             if elem.HasField("text"):
                 res.append(TextElement(elem.text.str.decode("utf-8")))
             elif elem.HasField("face"):
                 res.append(FaceElement(elem.face.index))
             elif elem.HasField("small_emoji"):
+                index += 1
+                text = elems[index].text.str.decode("utf-8")
                 res.append(
                     SmallEmojiElement(
                         elem.small_emoji.pack_id_sum,
+                        text,
                         # bytes(
                         #     [
                         #         0x1FF
@@ -99,11 +108,31 @@ class BuddyMessageDecoder:
                 )
             elif elem.HasField("common_elem"):
                 service_type = elem.common_elem.service_type
-                if service_type == 33:
+                if service_type == 2:
+                    poke = MsgElemInfo_servtype2.FromString(
+                        elem.common_elem.pb_elem
+                    )
+                    res = [
+                        PokeElement(
+                            poke.poke_type
+                            if poke.vaspoke_id == 0xFFFFFFFF
+                            else poke.vaspoke_id,
+                            poke.vaspoke_name.decode("utf-8"),
+                            poke.poke_strength,
+                            poke.double_hit,
+                        )
+                    ]
+                    break
+                elif service_type == 33:
                     info = MsgElemInfo_servtype33.FromString(
                         elem.common_elem.pb_elem
                     )
                     res.append(FaceElement(info.index))
+                else:
+                    print(elem)
+            else:
+                print(elem)
+            index += 1
 
         return PrivateMessage(auto_reply, res)
 

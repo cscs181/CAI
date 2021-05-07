@@ -82,7 +82,7 @@ message MsgElemInfo_servtype19 {
 message MsgElemInfo_servtype2 {
   optional uint32 poke_type = 1;
   optional bytes poke_summary = 2;
-  optional uint32 hit = 3;
+  optional uint32 double_hit = 3;
   optional uint32 vaspoke_id = 4;
   optional bytes vaspoke_name = 5;
   optional bytes vaspoke_minver = 6;

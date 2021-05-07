@@ -185,6 +185,7 @@ async def handle_get_message(
                         "MessageSvc.PbGetMsg: "
                         f"Received unknown message type {msg_type}."
                     )
+                    continue
                 decoded_message = Decoder(message)
                 print(decoded_message)
         if delete_msgs:

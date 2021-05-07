@@ -58,8 +58,21 @@ class FaceElement(Element):
 @dataclass
 class SmallEmojiElement(Element):
     id: int
+    text: str
     # byte: bytes
 
     @property
     def type(self) -> str:
         return "small_emoji"
+
+
+@dataclass
+class PokeElement(Element):
+    id: int
+    name: str
+    strength: int
+    double_hit: int
+
+    @property
+    def type(self) -> str:
+        return "poke"

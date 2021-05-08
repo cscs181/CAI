@@ -1,0 +1,265 @@
+syntax = "proto2";
+package im.msg.service.comm_elem;
+
+// tencent/im/msg/hummer/servtype/hummer_commelem.java
+
+import "cai/pb/im/msg/msg_body/msg_body.proto";
+
+message MsgElemInfo_servtype1 {
+  optional bytes reward_id = 1;
+  optional uint64 sender_uin = 2;
+  optional uint32 pic_type = 3;
+  optional uint32 reward_money = 4;
+  optional bytes url = 5;
+  optional bytes content = 6;
+  optional uint32 create_timestamp = 7;
+  optional uint32 status = 8;
+  optional uint32 size = 9;
+  optional uint32 video_duration = 10;
+  optional uint64 seq = 11;
+  optional uint32 reward_type_ext = 12;
+}
+
+message MsgElemInfo_servtype11 {
+  optional bytes res_id = 1;
+  optional bytes res_md5 = 2;
+  optional bytes reserve_info1 = 3;
+  optional bytes reserve_info2 = 4;
+  optional uint32 doodle_data_offset = 5;
+  optional uint32 doodle_gif_id = 6;
+  optional bytes doodle_url = 7;
+  optional bytes doodle_md5 = 8;
+}
+
+message MsgElemInfo_servtype13 {
+  optional uint32 sys_head_id = 1;
+  optional uint32 head_flag = 2;
+}
+
+message MsgElemInfo_servtype14 {
+  optional uint32 id = 1;
+  optional bytes reserve_info = 2;
+}
+
+message MsgElemInfo_servtype15 {
+  optional bytes vid = 1;
+  optional bytes cover = 2;
+  optional bytes title = 3;
+  optional bytes summary = 4;
+  optional uint64 create_time = 5;
+  optional bytes comment_content = 6;
+  optional uint64 author = 7;
+  optional uint32 ctr_version = 8;
+}
+
+message MsgElemInfo_servtype16 {
+  optional uint64 uid = 1;
+  optional bytes union_id = 2;
+  optional bytes story_id = 3;
+  optional bytes md5 = 4;
+  optional bytes thumb_url = 5;
+  optional bytes doodle_url = 6;
+  optional uint32 video_width = 7;
+  optional uint32 video_height = 8;
+  optional bytes source_name = 9;
+  optional bytes source_action_type = 10;
+  optional bytes source_action_data = 11;
+  optional uint32 ctr_version = 12;
+}
+
+message MsgElemInfo_servtype18 {
+  optional uint64 current_amount = 1;
+  optional uint64 total_amount = 2;
+  optional bytes listid = 3;
+  optional bytes auth_key = 4;
+  optional uint32 number = 5;
+}
+
+message MsgElemInfo_servtype19 {
+  optional bytes data = 1;
+}
+
+message MsgElemInfo_servtype2 {
+  optional uint32 poke_type = 1;
+  optional bytes poke_summary = 2;
+  optional uint32 double_hit = 3;
+  optional uint32 vaspoke_id = 4;
+  optional bytes vaspoke_name = 5;
+  optional bytes vaspoke_minver = 6;
+  optional uint32 poke_strength = 7;
+  optional uint32 msg_type = 8;
+  optional uint32 face_bubble_count = 9;
+  optional uint32 poke_flag = 10;
+}
+
+message MsgElemInfo_servtype20 {
+  optional bytes data = 1;
+}
+
+message MsgElemInfo_servtype21 {
+  optional uint32 topic_id = 1;
+  optional uint64 confessor_uin = 2;
+  optional bytes confessor_nick = 3;
+  optional uint32 confessor_sex = 4;
+  optional uint32 sysmsg_flag = 5;
+  optional C2CConfessContext c2_c_confess_ctx = 6;
+  optional bytes topic = 7;
+  optional uint64 confess_time = 8;
+  optional GroupConfessMsg group_confess_msg = 9;
+  optional GroupConfessContext group_confess_ctx = 10;
+}
+
+message C2CConfessContext {
+  optional uint64 confessor_uin = 1;
+  optional uint64 confess_to_uin = 2;
+  optional uint64 send_uin = 3;
+  optional bytes confessor_nick = 4;
+  optional bytes confess = 5;
+  optional uint32 bg_type = 6;
+  optional uint32 topic_id = 7;
+  optional uint64 confess_time = 8;
+  optional uint32 confessor_sex = 9;
+  optional uint32 biz_type = 10;
+  optional uint32 confess_num = 11;
+  optional uint32 confess_to_sex = 12;
+}
+
+message GroupConfessContext {
+  optional uint64 confessor_uin = 1;
+  optional uint64 confess_to_uin = 2;
+  optional uint64 send_uin = 3;
+  optional uint32 confessor_sex = 4;
+  optional bytes confess_to_nick = 5;
+  optional bytes topic = 6;
+  optional uint32 topic_id = 7;
+  optional uint64 confess_time = 8;
+  optional uint32 confess_to_nick_type = 9;
+  optional bytes confessor_nick = 10;
+}
+
+message GroupConfessItem {
+  optional uint32 topic_id = 1;
+  optional uint64 confess_to_uin = 2;
+  optional bytes confess_to_nick = 3;
+  optional bytes topic = 4;
+  optional uint32 confess_to_nick_type = 5;
+}
+
+message GroupConfessMsg {
+  optional uint64 confess_time = 1;
+  optional uint64 confessor_uin = 2;
+  optional uint32 confessor_sex = 3;
+  optional uint32 sysmsg_flag = 4;
+  repeated GroupConfessItem confess_items = 5;
+  optional uint32 total_topic_count = 6;
+}
+
+message MsgElemInfo_servtype23 {
+  optional uint32 face_type = 1;
+  optional uint32 face_bubble_count = 2;
+  optional bytes face_summary = 3;
+  optional uint32 flag = 4;
+  optional bytes others = 5;
+  optional MsgElemInfo_servtype33 yellow_face = 6;
+}
+
+message MsgElemInfo_servtype24 {
+  optional LimitChatEnter limit_chat_enter = 1;
+  optional LimitChatExit limit_chat_exit = 2;
+}
+
+message LimitChatEnter {
+  optional bytes tips_wording = 1;
+  optional uint32 left_chat_time = 2;
+  optional uint64 match_ts = 3;
+  optional uint32 match_expired_time = 4;
+  optional uint32 c2_c_expired_time = 5;
+  optional uint64 ready_ts = 6;
+  optional bytes match_nick = 7;
+}
+
+message LimitChatExit {
+  optional uint32 exit_method = 1;
+  optional uint64 match_ts = 2;
+}
+
+message MsgElemInfo_servtype27 {
+  optional msg_body.VideoFile video_file = 1;
+}
+
+message MsgElemInfo_servtype29 {
+  optional bytes luckybag_msg = 1;
+}
+
+message MsgElemInfo_servtype3 {
+  optional msg_body.CustomFace flash_troop_pic = 1;
+  optional msg_body.NotOnlineImage flash_c2_c_pic = 2;
+}
+
+message MsgElemInfo_servtype31 {
+  optional bytes text = 1;
+  optional bytes ext = 2;
+}
+
+message MsgElemInfo_servtype33 {
+  optional uint32 index = 1;
+  optional bytes text = 2;
+  optional bytes compat = 3;
+  optional bytes buf = 4;
+}
+
+message MsgElemInfo_servtype34 {
+  optional bytes from_nickname = 1;
+  optional uint32 push_window_flag = 2;
+  optional GameSession game_session = 3;
+  optional bytes ext = 4;
+}
+
+message GameSession {
+  optional bytes from_role_id = 1;
+  optional bytes from_open_id = 2;
+  optional bytes to_role_id = 3;
+  optional bytes to_open_id = 4;
+  optional uint64 game_appid = 5;
+  optional uint64 from_tiny_id = 6;
+  optional uint64 to_tiny_id = 7;
+}
+
+message MsgElemInfo_servtype35 {
+  optional bytes token = 1;
+  optional bytes global_padid = 2;
+  optional uint32 get_rev = 3;
+  optional uint32 his_edit_uin_num = 4;
+}
+
+message MsgElemInfo_servtype4 {
+  optional uint32 imsg_type = 1;
+  optional StoryAioObjMsg st_story_aio_obj_msg = 4;
+}
+
+message MsgElemInfo_servtype5 {
+  optional bytes vid = 1;
+  optional bytes cover = 2;
+  optional bytes title = 3;
+  optional bytes summary = 4;
+  optional uint64 create_time = 5;
+  optional bytes comment_content = 6;
+  optional uint64 author = 7;
+}
+
+message MsgElemInfo_servtype8 {
+  optional msg_body.DeliverGiftMsg wifi_deliver_gift_msg = 1;
+}
+
+message MsgElemInfo_servtype9 {
+  optional uint32 anchor_status = 1;
+  optional bytes jump_schema = 2;
+  optional string anchor_nickname = 3;
+  optional bytes anchor_head_url = 4;
+  optional string live_title = 5;
+}
+
+message StoryAioObjMsg {
+  optional string ui_url = 1;
+  optional string jmp_url = 2;
+}

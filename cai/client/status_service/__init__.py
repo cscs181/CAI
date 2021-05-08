@@ -20,7 +20,7 @@ from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.utils.jce import RequestPacketVersion3
-from cai.pb.oicq.cmd0x769 import ConfigSeq, ReqBody
+from cai.pb.im.oidb.cmd0x769 import ConfigSeq, ReqBody
 from .jce import SvcReqRegister, ResponseMSFForceOffline
 from cai.client.packet import (
     CSsoBodyPacket,

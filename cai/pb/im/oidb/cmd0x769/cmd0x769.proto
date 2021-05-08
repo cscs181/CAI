@@ -1,5 +1,7 @@
 syntax = "proto2";
-package oicq.cmd0x769;
+package im.oidb.cmd0x769;
+
+// tencent/im/oidb/cmd0xd50/Oidb_0x769.java
 
 message CPU {
   optional string model = 1;

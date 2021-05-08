@@ -12,5 +12,6 @@ Subpackages
 .. toctree::
    :maxdepth: 4
 
-   cai.pb.oicq
+   cai.pb.im
+   cai.pb.msf
    cai.pb.wtlogin

@@ -1,0 +1,36 @@
+syntax = "proto2";
+package im.msg.obj_msg;
+
+// tencent/im/msg/obj_msg.java
+
+message MsgContentInfo {
+  optional bytes content_info_id = 1;
+  optional MsgFile file = 2;
+}
+
+message MsgFile {
+  optional uint32 bus_id = 1;
+  optional bytes file_path = 2;
+  optional uint64 file_size = 3;
+  optional string file_name = 4;
+  optional int64 dead_time = 5;
+  optional bytes file_sha1 = 6;
+  optional bytes ext = 7;
+  optional bytes file_md5 = 8;
+}
+
+message MsgPic {
+  optional bytes small_pic_url = 1;
+  optional bytes original_pic_url = 2;
+  optional uint32 local_pic_id = 3;
+}
+
+message ObjMsg {
+  optional uint32 msg_type = 1;
+  optional bytes title = 2;
+  repeated bytes abstact = 3;
+  optional bytes title_ext = 5;
+  repeated MsgPic pic = 6;
+  repeated MsgContentInfo content_info = 7;
+  optional uint32 report_id_show = 8;
+}

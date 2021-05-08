@@ -46,12 +46,6 @@ async def login(uin: int, password_md5: Optional[bytes] = None) -> Client:
     await client.reconnect()
     try:
         await client.login()
-        # register client online status
-        await client.register()
-        # force refresh group list
-        await client._refresh_group_list()
-        # force refresh friend list
-        await client._refresh_friend_list()
     except LoginException:
         raise
     except Exception:

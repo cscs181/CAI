@@ -1,0 +1,20 @@
+syntax = "proto2";
+package msf.msg.ctrl;
+
+// msf/msgsvc/msg_ctrl.java
+
+message MsgCtrl {
+  optional uint32 flag = 1;
+  optional ResvResvInfo resv_resv_info = 2;
+}
+
+message ResvResvInfo {
+  optional uint32 flag = 1;
+  optional bytes reserv1 = 2;
+  optional uint64 reserv2 = 3;
+  optional uint64 reserv3 = 4;
+  optional uint32 create_time = 5;
+  optional uint32 pic_height = 6;
+  optional uint32 pic_width = 7;
+  optional uint32 resv_flag = 8;
+}

@@ -14,6 +14,8 @@ import secrets
 import asyncio
 from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
 
+from cachetools import TTLCache
+
 from .sso_server import get_sso_server, SsoServer
 from .wtlogin import (
     encode_login_request2_captcha,
@@ -61,10 +63,16 @@ from .friendlist import (
     TroopMemberListSuccess,
     TroopMemberListFail,
 )
-from .message_service import handle_force_offline
+from .message_service import (
+    SyncFlag,
+    GetMessageEvent,
+    encode_get_message,
+    handle_get_message,
+    handle_push_notify,
+    handle_force_offline,
+)
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
-
 from cai.exceptions import (
     ApiResponseError,
     LoginException,
@@ -105,6 +113,8 @@ HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
     "friendlist.GetFriendListReq": handle_friend_list,
     "friendlist.GetTroopListReqV2": handle_troop_list,
     "friendlist.GetTroopMemberListReq": handle_troop_member_list,
+    "MessageSvc.PbGetMsg": handle_get_message,
+    "MessageSvc.PushNotify": handle_push_notify,
     "MessageSvc.PushForceOffline": handle_force_offline,
 }
 
@@ -146,7 +156,11 @@ class Client:
         self._t528: bytes = bytes()
         self._t530: bytes = bytes()
 
+        self._init_flag: bool = False
         self._siginfo: SigInfo = SigInfo()
+        self._sync_cookie: bytes = bytes()
+        self._pubaccount_cookie: bytes = bytes()
+        self._msg_cache: TTLCache = TTLCache(maxsize=1024, ttl=3600)
         self._receive_store: FutureStore[int, Event] = FutureStore()
 
     def __str__(self) -> str:
@@ -346,6 +360,16 @@ class Client:
         await self.send(seq, command_name, packet)
         return await self._receive_store.fetch(seq, timeout)
 
+    async def _handle_incoming_packet(self, in_packet: IncomingPacket) -> None:
+        try:
+            handler = HANDLERS.get(in_packet.command_name, _packet_to_event)
+            packet = await handler(self, in_packet)
+            self._receive_store.store_result(packet.seq, packet)
+            # TODO: broadcast packet
+        except Exception as e:
+            # TODO: handle exception
+            logger.exception(e)
+
     async def receive(self):
         """Receive data from connection reader and store it in sequence future.
 
@@ -369,14 +393,11 @@ class Client:
                 logger.debug(
                     f"<-- {packet.seq} ({packet.ret_code}): {packet.command_name}"
                 )
-                handler = HANDLERS.get(packet.command_name, _packet_to_event)
-                packet = await handler(self, packet)
-                self._receive_store.store_result(packet.seq, packet)
-                # TODO: broadcast packet
+                # do not block receive
+                asyncio.create_task(self._handle_incoming_packet(packet))
             except ConnectionAbortedError:
                 logger.debug(f"Client {self.uin} connection closed")
             except Exception as e:
-                # TODO: handle exception
                 logger.exception(e)
 
     async def _handle_login_response(
@@ -395,6 +416,7 @@ class Client:
 
         if isinstance(response, LoginSuccess):
             logger.info(f"{self.nick}({self.uin}) 登录成功！")
+            await self._init()
             return response
         elif isinstance(response, NeedCaptcha):
             if response.verify_url:
@@ -470,6 +492,21 @@ class Client:
             raise LoginException(
                 response.uin, response.status, "Unknown login status."
             )
+
+    async def _init(self) -> None:
+        if not self.connected or self.status == OnlineStatus.Offline:
+            raise RuntimeError("Client is offline.")
+
+        self._init_flag = True
+        # register client online status
+        await self.register()
+        # force refresh group list
+        await self._refresh_group_list()
+        # force refresh friend list
+        await self._refresh_friend_list()
+        # force refresh session message
+        await self._get_message(0, online_sync_flag=1)
+        self._init_flag = False
 
     async def login(self) -> LoginSuccess:
         """Login the account of the client.
@@ -1217,3 +1254,32 @@ class Client:
             await self._refresh_group_member_list(group)
 
         return group._cached_member_list
+
+    async def _get_message(
+        self,
+        request_type: int,
+        sync_flag: SyncFlag = SyncFlag.START,
+        sync_cookie: Optional[bytes] = None,
+        online_sync_flag: int = 0,
+        pubaccount_cookie: Optional[bytes] = None,
+        server_buf: Optional[bytes] = None,
+    ) -> GetMessageEvent:
+        seq = self.next_seq()
+        packet = encode_get_message(
+            seq,
+            self._session_id,
+            self.uin,
+            self._siginfo.d2key,
+            request_type=request_type,
+            sync_flag=sync_flag,
+            sync_cookie=sync_cookie,
+            online_sync_flag=online_sync_flag,
+            pubaccount_cookie=pubaccount_cookie,
+            server_buf=server_buf,
+        )
+        response = await self.send_and_wait(seq, "MessageSvc.PbGetMsg", packet)
+
+        if not isinstance(response, GetMessageEvent):
+            raise RuntimeError("Invalid get message response type!")
+
+        return response

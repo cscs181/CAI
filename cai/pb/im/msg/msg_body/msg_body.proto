@@ -1,0 +1,729 @@
+syntax = "proto2";
+package im.msg.msg_body;
+
+// tencent/im/msg/im_msg_body.java
+
+message AnonymousGroupMsg {
+  optional uint32 flags = 1;
+  optional bytes anon_id = 2;
+  optional bytes anon_nick = 3;
+  optional uint32 head_portrait = 4;
+  optional uint32 expire_time = 5;
+  optional uint32 bubble_id = 6;
+  optional bytes rank_color = 7;
+}
+
+message ApolloActMsg {
+  optional uint32 action_id = 1;
+  optional bytes action_name = 2;
+  optional bytes action_text = 3;
+  optional uint32 flag = 4;
+  optional uint32 peer_uin = 5;
+  optional uint32 sender_ts = 6;
+  optional uint32 peer_ts = 7;
+  optional int32 sender_status = 8;
+  optional int32 peer_status = 9;
+  optional uint32 diytext_id = 10;
+  optional bytes diytext_content = 11;
+  optional bytes input_text = 12;
+  optional bytes pb_reserve = 13;
+}
+
+message ArkAppElem {
+  optional string app_name = 1;
+  optional string min_version = 2;
+  optional string xml_template = 3;
+  optional bytes data = 4;
+}
+
+message Attr {
+  optional sint32 code_page = 1;
+  optional uint32 time = 2;
+  optional uint32 random = 3;
+  optional uint32 color = 4;
+  optional uint32 size = 5;
+  optional uint32 effect = 6;
+  optional uint32 char_set = 7;
+  optional uint32 pitch_and_family = 8;
+  optional string font_name = 9;
+  optional bytes reserve_data = 10;
+}
+
+message BitAppMsg {
+  optional bytes buf = 1;
+}
+
+message BlessingMessage {
+  optional uint32 msg_type = 1;
+  optional uint32 ex_flag = 2;
+}
+
+message CommonElem {
+  optional uint32 service_type = 1;
+  optional bytes pb_elem = 2;
+  optional uint32 business_type = 3;
+}
+
+message ConferenceTipsInfo {
+  optional uint32 session_type = 1;
+  optional uint64 session_uin = 2;
+  optional string text = 3;
+}
+
+message CrmElem {
+  optional bytes crm_buf = 1;
+  optional bytes msg_resid = 2;
+  optional uint32 qidian_flag = 3;
+  optional uint32 push_flag = 4;
+  optional uint32 count_flag = 5;
+}
+
+message CustomElem {
+  optional bytes desc = 1;
+  optional bytes data = 2;
+  optional uint32 enum_type = 3;
+  optional bytes ext = 4;
+  optional bytes sound = 5;
+}
+
+message CustomFace {
+  optional bytes guid = 1;
+  optional string file_path = 2;
+  optional string shortcut = 3;
+  optional bytes buffer = 4;
+  optional bytes flag = 5;
+  optional bytes old_data = 6;
+  optional uint32 file_id = 7;
+  optional uint32 server_ip = 8;
+  optional uint32 server_port = 9;
+  optional uint32 file_type = 10;
+  optional bytes signature = 11;
+  optional uint32 useful = 12;
+  optional bytes md5 = 13;
+  optional string thumb_url = 14;
+  optional string big_url = 15;
+  optional string orig_url = 16;
+  optional uint32 biz_type = 17;
+  optional uint32 repeat_index = 18;
+  optional uint32 repeat_image = 19;
+  optional uint32 image_type = 20;
+  optional uint32 index = 21;
+  optional uint32 width = 22;
+  optional uint32 height = 23;
+  optional uint32 source = 24;
+  optional uint32 size = 25;
+  optional uint32 origin = 26;
+  optional uint32 thumb_width = 27;
+  optional uint32 thumb_height = 28;
+  optional uint32 show_len = 29;
+  optional uint32 download_len = 30;
+  optional string _400_url = 31;
+  optional uint32 _400_width = 32;
+  optional uint32 _400_height = 33;
+  optional bytes pb_reserve = 34;
+}
+
+message DeliverGiftMsg {
+  optional bytes gray_tip_content = 1;
+  optional uint32 animation_package_id = 2;
+  optional bytes animation_package_url_a = 3;
+  optional bytes animation_package_url_i = 4;
+  optional bytes remind_brief = 5;
+  optional uint32 gift_id = 6;
+  optional uint32 gift_count = 7;
+  optional bytes animation_brief = 8;
+  optional uint64 sender_uin = 9;
+  optional uint64 receiver_uin = 10;
+  optional bytes stmessage_title = 11;
+  optional bytes stmessage_subtitle = 12;
+  optional bytes stmessage_message = 13;
+  optional uint32 stmessage_giftpicid = 14;
+  optional bytes stmessage_comefrom = 15;
+  optional uint32 stmessage_exflag = 16;
+  optional bytes to_all_gift_id = 17;
+  optional bytes comefrom_link = 18;
+  optional bytes pb_reserve = 19;
+  optional bytes receiver_name = 20;
+  optional bytes receiver_pic = 21;
+  optional bytes stmessage_gifturl = 22;
+}
+
+message EIMInfo {
+  optional uint64 root_id = 1;
+  optional uint32 flag = 2;
+}
+
+message Elem {
+  optional Text text = 1;
+  optional Face face = 2;
+  optional OnlineImage online_image = 3;
+  optional NotOnlineImage not_online_image = 4;
+  optional TransElem trans_elem_info = 5;
+  optional MarketFace market_face = 6;
+  optional ElemFlags elem_flags = 7;
+  optional CustomFace custom_face = 8;
+  optional ElemFlags2 elem_flags2 = 9;
+  optional FunFace fun_face = 10;
+  optional SecretFileMsg secret_file = 11;
+  optional RichMsg rich_msg = 12;
+  optional GroupFile group_file = 13;
+  optional PubGroup pub_group = 14;
+  optional MarketTrans market_trans = 15;
+  optional ExtraInfo extra_info = 16;
+  optional ShakeWindow shake_window = 17;
+  optional PubAccount pub_account = 18;
+  optional VideoFile video_file = 19;
+  optional TipsInfo tips_info = 20;
+  optional AnonymousGroupMsg anon_group_msg = 21;
+  optional QQLiveOld qq_live_old = 22;
+  optional LifeOnlineAccount life_online = 23;
+  optional QQWalletMsg qqwallet_msg = 24;
+  optional CrmElem crm_elem = 25;
+  optional ConferenceTipsInfo conference_tips_info = 26;
+  optional RedBagInfo redbag_info = 27;
+  optional LowVersionTips low_version_tips = 28;
+  optional bytes bankcode_ctrl_info = 29;
+  optional NearByMessageType near_by_msg = 30;
+  optional CustomElem custom_elem = 31;
+  optional LocationInfo location_info = 32;
+  optional PubAccInfo pub_acc_info = 33;
+  optional SmallEmoji small_emoji = 34;
+  optional FSJMessageElem fsj_msg_elem = 35;
+  optional ArkAppElem ark_app = 36;
+  optional GeneralFlags general_flags = 37;
+  optional CustomFace hc_flash_pic = 38;
+  optional DeliverGiftMsg deliver_gift_msg = 39;
+  optional BitAppMsg bitapp_msg = 40;
+  optional OpenQQData open_qq_data = 41;
+  optional ApolloActMsg apollo_msg = 42;
+  optional GroupPubAccountInfo group_pub_acc_info = 43;
+  optional BlessingMessage bless_msg = 44;
+  optional SourceMsg src_msg = 45;
+  optional LolaMsg lola_msg = 46;
+  optional GroupBusinessMsg group_business_msg = 47;
+  optional WorkflowNotifyMsg workflow_notify = 48;
+  optional PatsElem pat_elem = 49;
+  optional GroupPostElem group_post_elem = 50;
+  optional LightAppElem light_app = 51;
+  optional EIMInfo eim_info = 52;
+  optional CommonElem common_elem = 53;
+}
+
+message ElemFlags {
+  optional bytes flags1 = 1;
+  optional bytes business_data = 2;
+}
+
+message ElemFlags2 {
+  optional uint32 color_text_id = 1;
+  optional uint64 msg_id = 2;
+  optional uint32 whisper_session_id = 3;
+  optional uint32 ptt_change_bit = 4;
+  optional uint32 vip_status = 5;
+  optional uint32 compatible_id = 6;
+  repeated Inst insts = 7;
+  optional uint32 msg_rpt_cnt = 8;
+  optional Inst src_inst = 9;
+  optional uint32 longtitude = 10;
+  optional uint32 latitude = 11;
+  optional uint32 custom_font = 12;
+  optional PcSupportDef pc_support_def = 13;
+  optional uint32 crm_flags = 14;
+}
+
+message Inst {
+  optional uint32 app_id = 1;
+  optional uint32 inst_id = 2;
+}
+
+message ExtraInfo {
+  optional bytes nick = 1;
+  optional bytes group_card = 2;
+  optional uint32 level = 3;
+  optional uint32 flags = 4;
+  optional uint32 group_mask = 5;
+  optional uint32 msg_tail_id = 6;
+  optional bytes sender_title = 7;
+  optional bytes apns_tips = 8;
+  optional uint64 uin = 9;
+  optional uint32 msg_state_flag = 10;
+  optional uint32 apns_sound_type = 11;
+  optional uint32 new_group_flag = 12;
+}
+
+message FSJMessageElem {
+  optional uint32 msg_type = 1;
+}
+
+message Face {
+  optional uint32 index = 1;
+  optional bytes old = 2;
+  optional bytes buf = 11;
+}
+
+message FunFace {
+  optional Turntable turntable = 1;
+  optional Bomb bomb = 2;
+}
+
+message Bomb {
+  optional bool burst = 1;
+}
+
+message Turntable {
+  repeated uint64 uin_list = 1;
+  optional uint64 hit_uin = 2;
+  optional string hit_uin_nick = 3;
+}
+
+message GeneralFlags {
+  optional uint32 bubble_diy_text_id = 1;
+  optional uint32 group_flag_new = 2;
+  optional uint64 uin = 3;
+  optional bytes rp_id = 4;
+  optional uint32 prp_fold = 5;
+  optional uint32 long_text_flag = 6;
+  optional bytes long_text_resid = 7;
+  optional uint32 group_type = 8;
+  optional uint32 to_uin_flag = 9;
+  optional uint32 glamour_level = 10;
+  optional uint32 member_level = 11;
+  optional uint64 group_rank_seq = 12;
+  optional uint32 olympic_torch = 13;
+  optional bytes babyq_guide_msg_cookie = 14;
+  optional uint32 uin32_expert_flag = 15;
+  optional uint32 bubble_sub_id = 16;
+  optional uint64 pendant_id = 17;
+  optional bytes rp_index = 18;
+  optional bytes pb_reserve = 19;
+}
+
+message GroupBusinessMsg {
+  optional uint32 flags = 1;
+  optional bytes head_url = 2;
+  optional bytes head_clk_url = 3;
+  optional bytes nick = 4;
+  optional bytes nick_color = 5;
+  optional bytes rank = 6;
+  optional bytes rank_color = 7;
+  optional bytes rank_bgcolor = 8;
+}
+
+message GroupFile {
+  optional bytes filename = 1;
+  optional uint64 file_size = 2;
+  optional bytes file_id = 3;
+  optional bytes batch_id = 4;
+  optional bytes file_key = 5;
+  optional bytes mark = 6;
+  optional uint64 sequence = 7;
+  optional bytes batch_item_id = 8;
+  optional uint32 feed_msg_time = 9;
+  optional bytes pb_reserve = 10;
+}
+
+message GroupPostElem {
+  optional uint32 trans_type = 1;
+  optional bytes trans_msg = 2;
+}
+
+message GroupPubAccountInfo {
+  optional uint64 pub_account = 1;
+}
+
+message LifeOnlineAccount {
+  optional uint64 unique_id = 1;
+  optional uint32 op = 2;
+  optional uint32 show_time = 3;
+  optional uint32 report = 4;
+  optional uint32 ack = 5;
+  optional uint64 bitmap = 6;
+  optional bytes gdt_imp_data = 7;
+  optional bytes gdt_cli_data = 8;
+  optional bytes view_id = 9;
+}
+
+message LightAppElem {
+  optional bytes data = 1;
+  optional bytes msg_resid = 2;
+}
+
+message LolaMsg {
+  optional bytes msg_resid = 1;
+  optional bytes encode_content = 2;
+  optional bytes long_msg_url = 3;
+  optional bytes download_key = 4;
+}
+
+message LowVersionTips {
+  optional uint32 business_id = 1;
+  optional uint32 session_type = 2;
+  optional uint64 session_uin = 3;
+  optional uint64 sender_uin = 4;
+  optional string text = 5;
+}
+
+message MarketFace {
+  optional bytes face_name = 1;
+  optional uint32 item_type = 2;
+  optional uint32 face_info = 3;
+  optional bytes face_id = 4;
+  optional uint32 tab_id = 5;
+  optional uint32 sub_type = 6;
+  optional bytes key = 7;
+  optional bytes param = 8;
+  optional uint32 media_type = 9;
+  optional uint32 image_width = 10;
+  optional uint32 image_height = 11;
+  optional bytes mobileparam = 12;
+  optional bytes pb_reserve = 13;
+}
+
+message MarketTrans {
+  optional int32 flag = 1;
+  optional bytes xml = 2;
+  optional bytes msg_resid = 3;
+  optional uint32 ability = 4;
+  optional uint32 min_ability = 5;
+}
+
+message MsgBody {
+  optional RichText rich_text = 1;
+  optional bytes content = 2;
+  optional bytes encrypt_content = 3;
+}
+
+message MsgBody_subtype4 {
+  optional NotOnlineFile not_online_file = 1;
+  optional uint32 msg_time = 2;
+}
+
+message NearByMessageType {
+  optional uint32 type = 1;
+  optional uint32 identify_type = 2;
+}
+
+message NotOnlineFile {
+  optional uint32 file_type = 1;
+  optional bytes sig = 2;
+  optional bytes file_uuid = 3;
+  optional bytes file_md5 = 4;
+  optional bytes file_name = 5;
+  optional uint64 file_size = 6;
+  optional bytes note = 7;
+  optional uint32 reserved = 8;
+  optional uint32 subcmd = 9;
+  optional uint32 micro_cloud = 10;
+  repeated bytes file_urls = 11;
+  optional uint32 download_flag = 12;
+  optional uint32 danger_evel = 50;
+  optional uint32 life_time = 51;
+  optional uint32 upload_time = 52;
+  optional uint32 abs_file_type = 53;
+  optional uint32 client_type = 54;
+  optional uint32 expire_time = 55;
+  optional bytes pb_reserve = 56;
+  optional string fileidcrc_media = 57;
+}
+
+message NotOnlineImage {
+  optional bytes file_path = 1;
+  optional uint32 file_len = 2;
+  optional bytes download_path = 3;
+  optional bytes old_ver_send_file = 4;
+  optional uint32 img_type = 5;
+  optional bytes previews_image = 6;
+  optional bytes pic_md5 = 7;
+  optional uint32 pic_height = 8;
+  optional uint32 pic_width = 9;
+  optional bytes res_id = 10;
+  optional bytes flag = 11;
+  optional string thumb_url = 12;
+  optional uint32 original = 13;
+  optional string big_url = 14;
+  optional string orig_url = 15;
+  optional uint32 biz_type = 16;
+  optional uint32 result = 17;
+  optional uint32 index = 18;
+  optional bytes op_face_buf = 19;
+  optional bool old_pic_md5 = 20;
+  optional uint32 thumb_width = 21;
+  optional uint32 thumb_height = 22;
+  optional uint32 file_id = 23;
+  optional uint32 show_len = 24;
+  optional uint32 download_len = 25;
+  optional string _400_url = 26;
+  optional uint32 _400_width = 27;
+  optional uint32 _400_height = 28;
+  optional bytes pb_reserve = 29;
+}
+
+message OnlineImage {
+  optional bytes guid = 1;
+  optional bytes file_path = 2;
+  optional bytes old_ver_send_file = 3;
+}
+
+message OpenQQData {
+  optional bytes car_qq_data = 1;
+}
+
+message PatsElem {
+  optional uint32 pat_type = 1;
+  optional uint32 pat_count = 2;
+}
+
+message PcSupportDef {
+  optional uint32 pc_ptl_begin = 1;
+  optional uint32 pc_ptl_end = 2;
+  optional uint32 mac_ptl_begin = 3;
+  optional uint32 mac_ptl_end = 4;
+  repeated uint32 ptls_support = 5;
+  repeated uint32 ptls_not_support = 6;
+}
+
+message Ptt {
+  optional uint32 file_type = 1;
+  optional uint64 src_uin = 2;
+  optional bytes file_uuid = 3;
+  optional bytes file_md5 = 4;
+  optional bytes file_name = 5;
+  optional uint32 file_size = 6;
+  optional bytes reserve = 7;
+  optional uint32 file_id = 8;
+  optional uint32 server_ip = 9;
+  optional uint32 server_port = 10;
+  optional bool valid = 11;
+  optional bytes signature = 12;
+  optional bytes shortcut = 13;
+  optional bytes file_key = 14;
+  optional uint32 magic_ptt_index = 15;
+  optional uint32 voice_switch = 16;
+  optional bytes ptt_url = 17;
+  optional bytes group_file_key = 18;
+  optional uint32 time = 19;
+  optional bytes down_para = 20;
+  optional uint32 format = 29;
+  optional bytes pb_reserve = 30;
+  repeated bytes ptt_urls = 31;
+  optional uint32 download_flag = 32;
+}
+
+message PubAccInfo {
+  optional uint32 is_inter_num = 1;
+  optional string msg_template_id = 2;
+  optional string long_msg_url = 3;
+  optional bytes download_key = 4;
+}
+
+message PubAccount {
+  optional bytes buf = 1;
+  optional uint64 pub_account_uin = 2;
+}
+
+message PubGroup {
+  optional bytes nickname = 1;
+  optional uint32 gender = 2;
+  optional uint32 age = 3;
+  optional uint32 distance = 4;
+}
+
+message QQLiveOld {
+  optional uint32 sub_cmd = 1;
+  optional bytes show_text = 2;
+  optional bytes param = 3;
+  optional bytes introduce = 4;
+}
+
+message QQWalletAioBody {
+  optional uint64 senduin = 1;
+  optional QQWalletAioElem sender = 2;
+  optional QQWalletAioElem receiver = 3;
+  optional sint32 channelid = 4;
+  optional sint32 templateid = 5;
+  optional uint32 resend = 6;
+  optional uint32 msg_priority = 7;
+  optional sint32 redtype = 8;
+  optional bytes billno = 9;
+  optional bytes authkey = 10;
+  optional sint32 sessiontype = 11;
+  optional sint32 msgtype = 12;
+  optional sint32 envelopeid = 13;
+  optional bytes name = 14;
+  optional sint32 conftype = 15;
+  optional sint32 msg_from = 16;
+  optional bytes pc_body = 17;
+  optional bytes index = 18;
+  optional uint32 redchannel = 19;
+  repeated uint64 grap_uin = 20;
+  optional bytes pb_reserve = 21;
+}
+
+message QQWalletAioElem {
+  optional uint32 background = 1;
+  optional uint32 icon = 2;
+  optional bytes title = 3;
+  optional bytes subtitle = 4;
+  optional bytes content = 5;
+  optional bytes linkurl = 6;
+  optional bytes blackstripe = 7;
+  optional bytes notice = 8;
+  optional uint32 title_color = 9;
+  optional uint32 subtitle_color = 10;
+  optional bytes actions_priority = 11;
+  optional bytes jump_url = 12;
+  optional bytes native_ios = 13;
+  optional bytes native_android = 14;
+  optional bytes iconurl = 15;
+  optional uint32 content_color = 16;
+  optional uint32 content_bgcolor = 17;
+  optional bytes aio_image_left = 18;
+  optional bytes aio_image_right = 19;
+  optional bytes cft_image = 20;
+  optional bytes pb_reserve = 21;
+}
+
+message QQWalletMsg {
+  optional QQWalletAioBody aio_body = 1;
+}
+
+message RedBagInfo {
+  optional uint32 redbag_type = 1;
+}
+
+message RichMsg {
+  optional bytes template_1 = 1;
+  optional uint32 service_id = 2;
+  optional bytes msg_resid = 3;
+  optional uint32 rand = 4;
+  optional uint32 seq = 5;
+  optional uint32 flags = 6;
+}
+
+message RichText {
+  optional Attr attr = 1;
+  repeated Elem elems = 2;
+  optional NotOnlineFile not_online_file = 3;
+  optional Ptt ptt = 4;
+  optional TmpPtt tmp_ptt = 5;
+  optional Trans211TmpMsg trans_211_tmp_msg = 6;
+}
+
+message SecretFileMsg {
+  optional bytes file_key = 1;
+  optional uint64 from_uin = 2;
+  optional uint64 to_uin = 3;
+  optional uint32 status = 4;
+  optional uint32 ttl = 5;
+  optional uint32 type = 6;
+  optional uint32 encrypt_prehead_length = 7;
+  optional uint32 encrypt_type = 8;
+  optional bytes encrypt_key = 9;
+  optional uint32 read_times = 10;
+  optional uint32 left_time = 11;
+  optional NotOnlineImage not_online_image = 12;
+  optional ElemFlags2 elem_flags2 = 13;
+  optional uint32 opertype = 14;
+  optional string fromphonenum = 15;
+}
+
+message ShakeWindow {
+  optional uint32 type = 1;
+  optional uint32 reserve = 2;
+  optional uint64 uin = 3;
+}
+
+message SmallEmoji {
+  optional uint32 pack_id_sum = 1;
+  optional uint32 image_type = 2;
+}
+
+message SourceMsg {
+  repeated uint32 orig_seqs = 1;
+  optional uint64 sender_uin = 2;
+  optional uint32 time = 3;
+  optional uint32 flag = 4;
+  repeated Elem elems = 5;
+  optional uint32 type = 6;
+  optional bytes rich_msg = 7;
+  optional bytes pb_reserve = 8;
+  optional bytes src_msg = 9;
+  optional uint64 to_uin = 10;
+  optional bytes troop_name = 11;
+}
+
+message Text {
+  optional bytes str = 1;
+  optional string link = 2;
+  optional bytes attr_6_buf = 3;
+  optional bytes attr_7_buf = 4;
+  optional bytes buf = 11;
+  optional bytes pb_reserve = 12;
+}
+
+message TipsInfo {
+  optional string text = 1;
+}
+
+message TmpPtt {
+  optional uint32 file_type = 1;
+  optional bytes file_uuid = 2;
+  optional bytes file_md5 = 3;
+  optional bytes file_name = 4;
+  optional uint32 file_size = 5;
+  optional uint32 ptt_times = 6;
+  optional uint32 user_type = 7;
+  optional uint32 ptttrans_flag = 8;
+  optional uint32 busi_type = 9;
+  optional uint64 msg_id = 10;
+  optional bytes pb_reserve = 30;
+  optional bytes ptt_encode_data = 31;
+}
+
+message Trans211TmpMsg {
+  optional bytes msg_body = 1;
+  optional uint32 c2c_cmd = 2;
+}
+
+message TransElem {
+  optional uint32 elem_type = 1;
+  optional bytes elem_value = 2;
+}
+
+message VideoFile {
+  optional bytes file_uuid = 1;
+  optional bytes file_md5 = 2;
+  optional bytes file_name = 3;
+  optional uint32 file_format = 4;
+  optional uint32 file_time = 5;
+  optional uint32 file_size = 6;
+  optional uint32 thumb_width = 7;
+  optional uint32 thumb_height = 8;
+  optional bytes thumb_file_md5 = 9;
+  optional bytes source = 10;
+  optional uint32 thumb_file_size = 11;
+  optional uint32 busi_type = 12;
+  optional uint32 from_chat_type = 13;
+  optional uint32 to_chat_type = 14;
+  optional bool support_progressive = 15;
+  optional uint32 file_width = 16;
+  optional uint32 file_height = 17;
+  optional uint32 sub_busi_type = 18;
+  optional uint32 video_attr = 19;
+  repeated bytes thumb_file_urls = 20;
+  repeated bytes video_file_urls = 21;
+  optional uint32 thumb_download_flag = 22;
+  optional uint32 video_download_flag = 23;
+  optional bytes pb_reserve = 24;
+}
+
+message WorkflowNotifyMsg {
+  optional bytes ext_msg = 1;
+  optional uint64 create_uin = 2;
+}
+
+message LocationInfo {
+  optional double longitude = 1;
+  optional double latitude = 2;
+  optional bytes desc = 3;
+}

@@ -132,24 +132,6 @@ async def handle_get_message(
         elif resp.response.rsp_type == 2:
             client._pubaccount_cookie = resp.response.pubaccount_cookie
 
-        if resp.response.sync_flag < SyncFlag.STOP:
-            seq = client.next_seq()
-            continue_packet = encode_get_message(
-                seq,
-                client._session_id,
-                client.uin,
-                client._siginfo.d2key,
-                request_type=resp.response.rsp_type,
-                sync_flag=resp.response.sync_flag,
-                sync_cookie=resp.response.rsp_type != 2
-                and client._sync_cookie
-                or None,
-                pubaccount_cookie=resp.response.rsp_type == 2
-                and client._pubaccount_cookie
-                or None,
-            )
-            await client.send(seq, "MessageSvc.PbGetMsg", continue_packet)
-
         delete_msgs: List[PbDeleteMsgReq.MsgItem] = []
         for pair_msgs in resp.response.uin_pair_msgs:
             last_read_time = pair_msgs.last_read_time & 0xFFFFFFFF
@@ -178,6 +160,10 @@ async def handle_get_message(
                     continue
                 client._msg_cache[key] = None
 
+                # drop messages when init
+                if client._init_flag:
+                    continue
+
                 msg_type = message.head.type
                 Decoder = MESSAGE_DECODERS.get(msg_type, None)
                 if not Decoder:
@@ -188,6 +174,7 @@ async def handle_get_message(
                     continue
                 decoded_message = Decoder(message)
                 print(decoded_message)
+
         if delete_msgs:
             seq = client.next_seq()
             del_packet = encode_delete_message(
@@ -198,6 +185,26 @@ async def handle_get_message(
                 delete_msgs,
             )
             await client.send(seq, "MessageSvc.PbDeleteMsg", del_packet)
+
+        if resp.response.sync_flag < SyncFlag.STOP:
+            seq = client.next_seq()
+            continue_packet = encode_get_message(
+                seq,
+                client._session_id,
+                client.uin,
+                client._siginfo.d2key,
+                request_type=resp.response.rsp_type,
+                sync_flag=resp.response.sync_flag,
+                sync_cookie=resp.response.rsp_type != 2
+                and client._sync_cookie
+                or None,
+                pubaccount_cookie=resp.response.rsp_type == 2
+                and client._pubaccount_cookie
+                or None,
+            )
+            await client.send_and_wait(
+                seq, "MessageSvc.PbGetMsg", continue_packet
+            )
     return resp
 
 

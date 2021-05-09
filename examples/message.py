@@ -1,4 +1,4 @@
-"""Example Code for Set Client Status.
+"""Example Code for Message.
 
 :Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
@@ -12,7 +12,7 @@ import asyncio
 from hashlib import md5
 
 import cai
-from cai.client import OnlineStatus
+from cai.client import Client, Event, PrivateMessage
 
 
 async def run():
@@ -29,9 +29,15 @@ async def run():
 
     client = await cai.login(account, md5(password.encode()).digest())
 
-    await asyncio.sleep(10)
-    await cai.set_status(OnlineStatus.Qme)
-    print("Current client status: ", client.status)
+    cai.add_event_listener(listen_message)
+    # cai.add_event_listener(listen_message, uin=account)
+    # client.add_event_listener(listen_message)
+
+
+async def listen_message(client: Client, event: Event):
+    if isinstance(event, PrivateMessage):
+        print("Message received from ", event.sender_uin)
+        print("Message elements: ", event.message)
 
 
 if __name__ == "__main__":

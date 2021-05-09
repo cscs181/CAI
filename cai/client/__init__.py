@@ -15,3 +15,5 @@ from .packet import IncomingPacket
 from .client import Client, HANDLERS
 from .status_service import OnlineStatus, RegPushReason
 from .models import Friend, FriendGroup, Group, GroupMember, GroupMemberRole
+
+from .message_service import PrivateMessage

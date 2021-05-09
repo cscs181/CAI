@@ -19,6 +19,8 @@ from cai.client.event import Event
 @dataclass
 class PrivateMessage(Event):
     auto_reply: bool
+    sender_uin: int
+    sender_nick: str
     message: List["Element"]
 
     def type(self) -> str:

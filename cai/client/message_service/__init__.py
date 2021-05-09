@@ -29,6 +29,7 @@ from .command import (
     PushForceOffline,
     PushForceOfflineError,
 )
+from .models import PrivateMessage
 
 if TYPE_CHECKING:
     from cai.client import Client
@@ -336,4 +337,5 @@ __all__ = [
     "PushForceOfflineCommand",
     "PushForceOffline",
     "PushForceOfflineError",
+    "PrivateMessage",
 ]

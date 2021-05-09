@@ -9,18 +9,18 @@ cai.client.message\_service package
 Submodules
 ----------
 
-cai.client.message\_service.decoders module
--------------------------------------------
+cai.client.message\_service.command module
+------------------------------------------
 
-.. automodule:: cai.client.message_service.decoders
+.. automodule:: cai.client.message_service.command
    :members:
    :undoc-members:
    :show-inheritance:
 
-cai.client.message\_service.event module
-----------------------------------------
+cai.client.message\_service.decoders module
+-------------------------------------------
 
-.. automodule:: cai.client.message_service.event
+.. automodule:: cai.client.message_service.decoders
    :members:
    :undoc-members:
    :show-inheritance:

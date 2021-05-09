@@ -24,3 +24,11 @@ Friend and Group
 .. literalinclude:: ../../examples/friend_group.py
     :language: python
     :linenos:
+
+
+Message
+-------
+
+.. literalinclude:: ../../examples/message.py
+    :language: python
+    :linenos:

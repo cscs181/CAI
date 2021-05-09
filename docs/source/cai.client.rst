@@ -32,6 +32,14 @@ cai.client.client module
    :undoc-members:
    :show-inheritance:
 
+cai.client.command module
+-------------------------
+
+.. automodule:: cai.client.command
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
 cai.client.event module
 -----------------------
 

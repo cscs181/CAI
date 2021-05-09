@@ -17,15 +17,19 @@ from PIL import Image
 
 import cai
 from cai.exceptions import (
-    ApiResponseError, LoginException, LoginSliderNeeded, LoginCaptchaNeeded,
-    LoginAccountFrozen, LoginDeviceLocked
+    ApiResponseError,
+    LoginException,
+    LoginSliderNeeded,
+    LoginCaptchaNeeded,
+    LoginAccountFrozen,
+    LoginDeviceLocked,
 )
 
 
 async def run():
+    account = os.getenv("ACCOUNT", "")
+    password = os.getenv("PASSWORD")
     try:
-        account = os.getenv("ACCOUNT", "")
-        password = os.getenv("PASSWORD")
         account = int(account)
         assert password
     except Exception:
@@ -66,7 +70,13 @@ async def handle_failure(exception: Exception):
         print("Account is frozen!")
     elif isinstance(exception, LoginDeviceLocked):
         print("Device lock detected!")
-        way = "sms" if exception.sms_phone else "url" if exception.verify_url else ""
+        way = (
+            "sms"
+            if exception.sms_phone
+            else "url"
+            if exception.verify_url
+            else ""
+        )
         if exception.sms_phone and exception.verify_url:
             while True:
                 choice = input(

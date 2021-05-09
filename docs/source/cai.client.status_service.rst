@@ -9,10 +9,10 @@ cai.client.status\_service package
 Submodules
 ----------
 
-cai.client.status\_service.event module
----------------------------------------
+cai.client.status\_service.command module
+-----------------------------------------
 
-.. automodule:: cai.client.status_service.event
+.. automodule:: cai.client.status_service.command
    :members:
    :undoc-members:
    :show-inheritance:

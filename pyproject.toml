@@ -17,9 +17,9 @@ python = "^3.7"
 rtea = "^0.3.0"
 jcestruct = "^0.1.0"
 protobuf = "^3.14.0"
+cachetools = "^4.2.2"
 cryptography = "^3.4.1"
 typing-extensions = "^3.7.4"
-cachetools = "^4.2.2"
 
 [tool.poetry.dev-dependencies]
 black = "^20.8b1"

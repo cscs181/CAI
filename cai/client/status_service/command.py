@@ -1,6 +1,6 @@
-"""StatSvc Event Parser.
+"""StatSvc Command Parser.
 
-This module is used to parse StatSvc response packets into event.
+This module is used to parse StatSvc response packets into command.
 
 :Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
@@ -12,13 +12,13 @@ This module is used to parse StatSvc response packets into event.
 from typing import Optional
 from dataclasses import dataclass
 
-from cai.client.event import Event
+from cai.client.command import Command
 from cai.utils.jce import RequestPacketVersion2, RequestPacketVersion3
 from .jce import SvcRespRegister, RequestMSFForceOffline
 
 
 @dataclass
-class SvcRegisterResponse(Event):
+class SvcRegisterResponse(Command):
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
@@ -73,11 +73,11 @@ class RegisterSuccess(SvcRegisterResponse):
 
 
 @dataclass
-class MSFForceOfflineEvent(Event):
+class MSFForceOfflineCommand(Command):
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
-    ) -> "MSFForceOfflineEvent":
+    ) -> "MSFForceOfflineCommand":
         """Decode StatSvc MSF Offline request.
 
         Note:
@@ -91,7 +91,7 @@ class MSFForceOfflineEvent(Event):
             data (bytes): Payload data of the response.
         """
         if ret_code != 0 or not data:
-            return MSFForceOfflineEvent(uin, seq, ret_code, command_name)
+            return MSFForceOfflineCommand(uin, seq, ret_code, command_name)
 
         try:
             req_packet = RequestPacketVersion3.decode(data)
@@ -112,10 +112,10 @@ class MSFForceOfflineEvent(Event):
 
 
 @dataclass
-class MSFForceOffline(MSFForceOfflineEvent):
+class MSFForceOffline(MSFForceOfflineCommand):
     request: RequestMSFForceOffline
 
 
 @dataclass
-class MSFForceOfflineError(MSFForceOfflineEvent):
+class MSFForceOfflineError(MSFForceOfflineCommand):
     message: str

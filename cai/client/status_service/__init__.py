@@ -28,11 +28,11 @@ from cai.client.packet import (
     UniPacket,
     IncomingPacket,
 )
-from .event import (
+from .command import (
     SvcRegisterResponse,
     RegisterSuccess,
     RegisterFail,
-    MSFForceOfflineEvent,
+    MSFForceOfflineCommand,
     MSFForceOffline,
     MSFForceOfflineError,
 )
@@ -375,8 +375,8 @@ def encode_force_offline_response(
 
 async def handle_request_offline(
     client: "Client", packet: IncomingPacket
-) -> MSFForceOfflineEvent:
-    request = MSFForceOfflineEvent.decode_response(
+) -> MSFForceOfflineCommand:
+    request = MSFForceOfflineCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -417,7 +417,7 @@ __all__ = [
     "SvcRegisterResponse",
     "RegisterSuccess",
     "RegisterFail",
-    "MSFForceOfflineEvent",
+    "MSFForceOfflineCommand",
     "MSFForceOffline",
     "MSFForceOfflineError",
 ]

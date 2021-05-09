@@ -13,16 +13,11 @@ import abc
 from typing import List
 from dataclasses import dataclass
 
-
-class Message(abc.ABC):
-    @property
-    @abc.abstractmethod
-    def type(self) -> str:
-        raise NotImplementedError
+from cai.client.event import Event
 
 
 @dataclass
-class PrivateMessage(Message):
+class PrivateMessage(Event):
     auto_reply: bool
     message: List["Element"]
 

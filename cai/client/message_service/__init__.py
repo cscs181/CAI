@@ -18,14 +18,14 @@ from .decoders import MESSAGE_DECODERS
 from cai.client.status_service import OnlineStatus
 from cai.client.packet import UniPacket, IncomingPacket
 from cai.pb.msf.msg.svc import PbGetMsgReq, PbDeleteMsgReq
-from .event import (
-    GetMessageEvent,
+from .command import (
+    GetMessageCommand,
     GetMessageSuccess,
     GetMessageFail,
-    PushNotifyEvent,
+    PushNotifyCommand,
     PushNotify,
     PushNotifyError,
-    PushForceOfflineEvent,
+    PushForceOfflineCommand,
     PushForceOffline,
     PushForceOfflineError,
 )
@@ -101,7 +101,7 @@ def encode_get_message(
 
 async def handle_get_message(
     client: "Client", packet: IncomingPacket
-) -> "GetMessageEvent":
+) -> "GetMessageCommand":
     """Handle Pb Get Message response.
 
     Note:
@@ -115,7 +115,7 @@ async def handle_get_message(
 
         com.tencent.imcore.message.DecodeMsg.a
     """
-    resp = GetMessageEvent.decode_response(
+    resp = GetMessageCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -173,7 +173,8 @@ async def handle_get_message(
                     )
                     continue
                 decoded_message = Decoder(message)
-                print(decoded_message)
+                if decoded_message:
+                    client.dispatch_event(decoded_message)
 
         if delete_msgs:
             seq = client.next_seq()
@@ -245,14 +246,14 @@ def encode_delete_message(
 
 async def handle_push_notify(
     client: "Client", packet: IncomingPacket
-) -> PushNotifyEvent:
-    """Handle Push Notify Event.
+) -> PushNotifyCommand:
+    """Handle Push Notify Command.
 
     Note:
         Source:
         com.tencent.mobileqq.app.handler.receivesuccess.MessageSvcPushNotify.a
     """
-    notify = PushNotifyEvent.decode_response(
+    notify = PushNotifyCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -302,10 +303,10 @@ async def handle_push_notify(
 # MessageSvc.PushForceOffline
 async def handle_force_offline(
     client: "Client", packet: IncomingPacket
-) -> PushForceOfflineEvent:
+) -> PushForceOfflineCommand:
     client._status = OnlineStatus.Offline
     await client.close()
-    request = PushForceOfflineEvent.decode_response(
+    request = PushForceOfflineCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -324,15 +325,15 @@ __all__ = [
     "SyncFlag",
     "encode_get_message",
     "handle_get_message",
-    "GetMessageEvent",
+    "GetMessageCommand",
     "GetMessageSuccess",
     "GetMessageFail",
     "handle_push_notify",
-    "PushNotifyEvent",
+    "PushNotifyCommand",
     "PushNotify",
     "PushNotifyError",
     "handle_force_offline",
-    "PushForceOfflineEvent",
+    "PushForceOfflineCommand",
     "PushForceOffline",
     "PushForceOfflineError",
 ]

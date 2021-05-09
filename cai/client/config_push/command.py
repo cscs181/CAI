@@ -1,6 +1,6 @@
-"""ConfigPushSvc Event Parser.
+"""ConfigPushSvc Command Parser.
 
-This module is used to parse ConfigPushSvc packets into event.
+This module is used to parse ConfigPushSvc packets into command.
 
 :Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
@@ -11,18 +11,18 @@ This module is used to parse ConfigPushSvc packets into event.
 
 from dataclasses import dataclass
 
-from cai.client.event import Event
+from cai.client.command import Command
 from cai.utils.jce import RequestPacketVersion2
 
 from .jce import PushReq, SsoServerPushList, FileServerPushList
 
 
 @dataclass
-class ConfigPushEvent(Event):
+class ConfigPushCommand(Command):
     @classmethod
     def decode_push_req(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
-    ) -> "ConfigPushEvent":
+    ) -> "ConfigPushCommand":
         """Decode ConfigPush.PushReq packet.
 
         Note:
@@ -37,8 +37,8 @@ class ConfigPushEvent(Event):
             data (bytes): Payload data of the response.
 
         Returns:
-            SsoServerPushEvent: Push Sso Server Info List.
-            FileServerPushEvent: Push File Server Info List.
+            SsoServerPushCommand: Push Sso Server Info List.
+            FileServerPushCommand: Push File Server Info List.
         """
         if ret_code != 0 or not data:
             return cls(uin, seq, ret_code, command_name)
@@ -49,7 +49,7 @@ class ConfigPushEvent(Event):
         )
         if push.type == 1:
             list = SsoServerPushList.decode(push.jcebuf)
-            return SsoServerPushEvent(
+            return SsoServerPushCommand(
                 uin,
                 seq,
                 ret_code,
@@ -61,7 +61,7 @@ class ConfigPushEvent(Event):
             )
         elif push.type == 2:
             list = FileServerPushList.decode(push.jcebuf)
-            return FileServerPushEvent(
+            return FileServerPushCommand(
                 uin,
                 seq,
                 ret_code,
@@ -73,7 +73,7 @@ class ConfigPushEvent(Event):
             )
         elif push.type == 3:
             # LogAction, do nothing
-            return LogActionPushEvent(
+            return LogActionPushCommand(
                 uin,
                 seq,
                 ret_code,
@@ -82,26 +82,26 @@ class ConfigPushEvent(Event):
                 push.jcebuf,
                 push.large_seq,
             )
-        return ConfigPushEvent(uin, seq, ret_code, command_name)
+        return ConfigPushCommand(uin, seq, ret_code, command_name)
 
 
 @dataclass
-class _ConfigPushEventBase(ConfigPushEvent):
+class _ConfigPushCommandBase(ConfigPushCommand):
     type: int
     jcebuf: bytes
     large_seq: int
 
 
 @dataclass
-class SsoServerPushEvent(_ConfigPushEventBase):
+class SsoServerPushCommand(_ConfigPushCommandBase):
     list: SsoServerPushList
 
 
 @dataclass
-class FileServerPushEvent(_ConfigPushEventBase):
+class FileServerPushCommand(_ConfigPushCommandBase):
     list: FileServerPushList
 
 
 @dataclass
-class LogActionPushEvent(_ConfigPushEventBase):
+class LogActionPushCommand(_ConfigPushCommandBase):
     pass

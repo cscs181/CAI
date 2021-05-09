@@ -13,7 +13,7 @@ from dataclasses import dataclass
 from typing import Any, Dict, Union, Optional
 
 from .tlv import TlvDecoder
-from cai.client.event import Event
+from cai.client.command import Command
 from cai.utils.binary import Packet
 
 
@@ -54,7 +54,7 @@ class OICQRequest(Packet):
 
 
 @dataclass
-class OICQResponse(Event):
+class OICQResponse(Command):
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes

@@ -1,6 +1,6 @@
-"""MessageSvc Event Parser.
+"""MessageSvc Command Parser.
 
-This module is used to parse MessageSvc response packets into event.
+This module is used to parse MessageSvc response packets into command.
 
 :Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
@@ -11,18 +11,18 @@ This module is used to parse MessageSvc response packets into event.
 
 from dataclasses import dataclass
 
-from cai.client.event import Event
+from cai.client.command import Command
 from cai.pb.msf.msg.svc import PbGetMsgResp
 from cai.utils.jce import RequestPacketVersion2
 from .jce import RequestPushNotify, RequestPushForceOffline
 
 
 @dataclass
-class GetMessageEvent(Event):
+class GetMessageCommand(Command):
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
-    ) -> "GetMessageEvent":
+    ) -> "GetMessageCommand":
         """Decode MessageSvc get message response packet.
 
         Note:
@@ -42,7 +42,7 @@ class GetMessageEvent(Event):
             data (bytes): Payload data of the response.
         """
         if ret_code != 0 or not data:
-            return GetMessageEvent(uin, seq, ret_code, command_name)
+            return GetMessageCommand(uin, seq, ret_code, command_name)
 
         try:
             result = PbGetMsgResp.FromString(data)
@@ -58,21 +58,21 @@ class GetMessageEvent(Event):
 
 
 @dataclass
-class GetMessageSuccess(GetMessageEvent):
+class GetMessageSuccess(GetMessageCommand):
     response: PbGetMsgResp
 
 
 @dataclass
-class GetMessageFail(GetMessageEvent):
+class GetMessageFail(GetMessageCommand):
     message: str
 
 
 @dataclass
-class PushNotifyEvent(Event):
+class PushNotifyCommand(Command):
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
-    ) -> "PushNotifyEvent":
+    ) -> "PushNotifyCommand":
         """Decode MessageSvc push notify packet.
 
         Note:
@@ -86,7 +86,7 @@ class PushNotifyEvent(Event):
             data (bytes): Payload data of the response.
         """
         if ret_code != 0 or not data:
-            return PushNotifyEvent(uin, seq, ret_code, command_name)
+            return PushNotifyCommand(uin, seq, ret_code, command_name)
 
         try:
             # data offset 4 in source? test get 15
@@ -111,21 +111,21 @@ class PushNotifyEvent(Event):
 
 
 @dataclass
-class PushNotify(PushNotifyEvent):
+class PushNotify(PushNotifyCommand):
     notify: RequestPushNotify
 
 
 @dataclass
-class PushNotifyError(PushNotifyEvent):
+class PushNotifyError(PushNotifyCommand):
     message: str
 
 
 @dataclass
-class PushForceOfflineEvent(Event):
+class PushForceOfflineCommand(Command):
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
-    ) -> "PushForceOfflineEvent":
+    ) -> "PushForceOfflineCommand":
         """Decode MessageSvc Force Offline request.
 
         Note:
@@ -139,7 +139,7 @@ class PushForceOfflineEvent(Event):
             data (bytes): Payload data of the response.
         """
         if ret_code != 0 or not data:
-            return PushForceOfflineEvent(uin, seq, ret_code, command_name)
+            return PushForceOfflineCommand(uin, seq, ret_code, command_name)
 
         try:
             req_packet = RequestPacketVersion2.decode(data)
@@ -162,10 +162,10 @@ class PushForceOfflineEvent(Event):
 
 
 @dataclass
-class PushForceOffline(PushForceOfflineEvent):
+class PushForceOffline(PushForceOfflineCommand):
     request: RequestPushForceOffline
 
 
 @dataclass
-class PushForceOfflineError(PushForceOfflineEvent):
+class PushForceOfflineError(PushForceOfflineCommand):
     message: str

@@ -12,13 +12,13 @@ This module is used to decode message protobuf.
 from typing import List, Dict, Optional, Callable
 
 from cai.log import logger
+from cai.client.event import Event
 from cai.pb.msf.msg.comm import Msg
 from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype2,
     MsgElemInfo_servtype33,
 )
 from .models import (
-    Message,
     PrivateMessage,
     Element,
     TextElement,
@@ -30,14 +30,14 @@ from .models import (
 
 class BuddyMessageDecoder:
     @classmethod
-    def decode(cls, message: Msg) -> Optional[Message]:
+    def decode(cls, message: Msg) -> Optional[Event]:
         """Buddy Message Decoder.
 
         Note:
             Source:
             com.tencent.mobileqq.service.message.codec.decoder.buddyMessage.BuddyMessageDecoder
         """
-        sub_decoders: Dict[int, Callable[[Msg], Optional[Message]]] = {
+        sub_decoders: Dict[int, Callable[[Msg], Optional[Event]]] = {
             11: cls.decode_normal_buddy,
             # 129: OnlineFileDecoder,
             # 131: OnlineFileDecoder,
@@ -58,7 +58,7 @@ class BuddyMessageDecoder:
         return Decoder(message)
 
     @classmethod
-    def decode_normal_buddy(cls, message: Msg) -> Optional[Message]:
+    def decode_normal_buddy(cls, message: Msg) -> Optional[Event]:
         """Normal Buddy Message Decoder.
 
         Note:
@@ -137,7 +137,7 @@ class BuddyMessageDecoder:
         return PrivateMessage(auto_reply, res)
 
 
-MESSAGE_DECODERS: Dict[int, Callable[[Msg], Optional[Message]]] = {
+MESSAGE_DECODERS: Dict[int, Callable[[Msg], Optional[Event]]] = {
     9: BuddyMessageDecoder.decode,
     10: BuddyMessageDecoder.decode,
     31: BuddyMessageDecoder.decode,

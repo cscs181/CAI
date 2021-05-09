@@ -1,6 +1,6 @@
-"""Friend List Event Parser.
+"""Friend List Command Parser.
 
-This module is used to parse friend list packets into event.
+This module is used to parse friend list packets into command.
 
 :Copyright: Copyright (C) 2021-2021  cscs181
 :License: AGPL-3.0 or later. See `LICENSE`_ for detail.
@@ -11,18 +11,18 @@ This module is used to parse friend list packets into event.
 
 from dataclasses import dataclass
 
-from cai.client.event import Event
+from cai.client.command import Command
 from cai.utils.jce import RequestPacketVersion3
 
 from .jce import FriendListResp, TroopListRespV2, TroopMemberListResp
 
 
 @dataclass
-class FriendListEvent(Event):
+class FriendListCommand(Command):
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
-    ) -> "FriendListEvent":
+    ) -> "FriendListCommand":
         """Decode friend list response.
 
         Note:
@@ -40,7 +40,7 @@ class FriendListEvent(Event):
             FriendFail: Friend list failed.
         """
         if ret_code != 0 or not data:
-            return FriendListEvent(uin, seq, ret_code, command_name)
+            return FriendListCommand(uin, seq, ret_code, command_name)
 
         try:
             resp_packet = RequestPacketVersion3.decode(data)
@@ -71,22 +71,22 @@ class FriendListEvent(Event):
 
 
 @dataclass
-class FriendListSuccess(FriendListEvent):
+class FriendListSuccess(FriendListCommand):
     response: FriendListResp
 
 
 @dataclass
-class FriendListFail(FriendListEvent):
+class FriendListFail(FriendListCommand):
     result: int
     message: str
 
 
 @dataclass
-class TroopListEvent(Event):
+class TroopListCommand(Command):
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
-    ) -> "TroopListEvent":
+    ) -> "TroopListCommand":
         """Decode troop list v2 response.
 
         Note:
@@ -104,7 +104,7 @@ class TroopListEvent(Event):
             TroopListFail: Troop list failed.
         """
         if ret_code != 0 or not data:
-            return TroopListEvent(uin, seq, ret_code, command_name)
+            return TroopListCommand(uin, seq, ret_code, command_name)
 
         try:
             resp_packet = RequestPacketVersion3.decode(data)
@@ -135,22 +135,22 @@ class TroopListEvent(Event):
 
 
 @dataclass
-class TroopListSuccess(TroopListEvent):
+class TroopListSuccess(TroopListCommand):
     response: TroopListRespV2
 
 
 @dataclass
-class TroopListFail(TroopListEvent):
+class TroopListFail(TroopListCommand):
     result: int
     message: str
 
 
 @dataclass
-class TroopMemberListEvent(Event):
+class TroopMemberListCommand(Command):
     @classmethod
     def decode_response(
         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
-    ) -> "TroopMemberListEvent":
+    ) -> "TroopMemberListCommand":
         """Decode troop member list response.
 
         Note:
@@ -168,7 +168,7 @@ class TroopMemberListEvent(Event):
             TroopMemberListFail: Troop member list failed.
         """
         if ret_code != 0 or not data:
-            return TroopMemberListEvent(uin, seq, ret_code, command_name)
+            return TroopMemberListCommand(uin, seq, ret_code, command_name)
 
         try:
             resp_packet = RequestPacketVersion3.decode(data)
@@ -199,11 +199,11 @@ class TroopMemberListEvent(Event):
 
 
 @dataclass
-class TroopMemberListSuccess(TroopMemberListEvent):
+class TroopMemberListSuccess(TroopMemberListCommand):
     response: TroopMemberListResp
 
 
 @dataclass
-class TroopMemberListFail(TroopMemberListEvent):
+class TroopMemberListFail(TroopMemberListCommand):
     result: int
     message: str

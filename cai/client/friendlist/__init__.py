@@ -21,14 +21,14 @@ from .jce import (
     TroopListReqV2Simplify,
     TroopMemberListReq,
 )
-from .event import (
-    FriendListEvent,
+from .command import (
+    FriendListCommand,
     FriendListSuccess,
     FriendListFail,
-    TroopListEvent,
+    TroopListCommand,
     TroopListSuccess,
     TroopListFail,
-    TroopMemberListEvent,
+    TroopMemberListCommand,
     TroopMemberListSuccess,
     TroopMemberListFail,
 )
@@ -109,8 +109,8 @@ def encode_get_friend_list(
 
 async def handle_friend_list(
     client: "Client", packet: IncomingPacket
-) -> "FriendListEvent":
-    return FriendListEvent.decode_response(
+) -> "FriendListCommand":
+    return FriendListCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -172,8 +172,8 @@ def encode_get_troop_list(
 
 async def handle_troop_list(
     client: "Client", packet: IncomingPacket
-) -> TroopListEvent:
-    return TroopListEvent.decode_response(
+) -> TroopListCommand:
+    return TroopListCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -235,8 +235,8 @@ def encode_get_troop_member_list(
 
 async def handle_troop_member_list(
     client: "Client", packet: IncomingPacket
-) -> TroopMemberListEvent:
-    return TroopMemberListEvent.decode_response(
+) -> TroopMemberListCommand:
+    return TroopMemberListCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -252,13 +252,13 @@ __all__ = [
     "handle_troop_list",
     "encode_get_troop_member_list",
     "handle_troop_member_list",
-    "FriendListEvent",
+    "FriendListCommand",
     "FriendListSuccess",
     "FriendListFail",
-    "TroopListEvent",
+    "TroopListCommand",
     "TroopListSuccess",
     "TroopListFail",
-    "TroopMemberListEvent",
+    "TroopMemberListCommand",
     "TroopMemberListSuccess",
     "TroopMemberListFail",
 ]

@@ -31,4 +31,4 @@ from .friend import (
     get_friend_group_list,
 )
 from .group import get_group, get_group_list, get_group_member_list
-from .flow import register_packet_handler
+from .flow import add_event_listener, register_packet_handler

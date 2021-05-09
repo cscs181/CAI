@@ -18,12 +18,12 @@ from cai.utils.binary import Packet
 from .jce import PushResp, FileServerPushList
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
-from .event import (
-    ConfigPushEvent,
-    _ConfigPushEventBase,
-    SsoServerPushEvent,
-    FileServerPushEvent,
-    LogActionPushEvent,
+from .command import (
+    ConfigPushCommand,
+    _ConfigPushCommandBase,
+    SsoServerPushCommand,
+    FileServerPushCommand,
+    LogActionPushCommand,
 )
 
 if TYPE_CHECKING:
@@ -75,40 +75,40 @@ def encode_config_push_response(
 # ConfigPushSvc.PushReq
 async def handle_config_push_request(
     client: "Client", packet: IncomingPacket
-) -> ConfigPushEvent:
-    event = ConfigPushEvent.decode_push_req(
+) -> ConfigPushCommand:
+    command = ConfigPushCommand.decode_push_req(
         packet.uin,
         packet.seq,
         packet.ret_code,
         packet.command_name,
         packet.data,
     )
-    if isinstance(event, SsoServerPushEvent):
+    if isinstance(command, SsoServerPushCommand):
         logger.debug(f"ConfigPush: Got new server addresses.")
-    elif isinstance(event, FileServerPushEvent):
-        client._file_storage_info = event.list
+    elif isinstance(command, FileServerPushCommand):
+        client._file_storage_info = command.list
 
-    if isinstance(event, _ConfigPushEventBase):
+    if isinstance(command, _ConfigPushCommandBase):
         seq = client.next_seq()
         resp_packet = encode_config_push_response(
             client.uin,
             seq,
             client._session_id,
             client._siginfo.d2key,
-            event.type,
-            event.jcebuf,
-            event.large_seq,
+            command.type,
+            command.jcebuf,
+            command.large_seq,
         )
         await client.send(seq, "ConfigPushSvc.PushResp", resp_packet)
 
-    return event
+    return command
 
 
 __all__ = [
     "handle_config_push_request",
     "FileServerPushList",
-    "ConfigPushEvent",
-    "SsoServerPushEvent",
-    "FileServerPushEvent",
-    "LogActionPushEvent",
+    "ConfigPushCommand",
+    "SsoServerPushCommand",
+    "FileServerPushCommand",
+    "LogActionPushCommand",
 ]

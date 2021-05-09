@@ -15,6 +15,8 @@ Subpackages
    cai.client.config_push
    cai.client.friendlist
    cai.client.heartbeat
+   cai.client.message_service
+   cai.client.qq_service
    cai.client.sso_server
    cai.client.status_service
    cai.client.wtlogin
@@ -26,6 +28,14 @@ cai.client.client module
 ------------------------
 
 .. automodule:: cai.client.client
+   :members:
+   :undoc-members:
+   :show-inheritance:
+
+cai.client.command module
+-------------------------
+
+.. automodule:: cai.client.command
    :members:
    :undoc-members:
    :show-inheritance:

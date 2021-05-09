@@ -15,14 +15,27 @@ from typing import Union, Optional, TYPE_CHECKING
 
 from jce import types
 
-from .jce import SvcReqRegister
+from cai.log import logger
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.utils.jce import RequestPacketVersion3
-from cai.pb.oicq.cmd0x769 import ConfigSeq, ReqBody
-from .event import SvcRegisterResponse, RegisterSuccess, RegisterFail
-from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
+from cai.pb.im.oidb.cmd0x769 import ConfigSeq, ReqBody
+from .jce import SvcReqRegister, ResponseMSFForceOffline
+from cai.client.packet import (
+    CSsoBodyPacket,
+    CSsoDataPacket,
+    UniPacket,
+    IncomingPacket,
+)
+from .command import (
+    SvcRegisterResponse,
+    RegisterSuccess,
+    RegisterFail,
+    MSFForceOfflineCommand,
+    MSFForceOffline,
+    MSFForceOfflineError,
+)
 
 if TYPE_CHECKING:
     from cai.client import Client
@@ -230,10 +243,7 @@ def encode_register(
 def encode_set_status(
     seq: int,
     session_id: bytes,
-    ksid: bytes,
     uin: int,
-    tgt: bytes,
-    d2: bytes,
     d2key: bytes,
     status: Union[int, OnlineStatus],
     battery_status: Optional[int] = None,
@@ -251,10 +261,7 @@ def encode_set_status(
     Args:
         seq (int): Packet sequence.
         session_id (bytes): Session ID.
-        ksid (bytes): KSID of client.
         uin (int): User QQ number.
-        tgt (bytes): Siginfo tgt.
-        d2 (bytes): Siginfo d2.
         d2key (bytes): Siginfo d2 key.
         status (Union[int, OnlineStatus]): Online status.
         reg_push_reason (Union[str, RegPushReason]): Reg push reason.
@@ -282,17 +289,9 @@ def encode_set_status(
         func_name="SvcReqRegister",
         data=types.MAP({types.STRING("SvcReqRegister"): types.BYTES(payload)}),
     ).encode()
-    sso_packet = CSsoBodyPacket.build(
-        seq,
-        SUB_APP_ID,
-        COMMAND_NAME,
-        DEVICE.imei,
-        session_id,
-        ksid,
-        body=req_packet,
-        extra_data=tgt,
+    packet = UniPacket.build(
+        uin, seq, COMMAND_NAME, session_id, 1, req_packet, d2key
     )
-    packet = CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
     return packet
 
 
@@ -314,12 +313,111 @@ async def handle_register_response(
     return response
 
 
+def encode_force_offline_response(
+    seq: int,
+    session_id: bytes,
+    ksid: bytes,
+    uin: int,
+    tgt: bytes,
+    d2: bytes,
+    d2key: bytes,
+    req_uin: int,
+    seq_no: int,
+) -> Packet:
+    """Build status service msf offline response packet.
+
+    Called in ``com.tencent.mobileqq.msf.core.af.a``.
+
+    command name: ``StatSvc.RspMSFForceOffline``
+
+    Note:
+        Source: com.tencent.mobileqq.msf.core.af.a
+
+    Args:
+        seq (int): Packet sequence.
+        session_id (bytes): Session ID.
+        ksid (bytes): KSID of client.
+        uin (int): User QQ number.
+        tgt (bytes): Siginfo tgt.
+        d2 (bytes): Siginfo d2.
+        d2key (bytes): Siginfo d2 key.
+        req_uin (int): Request offline uin.
+        seq_no (int): Request sequence number.
+
+    Returns:
+        Packet: msf force offline response packet.
+    """
+    COMMAND_NAME = "StatSvc.RspMSFForceOffline"
+    SUB_APP_ID = APK_INFO.sub_app_id
+
+    resp = ResponseMSFForceOffline(uin=req_uin, seq_no=seq_no, c=bytes(1))
+    payload = ResponseMSFForceOffline.to_bytes(0, resp)
+    resp_packet = RequestPacketVersion3(
+        servant_name="StatSvc",
+        func_name="RspMSFForceOffline",
+        data=types.MAP(
+            {types.STRING("RspMSFForceOffline"): types.BYTES(payload)}
+        ),
+    ).encode()
+    sso_packet = CSsoBodyPacket.build(
+        seq,
+        SUB_APP_ID,
+        COMMAND_NAME,
+        DEVICE.imei,
+        session_id,
+        ksid,
+        body=resp_packet,
+        extra_data=tgt,
+    )
+    packet = CSsoDataPacket.build(uin, 1, sso_packet, key=d2key, extra_data=d2)
+    return packet
+
+
+async def handle_request_offline(
+    client: "Client", packet: IncomingPacket
+) -> MSFForceOfflineCommand:
+    request = MSFForceOfflineCommand.decode_response(
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
+    )
+    logger.error(
+        f"Client {client.uin} force offline: " + request.request.info
+        if isinstance(request, MSFForceOffline)
+        else "Unknown reason."
+    )
+    if isinstance(request, MSFForceOffline):
+        seq = client.next_seq()
+        resp_packet = encode_force_offline_response(
+            seq,
+            client._session_id,
+            client._ksid,
+            client.uin,
+            client._siginfo.tgt,
+            client._siginfo.d2,
+            client._siginfo.d2key,
+            request.request.uin,
+            request.request.seq_no,
+        )
+        await client.send(seq, "StatSvc.RspMSFForceOffline", resp_packet)
+    client._status = OnlineStatus.Offline
+    await client.close()
+    return request
+
+
 __all__ = [
     "encode_register",
+    "encode_set_status",
     "handle_register_response",
+    "handle_request_offline",
     "OnlineStatus",
     "RegPushReason",
     "SvcRegisterResponse",
     "RegisterSuccess",
     "RegisterFail",
+    "MSFForceOfflineCommand",
+    "MSFForceOffline",
+    "MSFForceOfflineError",
 ]

@@ -12,7 +12,9 @@ import time
 import struct
 import secrets
 import asyncio
-from typing import Any, List, Dict, Union, Optional, Callable, Awaitable
+from typing import Any, Set, List, Dict, Union, Optional, Callable, Awaitable
+
+from cachetools import TTLCache
 
 from .sso_server import get_sso_server, SsoServer
 from .wtlogin import (
@@ -37,6 +39,7 @@ from .status_service import (
     encode_register,
     encode_set_status,
     handle_register_response,
+    handle_request_offline,
     OnlineStatus,
     RegPushReason,
     SvcRegisterResponse,
@@ -50,19 +53,26 @@ from .friendlist import (
     handle_troop_list,
     encode_get_troop_member_list,
     handle_troop_member_list,
-    FriendListEvent,
+    FriendListCommand,
     FriendListSuccess,
     FriendListFail,
-    TroopListEvent,
+    TroopListCommand,
     TroopListSuccess,
     TroopListFail,
-    TroopMemberListEvent,
+    TroopMemberListCommand,
     TroopMemberListSuccess,
     TroopMemberListFail,
 )
+from .message_service import (
+    SyncFlag,
+    GetMessageCommand,
+    encode_get_message,
+    handle_get_message,
+    handle_push_notify,
+    handle_force_offline,
+)
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
-
 from cai.exceptions import (
     ApiResponseError,
     LoginException,
@@ -80,32 +90,42 @@ from cai.exceptions import (
     GroupMemberListException,
 )
 
+from .event import Event
 from cai.log import logger
 from .packet import IncomingPacket
 from cai.utils.binary import Packet
 from cai.utils.future import FutureStore
-from .event import Event, _packet_to_event
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.connection import connect, Connection
+from .command import Command, _packet_to_command
 from .models import SigInfo, Friend, FriendGroup, Group, GroupMember
+
+HT = Callable[["Client", IncomingPacket], Awaitable[Command]]
+LT = Callable[["Client", Event], Awaitable[None]]
 
 DEVICE = get_device()
 APK_INFO = get_protocol()
-HANDLERS: Dict[str, Callable[["Client", IncomingPacket], Awaitable[Event]]] = {
+HANDLERS: Dict[str, HT] = {
     "wtlogin.login": handle_oicq_response,
     "wtlogin.exchange_emp": handle_oicq_response,
     "StatSvc.register": handle_register_response,
     "StatSvc.SetStatusFromClient": handle_register_response,
+    "StatSvc.ReqMSFOffline": handle_request_offline,
     "ConfigPushSvc.PushReq": handle_config_push_request,
     "Heartbeat.Alive": handle_heartbeat,
     "friendlist.GetFriendListReq": handle_friend_list,
     "friendlist.GetTroopListReqV2": handle_troop_list,
     "friendlist.GetTroopMemberListReq": handle_troop_member_list,
+    "MessageSvc.PbGetMsg": handle_get_message,
+    "MessageSvc.PushNotify": handle_push_notify,
+    "MessageSvc.PushForceOffline": handle_force_offline,
 }
 
 
 class Client:
+    LISTENERS: Set[LT] = set()
+
     def __init__(self, uin: int, password_md5: bytes):
         # account info
         self._uin: int = uin
@@ -142,8 +162,13 @@ class Client:
         self._t528: bytes = bytes()
         self._t530: bytes = bytes()
 
+        self._init_flag: bool = False
+        self._listeners: Set[LT] = set()
         self._siginfo: SigInfo = SigInfo()
-        self._receive_store: FutureStore[int, Event] = FutureStore()
+        self._sync_cookie: bytes = bytes()
+        self._pubaccount_cookie: bytes = bytes()
+        self._msg_cache: TTLCache = TTLCache(maxsize=1024, ttl=3600)
+        self._receive_store: FutureStore[int, Command] = FutureStore()
 
     def __str__(self) -> str:
         return f"<cai client object for {self.uin}>"
@@ -327,7 +352,7 @@ class Client:
         command_name: str,
         packet: Union[bytes, Packet],
         timeout: Optional[float] = 10.0,
-    ) -> Event:
+    ) -> Command:
         """Send a packet with the given sequence and wait for the response.
 
         Args:
@@ -337,10 +362,19 @@ class Client:
             timeout (Optional[float], optional): Timeout. Defaults to 10.
 
         Returns:
-            Event: Response.
+            Command: Response.
         """
         await self.send(seq, command_name, packet)
         return await self._receive_store.fetch(seq, timeout)
+
+    async def _handle_incoming_packet(self, in_packet: IncomingPacket) -> None:
+        try:
+            handler = HANDLERS.get(in_packet.command_name, _packet_to_command)
+            packet = await handler(self, in_packet)
+            self._receive_store.store_result(packet.seq, packet)
+        except Exception as e:
+            # TODO: handle exception
+            logger.exception(e)
 
     async def receive(self):
         """Receive data from connection reader and store it in sequence future.
@@ -365,18 +399,37 @@ class Client:
                 logger.debug(
                     f"<-- {packet.seq} ({packet.ret_code}): {packet.command_name}"
                 )
-                handler = HANDLERS.get(packet.command_name, _packet_to_event)
-                packet = await handler(self, packet)
-                self._receive_store.store_result(packet.seq, packet)
-                # TODO: broadcast packet
+                # do not block receive
+                asyncio.create_task(self._handle_incoming_packet(packet))
             except ConnectionAbortedError:
-                logger.debug("Connection closed")
+                logger.debug(f"Client {self.uin} connection closed")
             except Exception as e:
-                # TODO: handle exception
                 logger.exception(e)
 
+    @property
+    def listeners(self) -> Set[LT]:
+        return self._listeners | self.LISTENERS
+
+    async def _run_listener(self, listener: LT, event: Event) -> None:
+        try:
+            await listener(self, event)
+        except Exception as e:
+            logger.exception(e)
+
+    def dispatch_event(self, event: Event) -> None:
+        for listener in self.listeners:
+            asyncio.create_task(self._run_listener(listener, event))
+
+    def add_event_listener(self, listener: LT) -> None:
+        """Add event listener for this client.
+
+        Args:
+            listener (Callable[[Client, Event], Awaitable[None]]): Event listener.
+        """
+        self._listeners.add(listener)
+
     async def _handle_login_response(
-        self, response: Event, try_times: int = 1
+        self, response: Command, try_times: int = 1
     ) -> LoginSuccess:
         if not isinstance(response, OICQResponse):
             raise RuntimeError("Invalid login response type!")
@@ -391,6 +444,7 @@ class Client:
 
         if isinstance(response, LoginSuccess):
             logger.info(f"{self.nick}({self.uin}) 登录成功！")
+            await self._init()
             return response
         elif isinstance(response, NeedCaptcha):
             if response.verify_url:
@@ -467,13 +521,28 @@ class Client:
                 response.uin, response.status, "Unknown login status."
             )
 
+    async def _init(self) -> None:
+        if not self.connected or self.status == OnlineStatus.Offline:
+            raise RuntimeError("Client is offline.")
+
+        self._init_flag = True
+        # register client online status
+        await self.register()
+        # force refresh group list
+        await self._refresh_group_list()
+        # force refresh friend list
+        await self._refresh_friend_list()
+        # force refresh session message
+        await self._get_message(0, online_sync_flag=1)
+        self._init_flag = False
+
     async def login(self) -> LoginSuccess:
         """Login the account of the client.
 
         This should be called before using any other apis.
 
         Returns:
-            LoginSuccess: Success login event.
+            LoginSuccess: Success login command.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -505,7 +574,7 @@ class Client:
         This should be called after :class:`~cai.exceptions.LoginCaptchaNeeded` occurred.
 
         Returns:
-            LoginSuccess: Success login event.
+            LoginSuccess: Success login command.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -537,7 +606,7 @@ class Client:
         This should be called after :class:`~cai.exceptions.LoginSliderNeeded` occurred.
 
         Returns:
-            LoginSuccess: Success login event.
+            LoginSuccess: Success login command.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -568,7 +637,7 @@ class Client:
         This should be called after :class:`~cai.exceptions.LoginSMSRequestError` occurred.
 
         Returns:
-            LoginSuccess: Success login event.
+            LoginSuccess: Success login command.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -606,7 +675,7 @@ class Client:
         This should be called after :class:`~cai.exceptions.LoginSMSRequestError` occurred.
 
         Returns:
-            LoginSuccess: Success login event.
+            LoginSuccess: Success login command.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -639,7 +708,7 @@ class Client:
         return self._siginfo.s_key
 
     async def _handle_refresh_response(
-        self, response: Event, try_times: int = 1
+        self, response: Command, try_times: int = 1
     ) -> LoginSuccess:
         if not isinstance(response, OICQResponse):
             raise RuntimeError("Invalid refresh siginfo response type!")
@@ -693,7 +762,7 @@ class Client:
         This should be called after :class:`~cai.exceptions.LoginSMSRequestError` occurred.
 
         Returns:
-            LoginSuccess: Success login event.
+            LoginSuccess: Success login command.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -800,10 +869,7 @@ class Client:
         packet = encode_set_status(
             seq,
             self._session_id,
-            self._ksid,
             self.uin,
-            self._siginfo.tgt,
-            self._siginfo.d2,
             self._siginfo.d2key,
             status,
             battery_status,
@@ -884,7 +950,7 @@ class Client:
                 seq, "friendlist.GetFriendListReq", packet
             )
 
-            if not isinstance(response, FriendListEvent):
+            if not isinstance(response, FriendListCommand):
                 raise RuntimeError("Invalid get friend list response type!")
             if isinstance(response, FriendListSuccess):
                 friend_list.extend(
@@ -1026,14 +1092,14 @@ class Client:
         return self._friend_group_list
 
     async def _handle_group_list_response(
-        self, response: Event, try_times: int = 1
+        self, response: Command, try_times: int = 1
     ) -> List[Group]:
         """Handle Group List Response.
 
         Note:
             Source: com.tencent.mobileqq.troop.handler.TroopListHandler.a
         """
-        if not isinstance(response, TroopListEvent):
+        if not isinstance(response, TroopListCommand):
             raise RuntimeError("Invalid get group list response type!")
 
         group_list: List[Group] = []
@@ -1160,7 +1226,7 @@ class Client:
             response = await self.send_and_wait(
                 seq, "friendlist.GetTroopMemberListReq", packet
             )
-            if not isinstance(response, TroopMemberListEvent):
+            if not isinstance(response, TroopMemberListCommand):
                 raise RuntimeError(
                     "Invalid get group member list response type!"
                 )
@@ -1216,3 +1282,30 @@ class Client:
             await self._refresh_group_member_list(group)
 
         return group._cached_member_list
+
+    async def _get_message(
+        self,
+        request_type: int,
+        sync_flag: SyncFlag = SyncFlag.START,
+        sync_cookie: Optional[bytes] = None,
+        online_sync_flag: int = 0,
+        pubaccount_cookie: Optional[bytes] = None,
+        server_buf: Optional[bytes] = None,
+    ) -> None:
+        seq = self.next_seq()
+        packet = encode_get_message(
+            seq,
+            self._session_id,
+            self.uin,
+            self._siginfo.d2key,
+            request_type=request_type,
+            sync_flag=sync_flag,
+            sync_cookie=sync_cookie,
+            online_sync_flag=online_sync_flag,
+            pubaccount_cookie=pubaccount_cookie,
+            server_buf=server_buf,
+        )
+        response = await self.send_and_wait(seq, "MessageSvc.PbGetMsg", packet)
+
+        if not isinstance(response, GetMessageCommand):
+            raise RuntimeError("Invalid get message response type!")

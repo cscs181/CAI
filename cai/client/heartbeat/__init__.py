@@ -12,7 +12,7 @@ This module is used to build and handle heartbeat related packet.
 from typing import TYPE_CHECKING
 from dataclasses import dataclass
 
-from cai.client.event import Event
+from cai.client.command import Command
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
@@ -58,7 +58,7 @@ def encode_heartbeat(
 
 
 @dataclass
-class Heartbeat(Event):
+class Heartbeat(Command):
     pass
 
 

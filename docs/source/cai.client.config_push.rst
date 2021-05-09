@@ -9,10 +9,10 @@ cai.client.config\_push package
 Submodules
 ----------
 
-cai.client.config\_push.event module
-------------------------------------
+cai.client.config\_push.command module
+--------------------------------------
 
-.. automodule:: cai.client.config_push.event
+.. automodule:: cai.client.config_push.command
    :members:
    :undoc-members:
    :show-inheritance:

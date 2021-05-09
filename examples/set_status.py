@@ -16,9 +16,9 @@ from cai.client import OnlineStatus
 
 
 async def run():
+    account = os.getenv("ACCOUNT", "")
+    password = os.getenv("PASSWORD")
     try:
-        account = os.getenv("ACCOUNT", "")
-        password = os.getenv("PASSWORD")
         account = int(account)
         assert password
     except Exception:

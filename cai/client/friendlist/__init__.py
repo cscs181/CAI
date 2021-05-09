@@ -12,25 +12,25 @@ from typing import Optional, TYPE_CHECKING
 
 from jce import types
 
-from .event import (
-    FriendListEvent,
-    FriendListSuccess,
-    FriendListFail,
-    TroopListEvent,
-    TroopListSuccess,
-    TroopListFail,
-    TroopMemberListEvent,
-    TroopMemberListSuccess,
-    TroopMemberListFail,
-)
 from cai.utils.binary import Packet
-from cai.pb.oicq.cmd0xd50 import ReqBody
+from cai.pb.im.oidb.cmd0xd50 import ReqBody
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
 from .jce import (
     FriendListReq,
     TroopListReqV2Simplify,
     TroopMemberListReq,
+)
+from .command import (
+    FriendListCommand,
+    FriendListSuccess,
+    FriendListFail,
+    TroopListCommand,
+    TroopListSuccess,
+    TroopListFail,
+    TroopMemberListCommand,
+    TroopMemberListSuccess,
+    TroopMemberListFail,
 )
 
 
@@ -109,8 +109,8 @@ def encode_get_friend_list(
 
 async def handle_friend_list(
     client: "Client", packet: IncomingPacket
-) -> "FriendListEvent":
-    return FriendListEvent.decode_response(
+) -> "FriendListCommand":
+    return FriendListCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -172,8 +172,8 @@ def encode_get_troop_list(
 
 async def handle_troop_list(
     client: "Client", packet: IncomingPacket
-) -> TroopListEvent:
-    return TroopListEvent.decode_response(
+) -> TroopListCommand:
+    return TroopListCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -235,8 +235,8 @@ def encode_get_troop_member_list(
 
 async def handle_troop_member_list(
     client: "Client", packet: IncomingPacket
-) -> TroopMemberListEvent:
-    return TroopMemberListEvent.decode_response(
+) -> TroopMemberListCommand:
+    return TroopMemberListCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
@@ -252,13 +252,13 @@ __all__ = [
     "handle_troop_list",
     "encode_get_troop_member_list",
     "handle_troop_member_list",
-    "FriendListEvent",
+    "FriendListCommand",
     "FriendListSuccess",
     "FriendListFail",
-    "TroopListEvent",
+    "TroopListCommand",
     "TroopListSuccess",
     "TroopListFail",
-    "TroopMemberListEvent",
+    "TroopMemberListCommand",
     "TroopMemberListSuccess",
     "TroopMemberListFail",
 ]

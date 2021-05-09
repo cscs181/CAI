@@ -1,0 +1,142 @@
+syntax = "proto2";
+package im.msg.msg_head;
+
+// tencent/im/msg/im_msg_head.java
+
+message C2CHead {
+  optional uint64 to_uin = 1;
+  optional uint64 from_uin = 2;
+  optional uint32 cc_type = 3;
+  optional uint32 cc_cmd = 4;
+  optional bytes auth_pic_sig = 5;
+  optional bytes auth_sig = 6;
+  optional bytes auth_buf = 7;
+  optional uint32 server_time = 8;
+  optional uint32 client_time = 9;
+  optional uint32 rand = 10;
+  optional string phone_number = 11;
+}
+
+message CSHead {
+  optional uint64 uin = 1;
+  optional uint32 command = 2;
+  optional uint32 seq = 3;
+  optional uint32 version = 4;
+  optional uint32 retry_times = 5;
+  optional uint32 client_type = 6;
+  optional uint32 pubno = 7;
+  optional uint32 localid = 8;
+  optional uint32 timezone = 9;
+  optional fixed32 client_ip = 10;
+  optional uint32 client_port = 11;
+  optional fixed32 conn_ip = 12;
+  optional uint32 conn_port = 13;
+  optional fixed32 interface_ip = 14;
+  optional uint32 interface_port = 15;
+  optional fixed32 actual_ip = 16;
+  optional uint32 flag = 17;
+  optional fixed32 timestamp = 18;
+  optional uint32 subcmd = 19;
+  optional uint32 result = 20;
+  optional uint32 app_id = 21;
+  optional uint32 instance_id = 22;
+  optional uint64 session_id = 23;
+  optional uint32 idc_id = 24;
+}
+
+message DeltaHead {
+  optional uint64 total_len = 1;
+  optional uint64 offset = 2;
+  optional uint64 ack_offset = 3;
+  optional bytes cookie = 4;
+  optional bytes ack_cookie = 5;
+  optional uint32 result = 6;
+  optional uint32 flags = 7;
+}
+
+message Head {
+  optional uint32 head_type = 1;
+  optional CSHead cs_head = 2;
+  optional S2CHead s2c_head = 3;
+  optional HttpConnHead httpconn_head = 4;
+  optional uint32 paint_flag = 5;
+  optional LoginSig login_sig = 6;
+  optional DeltaHead delta_head = 7;
+  optional C2CHead c2c_head = 8;
+  optional SConnHead sconn_head = 9;
+  optional InstCtrl inst_ctrl = 10;
+}
+
+message HttpConnHead {
+  optional uint64 uin = 1;
+  optional uint32 command = 2;
+  optional uint32 sub_command = 3;
+  optional uint32 seq = 4;
+  optional uint32 version = 5;
+  optional uint32 retry_times = 6;
+  optional uint32 client_type = 7;
+  optional uint32 pub_no = 8;
+  optional uint32 local_id = 9;
+  optional uint32 time_zone = 10;
+  optional fixed32 client_ip = 11;
+  optional uint32 client_port = 12;
+  optional fixed32 qzhttp_ip = 13;
+  optional uint32 qzhttp_port = 14;
+  optional fixed32 spp_ip = 15;
+  optional uint32 spp_port = 16;
+  optional uint32 flag = 17;
+  optional bytes key = 18;
+  optional uint32 compress_type = 19;
+  optional uint32 origin_size = 20;
+  optional uint32 error_code = 21;
+  optional RedirectMsg redirect = 22;
+  optional uint32 command_id = 23;
+  optional uint32 service_cmdid = 24;
+  optional TransOidbHead oidbhead = 25;
+}
+
+message InstCtrl {
+  repeated InstInfo send_to_inst = 1;
+  repeated InstInfo exclude_inst = 2;
+  optional InstInfo from_inst = 3;
+}
+
+message InstInfo {
+  optional uint32 apppid = 1;
+  optional uint32 instid = 2;
+  optional uint32 platform = 3;
+  optional uint32 enum_device_type = 10;
+}
+
+message LoginSig {
+  optional uint32 type = 1;
+  optional bytes sig = 2;
+}
+
+message RedirectMsg {
+  optional fixed32 last_redirect_ip = 1;
+  optional uint32 last_redirect_port = 2;
+  optional fixed32 redirect_ip = 3;
+  optional uint32 redirect_port = 4;
+  optional uint32 redirect_count = 5;
+}
+
+message S2CHead {
+  optional uint32 sub_msgtype = 1;
+  optional uint32 msg_type = 2;
+  optional uint64 from_uin = 3;
+  optional uint32 msg_id = 4;
+  optional fixed32 relay_ip = 5;
+  optional uint32 relay_port = 6;
+  optional uint64 to_uin = 7;
+}
+
+message SConnHead {
+}
+
+message TransOidbHead {
+  optional uint32 command = 1;
+  optional uint32 service_type = 2;
+  optional uint32 result = 3;
+  optional string error_msg = 4;
+}

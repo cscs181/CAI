@@ -13,35 +13,10 @@ from typing import Optional
 
 from jce import JceStruct, JceField, types
 
+from cai.client.qq_service.jce import VipBaseInfo
+
 
 # Friend
-class VipOpenInfo(JceStruct):
-    """Vip Open Info Jce Packet.
-
-    Note:
-        Source: QQService.VipOpenInfo
-    """
-
-    open: types.BOOL = JceField(jce_id=0)
-    vip_type: types.INT32 = JceField(jce_id=1)
-    vip_level: types.INT32 = JceField(jce_id=2)
-    vip_flag: types.INT32 = JceField(0, jce_id=3)
-    nameplate_id: types.INT64 = JceField(0, jce_id=4)
-
-
-class VipBaseInfo(JceStruct):
-    """Vip Base Info Jce Packet.
-
-    Note:
-        Source: QQService.VipBaseInfo
-    """
-
-    open_info: types.MAP[types.INT, VipOpenInfo] = JceField(jce_id=0)
-    nameplate_vip_type: types.INT32 = JceField(0, jce_id=1)
-    gray_nameplate_flag: types.INT32 = JceField(0, jce_id=2)
-    extend_nameplate_id: types.STRING = JceField("", jce_id=3)
-
-
 class FriendInfo(JceStruct):
     """Friend Info Jce Packet.
 
@@ -251,7 +226,7 @@ class StTroopNum(JceStruct):
     group_flag_ext4: types.INT64 = JceField(0, jce_id=35)
     appeal_deadline: types.INT64 = JceField(0, jce_id=36)
     group_flag: types.INT64 = JceField(0, jce_id=37)
-    group_remark: types.INT64 = JceField(0, jce_id=38)
+    group_remark: types.BYTES = JceField(bytes(), jce_id=38)
 
 
 class StTroopNumSimplify(JceStruct):

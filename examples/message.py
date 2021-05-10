@@ -36,7 +36,7 @@ async def run():
 
 async def listen_message(client: Client, event: Event):
     if isinstance(event, PrivateMessage):
-        print("Message received from ", event.sender_uin)
+        print("Message received from ", event.from_uin)
         print("Message elements: ", event.message)
 
 

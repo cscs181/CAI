@@ -76,9 +76,12 @@ class BuddyMessageDecoder:
         ):
             return
 
+        seq = message.head.seq
+        time = message.head.time
         auto_reply = bool(message.content_head.auto_reply)
-        sender_uin = message.head.from_uin
-        sender_nick = message.head.from_nick
+        from_uin = message.head.from_uin
+        from_nick = message.head.from_nick
+        to_uin = message.head.to_uin
         elems = message.body.rich_text.elems
 
         res: List[Element] = []
@@ -136,7 +139,9 @@ class BuddyMessageDecoder:
             #     print(elem)
             index += 1
 
-        return PrivateMessage(auto_reply, sender_uin, sender_nick, res)
+        return PrivateMessage(
+            seq, time, auto_reply, from_uin, from_nick, to_uin, res
+        )
 
 
 MESSAGE_DECODERS: Dict[int, Callable[[Msg], Optional[Event]]] = {

@@ -9,11 +9,12 @@ This module is used to decode message protobuf.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import List, Dict, Optional, Callable
+from typing import List, Dict, Optional, Sequence, Callable
 
 from cai.log import logger
 from cai.client.event import Event
 from cai.pb.msf.msg.comm import Msg
+from cai.pb.im.msg.msg_body import Elem
 from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype2,
     MsgElemInfo_servtype33,
@@ -26,6 +27,70 @@ from .models import (
     SmallEmojiElement,
     PokeElement,
 )
+
+
+def parse_elements(elems: Sequence[Elem]) -> List[Element]:
+    res: List[Element] = []
+    index = 0
+    while index < len(elems):
+        elem = elems[index]
+        if elem.HasField("src_msg"):
+            ...
+        if elem.HasField("text"):
+            res.append(TextElement(elem.text.str.decode("utf-8")))
+        if elem.HasField("face"):
+            res.append(FaceElement(elem.face.index))
+        if elem.HasField("small_emoji"):
+            index += 1
+            text = elems[index].text.str.decode("utf-8")
+            res.append(
+                SmallEmojiElement(
+                    elem.small_emoji.pack_id_sum,
+                    text,
+                    # bytes(
+                    #     [
+                    #         0x1FF
+                    #         if elem.small_emoji.image_type & 0xFFFF == 2
+                    #         else 0xFF,
+                    #         elem.small_emoji.pack_id_sum & 0xFFFF,
+                    #         elem.small_emoji.pack_id_sum >> 16 & 0xFF,
+                    #         elem.small_emoji.pack_id_sum >> 24,
+                    #     ]
+                    # ),
+                )
+            )
+        if elem.HasField("custom_face"):
+            ...
+        if elem.HasField("not_online_image"):
+            ...
+        if elem.HasField("common_elem"):
+            service_type = elem.common_elem.service_type
+            if service_type == 2:
+                poke = MsgElemInfo_servtype2.FromString(
+                    elem.common_elem.pb_elem
+                )
+                res = [
+                    PokeElement(
+                        poke.poke_type
+                        if poke.vaspoke_id == 0xFFFFFFFF
+                        else poke.vaspoke_id,
+                        poke.vaspoke_name.decode("utf-8"),
+                        poke.poke_strength,
+                        poke.double_hit,
+                    )
+                ]
+                break
+            elif service_type == 33:
+                info = MsgElemInfo_servtype33.FromString(
+                    elem.common_elem.pb_elem
+                )
+                res.append(FaceElement(info.index))
+            # else:
+            #     print(elem)
+        # else:
+        #     print(elem)
+        index += 1
+    return res
 
 
 class BuddyMessageDecoder:
@@ -84,63 +149,14 @@ class BuddyMessageDecoder:
         to_uin = message.head.to_uin
         elems = message.body.rich_text.elems
 
-        res: List[Element] = []
-        index = 0
-        while index < len(elems):
-            elem = elems[index]
-            if elem.HasField("text"):
-                res.append(TextElement(elem.text.str.decode("utf-8")))
-            elif elem.HasField("face"):
-                res.append(FaceElement(elem.face.index))
-            elif elem.HasField("small_emoji"):
-                index += 1
-                text = elems[index].text.str.decode("utf-8")
-                res.append(
-                    SmallEmojiElement(
-                        elem.small_emoji.pack_id_sum,
-                        text,
-                        # bytes(
-                        #     [
-                        #         0x1FF
-                        #         if elem.small_emoji.image_type & 0xFFFF == 2
-                        #         else 0xFF,
-                        #         elem.small_emoji.pack_id_sum & 0xFFFF,
-                        #         elem.small_emoji.pack_id_sum >> 16 & 0xFF,
-                        #         elem.small_emoji.pack_id_sum >> 24,
-                        #     ]
-                        # ),
-                    )
-                )
-            elif elem.HasField("common_elem"):
-                service_type = elem.common_elem.service_type
-                if service_type == 2:
-                    poke = MsgElemInfo_servtype2.FromString(
-                        elem.common_elem.pb_elem
-                    )
-                    res = [
-                        PokeElement(
-                            poke.poke_type
-                            if poke.vaspoke_id == 0xFFFFFFFF
-                            else poke.vaspoke_id,
-                            poke.vaspoke_name.decode("utf-8"),
-                            poke.poke_strength,
-                            poke.double_hit,
-                        )
-                    ]
-                    break
-                elif service_type == 33:
-                    info = MsgElemInfo_servtype33.FromString(
-                        elem.common_elem.pb_elem
-                    )
-                    res.append(FaceElement(info.index))
-                # else:
-                #     print(elem)
-            # else:
-            #     print(elem)
-            index += 1
-
         return PrivateMessage(
-            seq, time, auto_reply, from_uin, from_nick, to_uin, res
+            seq,
+            time,
+            auto_reply,
+            from_uin,
+            from_nick,
+            to_uin,
+            parse_elements(elems),
         )
 
 

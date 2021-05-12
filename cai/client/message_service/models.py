@@ -10,7 +10,7 @@ This module is used to define message models.
 """
 
 import abc
-from typing import List
+from typing import List, Optional
 from dataclasses import dataclass
 
 from cai.client.event import Event
@@ -35,6 +35,19 @@ class Element(abc.ABC):
     @abc.abstractmethod
     def type(self) -> str:
         raise NotImplementedError
+
+
+@dataclass
+class ReplyElement(Element):
+    seq: int
+    time: int
+    sender: int
+    message: List[Element]
+    troop_name: Optional[str]
+
+    @property
+    def type(self) -> str:
+        return "reply"
 
 
 @dataclass
@@ -64,6 +77,20 @@ class SmallEmojiElement(Element):
     @property
     def type(self) -> str:
         return "small_emoji"
+
+
+@dataclass
+class ImageElement(Element):
+    filename: str
+    size: int
+    width: int
+    height: int
+    md5: bytes
+    url: str
+
+    @property
+    def type(self) -> str:
+        return "image"
 
 
 @dataclass

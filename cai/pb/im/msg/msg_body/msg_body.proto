@@ -154,7 +154,7 @@ message EIMInfo {
 }
 
 message Elem {
-  optional Text text = 1;
+  optional PlainText text = 1;
   optional Face face = 2;
   optional OnlineImage online_image = 3;
   optional NotOnlineImage not_online_image = 4;
@@ -652,7 +652,7 @@ message SourceMsg {
   optional bytes troop_name = 11;
 }
 
-message Text {
+message PlainText {
   optional bytes str = 1;
   optional string link = 2;
   optional bytes attr_6_buf = 3;

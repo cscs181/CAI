@@ -22,24 +22,53 @@ from cai.pb.im.msg.service.comm_elem import (
 from .models import (
     PrivateMessage,
     Element,
+    ReplyElement,
     TextElement,
     FaceElement,
     SmallEmojiElement,
+    ImageElement,
     PokeElement,
 )
 
 
 def parse_elements(elems: Sequence[Elem]) -> List[Element]:
+    """Parse message rich text elements.
+
+    Only parse ``text``, ``face``, ``small_smoji``, ``common_elem service 33``
+    for plain text.
+
+    Note:
+        Source: com.tencent.imcore.message.ext.codec.decoder.pbelement.*
+
+    Args:
+        elems (Sequence[Elem]): Sequence of rich text elements.
+
+    Returns:
+        List[Element]: List of decoded message elements.
+    """
     res: List[Element] = []
     index = 0
     while index < len(elems):
         elem = elems[index]
+        # SrcElemDecoder
         if elem.HasField("src_msg"):
-            ...
+            if len(elem.src_msg.orig_seqs) > 0:
+                res.append(
+                    ReplyElement(
+                        elem.src_msg.orig_seqs[0],
+                        elem.src_msg.time,
+                        elem.src_msg.sender_uin,
+                        parse_elements(elem.src_msg.elems),
+                        elem.src_msg.troop_name.decode("utf-8") or None,
+                    )
+                )
+        # TextElemDecoder
         if elem.HasField("text"):
             res.append(TextElement(elem.text.str.decode("utf-8")))
+        # TextElemDecoder
         if elem.HasField("face"):
             res.append(FaceElement(elem.face.index))
+        # TextElemDecoder
         if elem.HasField("small_emoji"):
             index += 1
             text = elems[index].text.str.decode("utf-8")
@@ -59,12 +88,68 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                     # ),
                 )
             )
+        # PictureElemDecoder
         if elem.HasField("custom_face"):
-            ...
+            if elem.custom_face.md5 and elem.custom_face.orig_url:
+                res.append(
+                    ImageElement(
+                        elem.custom_face.file_path,
+                        elem.custom_face.size,
+                        elem.custom_face.width,
+                        elem.custom_face.height,
+                        elem.custom_face.md5,
+                        "https://gchat.qpic.cn" + elem.custom_face.orig_url,
+                    )
+                )
+            elif elem.custom_face.md5:
+                res.append(
+                    ImageElement(
+                        elem.custom_face.file_path,
+                        elem.custom_face.size,
+                        elem.custom_face.width,
+                        elem.custom_face.height,
+                        elem.custom_face.md5,
+                        "https://gchat.qpic.cn/gchatpic_new/0/0-0-"
+                        + elem.custom_face.md5.decode().upper()
+                        + "/0",
+                    )
+                )
+        # PictureElemDecoder
         if elem.HasField("not_online_image"):
-            ...
+            if elem.not_online_image.orig_url:
+                res.append(
+                    ImageElement(
+                        elem.not_online_image.file_path.decode("utf-8"),
+                        elem.not_online_image.file_len,
+                        elem.not_online_image.pic_width,
+                        elem.not_online_image.pic_height,
+                        elem.not_online_image.pic_md5,
+                        "https://c2cpicdw.qpic.cn"
+                        + elem.not_online_image.orig_url,
+                    )
+                )
+            elif (
+                elem.not_online_image.res_id
+                or elem.not_online_image.download_path
+            ):
+                res.append(
+                    ImageElement(
+                        elem.not_online_image.file_path.decode("utf-8"),
+                        elem.not_online_image.file_len,
+                        elem.not_online_image.pic_width,
+                        elem.not_online_image.pic_height,
+                        elem.not_online_image.pic_md5,
+                        "https://c2cpicdw.qpic.cn/offpic_new/0/"
+                        + (
+                            elem.not_online_image.res_id
+                            or elem.not_online_image.download_path
+                        ).decode("utf-8")
+                        + "/0",
+                    )
+                )
         if elem.HasField("common_elem"):
             service_type = elem.common_elem.service_type
+            # PokeMsgElemDecoder
             if service_type == 2:
                 poke = MsgElemInfo_servtype2.FromString(
                     elem.common_elem.pb_elem
@@ -80,15 +165,13 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                     )
                 ]
                 break
+            # TextElemDecoder
             elif service_type == 33:
                 info = MsgElemInfo_servtype33.FromString(
                     elem.common_elem.pb_elem
                 )
                 res.append(FaceElement(info.index))
-            # else:
-            #     print(elem)
-        # else:
-        #     print(elem)
+
         index += 1
     return res
 

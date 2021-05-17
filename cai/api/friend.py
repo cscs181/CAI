@@ -16,7 +16,7 @@ from cai.client import Friend, FriendGroup
 
 async def get_friend(
     friend_uin: int, cache: bool = True, uin: Optional[int] = None
-) -> Friend:
+) -> Optional[Friend]:
     """Get account friend.
 
     This function wraps the :meth:`~cai.client.client.Client.get_friend`
@@ -30,12 +30,12 @@ async def get_friend(
 
     Returns:
         Friend: Friend object.
+        None: Friend not exists.
 
     Raises:
         RuntimeError: Error response type got. This should not happen.
         ApiResponseError: Get friend list failed.
         FriendListException: Get friend list returned non-zero ret code.
-        FriendNotExist: Friend not found in friend list.
     """
     client = get_client(uin)
     return await client.get_friend(friend_uin, cache)
@@ -68,7 +68,7 @@ async def get_friend_list(
 
 async def get_friend_group(
     group_id: int, cache: bool = True, uin: Optional[int] = None
-) -> FriendGroup:
+) -> Optional[FriendGroup]:
     """Get Friend Group.
 
     This function wraps the :meth:`~cai.client.client.Client.get_friend_group`
@@ -82,12 +82,12 @@ async def get_friend_group(
 
     Returns:
         FriendGroup: Friend group object.
+        None: Friend group not exists.
 
     Raises:
         RuntimeError: Error response type got. This should not happen.
         ApiResponseError: Get friend list failed.
         FriendListException: Get friend list returned non-zero ret code.
-        FriendGroupNotExist: Friend group not found in friend group list.
     """
     client = get_client(uin)
     return await client.get_friend_group(group_id, cache)

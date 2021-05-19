@@ -149,36 +149,51 @@ if TYPE_CHECKING:
 #     return packet
 
 
+async def _handle_c2c_sync(client: "Client", push: PushMsg):
+    """Handle C2C Message Sync.
+
+    Note:
+        c2c 2003
+        Source: com.tencent.imcore.message.C2CMessageProcessor.b
+    """
+    ...
+
+
 async def handle_push_msg(
     client: "Client", packet: IncomingPacket
 ) -> PushMsgCommand:
     """Handle Push Message Command.
 
     Note:
-        Source:
+        Source: com.tencent.mobileqq.app.MessageHandler.b
     """
-    notify = PushMsgCommand.decode_response(
+    push = PushMsgCommand.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
         packet.command_name,
         packet.data,
     )
-    if isinstance(notify, PushMsg):
-        ...
-        # seq = client.next_seq()
-        # get_msg_packet = encode_get_message(
-        #     seq,
-        #     client._session_id,
-        #     client.uin,
-        #     client._siginfo.d2key,
-        #     request_type=1,
-        #     sync_flag=SyncFlag.START,
-        #     sync_cookie=client._sync_cookie,
-        # )
-        # await client.send(seq, "MessageSvc.PbGetMsg", get_msg_packet)
+    if isinstance(push, PushMsg) and push.push.HasField("msg"):
+        message = push.push.msg
+        msg_type = message.head.type
+        command_name = push.command_name
+        if command_name == "OnlinePush.PbC2CMsgSync":
+            await _handle_c2c_sync(client, push)
+        elif command_name == "OnlinePush.PbPushBindUinGroupMsg":
+            # sub account message
+            pass
+        elif msg_type == 43 or msg_type == 82:
+            # TODO: troop 1001
+            pass
+        elif msg_type == 141:
+            # TODO: c2c 1001
+            pass
+        elif msg_type != 42:
+            # discussion 1001
+            pass
 
-    return notify
+    return push
 
 
 __all__ = [

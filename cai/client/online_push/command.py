@@ -106,7 +106,7 @@ class PushMsgCommand(Command):
 
 @dataclass
 class PushMsg(PushMsgCommand):
-    notify: PbPushMsg
+    push: PbPushMsg
 
 
 @dataclass

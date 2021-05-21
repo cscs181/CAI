@@ -81,7 +81,7 @@ from .message_service import (
     handle_push_notify,
     handle_force_offline,
 )
-from .online_push import handle_push_msg
+from .online_push import handle_c2c_sync, handle_push_msg
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
 from cai.exceptions import (
@@ -130,9 +130,9 @@ HANDLERS: Dict[str, HT] = {
     "MessageSvc.PushForceOffline": handle_force_offline,
     "OnlinePush.PbPushGroupMsg": handle_push_msg,
     "OnlinePush.PbPushDisMsg": handle_push_msg,
-    "OnlinePush.PbC2CMsgSync": handle_push_msg,
+    "OnlinePush.PbC2CMsgSync": handle_c2c_sync,
     "OnlinePush.PbPushC2CMsg": handle_push_msg,
-    "OnlinePush.PbPushBindUinGroupMsg": handle_push_msg,
+    # "OnlinePush.PbPushBindUinGroupMsg": handle_push_msg,  # sub account
 }
 
 

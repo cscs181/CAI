@@ -11,7 +11,9 @@ This module is used to build and handle online push related packet.
 
 from typing import List, Union, Optional, TYPE_CHECKING
 
+from cai.log import logger
 from cai.utils.binary import Packet
+from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
 from .command import (
     # GetMessageCommand,
@@ -149,14 +151,29 @@ if TYPE_CHECKING:
 #     return packet
 
 
-async def _handle_c2c_sync(client: "Client", push: PushMsg):
+async def handle_c2c_sync(
+    client: "Client", packet: IncomingPacket
+) -> PushMsgCommand:
     """Handle C2C Message Sync.
 
     Note:
-        c2c 2003
-        Source: com.tencent.imcore.message.C2CMessageProcessor.b
+        Source: c2c 2003
+
+        com.tencent.imcore.message.C2CMessageProcessor.b
+
+        com.tencent.mobileqq.app.MessageHandler.b
     """
-    ...
+    push = PushMsgCommand.decode_response(
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
+    )
+    if isinstance(push, PushMsg) and push.push.HasField("msg"):
+        ...
+
+    return push
 
 
 async def handle_push_msg(
@@ -165,7 +182,9 @@ async def handle_push_msg(
     """Handle Push Message Command.
 
     Note:
-        Source: com.tencent.mobileqq.app.MessageHandler.b
+        Source: troop 1001, c2c 1001, discussion 1001
+
+        com.tencent.mobileqq.app.MessageHandler.b
     """
     push = PushMsgCommand.decode_response(
         packet.uin,
@@ -177,17 +196,27 @@ async def handle_push_msg(
     if isinstance(push, PushMsg) and push.push.HasField("msg"):
         message = push.push.msg
         msg_type = message.head.type
-        command_name = push.command_name
-        if command_name == "OnlinePush.PbC2CMsgSync":
-            await _handle_c2c_sync(client, push)
-        elif command_name == "OnlinePush.PbPushBindUinGroupMsg":
-            # sub account message
-            pass
-        elif msg_type == 43 or msg_type == 82:
-            # TODO: troop 1001
-            pass
+
+        if msg_type == 43 or msg_type == 82:
+            # ping
+            # if push.push.ping_flag == 1:
+            # send OnlinePush.RespPush response
+            # com.tencent.mobileqq.app.BaseMessageHandler.a
+
+            Decoder = MESSAGE_DECODERS.get(msg_type, None)
+            if not Decoder:
+                logger.debug(
+                    f"{push.command_name}: "
+                    f"Received unknown message type {msg_type}."
+                )
+            decoded_message = Decoder(message)
+            if decoded_message:
+                client.dispatch_event(decoded_message)
         elif msg_type == 141:
             # TODO: c2c 1001
+            # del msg
+            # send OnlinePush.RespPush response
+            # com.tencent.mobileqq.app.BaseMessageHandler.a
             pass
         elif msg_type != 42:
             # discussion 1001
@@ -197,6 +226,7 @@ async def handle_push_msg(
 
 
 __all__ = [
+    "handle_c2c_sync",
     "handle_push_msg",
     "PushMsgCommand",
     "PushMsg",

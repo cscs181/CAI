@@ -106,7 +106,7 @@ async def handle_get_message(
     """Handle Pb Get Message response.
 
     Note:
-        Source:
+        Source: c2c 1002
 
         com.tencent.imcore.message.C2CMessageProcessor.b
 
@@ -323,6 +323,7 @@ async def handle_force_offline(
 
 
 __all__ = [
+    "MESSAGE_DECODERS",
     "SyncFlag",
     "encode_get_message",
     "handle_get_message",

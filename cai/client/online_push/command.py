@@ -13,57 +13,6 @@ from dataclasses import dataclass
 
 from cai.client.command import Command
 from cai.pb.msf.msg.onlinepush import PbPushMsg
-from cai.pb.msf.msg.svc import PbGetGroupMsgResp
-
-
-# @dataclass
-# class GetMessageCommand(Command):
-#     @classmethod
-#     def decode_response(
-#         cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
-#     ) -> "GetMessageCommand":
-#         """Decode MessageSvc get message response packet.
-
-#         Note:
-#             Source: c2c 1002
-
-#             com.tencent.mobileqq.app.handler.receivesuccess.MessageSvcPbGetMsg
-
-#             com.tencent.mobileqq.app.MessageHandler.h
-
-#             com.tencent.imcore.message.C2CMessageProcessor.b
-
-#         Args:
-#             uin (int): User QQ
-#             seq (int): Sequence number of the response packet.
-#             ret_code (int): Return code of the response.
-#             command_name (str): Command name of the response.
-#             data (bytes): Payload data of the response.
-#         """
-#         if ret_code != 0 or not data:
-#             return GetMessageCommand(uin, seq, ret_code, command_name)
-
-#         try:
-#             result = PbGetMsgResp.FromString(data)
-#             return GetMessageSuccess(uin, seq, ret_code, command_name, result)
-#         except Exception as e:
-#             return GetMessageFail(
-#                 uin,
-#                 seq,
-#                 ret_code,
-#                 command_name,
-#                 f"Error when decoding response! {repr(e)}",
-#             )
-
-
-# @dataclass
-# class GetMessageSuccess(GetMessageCommand):
-#     response: PbGetMsgResp
-
-
-# @dataclass
-# class GetMessageFail(GetMessageCommand):
-#     message: str
 
 
 @dataclass

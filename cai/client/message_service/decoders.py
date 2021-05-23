@@ -9,7 +9,7 @@ This module is used to decode message protobuf.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import List, Dict, Optional, Sequence, Callable
+from typing import List, Dict, Type, Optional, Sequence, Callable
 
 from cai.log import logger
 from cai.client.event import Event
@@ -185,25 +185,14 @@ class BuddyMessageDecoder:
             Source:
             com.tencent.mobileqq.service.message.codec.decoder.buddyMessage.BuddyMessageDecoder
         """
-        sub_decoders: Dict[int, Callable[[Msg], Optional[Event]]] = {
-            11: cls.decode_normal_buddy,
-            # 129: OnlineFileDecoder,
-            # 131: OnlineFileDecoder,
-            # 133: OnlineFileDecoder,
-            # 169: OfflineFileDecoder,
-            175: cls.decode_normal_buddy,
-            # 241: OfflineFileDecoder,
-            # 242: OfflineFileDecoder,
-            # 243: OfflineFileDecoder,
-        }
-        Decoder = sub_decoders.get(message.head.c2c_cmd, None)
+        Decoder = cls.sub_decoders.get(message.head.c2c_cmd, None)
         if not Decoder:
             logger.debug(
                 "MessageSvc.PbGetMsg: BuddyMessageDecoder cannot "
                 f"decode message with c2c_cmd {message.head.c2c_cmd}"
             )
             return
-        return Decoder(message)
+        return Decoder(cls, message)
 
     @classmethod
     def decode_normal_buddy(cls, message: Msg) -> Optional[Event]:
@@ -242,6 +231,34 @@ class BuddyMessageDecoder:
             parse_elements(elems),
         )
 
+    sub_decoders: Dict[
+        int, Callable[[Type["BuddyMessageDecoder"], Msg], Optional[Event]]
+    ] = {
+        11: decode_normal_buddy,
+        # 129: OnlineFileDecoder,
+        # 131: OnlineFileDecoder,
+        # 133: OnlineFileDecoder,
+        # 169: OfflineFileDecoder,
+        175: decode_normal_buddy,
+        # 241: OfflineFileDecoder,
+        # 242: OfflineFileDecoder,
+        # 243: OfflineFileDecoder,
+    }
+
+
+class TroopMessageDecoder:
+    @classmethod
+    def decode(cls, message: Msg) -> Optional[Event]:
+        # TODO
+        ...
+
+
+class TempSessionDecoder:
+    @classmethod
+    def decode(cls, message: Msg) -> Optional[Event]:
+        # TODO
+        ...
+
 
 MESSAGE_DECODERS: Dict[int, Callable[[Msg], Optional[Event]]] = {
     9: BuddyMessageDecoder.decode,
@@ -252,8 +269,10 @@ MESSAGE_DECODERS: Dict[int, Callable[[Msg], Optional[Event]]] = {
     # 36: TroopSystemMessageDecoder,
     # 37: TroopSystemMessageDecoder,
     # 38: CreateGrpInPCDecoder,
+    43: TroopMessageDecoder.decode,
     # 45: TroopSystemMessageDecoder,
     # 46: TroopSystemMessageDecoder,
+    82: TroopMessageDecoder.decode,
     # 84: TroopSystemMessageDecoder,
     # 85: TroopSystemMessageDecoder,
     # 86: TroopSystemMessageDecoder,
@@ -263,8 +282,8 @@ MESSAGE_DECODERS: Dict[int, Callable[[Msg], Optional[Event]]] = {
     120: BuddyMessageDecoder.decode,
     132: BuddyMessageDecoder.decode,
     133: BuddyMessageDecoder.decode,
-    # 140: TempSessionDecoder,
-    # 141: TempSessionDecoder,
+    140: TempSessionDecoder.decode,
+    141: TempSessionDecoder.decode,
     166: BuddyMessageDecoder.decode,
     167: BuddyMessageDecoder.decode,
     # 187: SystemMessageDecoder,

@@ -9,7 +9,8 @@ This module is used to decode message protobuf.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import List, Dict, Type, Optional, Sequence, Callable
+from itertools import chain
+from typing import List, Dict, Optional, Sequence, Callable
 
 from cai.log import logger
 from cai.client.event import Event
@@ -21,6 +22,7 @@ from cai.pb.im.msg.service.comm_elem import (
 )
 from .models import (
     PrivateMessage,
+    GroupMessage,
     Element,
     ReplyElement,
     TextElement,
@@ -185,14 +187,25 @@ class BuddyMessageDecoder:
             Source:
             com.tencent.mobileqq.service.message.codec.decoder.buddyMessage.BuddyMessageDecoder
         """
-        Decoder = cls.sub_decoders.get(message.head.c2c_cmd, None)
+        sub_decoders: Dict[int, Callable[[Msg], Optional[Event]]] = {
+            11: cls.decode_normal_buddy,
+            # 129: OnlineFileDecoder,
+            # 131: OnlineFileDecoder,
+            # 133: OnlineFileDecoder,
+            # 169: OfflineFileDecoder,
+            175: cls.decode_normal_buddy,
+            # 241: OfflineFileDecoder,
+            # 242: OfflineFileDecoder,
+            # 243: OfflineFileDecoder,
+        }
+        Decoder = sub_decoders.get(message.head.c2c_cmd, None)
         if not Decoder:
             logger.debug(
                 "MessageSvc.PbGetMsg: BuddyMessageDecoder cannot "
                 f"decode message with c2c_cmd {message.head.c2c_cmd}"
             )
             return
-        return Decoder(cls, message)
+        return Decoder(message)
 
     @classmethod
     def decode_normal_buddy(cls, message: Msg) -> Optional[Event]:
@@ -222,6 +235,7 @@ class BuddyMessageDecoder:
         elems = message.body.rich_text.elems
 
         return PrivateMessage(
+            message,
             seq,
             time,
             auto_reply,
@@ -231,26 +245,52 @@ class BuddyMessageDecoder:
             parse_elements(elems),
         )
 
-    sub_decoders: Dict[
-        int, Callable[[Type["BuddyMessageDecoder"], Msg], Optional[Event]]
-    ] = {
-        11: decode_normal_buddy,
-        # 129: OnlineFileDecoder,
-        # 131: OnlineFileDecoder,
-        # 133: OnlineFileDecoder,
-        # 169: OfflineFileDecoder,
-        175: decode_normal_buddy,
-        # 241: OfflineFileDecoder,
-        # 242: OfflineFileDecoder,
-        # 243: OfflineFileDecoder,
-    }
-
 
 class TroopMessageDecoder:
+    long_msg_fragment_store: Dict[int, List[Msg]] = {}
+
     @classmethod
     def decode(cls, message: Msg) -> Optional[Event]:
-        # TODO
-        ...
+        if not message.head.HasField("group_info"):
+            return
+
+        seq = message.head.seq
+        time = message.head.time
+        from_uin = message.head.from_uin
+        troop = message.head.group_info
+        content_head = message.content_head
+        elems = message.body.rich_text.elems
+
+        # long msg fragment
+        if content_head.pkg_num > 1:
+            fragments = cls.long_msg_fragment_store.setdefault(
+                content_head.div_seq, []
+            )
+            fragments.append(message)
+            if len(fragments) == content_head.pkg_num:
+                cls.long_msg_fragment_store.pop(content_head.div_seq)
+                elems = list(
+                    chain.from_iterable(
+                        msg.body.rich_text.elems
+                        for msg in sorted(
+                            fragments, key=lambda f: f.content_head.pkg_index
+                        )
+                    )
+                )
+            else:
+                return
+
+        return GroupMessage(
+            message,
+            seq,
+            time,
+            troop.group_code,
+            troop.group_name.decode("utf-8"),
+            troop.group_level,
+            from_uin,
+            troop.group_card.decode("utf-8"),
+            parse_elements(elems),
+        )
 
 
 class TempSessionDecoder:

@@ -12,7 +12,7 @@ import asyncio
 from hashlib import md5
 
 import cai
-from cai.client import Client, Event, PrivateMessage
+from cai.client import Client, Event, PrivateMessage, GroupMessage
 
 
 async def run():
@@ -36,8 +36,13 @@ async def run():
 
 async def listen_message(client: Client, event: Event):
     if isinstance(event, PrivateMessage):
-        print("Message received from ", event.from_uin)
-        print("Message elements: ", event.message)
+        print("Private Message received from", event.from_uin)
+        print("Private Message elements:", event.message)
+    elif isinstance(event, GroupMessage):
+        print(
+            f"Group Message received from {event.group_name}({event.group_id})"
+        )
+        print("Group Message elements:", event.message)
 
 
 if __name__ == "__main__":

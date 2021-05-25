@@ -98,7 +98,7 @@ async def handle_c2c_sync(
     Note:
         Source: c2c 2003
 
-        com.tencent.imcore.message.C2CMessageProcessor.b
+        com.tencent.imcore.message.C2CMessageProcessor.b (handleMsgPush_PB_SlaveMaster)
 
         com.tencent.mobileqq.app.MessageHandler.b
     """
@@ -110,8 +110,37 @@ async def handle_c2c_sync(
         packet.data,
     )
     if isinstance(push, PushMsg) and push.push.HasField("msg"):
-        # TODO: c2c 2003
-        ...
+        # c2c 2003
+        message = push.push.msg
+        msg_type = message.head.type
+
+        delete_info = DelMsgInfo(
+            from_uin=message.head.from_uin,
+            msg_seq=message.head.seq,
+            msg_time=message.head.time,
+        )
+        resp_packet = encode_push_response(
+            push.seq,
+            client._session_id,
+            client.uin,
+            client._siginfo.d2key,
+            message.head.from_uin,
+            push.push.svrip,
+            [delete_info],
+            push_token=push.push.push_token or None,
+        )
+        await client.send(push.seq, "OnlinePush.RespPush", resp_packet)
+
+        Decoder = MESSAGE_DECODERS.get(msg_type, None)
+        if not Decoder:
+            logger.debug(
+                f"{push.command_name}: "
+                f"Received unknown message type {msg_type}."
+            )
+            return push
+        decoded_message = Decoder(message)
+        if decoded_message:
+            client.dispatch_event(decoded_message)
 
     return push
 
@@ -138,6 +167,7 @@ async def handle_push_msg(
         msg_type = message.head.type
 
         if msg_type == 43 or msg_type == 82:
+            # troop 1001
             # ping
             if push.push.ping_flag == 1:
                 resp_packet = encode_push_response(
@@ -159,6 +189,7 @@ async def handle_push_msg(
                 )
                 await client.send(push.seq, "OnlinePush.RespPush", resp_packet)
         elif msg_type == 141:
+            # c2c 1001
             delete_info = DelMsgInfo(
                 from_uin=message.head.from_uin,
                 msg_seq=message.head.seq,

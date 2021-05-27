@@ -114,11 +114,6 @@ async def handle_c2c_sync(
         message = push.push.msg
         msg_type = message.head.type
 
-        delete_info = DelMsgInfo(
-            from_uin=message.head.from_uin,
-            msg_seq=message.head.seq,
-            msg_time=message.head.time,
-        )
         resp_packet = encode_push_response(
             push.seq,
             client._session_id,
@@ -126,7 +121,6 @@ async def handle_c2c_sync(
             client._siginfo.d2key,
             message.head.from_uin,
             push.push.svrip,
-            [delete_info],
             push_token=push.push.push_token or None,
         )
         await client.send(push.seq, "OnlinePush.RespPush", resp_packet)

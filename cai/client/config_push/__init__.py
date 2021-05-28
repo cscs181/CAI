@@ -41,7 +41,7 @@ def encode_config_push_response(
 ) -> Packet:
     """Build config push response packet.
 
-    command name: `ConfigPushSvc.PushResp`
+    command name: ``ConfigPushSvc.PushResp``
 
     Note:
         Source: com.tencent.mobileqq.msf.core.a.c.b
@@ -89,17 +89,16 @@ async def handle_config_push_request(
         client._file_storage_info = command.list
 
     if isinstance(command, _ConfigPushCommandBase):
-        seq = client.next_seq()
         resp_packet = encode_config_push_response(
             client.uin,
-            seq,
+            command.seq,
             client._session_id,
             client._siginfo.d2key,
             command.type,
             command.jcebuf,
             command.large_seq,
         )
-        await client.send(seq, "ConfigPushSvc.PushResp", resp_packet)
+        await client.send(command.seq, "ConfigPushSvc.PushResp", resp_packet)
 
     return command
 

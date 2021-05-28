@@ -12,7 +12,17 @@ import time
 import struct
 import secrets
 import asyncio
-from typing import Any, Set, List, Dict, Union, Optional, Callable, Awaitable
+from typing import (
+    Any,
+    Set,
+    List,
+    Dict,
+    Union,
+    Optional,
+    Callable,
+    Awaitable,
+    overload,
+)
 
 from cachetools import TTLCache
 
@@ -71,6 +81,7 @@ from .message_service import (
     handle_push_notify,
     handle_force_offline,
 )
+from .online_push import handle_c2c_sync, handle_push_msg
 from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
 from .config_push import handle_config_push_request, FileServerPushList
 from cai.exceptions import (
@@ -83,10 +94,7 @@ from cai.exceptions import (
     LoginSMSRequestError,
     RegisterException,
     FriendListException,
-    FriendNotExist,
-    FriendGroupNotExist,
     GroupListException,
-    GroupNotExist,
     GroupMemberListException,
 )
 
@@ -120,6 +128,11 @@ HANDLERS: Dict[str, HT] = {
     "MessageSvc.PbGetMsg": handle_get_message,
     "MessageSvc.PushNotify": handle_push_notify,
     "MessageSvc.PushForceOffline": handle_force_offline,
+    "OnlinePush.PbPushGroupMsg": handle_push_msg,
+    "OnlinePush.PbPushDisMsg": handle_push_msg,
+    "OnlinePush.PbC2CMsgSync": handle_c2c_sync,
+    "OnlinePush.PbPushC2CMsg": handle_push_msg,
+    # "OnlinePush.PbPushBindUinGroupMsg": handle_push_msg,  # sub account
 }
 
 
@@ -985,7 +998,9 @@ class Client:
         self._friend_list = friend_list
         self._friend_group_list = group_list
 
-    async def get_friend(self, uin: int, cache: bool = True) -> Friend:
+    async def get_friend(
+        self, uin: int, cache: bool = True
+    ) -> Optional[Friend]:
         """Get Friend.
 
         Return cached friend if cache is ``True``.
@@ -996,22 +1011,19 @@ class Client:
 
         Returns:
             Friend: Friend object.
+            None: Friend not exists.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
             ApiResponseError: Get friend list failed.
             FriendListException: Get friend list returned non-zero ret code.
-            FriendNotExist: Friend not found in friend list.
         """
         if not cache:
             await self._refresh_friend_list()
 
-        try:
-            return next(
-                filter(lambda x: x.friend_uin == uin, self._friend_list)
-            )
-        except StopIteration:
-            raise FriendNotExist(self.uin, uin) from None
+        return next(
+            filter(lambda x: x.friend_uin == uin, self._friend_list), None
+        )
 
     async def get_friend_list(self, cache: bool = True) -> List[Friend]:
         """Get Friend List.
@@ -1037,7 +1049,7 @@ class Client:
 
     async def get_friend_group(
         self, group_id: int, cache: bool = True
-    ) -> FriendGroup:
+    ) -> Optional[FriendGroup]:
         """Get Friend Group.
 
         Return cached friend group if cache is ``True``.
@@ -1048,24 +1060,20 @@ class Client:
 
         Returns:
             FriendGroup: Friend group object.
+            None: Friend group not exists.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
             ApiResponseError: Get friend group list failed.
             FriendListException: Get friend group list returned non-zero ret code.
-            FriendGroupNotExist: Friend group not found in friend group list.
         """
         if not cache:
             await self._refresh_friend_list()
 
-        try:
-            return next(
-                filter(
-                    lambda x: x.group_id == group_id, self._friend_group_list
-                )
-            )
-        except StopIteration:
-            raise FriendGroupNotExist(self.uin, group_id) from None
+        return next(
+            filter(lambda x: x.group_id == group_id, self._friend_group_list),
+            None,
+        )
 
     async def get_friend_group_list(
         self, cache: bool = True
@@ -1152,7 +1160,9 @@ class Client:
         group_list = await self._handle_group_list_response(response)
         self._group_list = group_list
 
-    async def get_group(self, group_id: int, cache: bool = True) -> Group:
+    async def get_group(
+        self, group_id: int, cache: bool = True
+    ) -> Optional[Group]:
         """Get Group.
 
         Return cached group if cache is ``True``.
@@ -1161,23 +1171,20 @@ class Client:
             cache (bool, optional): Use cached group list. Defaults to True.
 
         Returns:
-            Group
+            Group: Group object.
+            None: Group not exists.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
             ApiResponseError: Get group list failed.
             GroupListException: Get group list returned non-zero ret code.
-            GroupNotExist: Group not found in group list.
         """
         if not cache:
             await self._refresh_group_list()
 
-        try:
-            return next(
-                filter(lambda x: x.group_id == group_id, self._group_list)
-            )
-        except StopIteration:
-            raise GroupNotExist(self.uin, group_id) from None
+        return next(
+            filter(lambda x: x.group_id == group_id, self._group_list), None
+        )
 
     async def get_group_list(self, cache: bool = True) -> List[Group]:
         """Get Group List.
@@ -1256,9 +1263,21 @@ class Client:
             )
         group._cached_member_list = group_list
 
+    @overload
+    async def get_group_member_list(
+        self, group: int, cache: bool = True
+    ) -> Optional[List[GroupMember]]:
+        ...
+
+    @overload
+    async def get_group_member_list(
+        self, group: Group, cache: bool = True
+    ) -> List[GroupMember]:
+        ...
+
     async def get_group_member_list(
         self, group: Union[int, Group], cache: bool = True
-    ) -> List[GroupMember]:
+    ) -> Optional[List[GroupMember]]:
         """Get Group Member List.
 
         Return cached group member list if cache is ``True``.
@@ -1269,6 +1288,7 @@ class Client:
 
         Returns:
             List[GroupMember]: Group member list.
+            None: Group not exists.
 
         Raises:
             RuntimeError: Error response type got. This should not happen.
@@ -1276,12 +1296,17 @@ class Client:
             GroupMemberListException: Get group member list returned non-zero ret code.
         """
         if isinstance(group, int):
-            group = await self.get_group(group, cache=True)
+            group_ = await self.get_group(group, cache=True)
 
-        if not cache or not group._cached_member_list:
-            await self._refresh_group_member_list(group)
+            if not group_:
+                return
+        else:
+            group_ = group
 
-        return group._cached_member_list
+        if not cache or not group_._cached_member_list:
+            await self._refresh_group_member_list(group_)
+
+        return group_._cached_member_list
 
     async def _get_message(
         self,

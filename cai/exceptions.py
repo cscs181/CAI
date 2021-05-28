@@ -171,28 +171,6 @@ class FriendListException(BaseFriendListException):
         return f"FriendListException(uin={self.uin}, status={self.status}, message={self.message})"
 
 
-class FriendNotExist(ApiException):
-    """Exception for Friend Not Exist"""
-
-    def __init__(self, uin: int, friend_uin: int):
-        self.uin = uin
-        self.friend_uin = friend_uin
-
-    def __repr__(self) -> str:
-        return f"FriendNotExist(uin={self.uin}, friend_uin={self.friend_uin})"
-
-
-class FriendGroupNotExist(ApiException):
-    """Exception for Friend Group Not Exist"""
-
-    def __init__(self, uin: int, group_id: int):
-        self.uin = uin
-        self.group_id = group_id
-
-    def __repr__(self) -> str:
-        return f"FriendGroupNotExist(uin={self.uin}, group_id={self.group_id})"
-
-
 class GroupListException(BaseFriendListException):
     """Exception for Group List"""
 
@@ -203,17 +181,6 @@ class GroupListException(BaseFriendListException):
 
     def __repr__(self) -> str:
         return f"GroupListException(uin={self.uin}, status={self.status}, message={self.message})"
-
-
-class GroupNotExist(ApiException):
-    """Exception for Group Not Exist"""
-
-    def __init__(self, uin: int, group_uin: int):
-        self.uin = uin
-        self.group_uin = group_uin
-
-    def __repr__(self) -> str:
-        return f"GroupNotExist(uin={self.uin}, group_uin={self.group_uin})"
 
 
 class GroupMemberListException(BaseFriendListException):

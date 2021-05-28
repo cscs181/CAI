@@ -10,21 +10,44 @@ This module is used to define message models.
 """
 
 import abc
-from typing import List
+from typing import List, Optional
 from dataclasses import dataclass
 
 from cai.client.event import Event
+from cai.pb.msf.msg.comm import Msg
 
 
 @dataclass
 class PrivateMessage(Event):
+    _msg: Msg
+    seq: int
+    time: int
     auto_reply: bool
-    sender_uin: int
-    sender_nick: str
+    from_uin: int
+    from_nick: str
+    to_uin: int
     message: List["Element"]
 
+    @property
     def type(self) -> str:
         return "private_message"
+
+
+@dataclass
+class GroupMessage(Event):
+    _msg: Msg
+    seq: int
+    time: int
+    group_id: int
+    group_name: str
+    group_level: int
+    from_uin: int
+    from_group_card: str
+    message: List["Element"]
+
+    @property
+    def type(self) -> str:
+        return "group_message"
 
 
 class Element(abc.ABC):
@@ -32,6 +55,19 @@ class Element(abc.ABC):
     @abc.abstractmethod
     def type(self) -> str:
         raise NotImplementedError
+
+
+@dataclass
+class ReplyElement(Element):
+    seq: int
+    time: int
+    sender: int
+    message: List[Element]
+    troop_name: Optional[str]
+
+    @property
+    def type(self) -> str:
+        return "reply"
 
 
 @dataclass
@@ -61,6 +97,20 @@ class SmallEmojiElement(Element):
     @property
     def type(self) -> str:
         return "small_emoji"
+
+
+@dataclass
+class ImageElement(Element):
+    filename: str
+    size: int
+    width: int
+    height: int
+    md5: bytes
+    url: str
+
+    @property
+    def type(self) -> str:
+        return "image"
 
 
 @dataclass

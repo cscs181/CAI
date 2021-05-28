@@ -544,7 +544,7 @@ class Elem(Message):
     bankcode_ctrl_info: bytes = ...
 
     @property
-    def text(self) -> Text: ...
+    def text(self) -> PlainText: ...
 
     @property
     def face(self) -> Face: ...
@@ -701,7 +701,7 @@ class Elem(Message):
 
     def __init__(self,
         *,
-        text : Optional[Text] = ...,
+        text : Optional[PlainText] = ...,
         face : Optional[Face] = ...,
         online_image : Optional[OnlineImage] = ...,
         not_online_image : Optional[NotOnlineImage] = ...,
@@ -2125,7 +2125,7 @@ class SourceMsg(Message):
     def HasField(self, field_name: Literal[u"flag",b"flag",u"pb_reserve",b"pb_reserve",u"rich_msg",b"rich_msg",u"sender_uin",b"sender_uin",u"src_msg",b"src_msg",u"time",b"time",u"to_uin",b"to_uin",u"troop_name",b"troop_name",u"type",b"type"]) -> bool: ...
     def ClearField(self, field_name: Literal[u"elems",b"elems",u"flag",b"flag",u"orig_seqs",b"orig_seqs",u"pb_reserve",b"pb_reserve",u"rich_msg",b"rich_msg",u"sender_uin",b"sender_uin",u"src_msg",b"src_msg",u"time",b"time",u"to_uin",b"to_uin",u"troop_name",b"troop_name",u"type",b"type"]) -> None: ...
 
-class Text(Message):
+class PlainText(Message):
     DESCRIPTOR: Descriptor = ...
     STR_FIELD_NUMBER: int
     LINK_FIELD_NUMBER: int

@@ -1,0 +1,15 @@
+syntax = "proto2";
+package msf.msg.onlinepush;
+
+// msf/msgsvc/msg_onlinepush.java
+
+import "cai/pb/msf/msg/comm/comm.proto";
+
+message PbPushMsg {
+  optional comm.Msg msg = 1;
+  optional int32 svrip = 2;
+  optional bytes push_token = 3;
+  optional uint32 ping_flag = 4;
+  optional uint32 general_flag = 9;
+  optional uint64 bind_uin = 10;
+}

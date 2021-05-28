@@ -26,8 +26,11 @@ class ConfigPushCommand(Command):
         """Decode ConfigPush.PushReq packet.
 
         Note:
-            Source: com.tencent.mobileqq.msf.core.a.c.a (type 1)
-                com.tencent.mobileqq.servlet.PushServlet.onReceive (type 2)
+            Source:
+
+            com.tencent.mobileqq.msf.core.a.c.a (type 1)
+
+            com.tencent.mobileqq.servlet.PushServlet.onReceive (type 2)
 
         Args:
             uin (int): User QQ

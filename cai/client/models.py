@@ -104,7 +104,13 @@ class Friend(JsonableDataclass):
         return self.friend_uin
 
     async def get_group(self) -> "FriendGroup":
-        return await self._client.get_friend_group(group_id=self.group_id)
+        group = await self._client.get_friend_group(group_id=self.group_id)
+        if group is None:
+            raise RuntimeError(
+                f"Friend group {self.group_id} not found, this should not happen."
+                " Try to refresh friend list."
+            )
+        return group
 
 
 @dataclass

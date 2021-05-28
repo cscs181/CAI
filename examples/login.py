@@ -94,7 +94,7 @@ async def handle_failure(exception: Exception):
             print("No way to verify device...")
         elif way == "sms":
             await cai.request_sms()
-            print(f"SMS sent to {exception.sms_phone}!")
+            print(f"SMS was sent to {exception.sms_phone}!")
             sms_code = input("Please enter the sms_code: ").strip()
             try:
                 await cai.submit_sms(sms_code)

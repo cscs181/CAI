@@ -267,18 +267,18 @@ class TroopMessageDecoder:
                 content_head.div_seq, []
             )
             fragments.append(message)
-            if len(fragments) == content_head.pkg_num:
-                cls.long_msg_fragment_store.pop(content_head.div_seq)
-                elems = list(
-                    chain.from_iterable(
-                        msg.body.rich_text.elems
-                        for msg in sorted(
-                            fragments, key=lambda f: f.content_head.pkg_index
-                        )
+            if len(fragments) < content_head.pkg_num:
+                return
+
+            cls.long_msg_fragment_store.pop(content_head.div_seq)
+            elems = list(
+                chain.from_iterable(
+                    msg.body.rich_text.elems
+                    for msg in sorted(
+                        fragments, key=lambda f: f.content_head.pkg_index
                     )
                 )
-            else:
-                return
+            )
 
         return GroupMessage(
             message,

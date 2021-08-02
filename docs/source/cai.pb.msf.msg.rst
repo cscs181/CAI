@@ -14,4 +14,5 @@ Subpackages
 
    cai.pb.msf.msg.comm
    cai.pb.msf.msg.ctrl
+   cai.pb.msf.msg.onlinepush
    cai.pb.msf.msg.svc

@@ -252,7 +252,7 @@ class Client:
         Returns:
             bool: True if the client has connected to the server.
         """
-        return bool(self._connection) and not self._connection.closed
+        return bool(self._connection and not self._connection.closed)
 
     async def connect(self, server: Optional[SsoServer] = None) -> None:
         """Connect to the server.

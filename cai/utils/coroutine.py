@@ -65,5 +65,5 @@ class ContextManager(Coroutine, Generic[TY, TS, TR]):
         exc_value: Optional[BaseException],
         traceback: Optional[TracebackType],
     ):
-        await self._obj.__aexit__(exc_type, exc_value, traceback)
+        await self._obj.__aexit__(exc_type, exc_value, traceback)  # type: ignore
         self._obj = None

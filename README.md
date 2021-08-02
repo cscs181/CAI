@@ -68,6 +68,61 @@ _✨ Yet Another Bot Framework for Tencent QQ Written in Python ✨_
         nested_field: OtherStruct = JceField(jce_id=2)
     ```
 
+## 功能
+
+`CAI` 仅作为底层协议库使用，将协议封装为 API。
+
+> `CAI` 不会支持涉及 **金钱**、**主动邀请**、**获取凭证** 等敏感操作的协议。
+
+<details>
+<summary>已支持的协议列表：</summary>
+
+### 登录
+
+[`cai.api.login` API Reference](https://cai-bot.readthedocs.io/zh_CN/latest/source/cai.api.html#module-cai.api.login)
+
+- [x] 账号密码登录
+- [x] 设备锁验证
+- [x] 图片验证码提交
+- [x] 短信验证码提交
+- [ ] 扫码登录
+
+### 客户端
+
+[`cai.api.client` API Reference](https://cai-bot.readthedocs.io/zh_CN/latest/source/cai.api.html#module-cai.api.client)
+
+- [x] 设置在线状态
+
+### 好友
+
+[`cai.api.friend` API Reference](https://cai-bot.readthedocs.io/zh_CN/latest/source/cai.api.html#module-cai.api.friend)
+
+- [x] 获取好友列表
+- [x] 获取好友信息
+- [x] 获取好友分组列表
+- [x] 获取好友分组信息
+
+### 群组
+
+[`cai.api.group` API Reference](https://cai-bot.readthedocs.io/zh_CN/latest/source/cai.api.html#module-cai.api.group)
+
+- [x] 获取群列表
+- [x] 获取群信息
+- [x] 获取群成员列表
+
+### 事件
+
+[`cai.api.flow` API Reference](https://cai-bot.readthedocs.io/zh_CN/latest/source/cai.api.html#module-cai.api.flow)
+
+通过注册事件监听回调，在事件发生时执行指定操作。事件类型可通过 `cai.client` 模块导入。
+
+- [x] 好友消息 ([PrivateMessage](https://cai-bot.readthedocs.io/zh_CN/latest/source/cai.client.message_service.html#cai.client.message_service.models.PrivateMessage))
+- [x] 群消息 ([GroupMessage](https://cai-bot.readthedocs.io/zh_CN/latest/source/cai.client.message_service.html#cai.client.message_service.models.GroupMessage))
+
+</details>
+
 ## 文档
+
+_In Development_
 
 [See on Read The Docs](https://cai-bot.readthedocs.io/)

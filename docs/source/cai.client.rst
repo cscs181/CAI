@@ -16,6 +16,7 @@ Subpackages
    cai.client.friendlist
    cai.client.heartbeat
    cai.client.message_service
+   cai.client.online_push
    cai.client.qq_service
    cai.client.sso_server
    cai.client.status_service

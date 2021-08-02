@@ -40,7 +40,7 @@ async def run():
 
     try:
         client = await cai.login(account, md5(password.encode()).digest())
-        print(f"Login Success! Client status: {client.status.name}")
+        print(f"Login Success! Client status: {client.status!r}")
     except Exception as e:
         await handle_failure(e)
 

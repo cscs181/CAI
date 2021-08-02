@@ -45,6 +45,18 @@ class Connection:
         return self._ssl
 
     @property
+    def writer(self) -> asyncio.StreamWriter:
+        if not self._writer:
+            raise RuntimeError("Connection closed!")
+        return self._writer
+
+    @property
+    def reader(self) -> asyncio.StreamReader:
+        if not self._reader:
+            raise RuntimeError("Connection closed!")
+        return self._reader
+
+    @property
     def closed(self) -> bool:
         return self._writer is None
 
@@ -89,7 +101,7 @@ class Connection:
 
     async def read_bytes(self, num_bytes: int):
         try:
-            data = await self._reader.readexactly(num_bytes)
+            data = await self.reader.readexactly(num_bytes)
         except (asyncio.IncompleteReadError, IOError, OSError) as e:
             await self.close()
             raise ConnectionAbortedError(
@@ -99,7 +111,7 @@ class Connection:
 
     async def read_line(self):
         try:
-            data = await self._reader.readline()
+            data = await self.reader.readline()
         except (asyncio.IncompleteReadError, IOError, OSError) as e:
             await self.close()
             raise ConnectionAbortedError(
@@ -109,7 +121,7 @@ class Connection:
 
     async def read_all(self):
         try:
-            data = await self._reader.read(-1)
+            data = await self.reader.read(-1)
         except (asyncio.IncompleteReadError, IOError, OSError) as e:
             await self.close()
             raise ConnectionAbortedError(
@@ -118,15 +130,15 @@ class Connection:
         return data
 
     def write(self, data: Union[bytes, Packet]):
-        self._writer.write(data)  # type: ignore
+        self.writer.write(data)  # type: ignore
 
     def write_eof(self):
-        if self._writer.can_write_eof():
-            self._writer.write_eof()
+        if self.writer.can_write_eof():
+            self.writer.write_eof()
 
     async def awrite(self, data: Union[bytes, Packet]):
-        self._writer.write(data)  # type: ignore
-        await self._writer.drain()
+        self.writer.write(data)  # type: ignore
+        await self.writer.drain()
 
 
 def connect(

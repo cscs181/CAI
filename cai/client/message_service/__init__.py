@@ -10,26 +10,27 @@ This module is used to build and handle message service related packet.
 """
 
 from enum import IntEnum
-from typing import List, Union, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Union, Optional
 
 from cai.log import logger
 from cai.utils.binary import Packet
-from .decoders import MESSAGE_DECODERS
 from cai.client.status_service import OnlineStatus
 from cai.client.packet import UniPacket, IncomingPacket
 from cai.pb.msf.msg.svc import PbGetMsgReq, PbDeleteMsgReq
+
+from .decoders import MESSAGE_DECODERS
+from .models import GroupMessage, PrivateMessage
 from .command import (
+    PushNotify,
+    GetMessageFail,
+    PushNotifyError,
+    PushForceOffline,
     GetMessageCommand,
     GetMessageSuccess,
-    GetMessageFail,
     PushNotifyCommand,
-    PushNotify,
-    PushNotifyError,
-    PushForceOfflineCommand,
-    PushForceOffline,
     PushForceOfflineError,
+    PushForceOfflineCommand,
 )
-from .models import PrivateMessage, GroupMessage
 
 if TYPE_CHECKING:
     from cai.client import Client

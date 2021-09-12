@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from cai.client.command import Command
 from cai.pb.msf.msg.svc import PbGetMsgResp
 from cai.utils.jce import RequestPacketVersion2
+
 from .jce import RequestPushNotify, RequestPushForceOffline
 
 

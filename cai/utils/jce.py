@@ -11,7 +11,7 @@ This module is used to build JCE related tools including packaging and serializa
 import struct
 from typing import Optional
 
-from jce import JceStruct, JceDecoder, JceField, types
+from jce import JceField, JceStruct, JceDecoder, types
 
 
 class RequestPacket(JceStruct):

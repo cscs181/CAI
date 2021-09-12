@@ -9,8 +9,9 @@
 
 from typing import List, Union, Optional
 
-from .client import get_client
 from cai.client import Group, GroupMember
+
+from .client import get_client
 
 
 async def get_group(

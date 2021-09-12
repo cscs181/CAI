@@ -9,7 +9,6 @@ This module is used to build command from packet.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 from typing import TYPE_CHECKING
-
 from dataclasses import dataclass
 
 from .packet import IncomingPacket

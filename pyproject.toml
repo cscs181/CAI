@@ -22,6 +22,7 @@ cryptography = "^3.4.1"
 typing-extensions = "^3.10.0"
 
 [tool.poetry.dev-dependencies]
+isort = "^5.9.3"
 black = "^21.7b0"
 pillow = "^8.1.0"
 sphinx = "^4.1.0"
@@ -38,9 +39,18 @@ sphinxcontrib-napoleon = "^0.7"
 
 [tool.black]
 line-length = 80
-exclude = '''
+extend-exclude = '''
 ^/cai/pb/
 '''
+
+[tool.isort]
+profile = "black"
+line_length = 80
+length_sort = true
+extend_skip = "cai/pb"
+skip_gitignore = true
+force_sort_within_sections = true
+extra_standard_library = "typing_extensions"
 
 [tool.pyright]
 ignore = [".vscode/*.py", "**/site-packages/**/*.py", "cai/pb/**/*_pb2.py"]

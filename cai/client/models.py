@@ -10,8 +10,8 @@ This module is used to define account info data models.
 """
 import time
 from enum import Enum
-from dataclasses import dataclass, field
-from typing import List, Dict, TYPE_CHECKING
+from dataclasses import field, dataclass
+from typing import TYPE_CHECKING, Dict, List
 
 from cai.utils.dataclass import JsonableDataclass
 

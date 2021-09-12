@@ -10,7 +10,7 @@ This module is used to decode message protobuf.
 """
 
 from itertools import chain
-from typing import List, Dict, Optional, Sequence, Callable
+from typing import Dict, List, Callable, Optional, Sequence
 
 from cai.log import logger
 from cai.client.event import Event
@@ -20,16 +20,17 @@ from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype2,
     MsgElemInfo_servtype33,
 )
+
 from .models import (
-    PrivateMessage,
-    GroupMessage,
     Element,
-    ReplyElement,
-    TextElement,
     FaceElement,
-    SmallEmojiElement,
-    ImageElement,
     PokeElement,
+    TextElement,
+    GroupMessage,
+    ImageElement,
+    ReplyElement,
+    PrivateMessage,
+    SmallEmojiElement,
 )
 
 

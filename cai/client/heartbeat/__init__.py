@@ -12,8 +12,8 @@ This module is used to build and handle heartbeat related packet.
 from typing import TYPE_CHECKING
 from dataclasses import dataclass
 
-from cai.client.command import Command
 from cai.utils.binary import Packet
+from cai.client.command import Command
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket

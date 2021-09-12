@@ -8,20 +8,20 @@ This module is used to build dataclass related tools.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import json
 import copy
-from typing_extensions import get_origin, get_args
-from dataclasses import fields, MISSING, is_dataclass
+import json
+from typing_extensions import get_args, get_origin
+from dataclasses import MISSING, fields, is_dataclass
 from typing import (
     IO,
     Any,
-    List,
     Dict,
+    List,
     Type,
     Tuple,
     Union,
-    TypeVar,
     Mapping,
+    TypeVar,
     Collection,
 )
 

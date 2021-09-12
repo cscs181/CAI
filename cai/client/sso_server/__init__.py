@@ -10,10 +10,10 @@ This module is used to get server list and choose the best one.
 import asyncio
 import http.client
 from io import BytesIO
-from typing import List, Union, Tuple, Iterable, Optional, Container
+from typing import List, Tuple, Union, Iterable, Optional, Container
 
 from jce import types
-from rtea import qqtea_encrypt, qqtea_decrypt
+from rtea import qqtea_decrypt, qqtea_encrypt
 
 from cai.connection import connect
 from cai.settings.device import get_device
@@ -21,6 +21,7 @@ from cai.exceptions import SsoServerException
 from cai.settings.protocol import get_protocol
 from cai.utils.jce import RequestPacketVersion3
 from cai.connection.utils import tcp_latency_test
+
 from .jce import SsoServer, SsoServerRequest, SsoServerResponse
 
 _cached_server: Optional["SsoServer"] = None

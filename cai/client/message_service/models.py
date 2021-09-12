@@ -10,8 +10,8 @@ This module is used to define message models.
 """
 
 import abc
-from typing import List, Optional
 from dataclasses import dataclass
+from typing import List, Optional
 
 from cai.client.event import Event
 from cai.pb.msf.msg.comm import Msg

@@ -12,7 +12,7 @@ import asyncio
 from hashlib import md5
 
 import cai
-from cai.client import Client, Event, PrivateMessage, GroupMessage
+from cai.client import Event, Client, GroupMessage, PrivateMessage
 
 
 async def run():

@@ -9,10 +9,11 @@
 
 from typing import Optional
 
-from . import _clients
 from cai.client import Client
-from .client import get_client
 from cai.exceptions import LoginException
+
+from . import _clients
+from .client import get_client
 
 
 async def login(uin: int, password_md5: Optional[bytes] = None) -> Client:

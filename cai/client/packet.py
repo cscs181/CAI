@@ -13,7 +13,7 @@ import struct
 from dataclasses import dataclass
 from typing import Union, Optional
 
-from rtea import qqtea_encrypt, qqtea_decrypt
+from rtea import qqtea_decrypt, qqtea_encrypt
 
 from cai.utils.crypto import ECDH
 from cai.utils.binary import Packet

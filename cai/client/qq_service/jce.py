@@ -9,7 +9,7 @@ This module is used to build and handle qq service packets.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from jce import JceStruct, JceField, types
+from jce import JceField, JceStruct, types
 
 
 class StShareData(JceStruct):

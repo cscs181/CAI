@@ -9,12 +9,12 @@ This module is used to build and handle tlv bytes.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import time
-import struct
 import random
+import struct
 from hashlib import md5
-from typing import Any, List, Dict, Union
+from typing import Any, Dict, List, Union
 
-from rtea import qqtea_encrypt, qqtea_decrypt
+from rtea import qqtea_decrypt, qqtea_encrypt
 
 from cai.utils.binary import Packet
 from cai.pb.wtlogin import DeviceReport

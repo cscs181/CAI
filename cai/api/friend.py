@@ -9,9 +9,9 @@
 
 from typing import List, Optional
 
+from cai.client import Friend, FriendGroup
 
 from .client import get_client
-from cai.client import Friend, FriendGroup
 
 
 async def get_friend(

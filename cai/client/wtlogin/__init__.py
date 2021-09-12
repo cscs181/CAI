@@ -16,28 +16,30 @@ import ipaddress
 from hashlib import md5
 from typing import TYPE_CHECKING
 
-from .tlv import TlvEncoder
 from rtea import qqtea_decrypt
+
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.utils.crypto import ECDH, EncryptSession
-from .oicq import (
-    OICQRequest,
-    OICQResponse,
-    LoginSuccess,
-    NeedCaptcha,
-    AccountFrozen,
-    DeviceLocked,
-    TooManySMSRequest,
-    DeviceLockLogin,
-    UnknownLoginStatus,
-)
 from cai.client.packet import (
+    UniPacket,
     CSsoBodyPacket,
     CSsoDataPacket,
-    UniPacket,
     IncomingPacket,
+)
+
+from .tlv import TlvEncoder
+from .oicq import (
+    NeedCaptcha,
+    OICQRequest,
+    DeviceLocked,
+    LoginSuccess,
+    OICQResponse,
+    AccountFrozen,
+    DeviceLockLogin,
+    TooManySMSRequest,
+    UnknownLoginStatus,
 )
 
 if TYPE_CHECKING:

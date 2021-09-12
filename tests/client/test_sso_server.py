@@ -4,10 +4,10 @@ import ipaddress
 
 from cai.log import logger
 from cai.client.sso_server import (
-    get_sso_list,
-    get_sso_server,
     SsoServer,
     SsoServerResponse,
+    get_sso_list,
+    get_sso_server,
 )
 
 

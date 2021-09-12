@@ -17,12 +17,12 @@ from PIL import Image
 
 import cai
 from cai.exceptions import (
-    ApiResponseError,
     LoginException,
-    LoginSliderNeeded,
-    LoginCaptchaNeeded,
-    LoginAccountFrozen,
+    ApiResponseError,
     LoginDeviceLocked,
+    LoginSliderNeeded,
+    LoginAccountFrozen,
+    LoginCaptchaNeeded,
 )
 
 

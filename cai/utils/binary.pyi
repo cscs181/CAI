@@ -17,11 +17,11 @@ from typing import (
     Type,
     Tuple,
     Union,
-    TypeVar,
     Generic,
-    Optional,
-    Callable,
     NewType,
+    TypeVar,
+    Callable,
+    Optional,
 )
 
 P = TypeVar("P", bound="BasePacket")

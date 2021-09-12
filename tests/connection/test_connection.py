@@ -6,7 +6,7 @@ from types import TracebackType
 from typing import Any, Type, Tuple, Union, Optional
 
 from cai.log import logger
-from cai.connection import connect, Connection
+from cai.connection import Connection, connect
 from cai.connection.utils import tcp_latency_test
 
 _SysExcInfoType = Union[

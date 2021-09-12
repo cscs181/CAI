@@ -16,19 +16,19 @@ from cai.client import Client
 _clients: Dict[int, Client] = {}
 
 
-from .client import get_client, close, close_all, set_status
-from .login import (
-    login,
-    submit_captcha,
-    submit_slider_ticket,
-    request_sms,
-    submit_sms,
-)
+from .client import close, close_all, get_client, set_status
+from .flow import add_event_listener, register_packet_handler
+from .group import get_group, get_group_list, get_group_member_list
 from .friend import (
     get_friend,
     get_friend_list,
     get_friend_group,
     get_friend_group_list,
 )
-from .group import get_group, get_group_list, get_group_member_list
-from .flow import add_event_listener, register_packet_handler
+from .login import (
+    login,
+    submit_sms,
+    request_sms,
+    submit_captcha,
+    submit_slider_ticket,
+)

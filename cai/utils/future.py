@@ -1,5 +1,5 @@
 import asyncio
-from typing import Any, Dict, Generic, TypeVar, Optional, Callable
+from typing import Any, Dict, Generic, TypeVar, Callable, Optional
 
 KT = TypeVar("KT")
 VT = TypeVar("VT")

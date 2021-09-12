@@ -15,10 +15,10 @@ from typing import (
     Type,
     Tuple,
     Union,
-    TypeVar,
-    Optional,
-    Callable,
     NewType,
+    TypeVar,
+    Callable,
+    Optional,
 )
 
 P = TypeVar("P", bound="BasePacket")

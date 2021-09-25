@@ -159,3 +159,12 @@ async def submit_sms(sms_code: str, uin: Optional[int] = None) -> bool:
         await client.close()
         raise
     return True
+
+
+__all__ = [
+    "login",
+    "submit_captcha",
+    "submit_slider_ticket",
+    "request_sms",
+    "submit_sms",
+]

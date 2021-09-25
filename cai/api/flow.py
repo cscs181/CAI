@@ -56,3 +56,6 @@ def register_packet_handler(
             f"You are overwriting an existing handler for command {cmd}!"
         )
     HANDLERS[cmd] = packet_handler
+
+
+__all__ = ["add_event_listener", "register_packet_handler"]

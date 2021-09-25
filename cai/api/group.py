@@ -91,3 +91,6 @@ async def get_group_member_list(
     """
     client = get_client(uin)
     return await client.get_group_member_list(group, cache)
+
+
+__all__ = ["get_group", "get_group_list", "get_group_member_list"]

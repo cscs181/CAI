@@ -116,3 +116,11 @@ async def get_friend_group_list(
     """
     client = get_client(uin)
     return await client.get_friend_group_list(cache)
+
+
+__all__ = [
+    "get_friend",
+    "get_friend_list",
+    "get_friend_group",
+    "get_friend_group_list",
+]

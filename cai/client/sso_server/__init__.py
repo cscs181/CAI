@@ -115,7 +115,7 @@ async def get_sso_list() -> SsoServerResponse:
             f"Get sso server list failed with response code {response.status}"
         )
     data: bytes = qqtea_decrypt(response.read(), key)
-    resp_packet = RequestPacketVersion3.decode(data)
+    resp_packet = RequestPacketVersion3.decode(data[4:])
     server_info = SsoServerResponse.decode(
         resp_packet.data["HttpServerListRes"][1:-1]  # type: ignore
     )

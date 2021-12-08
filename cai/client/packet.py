@@ -217,14 +217,8 @@ class IncomingPacket:
         if not payload:
             raise ValueError(f"Data cannot be none.")
 
-        # offset = 0
-        # sso_head_length = payload.read_int32(offset) - 4
-        # offset += 4
-        offset = 4
-        sso_frame = payload[offset:]
-
         return cls.parse_sso_frame(
-            sso_frame, encrypt_type, key, session_key, uin=uin
+            payload, encrypt_type, key, session_key, uin=uin
         )
 
     @classmethod
@@ -239,16 +233,29 @@ class IncomingPacket:
         if not isinstance(sso_frame, Packet):
             sso_frame = Packet(sso_frame)
 
-        seq, ret_code, extra, command_name, session_id, data = (
+        # read head
+        (
+            head_length,
+            seq,
+            ret_code,
+            extra,
+            command_name,
+            session_id,
+            compress_type,
+        ) = (
             sso_frame.start()
+            .uint32()
             .uint32()
             .int32()
             .bytes_with_length(4, 4)
             .string(4, 4)
             .bytes_with_length(4, 4)
-            .remain()
+            .int32()
             .execute()
         )
+
+        # read data
+        data = sso_frame.start().offset(head_length).remain().execute()[0]
 
         if not data:
             return cls(
@@ -261,21 +268,15 @@ class IncomingPacket:
                 **kwargs,
             )
 
-        compress_type, compressed_data = data.start().int32().remain().execute()
+        compressed_data = data.start().bytes_with_length(4, 4).execute()[0]
         decompressed_data: bytes
         if compress_type == 0:
-            # data_length = sso_frame.read_int32(offset)
-            # if data_length == len(sso_frame) - offset or data_length == len(
-            #     sso_frame
-            # ) - offset - 4:
-            #     decompressed_data = sso_frame[offset + 4:]
-            # else:
-            #     decompressed_data = sso_frame[offset + 4:]
-            decompressed_data = compressed_data[4:]
+            decompressed_data = compressed_data
         elif compress_type == 1:
-            decompressed_data = zlib.decompress(compressed_data[4:])
+            decompressed_data = zlib.decompress(compressed_data)
         elif compress_type == 8:
-            decompressed_data = compressed_data[4:]
+            # remain data
+            decompressed_data = data[4:]
         else:
             raise ValueError(f"Unknown compression type, got {compress_type}.")
 

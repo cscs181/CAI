@@ -14,6 +14,7 @@ from dataclasses import dataclass
 
 from cai.client.command import Command
 from cai.utils.jce import RequestPacketVersion2, RequestPacketVersion3
+
 from .jce import SvcRespRegister, RequestMSFForceOffline
 
 

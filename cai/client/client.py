@@ -10,69 +10,50 @@ This module is used to control client actions (low-level api).
 """
 import time
 import struct
-import secrets
 import asyncio
+import secrets
 from typing import (
     Any,
     Set,
-    List,
     Dict,
+    List,
     Union,
-    Optional,
     Callable,
+    Optional,
     Awaitable,
     overload,
 )
 
 from cachetools import TTLCache
 
-from .sso_server import get_sso_server, SsoServer
-from .wtlogin import (
-    encode_login_request2_captcha,
-    encode_login_request2_slider,
-    encode_login_request7,
-    encode_login_request8,
-    encode_login_request9,
-    encode_login_request20,
-    encode_exchange_emp_15,
-    handle_oicq_response,
-    OICQResponse,
-    LoginSuccess,
-    NeedCaptcha,
-    AccountFrozen,
-    DeviceLocked,
-    TooManySMSRequest,
-    DeviceLockLogin,
-    UnknownLoginStatus,
+from cai.log import logger
+from cai.utils.binary import Packet
+from cai.utils.future import FutureStore
+from cai.settings.device import get_device
+from cai.connection import Connection, connect
+from cai.settings.protocol import get_protocol
+from cai.exceptions import (
+    LoginException,
+    ApiResponseError,
+    LoginDeviceLocked,
+    LoginSliderNeeded,
+    RegisterException,
+    GroupListException,
+    LoginAccountFrozen,
+    LoginCaptchaNeeded,
+    FriendListException,
+    LoginSMSRequestError,
+    GroupMemberListException,
 )
-from .status_service import (
-    encode_register,
-    encode_set_status,
-    handle_register_response,
-    handle_request_offline,
-    OnlineStatus,
-    RegPushReason,
-    SvcRegisterResponse,
-    RegisterSuccess,
-    RegisterFail,
-)
-from .friendlist import (
-    encode_get_friend_list,
-    handle_friend_list,
-    encode_get_troop_list,
-    handle_troop_list,
-    encode_get_troop_member_list,
-    handle_troop_member_list,
-    FriendListCommand,
-    FriendListSuccess,
-    FriendListFail,
-    TroopListCommand,
-    TroopListSuccess,
-    TroopListFail,
-    TroopMemberListCommand,
-    TroopMemberListSuccess,
-    TroopMemberListFail,
-)
+
+from .event import Event
+from .packet import IncomingPacket
+from .command import Command, _packet_to_command
+from .sso_server import SsoServer, get_sso_server
+from .online_push import handle_c2c_sync, handle_push_msg
+from .heartbeat import Heartbeat, encode_heartbeat, handle_heartbeat
+from .models import Group, Friend, SigInfo, FriendGroup, GroupMember
+from .config_push import FileServerPushList, handle_config_push_request
 from .message_service import (
     SyncFlag,
     GetMessageCommand,
@@ -81,33 +62,52 @@ from .message_service import (
     handle_push_notify,
     handle_force_offline,
 )
-from .online_push import handle_c2c_sync, handle_push_msg
-from .heartbeat import encode_heartbeat, handle_heartbeat, Heartbeat
-from .config_push import handle_config_push_request, FileServerPushList
-from cai.exceptions import (
-    ApiResponseError,
-    LoginException,
-    LoginSliderNeeded,
-    LoginCaptchaNeeded,
-    LoginAccountFrozen,
-    LoginDeviceLocked,
-    LoginSMSRequestError,
-    RegisterException,
-    FriendListException,
-    GroupListException,
-    GroupMemberListException,
+from .status_service import (
+    OnlineStatus,
+    RegisterFail,
+    RegPushReason,
+    RegisterSuccess,
+    SvcRegisterResponse,
+    encode_register,
+    encode_set_status,
+    handle_request_offline,
+    handle_register_response,
 )
-
-from .event import Event
-from cai.log import logger
-from .packet import IncomingPacket
-from cai.utils.binary import Packet
-from cai.utils.future import FutureStore
-from cai.settings.device import get_device
-from cai.settings.protocol import get_protocol
-from cai.connection import connect, Connection
-from .command import Command, _packet_to_command
-from .models import SigInfo, Friend, FriendGroup, Group, GroupMember
+from .friendlist import (
+    TroopListFail,
+    FriendListFail,
+    TroopListCommand,
+    TroopListSuccess,
+    FriendListCommand,
+    FriendListSuccess,
+    TroopMemberListFail,
+    TroopMemberListCommand,
+    TroopMemberListSuccess,
+    handle_troop_list,
+    handle_friend_list,
+    encode_get_troop_list,
+    encode_get_friend_list,
+    handle_troop_member_list,
+    encode_get_troop_member_list,
+)
+from .wtlogin import (
+    NeedCaptcha,
+    DeviceLocked,
+    LoginSuccess,
+    OICQResponse,
+    AccountFrozen,
+    DeviceLockLogin,
+    TooManySMSRequest,
+    UnknownLoginStatus,
+    handle_oicq_response,
+    encode_login_request7,
+    encode_login_request8,
+    encode_login_request9,
+    encode_exchange_emp_15,
+    encode_login_request20,
+    encode_login_request2_slider,
+    encode_login_request2_captcha,
+)
 
 HT = Callable[["Client", IncomingPacket], Awaitable[Command]]
 LT = Callable[["Client", Event], Awaitable[None]]
@@ -480,10 +480,10 @@ class Client:
         elif isinstance(response, DeviceLocked):
             msg = "账号已开启设备锁！"
             if response.sms_phone:
-                msg += f"向手机{response.sms_phone}发送验证码 "
+                msg += f"向手机{response.sms_phone}发送验证码"
             if response.verify_url:
-                msg += f"或前往{response.verify_url}扫码验证"
-            logger.info(msg + ". " + str(response.message))
+                msg += f"或前往 {response.verify_url} 扫码验证"
+            logger.info(msg + "。" + str(response.message))
 
             raise LoginDeviceLocked(
                 response.uin,

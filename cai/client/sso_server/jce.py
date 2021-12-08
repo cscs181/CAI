@@ -8,7 +8,7 @@ This module is used to build sso server packets.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from jce import JceStruct, JceField, types
+from jce import JceField, JceStruct, types
 
 
 class SsoServerRequest(JceStruct):

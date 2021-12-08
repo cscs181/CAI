@@ -10,12 +10,10 @@
 import asyncio
 from typing import Union, Optional
 
-from . import _clients
-from cai.client import (
-    Client,
-    OnlineStatus,
-)
+from cai.client import Client, OnlineStatus
 from cai.exceptions import ClientNotAvailable
+
+from . import _clients
 
 
 def get_client(uin: Optional[int] = None) -> Client:
@@ -95,3 +93,6 @@ async def set_status(
         battery_status,
         is_power_connected,
     )
+
+
+__all__ = ["get_client", "close", "close_all", "set_status"]

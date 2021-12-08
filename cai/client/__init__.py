@@ -12,8 +12,7 @@ This module is main entry point for the application.
 from .event import Event
 from .command import Command
 from .packet import IncomingPacket
-from .client import Client, HANDLERS
+from .client import HANDLERS, Client
 from .status_service import OnlineStatus, RegPushReason
-from .models import Friend, FriendGroup, Group, GroupMember, GroupMemberRole
-
-from .message_service import PrivateMessage, GroupMessage
+from .message_service import GroupMessage, PrivateMessage
+from .models import Group, Friend, FriendGroup, GroupMember, GroupMemberRole

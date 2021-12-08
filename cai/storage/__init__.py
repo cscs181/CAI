@@ -11,7 +11,7 @@ This module is used to manage application storage.
 import os
 import shutil
 
-from .utils import user_config_dir, user_cache_dir
+from .utils import user_cache_dir, user_config_dir
 
 
 class Storage:

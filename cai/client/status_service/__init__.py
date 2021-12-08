@@ -11,7 +11,7 @@ This module is used to build and handle status service related packet.
 
 import time
 from enum import Enum, IntEnum
-from typing import Union, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Union, Optional
 
 from jce import types
 
@@ -20,21 +20,22 @@ from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.settings.protocol import get_protocol
 from cai.utils.jce import RequestPacketVersion3
-from cai.pb.im.oidb.cmd0x769 import ConfigSeq, ReqBody
-from .jce import SvcReqRegister, ResponseMSFForceOffline
+from cai.pb.im.oidb.cmd0x769 import ReqBody, ConfigSeq
 from cai.client.packet import (
+    UniPacket,
     CSsoBodyPacket,
     CSsoDataPacket,
-    UniPacket,
     IncomingPacket,
 )
+
+from .jce import SvcReqRegister, ResponseMSFForceOffline
 from .command import (
-    SvcRegisterResponse,
-    RegisterSuccess,
     RegisterFail,
-    MSFForceOfflineCommand,
     MSFForceOffline,
+    RegisterSuccess,
+    SvcRegisterResponse,
     MSFForceOfflineError,
+    MSFForceOfflineCommand,
 )
 
 if TYPE_CHECKING:

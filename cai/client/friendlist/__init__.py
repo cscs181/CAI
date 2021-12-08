@@ -8,7 +8,7 @@ This module is used to build and handle friend list related packet.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-from typing import Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, Optional
 
 from jce import types
 
@@ -16,23 +16,19 @@ from cai.utils.binary import Packet
 from cai.pb.im.oidb.cmd0xd50 import ReqBody
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
-from .jce import (
-    FriendListReq,
-    TroopListReqV2Simplify,
-    TroopMemberListReq,
-)
+
+from .jce import FriendListReq, TroopMemberListReq, TroopListReqV2Simplify
 from .command import (
-    FriendListCommand,
-    FriendListSuccess,
+    TroopListFail,
     FriendListFail,
     TroopListCommand,
     TroopListSuccess,
-    TroopListFail,
+    FriendListCommand,
+    FriendListSuccess,
+    TroopMemberListFail,
     TroopMemberListCommand,
     TroopMemberListSuccess,
-    TroopMemberListFail,
 )
-
 
 if TYPE_CHECKING:
     from cai.client import Client

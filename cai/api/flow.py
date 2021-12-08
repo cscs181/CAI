@@ -7,17 +7,12 @@
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import Optional, Callable, Awaitable
+from typing import Callable, Optional, Awaitable
 
 from cai.log import logger
+from cai.client import HANDLERS, Event, Client, Command, IncomingPacket
+
 from .client import get_client
-from cai.client import (
-    Client,
-    HANDLERS,
-    Event,
-    Command,
-    IncomingPacket,
-)
 
 
 def add_event_listener(
@@ -61,3 +56,6 @@ def register_packet_handler(
             f"You are overwriting an existing handler for command {cmd}!"
         )
     HANDLERS[cmd] = packet_handler
+
+
+__all__ = ["add_event_listener", "register_packet_handler"]

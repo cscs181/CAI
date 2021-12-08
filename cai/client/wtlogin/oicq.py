@@ -12,9 +12,10 @@ import struct
 from dataclasses import dataclass
 from typing import Any, Dict, Union, Optional
 
-from .tlv import TlvDecoder
-from cai.client.command import Command
 from cai.utils.binary import Packet
+from cai.client.command import Command
+
+from .tlv import TlvDecoder
 
 
 class OICQRequest(Packet):

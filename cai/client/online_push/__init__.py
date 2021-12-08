@@ -9,7 +9,7 @@ This module is used to build and handle online push related packet.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import List, Union, Optional, TYPE_CHECKING
+from typing import TYPE_CHECKING, List, Union, Optional
 
 from jce import types
 
@@ -17,14 +17,11 @@ from cai.log import logger
 from cai.utils.binary import Packet
 from cai.settings.device import get_device
 from cai.utils.jce import RequestPacketVersion3
-from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
-from .command import (
-    PushMsgCommand,
-    PushMsg,
-    PushMsgError,
-)
+
+from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
+from .command import PushMsg, PushMsgError, PushMsgCommand
 
 if TYPE_CHECKING:
     from cai.client import Client

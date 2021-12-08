@@ -9,8 +9,9 @@
 
 from typing import List, Union, Optional
 
-from .client import get_client
 from cai.client import Group, GroupMember
+
+from .client import get_client
 
 
 async def get_group(
@@ -90,3 +91,6 @@ async def get_group_member_list(
     """
     client = get_client(uin)
     return await client.get_group_member_list(group, cache)
+
+
+__all__ = ["get_group", "get_group_list", "get_group_member_list"]

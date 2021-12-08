@@ -8,8 +8,8 @@ This module is used to build tcp latency test and other convenient tools.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import time
 import math
+import time
 
 from . import connect
 

@@ -10,14 +10,9 @@ This module is used to build coroutine related tools.
 """
 from types import TracebackType
 from collections.abc import Coroutine
-from typing import (
-    Type,
-    Generic,
-    TypeVar,
-    Optional,
-    AsyncContextManager,
-    Coroutine as CoroutineGeneric,
-)
+from typing import AsyncContextManager
+from typing import Coroutine as CoroutineGeneric
+from typing import Type, Generic, TypeVar, Optional
 
 TY = TypeVar("TY")
 TS = TypeVar("TS")

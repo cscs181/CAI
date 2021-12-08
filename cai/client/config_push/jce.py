@@ -11,7 +11,7 @@ This module is used to build and handle ConfigPushSvc packets.
 
 from typing import Optional
 
-from jce import JceStruct, JceField, types
+from jce import JceField, JceStruct, types
 
 from cai.client.sso_server import SsoServer
 

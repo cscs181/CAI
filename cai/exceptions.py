@@ -106,7 +106,7 @@ class LoginAccountFrozen(LoginException):
         self.uin = uin
 
     def __repr__(self) -> str:
-        return "LoginAccountFrozen(uin={self.uin})"
+        return f"LoginAccountFrozen(uin={self.uin})"
 
 
 class LoginDeviceLocked(LoginException):
@@ -127,7 +127,7 @@ class LoginDeviceLocked(LoginException):
     def __repr__(self) -> str:
         return (
             f"LoginDeviceLocked(uin={self.uin}, message={self.message}, "
-            f"sms_phone={self.sms_phone}, verify_url={self.message})"
+            f"sms_phone={self.sms_phone}, verify_url={self.verify_url})"
         )
 
 

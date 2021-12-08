@@ -480,10 +480,10 @@ class Client:
         elif isinstance(response, DeviceLocked):
             msg = "账号已开启设备锁！"
             if response.sms_phone:
-                msg += f"向手机{response.sms_phone}发送验证码 "
+                msg += f"向手机{response.sms_phone}发送验证码"
             if response.verify_url:
-                msg += f"或前往{response.verify_url}扫码验证"
-            logger.info(msg + ". " + str(response.message))
+                msg += f"或前往 {response.verify_url} 扫码验证"
+            logger.info(msg + "。" + str(response.message))
 
             raise LoginDeviceLocked(
                 response.uin,

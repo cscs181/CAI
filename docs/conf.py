@@ -49,7 +49,6 @@ import sphinx_rtd_theme
 extensions = [
     "sphinxcontrib.napoleon",
     "sphinx_rtd_theme",
-    "recommonmark",
     "sphinx_copybutton",
 ]
 

@@ -304,9 +304,10 @@ class DeviceLocked(UnknownLoginStatus):
         self.rand_seed = _tlv_map.get(0x403)
         self.t104 = _tlv_map.get(0x104)
         self.t174 = _tlv_map.get(0x174)
-        if self.t174:
-            t178 = Packet(_tlv_map[0x178])
-            self.sms_phone = t178.start().string(4).execute()[0]
+        # might be deprecated, drop
+        #if self.t174:
+        #    t178 = Packet(_tlv_map[0x178])
+        #    self.sms_phone = t178.start().string(4).execute()[0]
 
 
 @dataclass

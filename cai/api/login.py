@@ -11,6 +11,7 @@ from typing import Optional, Union
 
 from .base import BaseAPI
 from cai.client import Client
+from cai.exceptions import LoginException
 
 
 class Login(BaseAPI):
@@ -27,7 +28,11 @@ class Login(BaseAPI):
             LoginCaptchaException: Need captcha image.
         """
         await self.client.reconnect()
-        await self._executor("login")
+        try:
+            await self._executor("login")
+        except not LoginException:
+            await self.client.close()
+            raise
 
     async def submit_captcha(
         self, captcha: str, captcha_sign: bytes
@@ -45,10 +50,14 @@ class Login(BaseAPI):
             LoginSliderException: Need slider ticket.
             LoginCaptchaException: Need captcha image.
         """
-        await self._executor("submit_captcha", captcha, captcha_sign)
+        try:
+            await self._executor("submit_captcha", captcha, captcha_sign)
+        except not LoginException:
+            await self.client.close()
+            raise
         return True
 
-    async def submit_slider_ticket(self, ticket: str, uin: Optional[int] = None) -> bool:
+    async def submit_slider_ticket(self, ticket: str) -> bool:
         """Submit slider ticket to login.
 
         This function wraps the :meth:`~cai.client.client.Client.submit_slider_ticket`
@@ -61,7 +70,11 @@ class Login(BaseAPI):
             LoginSliderException: Need slider ticket.
             LoginCaptchaException: Need captcha image.
         """
-        await self._executor("submit_slider_ticket", ticket)
+        try:
+            await self._executor("submit_slider_ticket", ticket)
+        except not LoginException:
+            await self.client.close()
+            raise
         return True
 
     async def request_sms(self) -> bool:
@@ -77,7 +90,11 @@ class Login(BaseAPI):
         Raises:
             LoginSMSRequestError: Too many SMS messages were sent.
         """
-        return await self.client.request_sms()
+        try:
+            return await self.client.request_sms()
+        except not LoginException:
+            await self.client.close()
+            raise
 
     async def submit_sms(self, sms_code: str) -> bool:
         """Submit sms code to login.
@@ -92,7 +109,11 @@ class Login(BaseAPI):
             LoginSliderException: Need slider ticket.
             LoginCaptchaException: Need captcha image.
         """
-        await self._executor("submit_sms", sms_code)
+        try:
+            await self._executor("submit_sms", sms_code)
+        except not LoginException:
+            await self.client.close()
+            raise
         return True
 
 

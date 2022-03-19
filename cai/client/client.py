@@ -26,7 +26,7 @@ from typing import (
 
 from cachetools import TTLCache
 
-from cai.log import logger
+from cai import log
 from cai.utils.binary import Packet
 from cai.utils.future import FutureStore
 from cai.settings.device import DeviceInfo
@@ -271,7 +271,7 @@ class Client:
             raise RuntimeError("Already connected to the server")
 
         _server = server or await get_sso_server()
-        logger.info(f"Connecting to server: {_server.host}:{_server.port}")
+        log.logger.info(f"Connecting to server: {_server.host}:{_server.port}")
         try:
             self._connection = await connect(
                 _server.host, _server.port, ssl=False, timeout=3.0
@@ -357,7 +357,7 @@ class Client:
         Returns:
             None.
         """
-        logger.debug(f"--> {seq}: {command_name}")
+        log.network.debug(f"--> {seq}: {command_name}")
         await self.connection.awrite(packet)
 
     async def send_and_wait(
@@ -388,7 +388,7 @@ class Client:
             self._receive_store.store_result(packet.seq, packet)
         except Exception as e:
             # TODO: handle exception
-            logger.exception(e)
+            log.logger.exception(e)
 
     async def receive(self):
         """Receive data from connection reader and store it in sequence future.
@@ -410,15 +410,15 @@ class Client:
                     self._siginfo.d2key,
                     self._siginfo.wt_session_ticket_key,
                 )
-                logger.debug(
+                log.network.debug(
                     f"<-- {packet.seq} ({packet.ret_code}): {packet.command_name}"
                 )
                 # do not block receive
                 asyncio.create_task(self._handle_incoming_packet(packet))
             except ConnectionAbortedError:
-                logger.debug(f"Client {self.uin} connection closed")
+                log.logger.debug(f"Client {self.uin} connection closed")
             except Exception as e:
-                logger.exception(e)
+                log.logger.exception(e)
 
     @property
     def listeners(self) -> Set[LT]:
@@ -428,7 +428,7 @@ class Client:
         try:
             await listener(self, event)
         except Exception as e:
-            logger.exception(e)
+            log.logger.exception(e)
 
     def dispatch_event(self, event: Event) -> None:
         for listener in self.listeners:
@@ -457,15 +457,15 @@ class Client:
             )
 
         if isinstance(response, LoginSuccess):
-            logger.info(f"{self.nick}({self.uin}) 登录成功！")
+            log.logger.info(f"{self.nick}({self.uin}) 登录成功！")
             await self._init()
             return response
         elif isinstance(response, NeedCaptcha):
             if response.verify_url:
-                logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
+                log.logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
                 raise LoginSliderNeeded(response.uin, response.verify_url)
             elif response.captcha_image:
-                logger.info(f"登录失败！需要根据图片输入验证码")
+                log.logger.info(f"登录失败！需要根据图片输入验证码")
                 raise LoginCaptchaNeeded(
                     response.uin, response.captcha_image, response.captcha_sign
                 )
@@ -476,7 +476,7 @@ class Client:
                     "Cannot get verify_url or captcha_image from the response!",
                 )
         elif isinstance(response, AccountFrozen):
-            logger.info("账号已被冻结！")
+            log.logger.info("账号已被冻结！")
             raise LoginAccountFrozen(response.uin)
         elif isinstance(response, DeviceLocked):
             msg = "账号已开启设备锁！"
@@ -484,7 +484,7 @@ class Client:
                 msg += f"向手机{response.sms_phone}发送验证码"
             if response.verify_url:
                 msg += f"或前往 {response.verify_url} 扫码验证"
-            logger.info(msg + "。" + str(response.message))
+            log.logger.info(msg + "。" + str(response.message))
 
             raise LoginDeviceLocked(
                 response.uin,
@@ -493,7 +493,7 @@ class Client:
                 response.message,
             )
         elif isinstance(response, TooManySMSRequest):
-            logger.info("验证码发送频繁！")
+            log.logger.info("验证码发送过于频繁！")
             raise LoginSMSRequestError(response.uin)
         elif isinstance(response, DeviceLockLogin):
             if try_times:
@@ -532,7 +532,7 @@ class Client:
                 msg = packet_.start(2).string(2).execute()[0]
             else:
                 msg = ""
-            logger.info(f"未知的登录返回码 {response.status}! {msg}")
+            log.logger.info(f"未知的登录返回码 {response.status}! {msg}")
             raise LoginException(
                 response.uin, response.status, "Unknown login status."
             )
@@ -954,7 +954,7 @@ class Client:
                 if not isinstance(response, Heartbeat):
                     raise RuntimeError("Invalid heartbeat response type!")
             except Exception:
-                logger.exception("Heartbeat.Alive: Failed")
+                log.network.exception("Heartbeat.Alive: Failed")
                 break
             await asyncio.sleep(self._heartbeat_interval)
 

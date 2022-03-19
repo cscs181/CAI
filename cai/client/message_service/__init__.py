@@ -12,7 +12,7 @@ This module is used to build and handle message service related packet.
 from enum import IntEnum
 from typing import TYPE_CHECKING, List, Union, Optional
 
-from cai.log import logger
+from cai import log
 from cai.utils.binary import Packet
 from cai.client.status_service import OnlineStatus
 from cai.client.packet import UniPacket, IncomingPacket
@@ -169,7 +169,7 @@ async def handle_get_message(
                 msg_type = message.head.type
                 Decoder = MESSAGE_DECODERS.get(msg_type, None)
                 if not Decoder:
-                    logger.debug(
+                    log.network.debug(
                         "MessageSvc.PbGetMsg: "
                         f"Received unknown message type {msg_type}."
                     )
@@ -315,7 +315,7 @@ async def handle_force_offline(
         packet.command_name,
         packet.data,
     )
-    logger.error(
+    log.network.error(
         f"Client {client.uin} force offline: " + request.request.tips
         if isinstance(request, PushForceOffline)
         else "Unknown reason."

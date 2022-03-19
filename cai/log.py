@@ -11,6 +11,10 @@ This module is used to build application logger.
 import sys
 import logging
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    handlers=[logging.StreamHandler(sys.stdout)]
+)
+
 logger = logging.getLogger("cai")
-logger.setLevel(logging.DEBUG)
-logger.addHandler(logging.StreamHandler(sys.stdout))
+network = logging.getLogger("cai.network")

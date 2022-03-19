@@ -125,11 +125,7 @@ if __name__ == "__main__":
 
     loop = asyncio.get_event_loop()
     loop.create_task(run(close))
-    if sys.platform != "win32":
-        loop.add_signal_handler(signal.SIGINT, close.set)
-        loop.add_signal_handler(signal.SIGTERM, close.set)
-    else:
-        try:
-            loop.run_until_complete(wait_cleanup())
-        except KeyboardInterrupt:
-            close.set()
+    try:
+        loop.run_until_complete(wait_cleanup())
+    except KeyboardInterrupt:
+        close.set()

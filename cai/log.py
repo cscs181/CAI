@@ -13,7 +13,8 @@ import logging
 
 logging.basicConfig(
     level=logging.DEBUG,
-    handlers=[logging.StreamHandler(sys.stdout)]
+    handlers=[logging.StreamHandler(sys.stdout)],
+    format="%(asctime)s %(name)s[%(levelname)s]: %(message)s"
 )
 
 logger = logging.getLogger("cai")

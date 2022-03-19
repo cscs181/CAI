@@ -8,6 +8,7 @@ This module is used to control client actions (low-level api).
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
+import logging
 import time
 import struct
 import asyncio
@@ -269,7 +270,7 @@ class Client:
         """
         if self.connected:
             raise RuntimeError("Already connected to the server")
-
+        log.network.debug("Getting Sso server")
         _server = server or await get_sso_server()
         log.logger.info(f"Connecting to server: {_server.host}:{_server.port}")
         try:
@@ -318,6 +319,7 @@ class Client:
 
     async def close(self) -> None:
         """Close the client and logout."""
+        log.logger.warning("closing client")
         if (
             self.connected
             and self.status
@@ -357,7 +359,7 @@ class Client:
         Returns:
             None.
         """
-        log.network.debug(f"--> {seq}: {command_name}")
+        log.network.debug(f"(send:{seq}): {command_name}")
         await self.connection.awrite(packet)
 
     async def send_and_wait(
@@ -410,8 +412,9 @@ class Client:
                     self._siginfo.d2key,
                     self._siginfo.wt_session_ticket_key,
                 )
+                #
                 log.network.debug(
-                    f"<-- {packet.seq} ({packet.ret_code}): {packet.command_name}"
+                    f"(receive:{packet.ret_code}): {packet.command_name}"
                 )
                 # do not block receive
                 asyncio.create_task(self._handle_incoming_packet(packet))

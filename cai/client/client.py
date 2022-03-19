@@ -21,7 +21,7 @@ from typing import (
     Callable,
     Optional,
     Awaitable,
-    overload,
+    overload, Tuple,
 )
 
 from cachetools import TTLCache
@@ -29,9 +29,9 @@ from cachetools import TTLCache
 from cai.log import logger
 from cai.utils.binary import Packet
 from cai.utils.future import FutureStore
-from cai.settings.device import get_device
+from cai.settings.device import DeviceInfo
+from cai.settings.protocol import ApkInfo
 from cai.connection import Connection, connect
-from cai.settings.protocol import get_protocol
 from cai.exceptions import (
     LoginException,
     ApiResponseError,
@@ -109,11 +109,9 @@ from .wtlogin import (
     encode_login_request2_captcha,
 )
 
-HT = Callable[["Client", IncomingPacket], Awaitable[Command]]
+HT = Callable[["Client", IncomingPacket, Tuple[DeviceInfo, ApkInfo]], Awaitable[Command]]
 LT = Callable[["Client", Event], Awaitable[None]]
 
-DEVICE = get_device()
-APK_INFO = get_protocol()
 HANDLERS: Dict[str, HT] = {
     "wtlogin.login": handle_oicq_response,
     "wtlogin.exchange_emp": handle_oicq_response,
@@ -139,7 +137,7 @@ HANDLERS: Dict[str, HT] = {
 class Client:
     LISTENERS: Set[LT] = set()
 
-    def __init__(self, uin: int, password_md5: bytes):
+    def __init__(self, uin: int, password_md5: bytes, device: DeviceInfo, apk_info: ApkInfo):
         # account info
         self._uin: int = uin
         self._password_md5: bytes = password_md5
@@ -163,7 +161,7 @@ class Client:
         self._file_storage_info: Optional[FileServerPushList] = None
 
         self._ip_address: bytes = bytes()
-        self._ksid: bytes = f"|{DEVICE.imei}|A8.2.7.27f6ea96".encode()
+        self._ksid: bytes = f"|{device.imei}|A8.2.7.27f6ea96".encode()
         self._pwd_flag: bool = False
         self._rollback_sig: bytes = bytes()
 
@@ -182,6 +180,9 @@ class Client:
         self._pubaccount_cookie: bytes = bytes()
         self._msg_cache: TTLCache = TTLCache(maxsize=1024, ttl=3600)
         self._receive_store: FutureStore[int, Command] = FutureStore()
+
+        self.device_info: DeviceInfo = device
+        self.apk_info: ApkInfo = apk_info
 
     def __str__(self) -> str:
         return f"<cai client object for {self.uin}>"
@@ -383,7 +384,7 @@ class Client:
     async def _handle_incoming_packet(self, in_packet: IncomingPacket) -> None:
         try:
             handler = HANDLERS.get(in_packet.command_name, _packet_to_command)
-            packet = await handler(self, in_packet)
+            packet = await handler(self, in_packet, (self.device_info, self.apk_info))
             self._receive_store.store_result(packet.seq, packet)
         except Exception as e:
             # TODO: handle exception
@@ -505,6 +506,8 @@ class Client:
                     self.uin,
                     self._t104,
                     self._siginfo.g,
+                    self.device_info.imei,
+                    self.apk_info
                 )
                 response = await self.send_and_wait(
                     seq, "wtlogin.login", packet
@@ -575,6 +578,8 @@ class Client:
             self._ksid,
             self.uin,
             self._password_md5,
+            self.device_info,
+            self.apk_info
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -609,6 +614,8 @@ class Client:
             captcha,
             captcha_sign,
             self._t104,
+            self.device_info.imei,
+            self.apk_info
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -640,6 +647,8 @@ class Client:
             self.uin,
             ticket,
             self._t104,
+            self.device_info.imei,
+            self.apk_info
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -671,6 +680,8 @@ class Client:
             self.uin,
             self._t104,
             self._t174,
+            self.device_info.imei,
+            self.apk_info
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
 
@@ -711,6 +722,8 @@ class Client:
             self._t104,
             self._t174,
             self._siginfo.g,
+            self.device_info.imei,
+            self.apk_info
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -749,6 +762,8 @@ class Client:
                     self.uin,
                     self._t104,
                     self._siginfo.g,
+                    self.device_info.imei,
+                    self.apk_info
                 )
                 response = await self.send_and_wait(
                     seq, "wtlogin.login", packet
@@ -795,6 +810,8 @@ class Client:
             self._siginfo.rand_seed,
             self._siginfo.wt_session_ticket,
             self._siginfo.wt_session_ticket_key,
+            self.device_info,
+            self.apk_info
         )
         response = await self.send_and_wait(seq, "wtlogin.exchange_emp", packet)
 
@@ -833,6 +850,8 @@ class Client:
             self._siginfo.d2key,
             status,
             register_reason,
+            self.apk_info.sub_app_id,
+            self.device_info
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
 
@@ -864,8 +883,6 @@ class Client:
         Args:
             status (OnlineStatus, optional): Client status. Defaults to
                 :attr:`~cai.client.status_service.OnlineStatus.Online`.
-            register_reason (RegPushReason, optional): Register reason. Defaults to
-                :attr:`~cai.client.status_service.RegPushReason.AppRegister`.
             battery_status (Optional[int], optional): Battery capacity.
                 Only works when status is :obj:`.OnlineStatus.Battery`. Defaults to None.
             is_power_connected (bool, optional): Is power connected to phone.
@@ -884,9 +901,10 @@ class Client:
             self._session_id,
             self.uin,
             self._siginfo.d2key,
+            self.device_info,
             status,
             battery_status,
-            is_power_connected,
+            is_power_connected
         )
         response = await self.send_and_wait(
             seq, "StatSvc.SetStatusFromClient", packet
@@ -927,7 +945,7 @@ class Client:
         while self._heartbeat_enabled and self.connected:
             seq = self.next_seq()
             packet = encode_heartbeat(
-                seq, self._session_id, self._ksid, self.uin
+                seq, self._session_id, self.device_info.imei, self._ksid, self.uin, self.apk_info.sub_app_id
             )
             try:
                 response = await self.send_and_wait(

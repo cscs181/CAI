@@ -8,15 +8,15 @@
 """
 import os
 import asyncio
-import signal
-import asyncio
-import sys
 import traceback
 from io import BytesIO
 
 from PIL import Image
 
 from cai.api import Client, make_client
+from cai.client import OnlineStatus
+from cai.settings.device import get_device
+from cai.settings.protocol import get_apk_info
 from cai.exceptions import (
     LoginException,
     ApiResponseError,
@@ -34,13 +34,20 @@ async def run(closed: asyncio.Event):
         assert password and account, ValueError("account or password not set")
 
         account = int(account)
-        ci = Client(make_client(account, password))
+        ci = Client(make_client(account, password, get_apk_info(), device=get_device()))
 
         try:
             await ci.login()
             print(f"Login Success! Client status: {ci.client.status!r}")
         except Exception as e:
             await handle_failure(ci, e)
+        while True:
+            for status in OnlineStatus:
+                if status == OnlineStatus.Offline:
+                    continue
+                print(status, "Changed")
+                await ci.set_status(status, 67, True)
+                await asyncio.sleep(10)
     finally:
         closed.set()
 

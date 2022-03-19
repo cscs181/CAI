@@ -1,7 +1,4 @@
-from typing import Callable
-
 from cai.client.client import Client as client_t
-from cai.exceptions import LoginException
 
 
 class BaseAPI:

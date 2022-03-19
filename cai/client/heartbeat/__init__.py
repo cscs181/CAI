@@ -14,19 +14,14 @@ from dataclasses import dataclass
 
 from cai.utils.binary import Packet
 from cai.client.command import Command
-from cai.settings.device import get_device
-from cai.settings.protocol import get_protocol
 from cai.client.packet import CSsoBodyPacket, CSsoDataPacket, IncomingPacket
 
 if TYPE_CHECKING:
     from cai.client import Client
 
-DEVICE = get_device()
-APK_INFO = get_protocol()
-
 
 def encode_heartbeat(
-    seq: int, session_id: bytes, ksid: bytes, uin: int
+    seq: int, session_id: bytes, imei: str, ksid: bytes, uin: int, sub_app_id: int
 ) -> Packet:
     """Build heartbeat alive packet.
 
@@ -41,17 +36,19 @@ def encode_heartbeat(
         seq (int): Packet sequence.
         session_id (bytes): Session ID.
         ksid (bytes): KSID of client.
+        imei (str): Device imei.
         uin (int): User QQ number.
+        sub_app_id (int): apkinfo
 
     Returns:
         Packet: Login packet.
     """
     COMMAND_NAME = "Heartbeat.Alive"
 
-    SUB_APP_ID = APK_INFO.sub_app_id
+    SUB_APP_ID = sub_app_id
 
     sso_packet = CSsoBodyPacket.build(
-        seq, SUB_APP_ID, COMMAND_NAME, DEVICE.imei, session_id, ksid, bytes()
+        seq, SUB_APP_ID, COMMAND_NAME, imei, session_id, ksid, bytes()
     )
     packet = CSsoDataPacket.build(uin, 0, sso_packet, key=None)
     return packet
@@ -63,7 +60,7 @@ class Heartbeat(Command):
 
 
 async def handle_heartbeat(
-    client: "Client", packet: IncomingPacket
+    _client: "Client", packet: IncomingPacket, _device
 ) -> Heartbeat:
     return Heartbeat(
         packet.uin, packet.seq, packet.ret_code, packet.command_name

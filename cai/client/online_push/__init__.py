@@ -9,24 +9,23 @@ This module is used to build and handle online push related packet.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import TYPE_CHECKING, List, Union, Optional
+from typing import TYPE_CHECKING, List, Optional, Tuple
 
 from jce import types
 
 from cai.log import logger
 from cai.utils.binary import Packet
-from cai.settings.device import get_device
+from cai.settings.device import DeviceInfo as _DeviceInfo_t
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
 
-from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
+from .jce import DelMsgInfo, SvcRespPushMsg, DeviceInfo
 from .command import PushMsg, PushMsgError, PushMsgCommand
+from ...settings.protocol import ApkInfo
 
 if TYPE_CHECKING:
     from cai.client import Client
-
-DEVICE = get_device()
 
 
 def encode_push_response(
@@ -34,7 +33,7 @@ def encode_push_response(
     session_id: bytes,
     uin: int,
     d2key: bytes,
-    resp_uin: int,
+    resp_uin: int,  # warn: unused var
     svrip: int,
     delete_messages: List[DelMsgInfo] = [],
     push_token: Optional[bytes] = None,
@@ -88,7 +87,7 @@ def encode_push_response(
 
 
 async def handle_c2c_sync(
-    client: "Client", packet: IncomingPacket
+    client: "Client", packet: IncomingPacket, _device
 ) -> PushMsgCommand:
     """Handle C2C Message Sync.
 
@@ -137,7 +136,7 @@ async def handle_c2c_sync(
 
 
 async def handle_push_msg(
-    client: "Client", packet: IncomingPacket
+    client: "Client", packet: IncomingPacket, device: Tuple[_DeviceInfo_t, ApkInfo]
 ) -> PushMsgCommand:
     """Handle Push Message Command.
 
@@ -146,6 +145,8 @@ async def handle_push_msg(
 
         com.tencent.mobileqq.app.MessageHandler.b
     """
+    device = device[0]
+
     push = PushMsgCommand.decode_response(
         packet.uin,
         packet.seq,
@@ -172,10 +173,10 @@ async def handle_push_msg(
                     service_type=1,
                     device_info=DeviceInfo(
                         net_type=1,
-                        dev_type=DEVICE.model,
-                        os_ver=DEVICE.version.release,
-                        vendor_name=DEVICE.vendor_name,
-                        vendor_os_name=DEVICE.vendor_os_name,
+                        dev_type=device.model,
+                        os_ver=device.version.release,
+                        vendor_name=device.vendor_name,
+                        vendor_os_name=device.vendor_os_name,
                     ),
                 )
                 await client.send(push.seq, "OnlinePush.RespPush", resp_packet)

@@ -164,11 +164,11 @@ MACOS = ApkInfo(
 )
 
 
-def get_apk_info(type_: str = "0") -> ApkInfo:
-    info = {"0": IPAD, "1": ANDROID_PHONE, "2": ANDROID_WATCH, "3": MACOS}
-    if type_ not in info:
-        raise ValueError(f"Invalid Protocol Type: {type_}")
-    return info[type_]
+def get_apk_info(_type: str = "IPAD") -> ApkInfo:
+    info = {"IPAD": IPAD, "ANDROID_PHONE": ANDROID_PHONE, "ANDROID_WATCH": ANDROID_WATCH, "MACOS": MACOS}
+    if _type not in info:
+        raise ValueError(f"Invalid Protocol Type: {_type}")
+    return info[_type]
 
 
 def get_protocol(cache: bool = True) -> ApkInfo:
@@ -181,8 +181,8 @@ def get_protocol(cache: bool = True) -> ApkInfo:
         with open(Storage.protocol_file, "r") as f:
             type_ = f.read()
     elif type_ is MISSING:
-        type_ = "0"
+        type_ = "IPAD"
         with open(Storage.protocol_file, "w") as f:
-            f.write("0")
+            f.write("IPAD")
     _protocol = get_apk_info(type_)
     return _protocol

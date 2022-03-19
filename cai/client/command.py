@@ -31,7 +31,7 @@ class UnhandledCommand(Command):
 
 
 async def _packet_to_command(
-    client: "Client", packet: IncomingPacket
+    client: "Client", packet: IncomingPacket, _device
 ) -> UnhandledCommand:
     return UnhandledCommand(
         packet.uin,

@@ -14,16 +14,26 @@ from .login import Login as _Login
 from .friend import Friend as _Friend
 from .group import Group as _Group
 from cai.client import OnlineStatus, Client as client_t
+from cai.settings.device import DeviceInfo, new_device
+from cai.settings.protocol import ApkInfo
 
 
-def make_client(uin: int, passwd: Union[str, bytes]) -> client_t:
+def make_client(
+    uin: int,
+    passwd: Union[str, bytes],
+    apk_info: ApkInfo,
+    device: Optional[DeviceInfo] = None
+) -> client_t:
     if not (isinstance(passwd, bytes) and len(passwd) == 16):
         # not a vailed md5 passwd
         if isinstance(passwd, bytes):
             passwd = hashlib.md5(passwd).digest()
         else:
             passwd = hashlib.md5(passwd.encode()).digest()
-    return client_t(uin, passwd)
+    if not device:
+        device = new_device()
+    print(device)
+    return client_t(uin, passwd, device, apk_info)
 
 
 class Client(_Login, _Friend, _Group):
@@ -55,8 +65,6 @@ class Client(_Login, _Friend, _Group):
                 Defaults to None.
             is_power_connected (bool, optional): Is power connected to phone.
                 Defaults to False.
-            uin (Optional[int], optional): Account of the client want to change.
-                Defaults to None.
 
         Raises:
             RuntimeError: Client already exists and is running.

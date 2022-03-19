@@ -9,15 +9,7 @@ This module wraps the client methods to provide easier control (high-level api).
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import Dict
-
-from cai.client import Client
-
-_clients: Dict[int, Client] = {}
+from .client import Client, make_client
 
 
-from .flow import *
-from .group import *
-from .login import *
-from .client import *
-from .friend import *
+__all__ = ["Client", "make_client"]

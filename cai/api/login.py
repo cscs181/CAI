@@ -6,18 +6,11 @@
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import hashlib
-from typing import Optional, Union
-
 from .base import BaseAPI
-from cai.client import Client
 from cai.exceptions import LoginException
 
 
 class Login(BaseAPI):
-    def __init__(self, client: Client):
-        self.client = client
-
     async def login(self):
         """Create a new client (or use an existing one) and login.
 

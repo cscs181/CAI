@@ -12,6 +12,7 @@ from typing import List, Union, Optional
 from .base import BaseAPI
 from cai.client import GroupMember, Group as group_t
 
+
 class Group(BaseAPI):
     async def get_group(
         self, group_id: int, cache: bool = True
@@ -35,7 +36,6 @@ class Group(BaseAPI):
             FriendListException: Get friend list returned non-zero ret code.
         """
         return await self._executor("get_group", group_id, cache)
-
 
     async def get_group_list(
         self, cache: bool = True

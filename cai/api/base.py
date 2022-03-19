@@ -7,13 +7,12 @@ from cai.exceptions import LoginException
 class BaseAPI:
     client: client_t
 
-    async def _executor(self, func_name: str, *args, **kwargs):
+    async def _executor(self, func_name: str, *args, uncaught_error=False, **kwargs):
         if not hasattr(self.client, func_name):
             raise AttributeError(f"client has no attribute '{func_name}'")
         try:
-            await getattr(self.client, func_name)(*args, **kwargs)
-        except LoginException:
-            raise
+            return await getattr(self.client, func_name)(*args, **kwargs)
         except Exception:
-            await self.client.close()
+            if uncaught_error:
+                await self.client.close()
             raise

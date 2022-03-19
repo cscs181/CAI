@@ -7,15 +7,16 @@
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import os
+import asyncio
 import signal
 import asyncio
+import sys
 import traceback
 from io import BytesIO
-from hashlib import md5
 
 from PIL import Image
 
-import cai
+from cai.api import Client, make_client
 from cai.exceptions import (
     LoginException,
     ApiResponseError,
@@ -26,46 +27,45 @@ from cai.exceptions import (
 )
 
 
-async def run():
+async def run(closed: asyncio.Event):
     account = os.getenv("ACCOUNT", "")
     password = os.getenv("PASSWORD")
     try:
+        assert password and account, ValueError("account or password not set")
+
         account = int(account)
-        assert password
-    except Exception:
-        print(
-            f"Error: account '{account}', password '{password}'"  # type: ignore
-        )
-        return
+        ci = Client(make_client(account, password))
 
-    try:
-        client = await cai.login(account, md5(password.encode()).digest())
-        print(f"Login Success! Client status: {client.status!r}")
-    except Exception as e:
-        await handle_failure(e)
+        try:
+            await ci.login()
+            print(f"Login Success! Client status: {ci.client.status!r}")
+        except Exception as e:
+            await handle_failure(ci, e)
+    finally:
+        closed.set()
 
 
-async def handle_failure(exception: Exception):
+async def handle_failure(client: Client, exception: Exception):
     if isinstance(exception, LoginSliderNeeded):
         print("Verify url:", exception.verify_url)
         ticket = input("Please enter the ticket: ").strip()
         try:
-            await cai.submit_slider_ticket(ticket)
+            await client.submit_slider_ticket(ticket)
             print("Login Success!")
             await asyncio.sleep(3)
         except Exception as e:
-            await handle_failure(e)
+            await handle_failure(client, e)
     elif isinstance(exception, LoginCaptchaNeeded):
         print("Captcha:")
         image = Image.open(BytesIO(exception.captcha_image))
         image.show()
         captcha = input("Please enter the captcha: ").strip()
         try:
-            await cai.submit_captcha(captcha, exception.captcha_sign)
+            await client.submit_captcha(captcha, exception.captcha_sign)
             print("Login Success!")
             await asyncio.sleep(3)
         except Exception as e:
-            await handle_failure(e)
+            await handle_failure(client, e)
     elif isinstance(exception, LoginAccountFrozen):
         print("Account is frozen!")
     elif isinstance(exception, LoginDeviceLocked):
@@ -93,21 +93,21 @@ async def handle_failure(exception: Exception):
         if not way:
             print("No way to verify device...")
         elif way == "sms":
-            await cai.request_sms()
+            await client.request_sms()
             print(f"SMS was sent to {exception.sms_phone}!")
             sms_code = input("Please enter the sms_code: ").strip()
             try:
-                await cai.submit_sms(sms_code)
+                await client.submit_sms(sms_code)
             except Exception as e:
-                await handle_failure(e)
+                await handle_failure(client, e)
         elif way == "url":
-            await cai.close()
+            await client.close()
             print(f"Go to {exception.verify_url} to verify device!")
             input("Press ENTER after verification to continue login...")
             try:
-                await cai.login(exception.uin)
+                await client.login()
             except Exception as e:
-                await handle_failure(e)
+                await handle_failure(client, e)
     elif isinstance(exception, LoginException):
         print("Login Error:", repr(exception))
     elif isinstance(exception, ApiResponseError):
@@ -122,10 +122,14 @@ if __name__ == "__main__":
 
     async def wait_cleanup():
         await close.wait()
-        await cai.close_all()
 
     loop = asyncio.get_event_loop()
-    loop.add_signal_handler(signal.SIGINT, close.set)
-    loop.add_signal_handler(signal.SIGTERM, close.set)
-    loop.create_task(run())
-    loop.run_until_complete(wait_cleanup())
+    loop.create_task(run(close))
+    if sys.platform != "win32":
+        loop.add_signal_handler(signal.SIGINT, close.set)
+        loop.add_signal_handler(signal.SIGTERM, close.set)
+    else:
+        try:
+            loop.run_until_complete(wait_cleanup())
+        except KeyboardInterrupt:
+            close.set()

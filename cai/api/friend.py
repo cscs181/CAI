@@ -9,118 +9,100 @@
 
 from typing import List, Optional
 
-from cai.client import Friend, FriendGroup
-
-from .client import get_client
-
-
-async def get_friend(
-    friend_uin: int, cache: bool = True, uin: Optional[int] = None
-) -> Optional[Friend]:
-    """Get account friend.
-
-    This function wraps the :meth:`~cai.client.client.Client.get_friend`
-    method of the client.
-
-    Args:
-        friend_uin (int): Friend account uin.
-        cache (bool, optional):  Use cached friend list. Defaults to True.
-        uin (Optional[int], optional): Account of the client want to use.
-            Defaults to None.
-
-    Returns:
-        Friend: Friend object.
-        None: Friend not exists.
-
-    Raises:
-        RuntimeError: Error response type got. This should not happen.
-        ApiResponseError: Get friend list failed.
-        FriendListException: Get friend list returned non-zero ret code.
-    """
-    client = get_client(uin)
-    return await client.get_friend(friend_uin, cache)
+from .base import BaseAPI
+from cai.client import FriendGroup, Friend as friend_t
 
 
-async def get_friend_list(
-    cache: bool = True, uin: Optional[int] = None
-) -> List[Friend]:
-    """Get account friend list.
+class Friend(BaseAPI):
+    async def get_friend(
+        self, friend_uin: int, cache: bool = True
+    ) -> Optional[friend_t]:
+        """Get account friend.
 
-    This function wraps the :meth:`~cai.client.client.Client.get_friend_list`
-    method of the client.
+        This function wraps the :meth:`~cai.client.client.Client.get_friend`
+        method of the client.
 
-    Args:
-        cache (bool, optional):  Use cached friend list. Defaults to True.
-        uin (Optional[int], optional): Account of the client want to use.
-            Defaults to None.
+        Args:
+            friend_uin (int): Friend account uin.
+            cache (bool, optional):  Use cached friend list. Defaults to True.
 
-    Returns:
-        List of :obj:`~cai.client.models.Friend`
+        Returns:
+            Friend: Friend object.
+            None: Friend not exists.
 
-    Raises:
-        RuntimeError: Error response type got. This should not happen.
-        ApiResponseError: Get friend list failed.
-        FriendListException: Get friend list returned non-zero ret code.
-    """
-    client = get_client(uin)
-    return await client.get_friend_list(cache)
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Get friend list failed.
+            FriendListException: Get friend list returned non-zero ret code.
+        """
+        return await self.client.get_friend(friend_uin, cache)
 
+    async def get_friend_list(
+        self, cache: bool = True
+    ) -> List[friend_t]:
+        """Get account friend list.
 
-async def get_friend_group(
-    group_id: int, cache: bool = True, uin: Optional[int] = None
-) -> Optional[FriendGroup]:
-    """Get Friend Group.
+        This function wraps the :meth:`~cai.client.client.Client.get_friend_list`
+        method of the client.
 
-    This function wraps the :meth:`~cai.client.client.Client.get_friend_group`
-    method of the client.
+        Args:
+            cache (bool, optional):  Use cached friend list. Defaults to True.
 
-    Args:
-        group_id (int): Friend group id.
-        cache (bool, optional):  Use cached friend group list. Defaults to True.
-        uin (Optional[int], optional): Account of the client want to use.
-            Defaults to None.
+        Returns:
+            List of :obj:`~cai.client.models.Friend`
 
-    Returns:
-        FriendGroup: Friend group object.
-        None: Friend group not exists.
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Get friend list failed.
+            FriendListException: Get friend list returned non-zero ret code.
+        """
+        return await self._executor("get_friend_list", cache)
 
-    Raises:
-        RuntimeError: Error response type got. This should not happen.
-        ApiResponseError: Get friend list failed.
-        FriendListException: Get friend list returned non-zero ret code.
-    """
-    client = get_client(uin)
-    return await client.get_friend_group(group_id, cache)
+    async def get_friend_group(
+        self, group_id: int, cache: bool = True
+    ) -> Optional[FriendGroup]:
+        """Get Friend Group.
 
+        This function wraps the :meth:`~cai.client.client.Client.get_friend_group`
+        method of the client.
 
-async def get_friend_group_list(
-    cache: bool = True, uin: Optional[int] = None
-) -> List[FriendGroup]:
-    """Get account friend group list.
+        Args:
+            group_id (int): Friend group id.
+            cache (bool, optional):  Use cached friend group list. Defaults to True.
 
-    This function wraps the :meth:`~cai.client.client.Client.get_friend_group_list`
-    method of the client.
+        Returns:
+            FriendGroup: Friend group object.
+            None: Friend group not exists.
 
-    Args:
-        cache (bool, optional):  Use cached friend group list. Defaults to True.
-        uin (Optional[int], optional): Account of the client want to use.
-            Defaults to None.
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Get friend list failed.
+            FriendListException: Get friend list returned non-zero ret code.
+        """
+        return await self._executor("get_friend_group", group_id, cache)
 
-    Returns:
-        List[FriendGroup]: Friend group list.
+    async def get_friend_group_list(
+        self, cache: bool = True
+    ) -> List[FriendGroup]:
+        """Get account friend group list.
 
-    Raises:
-        RuntimeError: Error response type got. This should not happen.
-        ApiResponseError: Get friend group list failed.
-        FriendListException: Get friend group list returned non-zero ret code.
-    """
-    client = get_client(uin)
-    return await client.get_friend_group_list(cache)
+        This function wraps the :meth:`~cai.client.client.Client.get_friend_group_list`
+        method of the client.
+
+        Args:
+            cache (bool, optional):  Use cached friend group list. Defaults to True.
+
+        Returns:
+            List[FriendGroup]: Friend group list.
+
+        Raises:
+            RuntimeError: Error response type got. This should not happen.
+            ApiResponseError: Get friend group list failed.
+            FriendListException: Get friend group list returned non-zero ret code.
+        """
+        return await self._executor("get_friend_group_list", cache)
 
 
 __all__ = [
-    "get_friend",
-    "get_friend_list",
-    "get_friend_group",
-    "get_friend_group_list",
+    "Friend"
 ]

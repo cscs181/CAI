@@ -32,7 +32,6 @@ def make_client(
             passwd = hashlib.md5(passwd.encode()).digest()
     if not device:
         device = new_device()
-    print(device)
     return client_t(uin, passwd, device, apk_info)
 
 
@@ -43,6 +42,10 @@ class Client(_Login, _Friend, _Group):
     @property
     def connected(self) -> bool:
         return self.client.connected
+
+    @property
+    def status(self) -> Optional[OnlineStatus]:
+        return self.client.status
 
     async def close(self):
         """Stop Client"""

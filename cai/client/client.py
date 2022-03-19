@@ -302,6 +302,7 @@ class Client:
             change_server (bool, optional): True if you want to change the server. Defaults to False.
             server (Optional[SsoServer], optional): Which server you want to connect to. Defaults to None.
         """
+        log.network.debug("reconnecting...")
         if not change_server and self._connection:
             await self._connection.reconnect()
             return
@@ -316,6 +317,7 @@ class Client:
         )
         await self.disconnect()
         await self.connect(_server)
+        log.network.debug("reconnected")
 
     async def close(self) -> None:
         """Close the client and logout."""
@@ -961,6 +963,7 @@ class Client:
                 break
             await asyncio.sleep(self._heartbeat_interval)
 
+        log.network.debug("heartbeat stopped")
         self._heartbeat_enabled = False
 
     async def _refresh_friend_list(self):

@@ -8,14 +8,16 @@
 """
 
 import hashlib
-from typing import Union, Optional
+from typing import Union, Optional, Sequence
 
-from .login import Login as _Login
-from .friend import Friend as _Friend
-from .group import Group as _Group
 from cai.client import OnlineStatus, Client as client_t
+from cai.client.message_service.encoders import make_group_msg_pkg, build_msg
 from cai.settings.device import DeviceInfo, new_device
 from cai.settings.protocol import ApkInfo
+from .friend import Friend as _Friend
+from .group import Group as _Group
+from .login import Login as _Login
+from cai.client.message_service.models import Element
 
 
 def make_client(
@@ -46,6 +48,17 @@ class Client(_Login, _Friend, _Group):
     @property
     def status(self) -> Optional[OnlineStatus]:
         return self.client.status
+
+    async def send_group_msg(self, gid: int, msg: Sequence[Element]):
+        seq = self.client.next_seq()
+
+        return await self.client.send_and_wait(
+            seq,
+            "MessageSvc.PbSendMsg",
+            make_group_msg_pkg(
+                seq, gid, self.client, build_msg(msg)
+            )
+        )
 
     async def close(self):
         """Stop Client"""

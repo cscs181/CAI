@@ -6,15 +6,19 @@
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
+import functools
+import logging
 import os
 import asyncio
+import sys
 import traceback
 from io import BytesIO
 
 from PIL import Image
 
 from cai.api import Client, make_client
-from cai.client import OnlineStatus
+from cai.client import OnlineStatus, PrivateMessage, GroupMessage, Event
+from cai.client.message_service.models import TextElement
 from cai.settings.device import get_device
 from cai.settings.protocol import get_apk_info
 from cai.exceptions import (
@@ -41,15 +45,32 @@ async def run(closed: asyncio.Event):
             print(f"Login Success! Client status: {ci.client.status!r}")
         except Exception as e:
             await handle_failure(ci, e)
+        ci.client.add_event_listener(functools.partial(listen_message, ci))
         while True:
             for status in OnlineStatus:
                 if status == OnlineStatus.Offline:
                     continue
                 print(status, "Changed")
                 await ci.set_status(status, 67, True)
-                await asyncio.sleep(10)
+                await asyncio.sleep(360)
     finally:
         closed.set()
+
+
+async def listen_message(client: Client, _, event: Event):
+    if isinstance(event, PrivateMessage):
+        print(f"{event.from_nick}(f{event.from_uin}) -> {event.message}")
+    elif isinstance(event, GroupMessage):
+        print(f"{event.group_name}({event.group_id}:{event.from_uin}) -> {event.message}")
+        if event.message and hasattr(event.message[0], "content"):
+            if event.message[0].content == "0x114514":
+                await client.send_group_msg(
+                    event.group_id, [
+                        TextElement("Hello\n"),
+                        TextElement("Multiple element "),
+                        TextElement("Supported.")
+                    ]
+                )
 
 
 async def handle_failure(client: Client, exception: Exception):
@@ -125,6 +146,13 @@ async def handle_failure(client: Client, exception: Exception):
 
 
 if __name__ == "__main__":
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[logging.StreamHandler(sys.stdout)],
+        format="%(asctime)s %(name)s[%(levelname)s]: %(message)s"
+    )
+
     close = asyncio.Event()
 
     async def wait_cleanup():

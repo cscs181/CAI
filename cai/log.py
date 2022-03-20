@@ -8,14 +8,7 @@ This module is used to build application logger.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import sys
 import logging
-
-logging.basicConfig(
-    level=logging.DEBUG,
-    handlers=[logging.StreamHandler(sys.stdout)],
-    format="%(asctime)s %(name)s[%(levelname)s]: %(message)s"
-)
 
 logger = logging.getLogger("cai")
 network = logging.getLogger("cai.network")

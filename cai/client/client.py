@@ -48,7 +48,7 @@ from cai.exceptions import (
 )
 
 from .event import Event
-from .multi_msg.long_msg import handle_multi_resp_body
+from .multi_msg.long_msg import _handle_multi_resp_body
 from .packet import IncomingPacket, UniPacket
 from .command import Command, _packet_to_command
 from .sso_server import SsoServer, get_sso_server
@@ -135,7 +135,7 @@ HANDLERS: Dict[str, HT] = {
     # "OnlinePush.PbPushBindUinGroupMsg": handle_push_msg,  # sub account
 
     # new
-    "MultiMsg.ApplyUp": handle_multi_resp_body
+    "MultiMsg.ApplyUp": _handle_multi_resp_body
 }
 
 

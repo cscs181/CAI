@@ -77,7 +77,7 @@ _sym_db.RegisterMessage(MultiRspBody)
 if _descriptor._USE_C_DESCRIPTORS == False:
 
   DESCRIPTOR._options = None
-  DESCRIPTOR._serialized_options = b'Z+github.com/Mrs4s/MiraiGo/client/pb/multimsg'
+  DESCRIPTOR._serialized_options = b'Z+github.com/Mrs4s/MiraiGo/client/pb/multi_msg'
   _EXTERNMSG._serialized_start=17
   _EXTERNMSG._serialized_end=49
   _MULTIMSGAPPLYDOWNREQ._serialized_start=51

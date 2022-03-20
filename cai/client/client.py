@@ -48,7 +48,8 @@ from cai.exceptions import (
 )
 
 from .event import Event
-from .packet import IncomingPacket
+from .multi_msg.long_msg import handle_multi_apply_up_resp
+from .packet import IncomingPacket, UniPacket
 from .command import Command, _packet_to_command
 from .sso_server import SsoServer, get_sso_server
 from .online_push import handle_c2c_sync, handle_push_msg
@@ -132,6 +133,9 @@ HANDLERS: Dict[str, HT] = {
     "OnlinePush.PbC2CMsgSync": handle_c2c_sync,
     "OnlinePush.PbPushC2CMsg": handle_push_msg,
     # "OnlinePush.PbPushBindUinGroupMsg": handle_push_msg,  # sub account
+
+    # new
+    "MultiMsg.ApplyUp": handle_multi_apply_up_resp
 }
 
 
@@ -384,6 +388,13 @@ class Client:
         """
         await self.send(seq, command_name, packet)
         return await self._receive_store.fetch(seq, timeout)
+
+    async def send_unipkg_and_wait(self, seq: int, command_name: str, enc_packet: bytes, timeout=10.0):
+        await self.send_and_wait(
+            seq, command_name,
+            UniPacket.build(self.uin, seq, command_name, self._session_id, 1, enc_packet, self._siginfo.d2key),
+            timeout
+        )
 
     async def _handle_incoming_packet(self, in_packet: IncomingPacket) -> None:
         try:

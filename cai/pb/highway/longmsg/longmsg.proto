@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-option go_package = "github.com/Mrs4s/MiraiGo/client/pb/multimsg";
+option go_package = "github.com/Mrs4s/MiraiGo/client/pb/multi_msg";
 
 message ExternMsg {
   int32 channelType = 1;

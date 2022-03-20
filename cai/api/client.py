@@ -51,7 +51,7 @@ class Client(_Login, _Friend, _Group):
 
     async def send_group_msg(self, gid: int, msg: Sequence[Element]):
         seq = self.client.next_seq()
-
+        # todo: split long msg
         return await self.client.send_and_wait(
             seq,
             "MessageSvc.PbSendMsg",

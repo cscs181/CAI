@@ -7,7 +7,7 @@ from cai.pb.msf.msg.comm.comm_pb2 import ContentHead
 from cai.client.packet import UniPacket
 
 from . import models
-
+from ...pb.msf.msg.svc import PbSendMsgReq
 
 if TYPE_CHECKING:
     from cai.client.client import Client
@@ -33,21 +33,19 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
 
 
 def encode_send_group_msg_req(
-    seq: int, session_id: bytes, uin: int, group: int, body: MsgBody, head: ContentHead, d2key: bytes
-):
-    return UniPacket.build(uin, seq, "MessageSvc.PbSendMsg", session_id, 1, PbSendMsgReq(
+    seq: int, group: int, body: MsgBody, head: ContentHead
+) -> PbSendMsgReq:
+    return PbSendMsgReq(
         routing_head=RoutingHead(grp=Grp(group_code=group)),
         content_head=head,
         body=body,
         seq=seq,
         rand=random.randrange(3000, 30000),
         via=0
-    ).SerializeToString(), d2key)
+    )
 
 
-def make_group_msg_pkg(seq: int, gid: int, client: "Client", body: MsgBody) -> UniPacket:
+def make_group_msg_pkg(seq: int, gid: int, body: MsgBody) -> PbSendMsgReq:
     return encode_send_group_msg_req(
-        seq, client._session_id, client.uin,
-        gid, body, ContentHead(pkg_num=1, pkg_index=0, div_seq=0),
-        client._siginfo.d2key
+        seq, gid, body, ContentHead(pkg_num=1, pkg_index=0, div_seq=0)
     )

@@ -1,7 +1,7 @@
 from cai.client import Command
 from cai.pb.highway.multi_msg.multi_msg_pb2 import MultiReqBody, MultiMsgApplyUpReq, MultiMsgApplyUpRsp, MultiRspBody
 from cai.pb.highway.long_msg.long_msg_pb2 import LongReqBody, LongMsgUpReq
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 from dataclasses import dataclass
 
@@ -32,9 +32,8 @@ class MultiApplyResp(Command):
     data: MultiMsgApplyUpRsp
 
 
-async def build_multi_apply_up_pkg(client: "Client", group_id: int, data_len: int, data_md5: bytes, bu_type: int):
+async def build_multi_apply_up_pkg(client: "Client", group_id: int, data_len: int, data_md5: bytes, bu_type: int) -> Tuple[LongReqBody, MultiMsgApplyUpRsp]:
     body: MultiApplyResp = await client.send_unipkg_and_wait(
-        client.next_seq(),
         "MultiMsg.ApplyUp",
         _encode_multi_req_body(
             group_id, data_len, data_md5, bu_type

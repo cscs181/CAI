@@ -8,7 +8,7 @@
 """
 
 import hashlib
-from typing import Union, Optional, Sequence
+from typing import Union, Optional, Sequence, BinaryIO
 
 from cai.client import OnlineStatus, Client as client_t
 from cai.client.message_service.encoders import make_group_msg_pkg, build_msg
@@ -17,7 +17,10 @@ from cai.settings.protocol import ApkInfo
 from .friend import Friend as _Friend
 from .group import Group as _Group
 from .login import Login as _Login
+from cai.utils.gcode import GroupIdConvertor
 from cai.client.message_service.models import Element
+from cai.client.message_service.upload import encode_d388_req
+from ..client.highway import calc_file_md5_and_length, upload_image
 
 
 def make_client(
@@ -53,12 +56,16 @@ class Client(_Login, _Friend, _Group):
         seq = self.client.next_seq()
         # todo: split long msg
         return await self.client.send_unipkg_and_wait(
-            seq,
             "MessageSvc.PbSendMsg",
             make_group_msg_pkg(
                 seq, gid, build_msg(msg)
             ).SerializeToString()
         )
+
+    async def upload_image(self, group_id: int, file: BinaryIO):
+        await upload_image(file, group_id, self.client)
+        "todo: https://github.com/Mrs4s/MiraiGo/blob/714961d68f3dcd6956771d7b8bdea70d96ad65fd/client/image.go#L98"
+
 
     async def close(self):
         """Stop Client"""

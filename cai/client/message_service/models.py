@@ -101,12 +101,14 @@ class SmallEmojiElement(Element):
 
 @dataclass
 class ImageElement(Element):
+    id: int
     filename: str
     size: int
     width: int
     height: int
     md5: bytes
-    url: str
+    url: Optional[str] = None
+    filetype: Optional[int] = 1000
 
     @property
     def type(self) -> str:

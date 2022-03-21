@@ -71,6 +71,8 @@ async def listen_message(client: Client, _, event: Event):
                         TextElement("Supported.")
                     ]
                 )
+            elif event.message[0].content == "1919":
+                print(await client.upload_image(event.group_id, open("test.jpg", "rb")))
 
 
 async def handle_failure(client: Client, exception: Exception):

@@ -389,8 +389,10 @@ class Client:
         await self.send(seq, command_name, packet)
         return await self._receive_store.fetch(seq, timeout)
 
-    async def send_unipkg_and_wait(self, seq: int, command_name: str, enc_packet: bytes, timeout=10.0):
-        await self.send_and_wait(
+    async def send_unipkg_and_wait(self, command_name: str, enc_packet: bytes, seq=-1, timeout=10.0):
+        if seq == -1:
+            seq = self.next_seq()
+        return await self.send_and_wait(
             seq, command_name,
             UniPacket.build(self.uin, seq, command_name, self._session_id, 1, enc_packet, self._siginfo.d2key),
             timeout

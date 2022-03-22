@@ -1,7 +1,7 @@
 class GroupIdConvertor:
     @staticmethod
     def to_group_code(group_id: int) -> int:
-        left = group_id / 1000000
+        left = group_id // 1000000
         if 0 + 202 <= left <= 10 + 202:
             left -= 202
         elif 11 + 480 - 11 <= left <= 19 + 480 - 11:
@@ -20,7 +20,7 @@ class GroupIdConvertor:
 
     @staticmethod
     def to_group_uin(group_code: int) -> int:
-        left = group_code / 1000000
+        left = group_code // 1000000
         if 0 <= left <= 10:
             left += 202
         elif 11 <= left <= 19:

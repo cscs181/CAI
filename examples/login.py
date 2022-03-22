@@ -45,13 +45,14 @@ async def run(closed: asyncio.Event):
             print(f"Login Success! Client status: {ci.client.status!r}")
         except Exception as e:
             await handle_failure(ci, e)
-        ci.client.add_event_listener(functools.partial(listen_message, ci))
+        #ci.client.add_event_listener(functools.partial(listen_message, ci))
+        print(await ci.upload_image(478399804, open("test.png", "rb")))
         while True:
             for status in OnlineStatus:
                 if status == OnlineStatus.Offline:
                     continue
                 print(status, "Changed")
-                await ci.set_status(status, 67, True)
+                #await ci.set_status(status, 67, True)
                 await asyncio.sleep(360)
     finally:
         closed.set()
@@ -72,12 +73,12 @@ async def listen_message(client: Client, _, event: Event):
                     ]
                 )
             elif event.message[0].content == "1919":
-                print(await client.upload_image(event.group_id, open("test.jpg", "rb")))
+                print(await client.upload_image(event.group_id, open("test.png", "rb")))
 
 
 async def handle_failure(client: Client, exception: Exception):
     if isinstance(exception, LoginSliderNeeded):
-        print("Verify url:", exception.verify_url)
+        print("Verify url:", exception.verify_url.replace("ssl.captcha.qq.com", "txhelper.glitch.me"))
         ticket = input("Please enter the ticket: ").strip()
         try:
             await client.submit_slider_ticket(ticket)

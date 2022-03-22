@@ -125,7 +125,7 @@ async def upload_image(file: BinaryIO, gid: int, client: "Client") -> ImageEleme
     ret = decode_upload_image_resp(
         (await client.send_unipkg_and_wait(
             "ImgStore.GroupPicUp",
-            encode_d388_req(GroupIdConvertor.to_group_code(gid), client.uin, fmd5, fl).SerializeToString()
+            encode_d388_req(GroupIdConvertor.to_group_code(gid), client.uin, fmd5, fl, client.apk_info.version.encode()).SerializeToString()
         )).data
     )
     print(ret)

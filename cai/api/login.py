@@ -23,7 +23,9 @@ class Login(BaseAPI):
         await self.client.reconnect()
         try:
             await self._executor("login")
-        except not LoginException:
+        except LoginException:
+            raise  # user handle required
+        except Exception:
             await self.client.close()
             raise
 
@@ -63,11 +65,7 @@ class Login(BaseAPI):
             LoginSliderException: Need slider ticket.
             LoginCaptchaException: Need captcha image.
         """
-        try:
-            await self._executor("submit_slider_ticket", ticket)
-        except not LoginException:
-            await self.client.close()
-            raise
+        await self._executor("submit_slider_ticket", ticket)
         return True
 
     async def request_sms(self) -> bool:

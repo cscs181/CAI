@@ -12,3 +12,4 @@ import logging
 
 logger = logging.getLogger("cai")
 network = logging.getLogger("cai.network")
+highway = logging.getLogger("cai.highway")

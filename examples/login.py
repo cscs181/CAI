@@ -45,8 +45,7 @@ async def run(closed: asyncio.Event):
             print(f"Login Success! Client status: {ci.client.status!r}")
         except Exception as e:
             await handle_failure(ci, e)
-        #ci.client.add_event_listener(functools.partial(listen_message, ci))
-        print(await ci.upload_image(478399804, open("test.png", "rb")))
+        ci.client.add_event_listener(functools.partial(listen_message, ci))
         while True:
             for status in OnlineStatus:
                 if status == OnlineStatus.Offline:
@@ -73,7 +72,13 @@ async def listen_message(client: Client, _, event: Event):
                     ]
                 )
             elif event.message[0].content == "1919":
-                print(await client.upload_image(event.group_id, open("test.png", "rb")))
+                await client.send_group_msg(
+                    event.group_id,
+                    [
+                        await client.upload_image(event.group_id, open("test.png", "rb")),
+                        TextElement("1234")
+                    ]
+                )
 
 
 async def handle_failure(client: Client, exception: Exception):

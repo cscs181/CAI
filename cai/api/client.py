@@ -63,8 +63,7 @@ class Client(_Login, _Friend, _Group):
         )
 
     async def upload_image(self, group_id: int, file: BinaryIO):
-        await upload_image(file, group_id, self.client)
-        "todo: https://github.com/Mrs4s/MiraiGo/blob/714961d68f3dcd6956771d7b8bdea70d96ad65fd/client/image.go#L98"
+        return await upload_image(file, group_id, self.client)
 
 
     async def close(self):

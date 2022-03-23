@@ -1,7 +1,7 @@
 import random
 
 from typing import Sequence, TYPE_CHECKING, Dict, Type
-from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, Elem
+from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem
 from cai.pb.msf.msg.svc.svc_pb2 import PbSendMsgReq, RoutingHead, Grp
 from cai.pb.msf.msg.comm.comm_pb2 import ContentHead
 from cai.client.packet import UniPacket
@@ -20,16 +20,40 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
     ret = []
     for e in elements:  # todo: support more element
         if isinstance(e, models.TextElement):
-            ret.append(PlainText(str=e.content.encode()))
+            ret.append(
+                Elem(text=PlainText(str=e.content.encode()))
+            )
+        elif isinstance(e, models.ImageElement):
+            ret.append(
+                Elem(
+                    custom_face=CustomFace(
+                        file_type=66,
+                        useful=1,
+                        biz_type=0, #5
+                        width=e.width,
+                        height=e.height,
+                        file_id=e.id,
+                        file_path=e.filename,
+                        image_type=e.filetype,
+                        origin=1,
+                        size=e.size,
+                        md5=e.md5,
+                        flag=b"\x00\x00\x00\x00"
+                    )
+                )
+            )
         else:
             raise NotImplementedError(e)
 
-    return MsgBody(
+    d = MsgBody(
         rich_text=RichText(
-            elems=[Elem(text=e) for e in ret],
+            #elems=[Elem(text=e) for e in ret],
+            elems=ret,
             ptt=None
         )
     )
+    print(d.SerializeToString().hex())
+    return d
 
 
 def encode_send_group_msg_req(

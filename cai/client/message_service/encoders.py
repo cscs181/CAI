@@ -29,16 +29,19 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
                     custom_face=CustomFace(
                         file_type=66,
                         useful=1,
-                        biz_type=0, #5
+                        biz_type=0,
                         width=e.width,
                         height=e.height,
                         file_id=e.id,
                         file_path=e.filename,
                         image_type=e.filetype,
+                        source=200,
                         origin=1,
                         size=e.size,
                         md5=e.md5,
-                        flag=b"\x00\x00\x00\x00"
+                        show_len=0,
+                        download_len=0
+                        #flag=b"\x00\x00\x00\x00"
                     )
                 )
             )
@@ -64,8 +67,8 @@ def encode_send_group_msg_req(
         content_head=head,
         body=body,
         seq=seq,
-        rand=random.randrange(3000, 30000),
-        via=0
+        rand=random.randrange(300000, 3000000),
+        via=1,
     )
 
 

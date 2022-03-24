@@ -65,7 +65,6 @@ class Client(_Login, _Friend, _Group):
     async def upload_image(self, group_id: int, file: BinaryIO):
         return await upload_image(file, group_id, self.client)
 
-
     async def close(self):
         """Stop Client"""
         await self.client.close()

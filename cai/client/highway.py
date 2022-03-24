@@ -113,12 +113,13 @@ def decode_upload_image_resp(data: bytes) -> ImageUploadResponse:
     if pkg.fileExit:
         if pkg.imgInfo:
             info = pkg.imgInfo
+            # fuck: pkg.fileId != pkg.fileid
             return ImageUploadResponse(
-                isExists=True, fileId=pkg.fileId, hasMetaData=True,
+                isExists=True, fileId=pkg.fileid, hasMetaData=True,
                 fileType=info.fileType, width=info.fileWidth, height=info.fileHeight
             )
         else:
-            return ImageUploadResponse(isExists=True, fileId=pkg.fileId)
+            return ImageUploadResponse(isExists=True, fileId=pkg.fileid)
     return ImageUploadResponse(
         isExists=False,
         uploadAddr=[(itoa(a), p) for a, p in zip(pkg.upIp, pkg.upPort)],
@@ -128,14 +129,12 @@ def decode_upload_image_resp(data: bytes) -> ImageUploadResponse:
 
 async def upload_image(file: BinaryIO, gid: int, client: "Client") -> ImageElement:
     fmd5, fl = calc_file_md5_and_length(file)
-    print(encode_d388_req(gid, client.uin, fmd5, fl).SerializeToString().hex())
     ret = decode_upload_image_resp(
         (await client.send_unipkg_and_wait(
             "ImgStore.GroupPicUp",
             encode_d388_req(gid, client.uin, fmd5, fl).SerializeToString()
         )).data
     )
-    print(ret)
     if ret.resultCode != 0:
         raise ConnectionError(ret.resultCode)
     elif not ret.isExists:

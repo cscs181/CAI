@@ -8,9 +8,11 @@ This module is used to control client actions (low-level api).
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
+import sys
 import time
 import asyncio
 import secrets
+import traceback
 from typing import (
     Any,
     Set,
@@ -340,6 +342,7 @@ class Client:
     async def close(self) -> None:
         """Close the client and logout."""
         log.logger.warning("closing client")
+        self._reconnect = False
         if (
             self.connected
             and self.status

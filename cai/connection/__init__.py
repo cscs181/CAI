@@ -64,7 +64,7 @@ class Connection:
 
     @property
     async def wait_closed(self):
-        await self._closed.wait()
+        return self._closed.wait
 
     async def __aenter__(self):
         await self._connect()

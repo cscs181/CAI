@@ -188,7 +188,9 @@ class Client:
 
         self.device_info: DeviceInfo = device
         self.apk_info: ApkInfo = apk_info
-        
+        self._reconnect: bool = True
+        self.closed: asyncio.Event = asyncio.Event()
+
         if not loop:
             loop = asyncio.get_event_loop()
         self._loop = loop
@@ -294,9 +296,13 @@ class Client:
                 f"server({_server.host}:{_server.port}): " + repr(e)
             )
 
-    def _recv_done_cb(self, task):
-        log.network.warning("receiver stopped, try to reconnect")
-        self._loop.create_task(self.reconnect())
+    def _recv_done_cb(self, _task):
+        if self._reconnect:
+            log.network.warning("receiver stopped, try to reconnect")
+            self._loop.create_task(self.reconnect())
+        else:
+            log.network.warning("receiver stopped")
+            await self.close()
 
     async def disconnect(self) -> None:
         """Disconnect if already connected to the server."""
@@ -314,10 +320,13 @@ class Client:
             change_server (bool, optional): True if you want to change the server. Defaults to False.
             server (Optional[SsoServer], optional): Which server you want to connect to. Defaults to None.
         """
-        log.network.debug("reconnecting...")
+
         if not change_server and self._connection:
-            await self._connection.reconnect()
-            await self.register()
+            log.network.debug("reconnecting...")
+            await self.connect()
+            await self.login()
+            await self.register(register_reason=RegPushReason.MsfByNetChange)
+            log.network.debug("reconnected")
             return
 
         exclude = (
@@ -330,7 +339,6 @@ class Client:
         )
         await self.disconnect()
         await self.connect(_server)
-        log.network.debug("reconnected")
 
     async def close(self) -> None:
         """Close the client and logout."""
@@ -343,6 +351,7 @@ class Client:
             await self.register(OnlineStatus.Offline)
         self._receive_store.cancel_all()
         await self.disconnect()
+        self.closed.set()
 
     @property
     def seq(self) -> int:
@@ -424,9 +433,8 @@ class Client:
         """
         while self.connected:
             try:
-                length: int = int.from_bytes(await self.connection.read_bytes(4), "big") - 4
+                length: int = int.from_bytes(await self.connection.read_bytes(4), "big", signed=False) - 4
 
-                # FIXME: length < 0 ?
                 data = await self.connection.read_bytes(length)
                 packet = IncomingPacket.parse(
                     data,
@@ -440,10 +448,9 @@ class Client:
                 )
                 # do not block receive
                 self._loop.create_task(self._handle_incoming_packet(packet))
-            except ConnectionError:  #ConnectionAbortedError:
-                log.logger.exception(f"Client {self.uin} connection closed")
+            except ConnectionAbortedError as e:
+                log.logger.error(f"{self.uin} connection lost: {str(e)}")
                 break
-                #await self.reconnect(change_server=True)
             except Exception as e:
                 log.logger.exception(e)
 

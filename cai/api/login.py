@@ -20,7 +20,7 @@ class Login(BaseAPI):
             LoginSliderException: Need slider ticket.
             LoginCaptchaException: Need captcha image.
         """
-        await self.client.reconnect()
+        await self.client.connect()
         try:
             await self._executor("login")
         except LoginException:

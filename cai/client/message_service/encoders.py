@@ -48,15 +48,13 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
         else:
             raise NotImplementedError(e)
 
-    d = MsgBody(
+    return MsgBody(
         rich_text=RichText(
             #elems=[Elem(text=e) for e in ret],
             elems=ret,
             ptt=None
         )
     )
-    print(d.SerializeToString().hex())
-    return d
 
 
 def encode_send_group_msg_req(

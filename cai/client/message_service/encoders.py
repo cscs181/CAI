@@ -1,7 +1,8 @@
 import random
+import zlib
 
 from typing import Sequence, Union
-from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem, CommonElem
+from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem, CommonElem, LightAppElem, RichMsg
 from cai.pb.msf.msg.svc.svc_pb2 import RoutingHead, Grp
 from cai.pb.msf.msg.comm.comm_pb2 import ContentHead
 
@@ -67,6 +68,21 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
                     )
                 )
             )
+        elif isinstance(e, models.RichMsgElement):
+            if len(e.content) > 256:  # compress require
+                content = b"\x01" + zlib.compress(e.content, level=6)
+            else:
+                content = b"\x00" + e.content
+            if e.service_id == -2:  # LightApp
+                ret_elem = Elem(light_app=LightAppElem(
+                    data=content
+                ))
+            else:  # Json & Xml
+                ret_elem = Elem(rich_msg=RichMsg(
+                    template_1=content,
+                    service_id=0 if e.service_id < 0 else e.service_id
+                ))
+            ret.append(ret_elem)
         else:
             raise NotImplementedError(e)
 

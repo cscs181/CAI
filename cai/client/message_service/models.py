@@ -156,7 +156,7 @@ class RichMsgElement(Element):
         xml
     """
     content: bytes
-    service_id: Optional[int] = -1
+    service_id: Optional[int] = -2
 
     @property
     def type(self) -> str:

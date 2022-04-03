@@ -85,25 +85,23 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                 content = zlib.decompress(elem.rich_msg.template_1[1:])
             else:
                 content = elem.rich_msg.template_1[1:]
-            res.append(
+            return [
                 RichMsgElement(
                     content,
                     elem.rich_msg.service_id if content[1] == 60 else -1
                 )
-            )
-            break
+            ]
         if elem.HasField("light_app"):
             if elem.light_app.data[0]:
                 content = zlib.decompress(elem.light_app.data[1:])
             else:
                 content = elem.light_app.data[1:]
-            res.append(
+            return [
                 RichMsgElement(
                     content,
                     -2
                 )
-            )
-            break
+            ]
         # TextElemDecoder
         if elem.HasField("face"):
             res.append(FaceElement(elem.face.index))

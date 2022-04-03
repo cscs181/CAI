@@ -10,17 +10,17 @@
 import hashlib
 from typing import Union, Optional, Sequence, BinaryIO
 
+from cai import log
 from cai.client import OnlineStatus, Client as client_t
+from cai.client.highway import HighWaySession
+from cai.client.message_service.models import Element, ImageElement
 from cai.client.message_service.encoders import make_group_msg_pkg, build_msg
 from cai.settings.device import DeviceInfo, new_device
 from cai.settings.protocol import ApkInfo
+
 from .friend import Friend as _Friend
 from .group import Group as _Group
 from .login import Login as _Login
-from cai.utils.gcode import GroupIdConvertor
-from cai.client.message_service.models import Element
-from cai.client.message_service.upload import encode_d388_req
-from ..client.highway import calc_file_md5_and_length, upload_image
 
 
 def make_client(
@@ -43,6 +43,7 @@ def make_client(
 class Client(_Login, _Friend, _Group):
     def __init__(self, client: client_t):
         self.client = client
+        self._highway_session = HighWaySession(client, logger=log.highway)
 
     @property
     def connected(self) -> bool:
@@ -62,10 +63,8 @@ class Client(_Login, _Friend, _Group):
             ).SerializeToString()
         )
 
-    async def upload_image(self, group_id: int, file: BinaryIO):
-        await upload_image(file, group_id, self.client)
-        "todo: https://github.com/Mrs4s/MiraiGo/blob/714961d68f3dcd6956771d7b8bdea70d96ad65fd/client/image.go#L98"
-
+    async def upload_image(self, group_id: int, file: BinaryIO) -> ImageElement:
+        return await self._highway_session.upload_image(file, group_id)
 
     async def close(self):
         """Stop Client"""

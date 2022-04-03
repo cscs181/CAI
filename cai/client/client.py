@@ -8,9 +8,7 @@ This module is used to control client actions (low-level api).
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import logging
 import time
-import struct
 import asyncio
 import secrets
 from typing import (
@@ -302,7 +300,7 @@ class Client:
             self._loop.create_task(self.reconnect())
         else:
             log.network.warning("receiver stopped")
-            await self.close()
+            self._loop.create_task(self.close())
 
     async def disconnect(self) -> None:
         """Disconnect if already connected to the server."""

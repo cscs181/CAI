@@ -322,7 +322,6 @@ class Client:
         if not change_server and self._connection:
             log.network.debug("reconnecting...")
             await self.connect()
-            await self.login()
             await self.register(register_reason=RegPushReason.MsfByNetChange)
             log.network.debug("reconnected")
             return

@@ -116,6 +116,13 @@ class ImageElement(Element):
 
 
 @dataclass
+class FlashImageElement(ImageElement):
+    @property
+    def type(self) -> str:
+        return "flash_image"
+
+
+@dataclass
 class PokeElement(Element):
     id: int
     name: str
@@ -125,3 +132,32 @@ class PokeElement(Element):
     @property
     def type(self) -> str:
         return "poke"
+
+
+@dataclass
+class AtElement(Element):
+    target: int
+    display: Optional[str] = ""
+
+    @property
+    def type(self) -> str:
+        return "at"
+
+
+@dataclass
+class RichMsgElement(Element):
+    """
+    service_id:
+      case -1:
+        json
+      case -2:
+        light_app
+      default:
+        xml
+    """
+    content: bytes
+    service_id: Optional[int] = -1
+
+    @property
+    def type(self) -> str:
+        return "rich_msg"

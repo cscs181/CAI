@@ -8,7 +8,7 @@ This module is used to decode message protobuf.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-
+import zlib
 from itertools import chain
 from typing import Dict, List, Callable, Optional, Sequence
 
@@ -18,19 +18,23 @@ from cai.pb.msf.msg.comm import Msg
 from cai.pb.im.msg.msg_body import Elem
 from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype2,
+    MsgElemInfo_servtype3,
     MsgElemInfo_servtype33,
 )
 
 from .models import (
     Element,
+    AtElement,
     FaceElement,
     PokeElement,
     TextElement,
     GroupMessage,
     ImageElement,
     ReplyElement,
+    RichMsgElement,
     PrivateMessage,
     SmallEmojiElement,
+    FlashImageElement
 )
 
 
@@ -67,7 +71,39 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                 )
         # TextElemDecoder
         if elem.HasField("text"):
-            res.append(TextElement(elem.text.str.decode("utf-8")))
+            if elem.text.attr_6_buf:
+                res.append(
+                    AtElement(
+                        int.from_bytes(elem.text.attr_6_buf[7:11], "big", signed=False),
+                        elem.text.str.decode("utf-8")
+                    )
+                )
+            else:
+                res.append(TextElement(elem.text.str.decode("utf-8")))
+        if elem.HasField("rich_msg"):
+            if elem.rich_msg.template_1[0]:
+                content = zlib.decompress(elem.rich_msg.template_1[1:])
+            else:
+                content = elem.rich_msg.template_1[1:]
+            res.append(
+                RichMsgElement(
+                    content,
+                    elem.rich_msg.service_id if content[1] == 60 else -1
+                )
+            )
+            break
+        if elem.HasField("light_app"):
+            if elem.light_app.data[0]:
+                content = zlib.decompress(elem.light_app.data[1:])
+            else:
+                content = elem.light_app.data[1:]
+            res.append(
+                RichMsgElement(
+                    content,
+                    -2
+                )
+            )
+            break
         # TextElemDecoder
         if elem.HasField("face"):
             res.append(FaceElement(elem.face.index))
@@ -166,6 +202,21 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                         poke.double_hit,
                     )
                 ]
+                break
+            elif service_type == 3:
+                flash = MsgElemInfo_servtype3.FromString(elem.common_elem.pb_elem)
+                if flash.flash_troop_pic:
+                    res.append(
+                        FlashImageElement(
+                            id=flash.flash_troop_pic.file_id,
+                            filename=flash.flash_troop_pic.file_path,
+                            filetype=flash.flash_troop_pic.file_type,
+                            size=flash.flash_troop_pic.size,
+                            md5=flash.flash_troop_pic.md5,
+                            width=flash.flash_troop_pic.width,
+                            height=flash.flash_troop_pic.height
+                        )
+                    )
                 break
             # TextElemDecoder
             elif service_type == 33:

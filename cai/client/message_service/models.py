@@ -101,12 +101,12 @@ class SmallEmojiElement(Element):
 
 @dataclass
 class ImageElement(Element):
-    id: int
     filename: str
     size: int
     width: int
     height: int
     md5: bytes
+    id: Optional[int] = -1
     url: Optional[str] = None
     filetype: Optional[int] = 1000
 

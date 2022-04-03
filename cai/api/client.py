@@ -63,7 +63,9 @@ class Client(_Login, _Friend, _Group):
         )
 
     async def upload_image(self, group_id: int, file: BinaryIO):
-        return await upload_image(file, group_id, self.client)
+        await upload_image(file, group_id, self.client)
+        "todo: https://github.com/Mrs4s/MiraiGo/blob/714961d68f3dcd6956771d7b8bdea70d96ad65fd/client/image.go#L98"
+
 
     async def close(self):
         """Stop Client"""

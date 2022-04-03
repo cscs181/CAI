@@ -142,7 +142,7 @@ HANDLERS: Dict[str, HT] = {
 class Client:
     LISTENERS: Set[LT] = set()
 
-    def __init__(self, uin: int, password_md5: bytes, device: DeviceInfo, apk_info: ApkInfo):
+    def __init__(self, uin: int, password_md5: bytes, device: DeviceInfo, apk_info: ApkInfo, *, loop=None):
         # account info
         self._uin: int = uin
         self._password_md5: bytes = password_md5
@@ -188,9 +188,13 @@ class Client:
 
         self.device_info: DeviceInfo = device
         self.apk_info: ApkInfo = apk_info
+        
+        if not loop:
+            loop = asyncio.get_event_loop()
+        self._loop = loop
 
     def __str__(self) -> str:
-        return f"<cai client object for {self.uin}>"
+        return f"<cai client object {self.uin}(connected={self.connected})>"
 
     @property
     def uin(self) -> int:
@@ -281,7 +285,7 @@ class Client:
             self._connection = await connect(
                 _server.host, _server.port, ssl=False, timeout=3.0
             )
-            asyncio.create_task(self.receive())
+            self._loop.create_task(self.receive()).add_done_callback(self._recv_done_cb)
         except ConnectionError as e:
             raise
         except Exception as e:
@@ -289,6 +293,10 @@ class Client:
                 "An error occurred while connecting to "
                 f"server({_server.host}:{_server.port}): " + repr(e)
             )
+
+    def _recv_done_cb(self, task):
+        log.network.warning("receiver stopped, try to reconnect")
+        self._loop.create_task(self.reconnect())
 
     async def disconnect(self) -> None:
         """Disconnect if already connected to the server."""
@@ -309,6 +317,7 @@ class Client:
         log.network.debug("reconnecting...")
         if not change_server and self._connection:
             await self._connection.reconnect()
+            await self.register()
             return
 
         exclude = (
@@ -415,10 +424,8 @@ class Client:
         """
         while self.connected:
             try:
-                length: int = (
-                    struct.unpack(">i", await self.connection.read_bytes(4))[0]
-                    - 4
-                )
+                length: int = int.from_bytes(await self.connection.read_bytes(4), "big") - 4
+
                 # FIXME: length < 0 ?
                 data = await self.connection.read_bytes(length)
                 packet = IncomingPacket.parse(
@@ -432,9 +439,11 @@ class Client:
                     f"(receive:{packet.ret_code}): {packet.command_name}"
                 )
                 # do not block receive
-                asyncio.create_task(self._handle_incoming_packet(packet))
-            except ConnectionAbortedError:
-                log.logger.debug(f"Client {self.uin} connection closed")
+                self._loop.create_task(self._handle_incoming_packet(packet))
+            except ConnectionError:  #ConnectionAbortedError:
+                log.logger.exception(f"Client {self.uin} connection closed")
+                break
+                #await self.reconnect(change_server=True)
             except Exception as e:
                 log.logger.exception(e)
 
@@ -960,7 +969,7 @@ class Client:
 
         self._heartbeat_enabled = True
 
-        while self._heartbeat_enabled and self.connected:
+        while self._heartbeat_enabled and not self._connection.closed:
             seq = self.next_seq()
             packet = encode_heartbeat(
                 seq, self._session_id, self.device_info.imei, self._ksid, self.uin, self.apk_info.sub_app_id

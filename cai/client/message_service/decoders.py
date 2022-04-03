@@ -96,23 +96,23 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
             if elem.custom_face.md5 and elem.custom_face.orig_url:
                 res.append(
                     ImageElement(
-                        elem.custom_face.file_path,
-                        elem.custom_face.size,
-                        elem.custom_face.width,
-                        elem.custom_face.height,
-                        elem.custom_face.md5,
-                        "https://gchat.qpic.cn" + elem.custom_face.orig_url,
+                        filename=elem.custom_face.file_path,
+                        size=elem.custom_face.size,
+                        width=elem.custom_face.width,
+                        height=elem.custom_face.height,
+                        md5=elem.custom_face.md5,
+                        url="https://gchat.qpic.cn" + elem.custom_face.orig_url,
                     )
                 )
             elif elem.custom_face.md5:
                 res.append(
                     ImageElement(
-                        elem.custom_face.file_path,
-                        elem.custom_face.size,
-                        elem.custom_face.width,
-                        elem.custom_face.height,
-                        elem.custom_face.md5,
-                        "https://gchat.qpic.cn/gchatpic_new/0/0-0-"
+                        filename=elem.custom_face.file_path,
+                        size=elem.custom_face.size,
+                        width=elem.custom_face.width,
+                        height=elem.custom_face.height,
+                        md5=elem.custom_face.md5,
+                        url="https://gchat.qpic.cn/gchatpic_new/0/0-0-"
                         + elem.custom_face.md5.decode().upper()
                         + "/0",
                     )
@@ -122,13 +122,12 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
             if elem.not_online_image.orig_url:
                 res.append(
                     ImageElement(
-                        elem.not_online_image.file_path.decode("utf-8"),
-                        elem.not_online_image.file_len,
-                        elem.not_online_image.pic_width,
-                        elem.not_online_image.pic_height,
-                        elem.not_online_image.pic_md5,
-                        "https://c2cpicdw.qpic.cn"
-                        + elem.not_online_image.orig_url,
+                        filename=elem.not_online_image.file_path.decode("utf-8"),
+                        size=elem.not_online_image.file_len,
+                        width=elem.not_online_image.pic_width,
+                        height=elem.not_online_image.pic_height,
+                        md5=elem.not_online_image.pic_md5,
+                        url="https://c2cpicdw.qpic.cn" + elem.not_online_image.orig_url,
                     )
                 )
             elif (
@@ -137,12 +136,12 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
             ):
                 res.append(
                     ImageElement(
-                        elem.not_online_image.file_path.decode("utf-8"),
-                        elem.not_online_image.file_len,
-                        elem.not_online_image.pic_width,
-                        elem.not_online_image.pic_height,
-                        elem.not_online_image.pic_md5,
-                        "https://c2cpicdw.qpic.cn/offpic_new/0/"
+                        filename=elem.not_online_image.file_path.decode("utf-8"),
+                        size=elem.not_online_image.file_len,
+                        width=elem.not_online_image.pic_width,
+                        height=elem.not_online_image.pic_height,
+                        md5=elem.not_online_image.pic_md5,
+                        url="https://c2cpicdw.qpic.cn/offpic_new/0/"
                         + (
                             elem.not_online_image.res_id
                             or elem.not_online_image.download_path

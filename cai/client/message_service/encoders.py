@@ -1,7 +1,7 @@
 import random
 
-from typing import Sequence
-from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem
+from typing import Sequence, Union
+from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem, CommonElem
 from cai.pb.msf.msg.svc.svc_pb2 import RoutingHead, Grp
 from cai.pb.msf.msg.comm.comm_pb2 import ContentHead
 
@@ -11,6 +11,27 @@ from cai.pb.msf.msg.svc import PbSendMsgReq
 
 # todo: https://github.com/mamoe/mirai/blob/7d3971259de59cede94b7a55650c8a6ad4346a59/mirai-core/src/commonMain/kotlin/network/protocol/packet/chat/receive/MessageSvc.PbSendMsg.kt#L103
 # https://github.com/mamoe/mirai/blob/74fc5a50376ed0330b984af51e0fabc2147afdbb/mirai-core/src/commonMain/kotlin/contact/SendMessageHandler.kt
+
+
+def _build_image_elem(e: Union[models.ImageElement, models.FlashImageElement]) -> CustomFace:
+    return CustomFace(
+        file_type=66,
+        useful=1,
+        biz_type=0,
+        width=e.width,
+        height=e.height,
+        file_id=e.id,
+        file_path=e.filename,
+        image_type=e.filetype,
+        source=200,
+        origin=1,
+        size=e.size,
+        md5=e.md5,
+        show_len=0,
+        download_len=0
+        #flag=b"\x00\x00\x00\x00"
+    )
+
 
 def build_msg(elements: Sequence[models.Element]) -> MsgBody:
     ret = []
@@ -22,22 +43,27 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
         elif isinstance(e, models.ImageElement):
             ret.append(
                 Elem(
-                    custom_face=CustomFace(
-                        file_type=66,
-                        useful=1,
-                        biz_type=0,
-                        width=e.width,
-                        height=e.height,
-                        file_id=e.id,
-                        file_path=e.filename,
-                        image_type=e.filetype,
-                        source=200,
-                        origin=1,
-                        size=e.size,
-                        md5=e.md5,
-                        show_len=0,
-                        download_len=0
-                        #flag=b"\x00\x00\x00\x00"
+                    custom_face=_build_image_elem(e)
+                )
+            )
+        elif isinstance(e, models.FlashImageElement):
+            ret.append(
+                Elem(
+                    common_elem=CommonElem(
+                        service_type=3,
+                        pb_elem=_build_image_elem(e).SerializeToString()
+                    )
+                )
+            )
+            ret.append(  # fallback info
+                Elem(text=PlainText(str="[闪照]请使用新版手机QQ查看".encode()))
+            )
+        elif isinstance(e, models.AtElement):
+            ret.append(
+                Elem(
+                    text=PlainText(
+                        str=e.display.encode(),
+                        attr_6_buf=b"\x00\x01\x00\x00\x00\x03\x00"+e.target.to_bytes(4, "big", signed=False)+b"\x00\x00"
                     )
                 )
             )
@@ -46,7 +72,6 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
 
     return MsgBody(
         rich_text=RichText(
-            #elems=[Elem(text=e) for e in ret],
             elems=ret,
             ptt=None
         )

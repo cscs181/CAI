@@ -18,9 +18,12 @@ from cai.client.message_service.encoders import make_group_msg_pkg, build_msg
 from cai.settings.device import DeviceInfo, new_device
 from cai.settings.protocol import ApkInfo
 
+from .error import BotMutedException, AtAllLimitException, GroupMsgLimitException
 from .friend import Friend as _Friend
 from .group import Group as _Group
 from .login import Login as _Login
+
+from cai.pb.msf.msg.svc import PbSendMsgResp
 
 
 def make_client(
@@ -54,14 +57,25 @@ class Client(_Login, _Friend, _Group):
         return self.client.status
 
     async def send_group_msg(self, gid: int, msg: Sequence[Element]):
-        seq = self.client.next_seq()
         # todo: split long msg
-        return await self.client.send_unipkg_and_wait(
-            "MessageSvc.PbSendMsg",
-            make_group_msg_pkg(
-                seq, gid, build_msg(msg)
-            ).SerializeToString()
+        resp: PbSendMsgResp = PbSendMsgResp.FromString(
+            (await self.client.send_unipkg_and_wait(
+                "MessageSvc.PbSendMsg",
+                make_group_msg_pkg(
+                    self.client.next_seq(), gid, build_msg(msg)
+                ).SerializeToString()
+            )).data
         )
+
+        if resp.result == 120:
+            raise BotMutedException
+        elif resp.result == 121:
+            raise AtAllLimitException
+        elif resp.result == 299:
+            raise GroupMsgLimitException
+        else:
+            # todo: store msg
+            return resp
 
     async def upload_image(self, group_id: int, file: BinaryIO) -> ImageElement:
         return await self._highway_session.upload_image(file, group_id)

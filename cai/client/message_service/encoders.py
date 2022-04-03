@@ -1,16 +1,12 @@
 import random
 
-from typing import Sequence, TYPE_CHECKING, Dict, Type
+from typing import Sequence
 from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem
-from cai.pb.msf.msg.svc.svc_pb2 import PbSendMsgReq, RoutingHead, Grp
+from cai.pb.msf.msg.svc.svc_pb2 import RoutingHead, Grp
 from cai.pb.msf.msg.comm.comm_pb2 import ContentHead
-from cai.client.packet import UniPacket
 
 from . import models
-from ...pb.msf.msg.svc import PbSendMsgReq
-
-if TYPE_CHECKING:
-    from cai.client.client import Client
+from cai.pb.msf.msg.svc import PbSendMsgReq
 
 
 # todo: https://github.com/mamoe/mirai/blob/7d3971259de59cede94b7a55650c8a6ad4346a59/mirai-core/src/commonMain/kotlin/network/protocol/packet/chat/receive/MessageSvc.PbSendMsg.kt#L103

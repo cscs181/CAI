@@ -94,7 +94,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
             return [
                 RichMsgElement(
                     content,
-                    elem.rich_msg.service_id if content[1] == 60 else -1
+                    elem.rich_msg.service_id if content[0] == 60 else -1
                 )
             ]
         if elem.HasField("light_app"):

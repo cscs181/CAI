@@ -121,6 +121,18 @@ class ImageElement(Element):
     def type(self) -> str:
         return "image"
 
+    def to_flash(self) -> "FlashImageElement":
+        return FlashImageElement(
+            filename=self.filename,
+            filetype=self.filetype,
+            size=self.size,
+            width=self.width,
+            height=self.height,
+            md5=self.md5,
+            id=self.id,
+            url=self.url
+        )
+
 
 @dataclass
 class FlashImageElement(ImageElement):

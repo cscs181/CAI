@@ -320,10 +320,10 @@ class Client:
         """
 
         if not change_server and self._connection:
-            log.network.debug("reconnecting...")
+            log.network.warning("reconnecting...")
             await self.connect()
             await self.register(register_reason=RegPushReason.MsfByNetChange)
-            log.network.debug("reconnected")
+            log.network.info("reconnected")
             return
 
         exclude = (

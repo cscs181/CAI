@@ -60,6 +60,12 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
         # SrcElemDecoder
         if elem.HasField("src_msg"):
             if len(elem.src_msg.orig_seqs) > 0:
+                # preprocess
+                # Delete redundancy data
+                if index == 2:  # Sent by PC
+                    res = []
+                else:
+                    index += 1  # pass
                 res.append(
                     ReplyElement(
                         elem.src_msg.orig_seqs[0],

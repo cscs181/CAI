@@ -100,6 +100,13 @@ class SmallEmojiElement(Element):
 
 
 @dataclass
+class AtAllElement(Element):
+    @property
+    def type(self) -> str:
+        return "at_all"
+
+
+@dataclass
 class ImageElement(Element):
     filename: str
     size: int

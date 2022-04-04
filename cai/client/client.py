@@ -985,8 +985,8 @@ class Client:
                 )
                 if not isinstance(response, Heartbeat):
                     raise RuntimeError("Invalid heartbeat response type!")
-            except Exception:
-                log.network.exception("Heartbeat.Alive: Failed")
+            except (ConnectionError, TimeoutError) as e:
+                log.network.error(f"Heartbeat.Alive: failed by {str(e)}")
                 break
             await asyncio.sleep(self._heartbeat_interval)
 

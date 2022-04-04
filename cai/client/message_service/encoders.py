@@ -9,11 +9,11 @@ from cai.pb.msf.msg.comm.comm_pb2 import ContentHead
 
 from . import models
 from cai.pb.msf.msg.svc import PbSendMsgReq
+from cai.pb.im.msg.service.comm_elem import MsgElemInfo_servtype3, MsgElemInfo_servtype2
 
 
 # todo: https://github.com/mamoe/mirai/blob/7d3971259de59cede94b7a55650c8a6ad4346a59/mirai-core/src/commonMain/kotlin/network/protocol/packet/chat/receive/MessageSvc.PbSendMsg.kt#L103
 # https://github.com/mamoe/mirai/blob/74fc5a50376ed0330b984af51e0fabc2147afdbb/mirai-core/src/commonMain/kotlin/contact/SendMessageHandler.kt
-from ...pb.im.msg.service.comm_elem import MsgElemInfo_servtype3
 
 
 def _build_image_elem(e: Union[models.ImageElement, models.FlashImageElement]) -> CustomFace:
@@ -103,6 +103,23 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
             ret.append(  # fallback info
                 Elem(text=PlainText(str="[窗口抖动]请使用新版手机QQ查看".encode()))
             )
+        elif isinstance(e, models.PokeElement):
+            ret.append(
+                Elem(
+                    common_elem=CommonElem(
+                        service_type=2,
+                        pb_elem=MsgElemInfo_servtype2(
+                            vaspoke_id=0xFFFFFFFF,
+                            vaspoke_name=e.name.encode(),
+                            poke_type=e.id,
+                            poke_strength=e.strength,
+                            double_hit=e.double_hit,
+                            poke_flag=0
+                        ).SerializeToString()
+                    )
+                )
+            )
+
         else:
             raise NotImplementedError(e)
 

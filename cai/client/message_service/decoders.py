@@ -200,6 +200,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                 poke = MsgElemInfo_servtype2.FromString(
                     elem.common_elem.pb_elem
                 )
+                print(poke)
                 res = [
                     PokeElement(
                         poke.poke_type
@@ -207,7 +208,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                         else poke.vaspoke_id,
                         poke.vaspoke_name.decode("utf-8"),
                         poke.poke_strength,
-                        poke.double_hit,
+                        poke.double_hit
                     )
                 ]
                 break

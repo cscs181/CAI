@@ -143,10 +143,10 @@ class FlashImageElement(ImageElement):
 
 @dataclass
 class PokeElement(Element):
-    id: int
-    name: str
-    strength: int
-    double_hit: int
+    id: int = 0
+    name: str = ""
+    strength: int = 0
+    double_hit: int = 0
 
     @property
     def type(self) -> str:

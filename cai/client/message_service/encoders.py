@@ -68,6 +68,15 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
                     )
                 )
             )
+        elif isinstance(e, models.AtAllElement):
+            ret.append(
+                Elem(
+                    text=PlainText(
+                        str="@全体成员".encode(),
+                        attr_6_buf=b"\x00\x01\x00\x00\x00\x03\x01\x00\x00\x00\x00\x00\x00"
+                    )
+                )
+            )
         elif isinstance(e, models.RichMsgElement):
             if len(e.content) > 256:  # compress require
                 content = b"\x01" + zlib.compress(e.content, level=6)

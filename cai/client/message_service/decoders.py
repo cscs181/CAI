@@ -31,6 +31,7 @@ from .models import (
     GroupMessage,
     ImageElement,
     ReplyElement,
+    AtAllElement,
     RichMsgElement,
     PrivateMessage,
     SmallEmojiElement,
@@ -78,12 +79,15 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
         # TextElemDecoder
         if elem.HasField("text"):
             if elem.text.attr_6_buf:
-                res.append(
-                    AtElement(
-                        int.from_bytes(elem.text.attr_6_buf[7:11], "big", signed=False),
-                        elem.text.str.decode("utf-8")
+                if elem.text.attr_6_buf[6]:  # AtAll
+                    res.append(AtAllElement())
+                else:
+                    res.append(
+                        AtElement(
+                            int.from_bytes(elem.text.attr_6_buf[7:11], "big", signed=False),
+                            elem.text.str.decode("utf-8")
+                        )
                     )
-                )
             else:
                 res.append(TextElement(elem.text.str.decode("utf-8")))
         if elem.HasField("rich_msg"):

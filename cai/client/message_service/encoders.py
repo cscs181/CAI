@@ -2,7 +2,8 @@ import random
 import zlib
 
 from typing import Sequence, Union
-from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem, CommonElem, LightAppElem, RichMsg
+from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem, CommonElem, LightAppElem, RichMsg, \
+    ShakeWindow
 from cai.pb.msf.msg.svc.svc_pb2 import RoutingHead, Grp
 from cai.pb.msf.msg.comm.comm_pb2 import ContentHead
 
@@ -93,6 +94,15 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
                     service_id=0 if e.service_id < 0 else e.service_id
                 ))
             ret.append(ret_elem)
+        elif isinstance(e, models.ShakeElement):
+            ret.append(
+                Elem(
+                    shake_window=ShakeWindow(type=e.stype, uin=e.uin)
+                )
+            )
+            ret.append(  # fallback info
+                Elem(text=PlainText(str="[窗口抖动]请使用新版手机QQ查看".encode()))
+            )
         else:
             raise NotImplementedError(e)
 

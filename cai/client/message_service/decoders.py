@@ -35,7 +35,7 @@ from .models import (
     RichMsgElement,
     PrivateMessage,
     SmallEmojiElement,
-    FlashImageElement
+    FlashImageElement, ShakeElement
 )
 
 
@@ -77,7 +77,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                     )
                 )
         # TextElemDecoder
-        if elem.HasField("text"):
+        elif elem.HasField("text"):
             if elem.text.attr_6_buf:
                 if elem.text.attr_6_buf[6]:  # AtAll
                     res.append(AtAllElement())
@@ -90,7 +90,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                     )
             else:
                 res.append(TextElement(elem.text.str.decode("utf-8")))
-        if elem.HasField("rich_msg"):
+        elif elem.HasField("rich_msg"):
             if elem.rich_msg.template_1[0]:
                 content = zlib.decompress(elem.rich_msg.template_1[1:])
             else:
@@ -101,7 +101,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                     elem.rich_msg.service_id if content[0] == 60 else -1
                 )
             ]
-        if elem.HasField("light_app"):
+        elif elem.HasField("light_app"):
             if elem.light_app.data[0]:
                 content = zlib.decompress(elem.light_app.data[1:])
             else:
@@ -113,10 +113,10 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                 )
             ]
         # TextElemDecoder
-        if elem.HasField("face"):
+        elif elem.HasField("face"):
             res.append(FaceElement(elem.face.index))
         # TextElemDecoder
-        if elem.HasField("small_emoji"):
+        elif elem.HasField("small_emoji"):
             index += 1
             text = elems[index].text.str.decode("utf-8")
             res.append(
@@ -136,7 +136,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                 )
             )
         # PictureElemDecoder
-        if elem.HasField("custom_face"):
+        elif elem.HasField("custom_face"):
             if elem.custom_face.md5 and elem.custom_face.orig_url:
                 res.append(
                     ImageElement(
@@ -162,7 +162,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                     )
                 )
         # PictureElemDecoder
-        if elem.HasField("not_online_image"):
+        elif elem.HasField("not_online_image"):
             if elem.not_online_image.orig_url:
                 res.append(
                     ImageElement(
@@ -193,7 +193,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                         + "/0",
                     )
                 )
-        if elem.HasField("common_elem"):
+        elif elem.HasField("common_elem"):
             service_type = elem.common_elem.service_type
             # PokeMsgElemDecoder
             if service_type == 2:
@@ -233,7 +233,8 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                     elem.common_elem.pb_elem
                 )
                 res.append(FaceElement(info.index))
-
+        elif elem.HasField("shake_window"):
+            res.append(ShakeElement(stype=elem.shake_window.type, uin=elem.shake_window.uin))
         index += 1
     return res
 

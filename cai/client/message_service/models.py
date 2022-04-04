@@ -180,3 +180,13 @@ class RichMsgElement(Element):
     @property
     def type(self) -> str:
         return "rich_msg"
+
+
+@dataclass
+class ShakeElement(Element):
+    stype: int = 0
+    uin: int = 0
+
+    @property
+    def type(self) -> str:
+        return "shake"

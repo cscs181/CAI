@@ -222,7 +222,8 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                             size=flash.flash_troop_pic.size,
                             md5=flash.flash_troop_pic.md5,
                             width=flash.flash_troop_pic.width,
-                            height=flash.flash_troop_pic.height
+                            height=flash.flash_troop_pic.height,
+                            url=f"https://gchat.qpic.cn/gchatpic_new/0/0-0-{flash.flash_troop_pic.md5.hex().upper()}/0"
                         )
                     )
                 break

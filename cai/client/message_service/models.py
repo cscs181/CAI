@@ -150,6 +150,7 @@ class VoiceElement(Element):
     md5: bytes
     size: int
     group_file_key: bytes
+    url: str = None
 
     @property
     def type(self) -> str:

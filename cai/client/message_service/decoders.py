@@ -15,7 +15,7 @@ from typing import Dict, List, Callable, Optional, Sequence
 from cai.log import logger
 from cai.client.event import Event
 from cai.pb.msf.msg.comm import Msg
-from cai.pb.im.msg.msg_body import Elem
+from cai.pb.im.msg.msg_body import Elem, Ptt
 from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype2,
     MsgElemInfo_servtype3,
@@ -35,11 +35,11 @@ from .models import (
     RichMsgElement,
     PrivateMessage,
     SmallEmojiElement,
-    FlashImageElement, ShakeElement
+    FlashImageElement, ShakeElement, VoiceElement
 )
 
 
-def parse_elements(elems: Sequence[Elem]) -> List[Element]:
+def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
     """Parse message rich text elements.
 
     Only parse ``text``, ``face``, ``small_smoji``, ``common_elem service 33``
@@ -50,10 +50,26 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
 
     Args:
         elems (Sequence[Elem]): Sequence of rich text elements.
+        ptt (Ptt)
 
     Returns:
         List[Element]: List of decoded message elements.
     """
+    if ptt:
+        if ptt.file_name.endswith(b".amr"):
+            info = {}
+            for bl in ptt.down_para.decode().split("&")[1:]:
+                k, v = bl.split("=", 1)
+                info[k] = v
+            return [VoiceElement(
+                ptt.file_name.decode(),
+                info["filetype"],
+                ptt.src_uin,
+                ptt.file_md5,
+                ptt.file_size,
+                bytes.fromhex(info["rkey"]),
+                "https://grouptalk.c2c.qq.com" + ptt.down_para.decode()
+            )]
     res: List[Element] = []
     index = 0
     while index < len(elems):
@@ -72,7 +88,7 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                         elem.src_msg.orig_seqs[0],
                         elem.src_msg.time,
                         elem.src_msg.sender_uin,
-                        parse_elements(elem.src_msg.elems),
+                        parse_elements(elem.src_msg.elems, None),
                         elem.src_msg.troop_name.decode("utf-8") or None,
                     )
                 )
@@ -294,6 +310,7 @@ class BuddyMessageDecoder:
         from_nick = message.head.from_nick
         to_uin = message.head.to_uin
         elems = message.body.rich_text.elems
+        ptt = message.body.rich_text.ptt
 
         return PrivateMessage(
             message,
@@ -303,7 +320,7 @@ class BuddyMessageDecoder:
             from_uin,
             from_nick,
             to_uin,
-            parse_elements(elems),
+            parse_elements(elems, ptt),
         )
 
 
@@ -321,6 +338,7 @@ class TroopMessageDecoder:
         troop = message.head.group_info
         content_head = message.content_head
         elems = message.body.rich_text.elems
+        ptt = message.body.rich_text.ptt
 
         # long msg fragment
         if content_head.pkg_num > 1:
@@ -350,7 +368,7 @@ class TroopMessageDecoder:
             troop.group_level,
             from_uin,
             troop.group_card.decode("utf-8"),
-            parse_elements(elems),
+            parse_elements(elems, ptt),
         )
 
 

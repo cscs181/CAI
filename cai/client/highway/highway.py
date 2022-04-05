@@ -146,11 +146,12 @@ class HighWaySession:
             raise ConnectionError(ret.resultCode, ret.message)
         return VoiceElement(
             to_id(fmd5) + ".amr",
-            file_type=ret.fileId,
+            file_type=4,
             from_uin=self._client.uin,
             md5=fmd5,
             size=fl,
-            group_file_key=ret.uploadKey
+            group_file_key=ret.uploadKey,
+            url=f"https://grouptalk.c2c.qq.com/?ver=0&rkey={ret.uploadKey.hex()}&filetype=4%voice_codec=0"
         )
 
     async def bdh_uploader(

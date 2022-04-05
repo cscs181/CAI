@@ -14,6 +14,7 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from cai.client.event import Event
+from cai.pb.im.msg.msg_body import Ptt
 from cai.pb.msf.msg.comm import Msg
 
 
@@ -139,6 +140,35 @@ class FlashImageElement(ImageElement):
     @property
     def type(self) -> str:
         return "flash_image"
+
+
+@dataclass
+class VoiceElement(Element):
+    file_name: str
+    file_type: int
+    from_uin: int
+    md5: bytes
+    size: int
+    group_file_key: bytes
+
+    @property
+    def type(self) -> str:
+        return "voice"
+
+    @property
+    def _pb_reserve(self) -> bytes:
+        return bytes([8, 0, 40, 0, 56, 0])
+
+    def to_ptt(self) -> Ptt:
+        return Ptt(
+            file_type=self.file_type,
+            src_uin=self.from_uin,
+            file_md5=self.md5,
+            file_name=self.file_name.encode(),
+            file_size=self.size,
+            pb_reserve=self._pb_reserve,
+            valid=True
+        )
 
 
 @dataclass

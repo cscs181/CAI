@@ -3,7 +3,7 @@ import zlib
 
 from typing import Sequence, Union
 from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem, CommonElem, LightAppElem, RichMsg, \
-    ShakeWindow
+    ShakeWindow, Ptt
 from cai.pb.msf.msg.svc.svc_pb2 import RoutingHead, Grp
 from cai.pb.msf.msg.comm.comm_pb2 import ContentHead
 
@@ -38,6 +38,7 @@ def _build_image_elem(e: Union[models.ImageElement, models.FlashImageElement]) -
 
 def build_msg(elements: Sequence[models.Element]) -> MsgBody:
     ret = []
+    ptt = None
     for e in elements:  # todo: support more element
         if isinstance(e, models.TextElement):
             ret.append(
@@ -119,14 +120,16 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
                     )
                 )
             )
-
+        elif isinstance(e, models.VoiceElement):
+            ptt = e.to_ptt()
+            break
         else:
             raise NotImplementedError(e)
 
     return MsgBody(
         rich_text=RichText(
             elems=ret,
-            ptt=None
+            ptt=ptt
         )
     )
 

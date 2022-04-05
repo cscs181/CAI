@@ -22,8 +22,8 @@ def itoa(i: int) -> str:  # int to address(str)
     return ".".join([str(p) for p in i.to_bytes(4, "little")])
 
 
-def to_img_id(b_uuid: bytes) -> str:
-    return "{%s}.png" % uuid.UUID(bytes=b_uuid)
+def to_id(b_uuid: bytes) -> str:
+    return "{%s}" % uuid.UUID(bytes=b_uuid)
 
 
 async def timeit(func: Awaitable) -> Tuple[float, Any]:

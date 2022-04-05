@@ -200,7 +200,6 @@ def parse_elements(elems: Sequence[Elem]) -> List[Element]:
                 poke = MsgElemInfo_servtype2.FromString(
                     elem.common_elem.pb_elem
                 )
-                print(poke)
                 res = [
                     PokeElement(
                         poke.poke_type

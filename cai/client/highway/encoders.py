@@ -1,12 +1,17 @@
-from cai.pb.im.oidb.cmd0x388.cmd0x388_pb2 import D388ReqBody, TryUpImgReq
+from cai.pb.im.oidb.cmd0x388.cmd0x388_pb2 import D388ReqBody, TryUpImgReq, TryUpPttReq
 
 
-def encode_d388_req(group_code: int, uin: int, md5: bytes, size: int) -> D388ReqBody:
-    fn = md5.hex().upper() + ".jpg"
-    return D388ReqBody(
-        netType=8,
-        subcmd=1,
-        tryupImgReq=[TryUpImgReq(
+def encode_d388_req(
+    group_code: int,
+    uin: int,
+    md5: bytes,
+    size: int,
+    subcmd: int
+) -> D388ReqBody:
+    img, ptt = None, None
+    if subcmd == 1:  # upload img
+        fn = md5.hex().upper() + ".jpg"
+        img = [TryUpImgReq(
             groupCode=group_code,
             srcUin=uin,
             fileName=fn.encode(),
@@ -24,5 +29,29 @@ def encode_d388_req(group_code: int, uin: int, md5: bytes, size: int) -> D388Req
             originalPic=1,
             srvUpload=0
         )]
+    elif subcmd == 3:  # voice
+        ptt = [TryUpPttReq(
+            groupCode=group_code,
+            srcUin=uin,
+            fileMd5=md5,
+            fileName=(md5.hex().upper() + ".amr").encode(),
+            fileSize=size,
+            voiceLength=size,
+            voiceType=1,
+            codec=0,
+            srcTerm=5,
+            platformType=9,
+            buType=4,
+            innerIp=0,
+            buildVer=b"8.8.50.2324",
+            newUpChan=True
+        )]
+    else:
+        ValueError("unsupported subcmd:", subcmd)
+    return D388ReqBody(
+        netType=8,
+        subcmd=subcmd,
+        tryupImgReq=img,
+        tryupPttReq=ptt
     )
 

@@ -13,7 +13,7 @@ from typing import Union, Optional, Sequence, BinaryIO
 from cai import log
 from cai.client import OnlineStatus, Client as client_t
 from cai.client.highway import HighWaySession
-from cai.client.message_service.models import Element, ImageElement
+from cai.client.message_service.models import Element, ImageElement, VoiceElement
 from cai.client.message_service.encoders import make_group_msg_pkg, build_msg
 from cai.settings.device import DeviceInfo, new_device
 from cai.settings.protocol import ApkInfo
@@ -79,6 +79,9 @@ class Client(_Login, _Friend, _Group):
 
     async def upload_image(self, group_id: int, file: BinaryIO) -> ImageElement:
         return await self._highway_session.upload_image(file, group_id)
+
+    async def upload_voice(self, group_id: int, file: BinaryIO) -> VoiceElement:
+        return await self._highway_session.upload_voice(file, group_id)
 
     async def close(self):
         """Stop Client"""

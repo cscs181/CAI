@@ -1,14 +1,14 @@
 import asyncio
 import logging
 from hashlib import md5
-from typing import Tuple, BinaryIO, TYPE_CHECKING
+from typing import Tuple, BinaryIO, TYPE_CHECKING, Optional, List
 
-from .decoders import decode_upload_image_resp
+from .decoders import decode_upload_image_resp, decode_upload_ptt_resp
 from .encoders import encode_d388_req
-from .utils import calc_file_md5_and_length, timeit, to_img_id
+from .utils import calc_file_md5_and_length, timeit, to_id
 from .frame import read_frame, write_frame
 from cai.pb.highway.protocol.highway_head_pb2 import highway_head
-from ..message_service.models import ImageElement
+from ..message_service.models import ImageElement, VoiceElement
 
 if TYPE_CHECKING:
     from cai.client.client import Client
@@ -27,7 +27,7 @@ def _create_highway_header(
         command=cmd,
         commandId=cmd_id,
         seq=client.next_seq(),
-        appid=client.apk_info.app_id,
+        appid=client.apk_info.sub_app_id,
         localeId=locale,
         dataflag=flag
     )
@@ -39,13 +39,56 @@ class HighWaySession:
             logger = logging.getLogger(__name__)
         self.logger = logger
         self._client = client
+        self._session_sig: Optional[bytes] = None
+        self._session_key: Optional[bytes] = None
+        self._session_addr_list: Optional[List[Tuple[str, int]]] = []
+
+    def _decode_bdh_session(self):
+        info = self._client._file_storage_info
+        if not info:
+            raise ValueError("info not found, try again later")
+        self._session_sig = info.big_data_channel.bigdata_sig_session
+        self._session_key = info.big_data_channel.bigdata_key_session
+        for iplist in info.big_data_channel.bigdata_iplists:
+            for ip in iplist.ip_list:
+                self._session_addr_list.append((ip.ip, ip.port))
+
+    async def _upload_controller(
+        self,
+        addrs: List[Tuple[str, int]],
+        file: BinaryIO,
+        cmd_id: int,
+        ticket: bytes,
+        ext=None
+    ) -> Optional[bytes]:
+        for addr in addrs:
+            try:
+                t, d = await timeit(
+                    self.bdh_uploader(
+                        b"PicUp.DataUp",
+                        addr,
+                        file,
+                        cmd_id,
+                        ticket,
+                        ext
+                    )
+                )
+                self.logger.info("upload complete, use %fms" % (t * 1000))
+                return d
+            except TimeoutError:
+                self.logger.error(f"server {addr[0]}:{addr[1]} timeout")
+                continue
+            finally:
+                file.seek(0)
+        else:
+            raise ConnectionError("cannot upload, all server failure")
 
     async def upload_image(self, file: BinaryIO, gid: int) -> ImageElement:
         fmd5, fl = calc_file_md5_and_length(file)
         ret = decode_upload_image_resp(
             (await self._client.send_unipkg_and_wait(
                 "ImgStore.GroupPicUp",
-                encode_d388_req(gid, self._client.uin, fmd5, fl).SerializeToString()
+                encode_d388_req(gid, self._client.uin, fmd5, fl, 1).SerializeToString()
             )).data
         )
         if ret.resultCode != 0:
@@ -53,26 +96,19 @@ class HighWaySession:
         elif not ret.isExists:
             self.logger.debug("file not found, uploading...")
 
-            for addr in ret.uploadAddr:
-                try:
-                    t, _ = await timeit(
-                        self.bdh_uploader(
-                            b"PicUp.DataUp",
-                            addr,
-                            file,
-                            2,
-                            ret.uploadKey
-                        )
-                    )
-                    self.logger.info("upload complete, use %fs in %d bytes" % (t * 1000, fl))
-                except TimeoutError:
-                    self.logger.error(f"server {addr[0]}:{addr[1]} timeout")
-                    continue
-                finally:
-                    file.seek(0)
-                break
-            else:
-                raise ConnectionError("cannot upload image, all server failure")
+            await self._upload_controller(
+                ret.uploadAddr,
+                file,
+                2,  # send to group
+                ret.uploadKey
+            )
+
+            ret = decode_upload_image_resp(
+                (await self._client.send_unipkg_and_wait(
+                    "ImgStore.GroupPicUp",
+                    encode_d388_req(gid, self._client.uin, fmd5, fl, 1).SerializeToString()
+                )).data
+            )
 
         if ret.hasMetaData:
             image_type = ret.fileType
@@ -83,7 +119,7 @@ class HighWaySession:
 
         return ImageElement(
             id=ret.fileId,
-            filename=to_img_id(fmd5),
+            filename=to_id(fmd5) + ".png",
             size=fl,
             width=w,
             height=h,
@@ -92,15 +128,41 @@ class HighWaySession:
             url=f"https://gchat.qpic.cn/gchatpic_new/1/0-0-{fmd5.hex().upper()}/0?term=2"
         )
 
+    async def upload_voice(self, file: BinaryIO, gid: int) -> VoiceElement:
+        fmd5, fl = calc_file_md5_and_length(file)
+        ext = encode_d388_req(gid, self._client.uin, fmd5, fl, 3).SerializeToString()
+        if not (self._session_key and self._session_sig):
+            self._decode_bdh_session()
+        ret = decode_upload_ptt_resp(
+            await self._upload_controller(
+                self._session_addr_list,
+                file,
+                29,  # send to group
+                self._session_sig,
+                ext
+            )
+        )
+        if ret.resultCode:
+            raise ConnectionError(ret.resultCode, ret.message)
+        return VoiceElement(
+            to_id(fmd5) + ".amr",
+            file_type=ret.fileId,
+            from_uin=self._client.uin,
+            md5=fmd5,
+            size=fl,
+            group_file_key=ret.uploadKey
+        )
+
     async def bdh_uploader(
         self,
         cmd: bytes,
         addr: Tuple[str, int],
         file: BinaryIO,
         cmd_id: int,
-        ticket: bytes, *,
+        ticket: bytes,
+        ext: bytes = None, *,
         block_size=65535
-    ):
+    ) -> Optional[bytes]:
         fmd5, fl = calc_file_md5_and_length(file)
         reader, writer = await asyncio.open_connection(*addr)
         bc = 0
@@ -108,7 +170,7 @@ class HighWaySession:
             while True:
                 bl = file.read(block_size)
                 if not bl:
-                    break
+                    return ext
                 head = highway_head.ReqDataHighwayHead(
                     basehead=_create_highway_header(cmd, 4096, cmd_id, self._client),
                     seghead=highway_head.SegHead(
@@ -118,13 +180,22 @@ class HighWaySession:
                         serviceticket=ticket,
                         md5=md5(bl).digest(),
                         fileMd5=fmd5
-                    )
-                ).SerializeToString()
+                    ),
+                    reqExtendinfo=ext
+                )
 
-                writer.write(write_frame(head, bl))
+                writer.write(write_frame(head.SerializeToString(), bl))
                 await writer.drain()
 
-                resp, _ = await read_frame(reader)
+                resp, data = await read_frame(reader)
+                if resp.errorCode:
+                    raise ConnectionError(resp.errorCode, "upload error", resp)
+                if resp and ext:
+                    if resp.rspExtendinfo:
+                        ext = resp.rspExtendinfo
+                    if resp.seghead:
+                        if resp.seghead.serviceticket:
+                            self._session_key = resp.seghead.serviceticket
 
                 bc += 1
         finally:

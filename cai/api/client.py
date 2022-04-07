@@ -24,6 +24,7 @@ from cai.client.message_service.models import (
     VoiceElement,
 )
 
+from .flow import Events as _Events
 from .group import Group as _Group
 from .login import Login as _Login
 from .friend import Friend as _Friend
@@ -51,7 +52,7 @@ def make_client(
     return client_t(uin, passwd, device, apk_info)
 
 
-class Client(_Login, _Friend, _Group):
+class Client(_Login, _Friend, _Group, _Events):
     def __init__(self, client: client_t):
         self.client = client
         self._highway_session = HighWaySession(client, logger=log.highway)

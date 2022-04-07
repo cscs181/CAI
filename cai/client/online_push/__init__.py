@@ -225,9 +225,9 @@ def _parse_poke(params: Sequence[TemplParam]) -> dict:
     res = {"target": None, "sender": None, "action": None, "suffix": None}
     for p in params:
         if p.name == "uin_str1":
-            res["sender"] = p.value
+            res["sender"] = int(p.value)
         elif p.name == "uin_str2":
-            res["target"] = p.value
+            res["target"] = int(p.value)
         elif p.name == "suffix_str":
             res["suffix"] = p.value
         elif p.name == "action_str":

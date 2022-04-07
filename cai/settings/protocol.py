@@ -165,7 +165,12 @@ MACOS = ApkInfo(
 
 
 def get_apk_info(_type: str = "IPAD") -> ApkInfo:
-    info = {"IPAD": IPAD, "ANDROID_PHONE": ANDROID_PHONE, "ANDROID_WATCH": ANDROID_WATCH, "MACOS": MACOS}
+    info = {
+        "IPAD": IPAD,
+        "ANDROID_PHONE": ANDROID_PHONE,
+        "ANDROID_WATCH": ANDROID_WATCH,
+        "MACOS": MACOS,
+    }
     if _type not in info:
         raise ValueError(f"Invalid Protocol Type: {_type}")
     return info[_type]

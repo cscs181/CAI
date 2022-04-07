@@ -15,7 +15,7 @@ from typing import Dict, List, Callable, Optional, Sequence
 from cai.log import logger
 from cai.client.event import Event
 from cai.pb.msf.msg.comm import Msg
-from cai.pb.im.msg.msg_body import Elem, Ptt
+from cai.pb.im.msg.msg_body import Ptt, Elem
 from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype2,
     MsgElemInfo_servtype3,
@@ -28,14 +28,16 @@ from .models import (
     FaceElement,
     PokeElement,
     TextElement,
+    AtAllElement,
     GroupMessage,
     ImageElement,
     ReplyElement,
-    AtAllElement,
-    RichMsgElement,
+    ShakeElement,
+    VoiceElement,
     PrivateMessage,
+    RichMsgElement,
+    FlashImageElement,
     SmallEmojiElement,
-    FlashImageElement, ShakeElement, VoiceElement
 )
 
 
@@ -61,15 +63,17 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
             for bl in ptt.down_para.decode().split("&")[1:]:
                 k, v = bl.split("=", 1)
                 info[k] = v
-            return [VoiceElement(
-                ptt.file_name.decode(),
-                info["filetype"],
-                ptt.src_uin,
-                ptt.file_md5,
-                ptt.file_size,
-                bytes.fromhex(info["rkey"]),
-                "https://grouptalk.c2c.qq.com" + ptt.down_para.decode()
-            )]
+            return [
+                VoiceElement(
+                    ptt.file_name.decode(),
+                    info["filetype"],
+                    ptt.src_uin,
+                    ptt.file_md5,
+                    ptt.file_size,
+                    bytes.fromhex(info["rkey"]),
+                    "https://grouptalk.c2c.qq.com" + ptt.down_para.decode(),
+                )
+            ]
     res: List[Element] = []
     index = 0
     while index < len(elems):
@@ -100,8 +104,10 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
                 else:
                     res.append(
                         AtElement(
-                            int.from_bytes(elem.text.attr_6_buf[7:11], "big", signed=False),
-                            elem.text.str.decode("utf-8")
+                            int.from_bytes(
+                                elem.text.attr_6_buf[7:11], "big", signed=False
+                            ),
+                            elem.text.str.decode("utf-8"),
                         )
                     )
             else:
@@ -114,7 +120,7 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
             return [
                 RichMsgElement(
                     content,
-                    elem.rich_msg.service_id if content[0] == 60 else -1
+                    elem.rich_msg.service_id if content[0] == 60 else -1,
                 )
             ]
         elif elem.HasField("light_app"):
@@ -122,12 +128,7 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
                 content = zlib.decompress(elem.light_app.data[1:])
             else:
                 content = elem.light_app.data[1:]
-            return [
-                RichMsgElement(
-                    content,
-                    -2
-                )
-            ]
+            return [RichMsgElement(content, -2)]
         # TextElemDecoder
         elif elem.HasField("face"):
             res.append(FaceElement(elem.face.index))
@@ -182,12 +183,15 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
             if elem.not_online_image.orig_url:
                 res.append(
                     ImageElement(
-                        filename=elem.not_online_image.file_path.decode("utf-8"),
+                        filename=elem.not_online_image.file_path.decode(
+                            "utf-8"
+                        ),
                         size=elem.not_online_image.file_len,
                         width=elem.not_online_image.pic_width,
                         height=elem.not_online_image.pic_height,
                         md5=elem.not_online_image.pic_md5,
-                        url="https://c2cpicdw.qpic.cn" + elem.not_online_image.orig_url,
+                        url="https://c2cpicdw.qpic.cn"
+                        + elem.not_online_image.orig_url,
                     )
                 )
             elif (
@@ -196,7 +200,9 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
             ):
                 res.append(
                     ImageElement(
-                        filename=elem.not_online_image.file_path.decode("utf-8"),
+                        filename=elem.not_online_image.file_path.decode(
+                            "utf-8"
+                        ),
                         size=elem.not_online_image.file_len,
                         width=elem.not_online_image.pic_width,
                         height=elem.not_online_image.pic_height,
@@ -223,12 +229,14 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
                         else poke.vaspoke_id,
                         poke.vaspoke_name.decode("utf-8"),
                         poke.poke_strength,
-                        poke.double_hit
+                        poke.double_hit,
                     )
                 ]
                 break
             elif service_type == 3:
-                flash = MsgElemInfo_servtype3.FromString(elem.common_elem.pb_elem)
+                flash = MsgElemInfo_servtype3.FromString(
+                    elem.common_elem.pb_elem
+                )
                 if flash.flash_troop_pic:
                     res.append(
                         FlashImageElement(
@@ -239,7 +247,7 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
                             md5=flash.flash_troop_pic.md5,
                             width=flash.flash_troop_pic.width,
                             height=flash.flash_troop_pic.height,
-                            url=f"https://gchat.qpic.cn/gchatpic_new/0/0-0-{flash.flash_troop_pic.md5.hex().upper()}/0"
+                            url=f"https://gchat.qpic.cn/gchatpic_new/0/0-0-{flash.flash_troop_pic.md5.hex().upper()}/0",
                         )
                     )
                 break
@@ -250,7 +258,11 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
                 )
                 res.append(FaceElement(info.index))
         elif elem.HasField("shake_window"):
-            res.append(ShakeElement(stype=elem.shake_window.type, uin=elem.shake_window.uin))
+            res.append(
+                ShakeElement(
+                    stype=elem.shake_window.type, uin=elem.shake_window.uin
+                )
+            )
         index += 1
     return res
 

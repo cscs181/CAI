@@ -1,22 +1,36 @@
-import random
 import zlib
+import random
+from typing import Union, Sequence
 
-from typing import Sequence, Union
-from cai.pb.im.msg.msg_body import MsgBody, PlainText, RichText, CustomFace, Elem, CommonElem, LightAppElem, RichMsg, \
-    ShakeWindow, Ptt
-from cai.pb.msf.msg.svc.svc_pb2 import RoutingHead, Grp
+from cai.pb.msf.msg.svc import PbSendMsgReq
 from cai.pb.msf.msg.comm.comm_pb2 import ContentHead
+from cai.pb.msf.msg.svc.svc_pb2 import Grp, RoutingHead
+from cai.pb.im.msg.service.comm_elem import (
+    MsgElemInfo_servtype2,
+    MsgElemInfo_servtype3,
+)
+from cai.pb.im.msg.msg_body import (
+    Ptt,
+    Elem,
+    MsgBody,
+    RichMsg,
+    RichText,
+    PlainText,
+    CommonElem,
+    CustomFace,
+    ShakeWindow,
+    LightAppElem,
+)
 
 from . import models
-from cai.pb.msf.msg.svc import PbSendMsgReq
-from cai.pb.im.msg.service.comm_elem import MsgElemInfo_servtype3, MsgElemInfo_servtype2
-
 
 # todo: https://github.com/mamoe/mirai/blob/7d3971259de59cede94b7a55650c8a6ad4346a59/mirai-core/src/commonMain/kotlin/network/protocol/packet/chat/receive/MessageSvc.PbSendMsg.kt#L103
 # https://github.com/mamoe/mirai/blob/74fc5a50376ed0330b984af51e0fabc2147afdbb/mirai-core/src/commonMain/kotlin/contact/SendMessageHandler.kt
 
 
-def _build_image_elem(e: Union[models.ImageElement, models.FlashImageElement]) -> CustomFace:
+def _build_image_elem(
+    e: Union[models.ImageElement, models.FlashImageElement]
+) -> CustomFace:
     return CustomFace(
         file_type=66,
         useful=1,
@@ -32,7 +46,7 @@ def _build_image_elem(e: Union[models.ImageElement, models.FlashImageElement]) -
         md5=e.md5,
         show_len=0,
         download_len=0
-        #flag=b"\x00\x00\x00\x00"
+        # flag=b"\x00\x00\x00\x00"
     )
 
 
@@ -41,15 +55,15 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
     ptt = None
     for e in elements:  # todo: support more element
         if isinstance(e, models.TextElement):
-            ret.append(
-                Elem(text=PlainText(str=e.content.encode()))
-            )
+            ret.append(Elem(text=PlainText(str=e.content.encode())))
         elif isinstance(e, models.FlashImageElement):
             ret.append(
                 Elem(
                     common_elem=CommonElem(
                         service_type=3,
-                        pb_elem=MsgElemInfo_servtype3(flash_troop_pic=_build_image_elem(e)).SerializeToString()
+                        pb_elem=MsgElemInfo_servtype3(
+                            flash_troop_pic=_build_image_elem(e)
+                        ).SerializeToString(),
                     )
                 )
             )
@@ -57,17 +71,15 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
                 Elem(text=PlainText(str="[闪照]请使用新版手机QQ查看".encode()))
             )
         elif isinstance(e, models.ImageElement):
-            ret.append(
-                Elem(
-                    custom_face=_build_image_elem(e)
-                )
-            )
+            ret.append(Elem(custom_face=_build_image_elem(e)))
         elif isinstance(e, models.AtElement):
             ret.append(
                 Elem(
                     text=PlainText(
                         str=e.display.encode(),
-                        attr_6_buf=b"\x00\x01\x00\x00\x00\x03\x00"+e.target.to_bytes(4, "big", signed=False)+b"\x00\x00"
+                        attr_6_buf=b"\x00\x01\x00\x00\x00\x03\x00"
+                        + e.target.to_bytes(4, "big", signed=False)
+                        + b"\x00\x00",
                     )
                 )
             )
@@ -76,7 +88,7 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
                 Elem(
                     text=PlainText(
                         str="@全体成员".encode(),
-                        attr_6_buf=b"\x00\x01\x00\x00\x00\x03\x01\x00\x00\x00\x00\x00\x00"
+                        attr_6_buf=b"\x00\x01\x00\x00\x00\x03\x01\x00\x00\x00\x00\x00\x00",
                     )
                 )
             )
@@ -86,21 +98,17 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
             else:
                 content = b"\x00" + e.content
             if e.service_id == -2:  # LightApp
-                ret_elem = Elem(light_app=LightAppElem(
-                    data=content
-                ))
+                ret_elem = Elem(light_app=LightAppElem(data=content))
             else:  # Json & Xml
-                ret_elem = Elem(rich_msg=RichMsg(
-                    template_1=content,
-                    service_id=0 if e.service_id < 0 else e.service_id
-                ))
+                ret_elem = Elem(
+                    rich_msg=RichMsg(
+                        template_1=content,
+                        service_id=0 if e.service_id < 0 else e.service_id,
+                    )
+                )
             ret.append(ret_elem)
         elif isinstance(e, models.ShakeElement):
-            ret.append(
-                Elem(
-                    shake_window=ShakeWindow(type=e.stype, uin=e.uin)
-                )
-            )
+            ret.append(Elem(shake_window=ShakeWindow(type=e.stype, uin=e.uin)))
             ret.append(  # fallback info
                 Elem(text=PlainText(str="[窗口抖动]请使用新版手机QQ查看".encode()))
             )
@@ -115,8 +123,8 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
                             poke_type=e.id,
                             poke_strength=e.strength,
                             double_hit=e.double_hit,
-                            poke_flag=0
-                        ).SerializeToString()
+                            poke_flag=0,
+                        ).SerializeToString(),
                     )
                 )
             )
@@ -126,12 +134,7 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
         else:
             raise NotImplementedError(e)
 
-    return MsgBody(
-        rich_text=RichText(
-            elems=ret,
-            ptt=ptt
-        )
-    )
+    return MsgBody(rich_text=RichText(elems=ret, ptt=ptt))
 
 
 def encode_send_group_msg_req(

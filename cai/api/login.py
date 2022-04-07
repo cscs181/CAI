@@ -6,8 +6,9 @@
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-from .base import BaseAPI
 from cai.exceptions import LoginException
+
+from .base import BaseAPI
 
 
 class Login(BaseAPI):
@@ -29,9 +30,7 @@ class Login(BaseAPI):
             await self.client.close()
             raise
 
-    async def submit_captcha(
-        self, captcha: str, captcha_sign: bytes
-    ) -> bool:
+    async def submit_captcha(self, captcha: str, captcha_sign: bytes) -> bool:
         """Submit captcha data to login.
 
         This function wraps the :meth:`~cai.client.client.Client.submit_captcha`
@@ -47,7 +46,7 @@ class Login(BaseAPI):
         """
         try:
             await self._executor("submit_captcha", captcha, captcha_sign)
-        except not LoginException:
+        except LoginException:
             await self.client.close()
             raise
         return True
@@ -83,7 +82,7 @@ class Login(BaseAPI):
         """
         try:
             return await self.client.request_sms()
-        except not LoginException:
+        except LoginException:
             await self.client.close()
             raise
 
@@ -102,12 +101,10 @@ class Login(BaseAPI):
         """
         try:
             await self._executor("submit_sms", sms_code)
-        except not LoginException:
+        except LoginException:
             await self.client.close()
             raise
         return True
 
 
-__all__ = [
-    "Login"
-]
+__all__ = ["Login"]

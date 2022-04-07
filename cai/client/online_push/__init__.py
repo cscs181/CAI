@@ -9,20 +9,20 @@ This module is used to build and handle online push related packet.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import TYPE_CHECKING, List, Optional, Tuple
+from typing import TYPE_CHECKING, List, Tuple, Optional
 
 from jce import types
 
 from cai.log import logger
 from cai.utils.binary import Packet
-from cai.settings.device import DeviceInfo as _DeviceInfo_t
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
+from cai.settings.device import DeviceInfo as _DeviceInfo_t
 
-from .jce import DelMsgInfo, SvcRespPushMsg, DeviceInfo
-from .command import PushMsg, PushMsgError, PushMsgCommand
 from ...settings.protocol import ApkInfo
+from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
+from .command import PushMsg, PushMsgError, PushMsgCommand
 
 if TYPE_CHECKING:
     from cai.client import Client
@@ -136,7 +136,9 @@ async def handle_c2c_sync(
 
 
 async def handle_push_msg(
-    client: "Client", packet: IncomingPacket, device: Tuple[_DeviceInfo_t, ApkInfo]
+    client: "Client",
+    packet: IncomingPacket,
+    device: Tuple[_DeviceInfo_t, ApkInfo],
 ) -> PushMsgCommand:
     """Handle Push Message Command.
 

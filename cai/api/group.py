@@ -9,8 +9,10 @@
 
 from typing import List, Union, Optional
 
+from cai.client import GroupMember
+from cai.client import Group as group_t
+
 from .base import BaseAPI
-from cai.client import GroupMember, Group as group_t
 
 
 class Group(BaseAPI):
@@ -37,9 +39,7 @@ class Group(BaseAPI):
         """
         return await self._executor("get_group", group_id, cache)
 
-    async def get_group_list(
-        self, cache: bool = True
-    ) -> List[group_t]:
+    async def get_group_list(self, cache: bool = True) -> List[group_t]:
         """Get account group list.
 
         This function wraps the :meth:`~cai.client.client.Client.get_group_list`

@@ -151,7 +151,7 @@ async def quality_test(
 async def get_sso_server(
     cache: bool = True,
     cache_server_list: bool = True,
-    exclude: Optional[Container[str]] = None
+    exclude: Optional[Container[str]] = None,
 ) -> SsoServer:
     """Get the best sso server
 

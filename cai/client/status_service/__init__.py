@@ -11,14 +11,14 @@ This module is used to build and handle status service related packet.
 
 import time
 from enum import Enum, IntEnum
-from typing import TYPE_CHECKING, Union, Optional, Tuple
+from typing import TYPE_CHECKING, Tuple, Union, Optional
 
 from jce import types
 
 from cai.log import logger
 from cai.utils.binary import Packet
-from cai.settings.device import DeviceInfo
 from cai.settings.protocol import ApkInfo
+from cai.settings.device import DeviceInfo
 from cai.utils.jce import RequestPacketVersion3
 from cai.pb.im.oidb.cmd0x769 import ReqBody, ConfigSeq
 from cai.client.packet import (
@@ -187,7 +187,7 @@ def encode_register(
     status: Union[int, OnlineStatus],
     reg_push_reason: Union[str, RegPushReason],
     sub_app_id: int,
-    device: DeviceInfo
+    device: DeviceInfo,
 ) -> Packet:
     """Build status service register packet.
 
@@ -324,7 +324,7 @@ def encode_force_offline_response(
     req_uin: int,
     seq_no: int,
     sub_app_id: int,
-    device: DeviceInfo
+    device: DeviceInfo,
 ) -> Packet:
     """Build status service msf offline response packet.
 
@@ -405,7 +405,7 @@ async def handle_request_offline(
             request.request.uin,
             request.request.seq_no,
             device[1].sub_app_id,
-            device[0]
+            device[0],
         )
         await client.send(seq, "StatSvc.RspMSFForceOffline", resp_packet)
     client._status = OnlineStatus.Offline

@@ -9,8 +9,10 @@
 
 from typing import List, Optional
 
+from cai.client import FriendGroup
+from cai.client import Friend as friend_t
+
 from .base import BaseAPI
-from cai.client import FriendGroup, Friend as friend_t
 
 
 class Friend(BaseAPI):
@@ -37,9 +39,7 @@ class Friend(BaseAPI):
         """
         return await self.client.get_friend(friend_uin, cache)
 
-    async def get_friend_list(
-        self, cache: bool = True
-    ) -> List[friend_t]:
+    async def get_friend_list(self, cache: bool = True) -> List[friend_t]:
         """Get account friend list.
 
         This function wraps the :meth:`~cai.client.client.Client.get_friend_list`
@@ -103,6 +103,4 @@ class Friend(BaseAPI):
         return await self._executor("get_friend_group_list", cache)
 
 
-__all__ = [
-    "Friend"
-]
+__all__ = ["Friend"]

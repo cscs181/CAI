@@ -59,7 +59,7 @@ class Connection:
 
     @property
     def closed(self) -> bool:
-        #return self._writer is None
+        # return self._writer is None
         return self._closed.is_set()
 
     @property

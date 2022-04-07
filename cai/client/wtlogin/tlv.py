@@ -607,7 +607,7 @@ class TlvDecoder:
         data: Union[bytes, bytearray],
         tgtgt: bytes = None,
         offset: int = 0,
-        tag_size: int = 2
+        tag_size: int = 2,
     ) -> Dict[int, Any]:
         if not isinstance(data, Packet):
             data = Packet(data)

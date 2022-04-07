@@ -8,29 +8,37 @@
 """
 
 import hashlib
-from typing import Union, Optional, Sequence, BinaryIO
+from typing import Union, BinaryIO, Optional, Sequence
 
 from cai import log
-from cai.client import OnlineStatus, Client as client_t
-from cai.client.highway import HighWaySession
-from cai.client.message_service.models import Element, ImageElement, VoiceElement
-from cai.client.message_service.encoders import make_group_msg_pkg, build_msg
-from cai.settings.device import DeviceInfo, new_device
+from cai.client import OnlineStatus
+from cai.client import Client as client_t
 from cai.settings.protocol import ApkInfo
+from cai.pb.msf.msg.svc import PbSendMsgResp
+from cai.client.highway import HighWaySession
+from cai.settings.device import DeviceInfo, new_device
+from cai.client.message_service.encoders import build_msg, make_group_msg_pkg
+from cai.client.message_service.models import (
+    Element,
+    ImageElement,
+    VoiceElement,
+)
 
-from .error import BotMutedException, AtAllLimitException, GroupMsgLimitException
-from .friend import Friend as _Friend
 from .group import Group as _Group
 from .login import Login as _Login
-
-from cai.pb.msf.msg.svc import PbSendMsgResp
+from .friend import Friend as _Friend
+from .error import (
+    BotMutedException,
+    AtAllLimitException,
+    GroupMsgLimitException,
+)
 
 
 def make_client(
     uin: int,
     passwd: Union[str, bytes],
     apk_info: ApkInfo,
-    device: Optional[DeviceInfo] = None
+    device: Optional[DeviceInfo] = None,
 ) -> client_t:
     if not (isinstance(passwd, bytes) and len(passwd) == 16):
         # not a vailed md5 passwd
@@ -59,12 +67,14 @@ class Client(_Login, _Friend, _Group):
     async def send_group_msg(self, gid: int, msg: Sequence[Element]):
         # todo: split long msg
         resp: PbSendMsgResp = PbSendMsgResp.FromString(
-            (await self.client.send_unipkg_and_wait(
-                "MessageSvc.PbSendMsg",
-                make_group_msg_pkg(
-                    self.client.next_seq(), gid, build_msg(msg)
-                ).SerializeToString()
-            )).data
+            (
+                await self.client.send_unipkg_and_wait(
+                    "MessageSvc.PbSendMsg",
+                    make_group_msg_pkg(
+                        self.client.next_seq(), gid, build_msg(msg)
+                    ).SerializeToString(),
+                )
+            ).data
         )
 
         if resp.result == 120:
@@ -91,7 +101,7 @@ class Client(_Login, _Friend, _Group):
         self,
         status: Union[int, OnlineStatus],
         battery_status: Optional[int] = None,
-        is_power_connected: bool = False
+        is_power_connected: bool = False,
     ) -> None:
         """Change client status.
 

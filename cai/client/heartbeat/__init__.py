@@ -21,7 +21,12 @@ if TYPE_CHECKING:
 
 
 def encode_heartbeat(
-    seq: int, session_id: bytes, imei: str, ksid: bytes, uin: int, sub_app_id: int
+    seq: int,
+    session_id: bytes,
+    imei: str,
+    ksid: bytes,
+    uin: int,
+    sub_app_id: int,
 ) -> Packet:
     """Build heartbeat alive packet.
 

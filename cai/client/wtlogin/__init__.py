@@ -8,26 +8,28 @@ This module is used to build and handle login related packet.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import ipaddress
-import secrets
+import time
 import string
 import struct
-import time
+import secrets
+import ipaddress
 from hashlib import md5
 from typing import TYPE_CHECKING, Tuple
 
 from rtea import qqtea_decrypt
 
+from cai.utils.binary import Packet
+from cai.settings.protocol import ApkInfo
+from cai.settings.device import DeviceInfo
+from cai.utils.crypto import ECDH, EncryptSession
 from cai.client.packet import (
     UniPacket,
     CSsoBodyPacket,
     CSsoDataPacket,
     IncomingPacket,
 )
-from cai.settings.device import DeviceInfo
-from cai.settings.protocol import ApkInfo
-from cai.utils.binary import Packet
-from cai.utils.crypto import ECDH, EncryptSession
+
+from .tlv import TlvEncoder
 from .oicq import (
     NeedCaptcha,
     OICQRequest,
@@ -39,7 +41,6 @@ from .oicq import (
     TooManySMSRequest,
     UnknownLoginStatus,
 )
-from .tlv import TlvEncoder
 
 if TYPE_CHECKING:
     from cai.client import Client
@@ -56,7 +57,7 @@ def encode_login_request2_captcha(
     sign: bytes,
     t104: bytes,
     imei: str,
-    apk_info: ApkInfo
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build submit captcha request packet.
 
@@ -130,7 +131,7 @@ def encode_login_request2_slider(
     ticket: str,
     t104: bytes,
     imei: str,
-    apk_info: ApkInfo
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build slider ticket request packet.
 
@@ -205,7 +206,7 @@ def encode_login_request7(
     t174: bytes,
     g: bytes,
     imei: str,
-    apk_info: ApkInfo
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build sms submit packet.
 
@@ -288,7 +289,7 @@ def encode_login_request8(
     t104: bytes,
     t174: bytes,
     imei: str,
-    apk_info: ApkInfo
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build sms request packet.
 
@@ -368,7 +369,7 @@ def encode_login_request9(
     uin: int,
     password_md5: bytes,
     device: DeviceInfo,
-    apk_info: ApkInfo
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build main login request packet.
 
@@ -538,7 +539,7 @@ def encode_login_request20(
     t104: bytes,
     g: bytes,
     imei: str,
-    apk_info: ApkInfo
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build device lock login request packet.
 
@@ -620,7 +621,7 @@ def encode_exchange_emp_15(
     wt_session_ticket: bytes,
     wt_session_ticket_key: bytes,
     device: DeviceInfo,
-    apk_info: ApkInfo
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build exchange emp request packet.
 
@@ -777,7 +778,7 @@ async def handle_oicq_response(
         packet.ret_code,
         packet.command_name,
         packet.data,
-        device.tgtgt
+        device.tgtgt,
     )
     if not isinstance(response, UnknownLoginStatus):
         return response

@@ -58,7 +58,13 @@ class OICQRequest(Packet):
 class OICQResponse(Command):
     @classmethod
     def decode_response(
-        cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes, tgtgt: bytes
+        cls,
+        uin: int,
+        seq: int,
+        ret_code: int,
+        command_name: str,
+        data: bytes,
+        tgtgt: bytes,
     ) -> "OICQResponse":
         """Decode login response and wrap main info of the response.
 

@@ -6,21 +6,21 @@
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import functools
-import logging
 import os
-import asyncio
 import sys
+import asyncio
+import logging
+import functools
 import traceback
 from io import BytesIO
 
 from PIL import Image
 
 from cai.api import Client, make_client
-from cai.client import OnlineStatus, PrivateMessage, GroupMessage, Event
-from cai.client.message_service.models import TextElement
 from cai.settings.device import get_device
 from cai.settings.protocol import get_apk_info
+from cai.client.message_service.models import TextElement
+from cai.client import Event, GroupMessage, OnlineStatus, PrivateMessage
 from cai.exceptions import (
     LoginException,
     ApiResponseError,
@@ -38,7 +38,9 @@ async def run(closed: asyncio.Event):
         assert password and account, ValueError("account or password not set")
 
         account = int(account)
-        ci = Client(make_client(account, password, get_apk_info(), device=get_device()))
+        ci = Client(
+            make_client(account, password, get_apk_info(), device=get_device())
+        )
 
         try:
             await ci.login()
@@ -51,7 +53,7 @@ async def run(closed: asyncio.Event):
                 if status == OnlineStatus.Offline:
                     continue
                 print(status, "Changed")
-                #await ci.set_status(status, 67, True)
+                # await ci.set_status(status, 67, True)
                 await asyncio.sleep(360)
     finally:
         closed.set()
@@ -61,29 +63,39 @@ async def listen_message(client: Client, _, event: Event):
     if isinstance(event, PrivateMessage):
         print(f"{event.from_nick}(f{event.from_uin}) -> {event.message}")
     elif isinstance(event, GroupMessage):
-        print(f"{event.group_name}({event.group_id}:{event.from_uin}) -> {event.message}")
+        print(
+            f"{event.group_name}({event.group_id}:{event.from_uin}) -> {event.message}"
+        )
         if event.message and hasattr(event.message[0], "content"):
             if event.message[0].content == "0x114514":
                 await client.send_group_msg(
-                    event.group_id, [
+                    event.group_id,
+                    [
                         TextElement("Hello\n"),
                         TextElement("Multiple element "),
-                        TextElement("Supported.")
-                    ]
+                        TextElement("Supported."),
+                    ],
                 )
             elif event.message[0].content == "1919":
                 await client.send_group_msg(
                     event.group_id,
                     [
-                        await client.upload_image(event.group_id, open("test.png", "rb")),
-                        TextElement("1234")
-                    ]
+                        await client.upload_image(
+                            event.group_id, open("test.png", "rb")
+                        ),
+                        TextElement("1234"),
+                    ],
                 )
 
 
 async def handle_failure(client: Client, exception: Exception):
     if isinstance(exception, LoginSliderNeeded):
-        print("Verify url:", exception.verify_url.replace("ssl.captcha.qq.com", "txhelper.glitch.me"))
+        print(
+            "Verify url:",
+            exception.verify_url.replace(
+                "ssl.captcha.qq.com", "txhelper.glitch.me"
+            ),
+        )
         ticket = input("Please enter the ticket: ").strip()
         try:
             await client.submit_slider_ticket(ticket)
@@ -158,7 +170,7 @@ if __name__ == "__main__":
     logging.basicConfig(
         level=logging.DEBUG,
         handlers=[logging.StreamHandler(sys.stdout)],
-        format="%(asctime)s %(name)s[%(levelname)s]: %(message)s"
+        format="%(asctime)s %(name)s[%(levelname)s]: %(message)s",
     )
 
     close = asyncio.Event()

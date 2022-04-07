@@ -11,5 +11,4 @@ This module wraps the client methods to provide easier control (high-level api).
 
 from .client import Client, make_client
 
-
 __all__ = ["Client", "make_client"]

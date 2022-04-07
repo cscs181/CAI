@@ -14,8 +14,8 @@ from dataclasses import dataclass
 from typing import List, Optional
 
 from cai.client.event import Event
-from cai.pb.im.msg.msg_body import Ptt
 from cai.pb.msf.msg.comm import Msg
+from cai.pb.im.msg.msg_body import Ptt
 
 
 @dataclass
@@ -131,7 +131,7 @@ class ImageElement(Element):
             height=self.height,
             md5=self.md5,
             id=self.id,
-            url=self.url
+            url=self.url,
         )
 
 
@@ -168,7 +168,7 @@ class VoiceElement(Element):
             file_name=self.file_name.encode(),
             file_size=self.size,
             pb_reserve=self._pb_reserve,
-            valid=True
+            valid=True,
         )
 
 
@@ -205,6 +205,7 @@ class RichMsgElement(Element):
       default:
         xml
     """
+
     content: bytes
     service_id: Optional[int] = -2
 

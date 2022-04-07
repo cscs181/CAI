@@ -14,7 +14,7 @@ from enum import IntEnum
 from dataclasses import dataclass
 from typing import List, Optional, Union
 
-from cai.client.event import Event
+from cai.client.events.base import Event
 from cai.pb.msf.msg.comm import Msg
 from cai.pb.im.msg.msg_body import Ptt
 

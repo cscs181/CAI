@@ -46,12 +46,12 @@ from cai.exceptions import (
     GroupMemberListException,
 )
 
-from .event import Event
+from cai.client.events.base import Event
 from .packet import UniPacket, IncomingPacket
 from .command import Command, _packet_to_command
 from .sso_server import SsoServer, get_sso_server
 from .multi_msg.long_msg import _handle_multi_resp_body
-from .online_push import handle_c2c_sync, handle_push_msg
+from .online_push import handle_c2c_sync, handle_push_msg, handle_req_push
 from .heartbeat import Heartbeat, encode_heartbeat, handle_heartbeat
 from .models import Group, Friend, SigInfo, FriendGroup, GroupMember
 from .config_push import FileServerPushList, handle_config_push_request
@@ -136,6 +136,7 @@ HANDLERS: Dict[str, HT] = {
     # "OnlinePush.PbPushBindUinGroupMsg": handle_push_msg,  # sub account
     # new
     "MultiMsg.ApplyUp": _handle_multi_resp_body,
+    "OnlinePush.ReqPush": handle_req_push
 }
 
 
@@ -524,6 +525,8 @@ class Client:
             log.logger.exception(e)
 
     def dispatch_event(self, event: Event) -> None:
+        if event.type not in ("group_message", "private_message"):  # log filter
+            log.logger.debug(f"Event {event.type} was triggered")
         for listener in self.listeners:
             asyncio.create_task(self._run_listener(listener, event))
 

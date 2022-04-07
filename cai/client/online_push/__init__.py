@@ -8,18 +8,21 @@ This module is used to build and handle online push related packet.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
+import struct
+import tkinter
+from typing import TYPE_CHECKING, List, Tuple, Optional, Sequence
 
-from typing import TYPE_CHECKING, List, Tuple, Optional
-
-from jce import types
+from jce import types, JceDecoder
 
 from cai.log import logger
 from cai.utils.binary import Packet
-from cai.utils.jce import RequestPacketVersion3
+from cai.utils.jce import RequestPacketVersion3, RequestPacket
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
 from cai.settings.device import DeviceInfo as _DeviceInfo_t
+from cai.pb.im.oidb.group0x857.group0x857_pb2 import NotifyMsgBody, TemplParam
 
+from .. import events
 from ...settings.protocol import ApkInfo
 from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
 from .command import PushMsg, PushMsgError, PushMsgCommand
@@ -216,6 +219,80 @@ async def handle_push_msg(
             client.dispatch_event(decoded_message)
 
     return push
+
+
+def _parse_poke(params: Sequence[TemplParam]) -> dict:
+    res = {"target": None, "sender": None, "action": None, "suffix": None}
+    for p in params:
+        if p.name == "uin_str1":
+            res["sender"] = p.value
+        elif p.name == "uin_str2":
+            res["target"] = p.value
+        elif p.name == "suffix_str":
+            res["suffix"] = p.value
+        elif p.name == "action_str":
+            res["action"] = p.value
+    return res
+
+
+
+# OnlinePush.ReqPush
+async def handle_req_push(
+    client: "Client",
+    packet: IncomingPacket,
+    device: Tuple[_DeviceInfo_t, ApkInfo],
+) -> PushMsgCommand:
+    data = JceDecoder.decode_single(  # type: ignore
+        RequestPacket.decode(packet.data).buffer
+    )[1]["req"]["OnlinePushPack.SvcReqPushMsg"]
+    body = JceDecoder.decode_bytes(data)[0]
+    _, stime, content = body[0], body[1], body[2][0][6]
+    # TODO: Send OnlinePush.RespPush
+    if body[2][0][2] == 732:  # group
+        gid = int.from_bytes(content[0:4], "big")
+        dtype = content[4]
+        if dtype in (0x14, 0x11):
+            notify = NotifyMsgBody.FromString(content[7:])
+            if dtype == 0x14:  # nudge
+                client.dispatch_event(events.NudgeEvent(
+                    **_parse_poke(notify.optGeneralGrayTip.msgTemplParam),
+                    group=gid
+                ))
+            elif dtype == 0x11:  # recall
+                msg = notify.optMsgRecall.recalledMsgList[0]
+                client.dispatch_event(events.MemberRecallMessageEvent(
+                    gid,
+                    notify.optMsgRecall.uin,
+                    notify.optMsgRecall.opType,
+                    msg.authorUin,
+                    msg.msgRandom,
+                    msg.seq,
+                    msg.time
+                ))
+        elif dtype == 0x0c:  # mute event
+            operator = int.from_bytes(content[6:10], "big", signed=False)
+            target = int.from_bytes(content[16:20], "big", signed=False)
+            duration = int.from_bytes(content[20:24], "big", signed=False)
+            if duration > 0:  # muted
+                client.dispatch_event(events.MemberMutedEvent(
+                    gid,
+                    operator,
+                    target,
+                    duration
+                ))
+            else:
+                client.dispatch_event(events.MemberUnMutedEvent(
+                    gid,
+                    operator,
+                    target
+                ))
+    # TODO: parse friend event
+    return PushMsgCommand(
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name
+    )
 
 
 __all__ = [

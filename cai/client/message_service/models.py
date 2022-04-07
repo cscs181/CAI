@@ -11,7 +11,8 @@ This module is used to define message models.
 
 import abc
 from dataclasses import dataclass
-from typing import List, Optional
+from enum import IntEnum
+from typing import List, Optional, Union
 
 from cai.client.event import Event
 from cai.pb.msf.msg.comm import Msg
@@ -174,10 +175,18 @@ class VoiceElement(Element):
 
 @dataclass
 class PokeElement(Element):
-    id: int = 0
+    id: Union[int, "PokeType"] = 0
     name: str = ""
     strength: int = 0
     double_hit: int = 0
+
+    class PokeType(IntEnum):
+        ChuoYiChuo = 0
+        BiXin = 2
+        DianZan = 3
+        XinSui = 4
+        SixSixSix = 5
+        FangDaZhao = 6
 
     @property
     def type(self) -> str:

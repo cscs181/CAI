@@ -10,7 +10,6 @@ from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype3,
 )
 from cai.pb.im.msg.msg_body import (
-    Ptt,
     Elem,
     MsgBody,
     RichMsg,
@@ -117,10 +116,11 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
                 Elem(
                     common_elem=CommonElem(
                         service_type=2,
+                        business_type=e.id,
                         pb_elem=MsgElemInfo_servtype2(
                             vaspoke_id=0xFFFFFFFF,
                             vaspoke_name=e.name.encode(),
-                            poke_type=e.id,
+                            poke_type=0,
                             poke_strength=e.strength,
                             double_hit=e.double_hit,
                             poke_flag=0,

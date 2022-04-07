@@ -7,25 +7,28 @@
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import Callable, Awaitable
+from typing import Callable, Awaitable, TYPE_CHECKING
 
 from cai.log import logger
 from cai.client import HANDLERS, Event, Client, Command, IncomingPacket
 
 from .base import BaseAPI
 
+if TYPE_CHECKING:
+    from .client import Client as Client_T
+
 
 class Events(BaseAPI):
     def add_event_listener(
         self,
-        listener: Callable[[Client, Event], Awaitable[None]]
+        listener: Callable[["Client_T", Event], Awaitable[None]]
     ):
         """Add event listener.
 
         Args:
             listener (Callable[[Client, Event], Awaitable[None]]): Event listener.
         """
-        self.client.add_event_listener(listener)
+        self.client.add_event_listener(lambda _, e: listener(self, e))  # type: ignore
 
     def register_packet_handler(
         self,

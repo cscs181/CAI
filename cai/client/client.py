@@ -295,6 +295,9 @@ class Client:
     def closed(self) -> bool:
         return self._closed.is_set()
 
+    async def wait_closed(self):
+        await self._closed.wait()
+
     async def connect(self, server: Optional[SsoServer] = None) -> None:
         """Connect to the server.
 

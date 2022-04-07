@@ -389,7 +389,7 @@ class Client:
         self._receive_store.cancel_all()
         # disconnect server
         await self.disconnect()
-        self.closed.set()
+        self._closed.set()
 
     @property
     def seq(self) -> int:
@@ -469,7 +469,7 @@ class Client:
         try:
             handler = HANDLERS.get(in_packet.command_name, _packet_to_command)
             packet = await handler(
-                self, in_packet, (self.device_info, self.apk_info)
+                self, in_packet, (self.device, self.apk_info)
             )
             self._receive_store.store_result(packet.seq, packet)
         except Exception as e:
@@ -596,7 +596,7 @@ class Client:
                     self.uin,
                     self._t104,
                     self._siginfo.g,
-                    self.device_info.imei,
+                    self.device.imei,
                     self.apk_info,
                 )
                 response = await self.send_and_wait(
@@ -668,7 +668,7 @@ class Client:
             self._ksid,
             self.uin,
             self._password_md5,
-            self.device_info,
+            self.device,
             self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
@@ -704,7 +704,7 @@ class Client:
             captcha,
             captcha_sign,
             self._t104,
-            self.device_info.imei,
+            self.device.imei,
             self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
@@ -737,7 +737,7 @@ class Client:
             self.uin,
             ticket,
             self._t104,
-            self.device_info.imei,
+            self.device.imei,
             self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
@@ -770,7 +770,7 @@ class Client:
             self.uin,
             self._t104,
             self._t174,
-            self.device_info.imei,
+            self.device.imei,
             self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
@@ -812,7 +812,7 @@ class Client:
             self._t104,
             self._t174,
             self._siginfo.g,
-            self.device_info.imei,
+            self.device.imei,
             self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
@@ -852,7 +852,7 @@ class Client:
                     self.uin,
                     self._t104,
                     self._siginfo.g,
-                    self.device_info.imei,
+                    self.device.imei,
                     self.apk_info,
                 )
                 response = await self.send_and_wait(
@@ -900,7 +900,7 @@ class Client:
             self._siginfo.rand_seed,
             self._siginfo.wt_session_ticket,
             self._siginfo.wt_session_ticket_key,
-            self.device_info,
+            self.device,
             self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.exchange_emp", packet)
@@ -941,7 +941,7 @@ class Client:
             status,
             register_reason,
             self.apk_info.sub_app_id,
-            self.device_info,
+            self.device,
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
 
@@ -991,7 +991,7 @@ class Client:
             self._session_id,
             self.uin,
             self._siginfo.d2key,
-            self.device_info,
+            self.device,
             status,
             battery_status,
             is_power_connected,
@@ -1037,7 +1037,7 @@ class Client:
             packet = encode_heartbeat(
                 seq,
                 self._session_id,
-                self.device_info.imei,
+                self.device.imei,
                 self._ksid,
                 self.uin,
                 self.apk_info.sub_app_id,

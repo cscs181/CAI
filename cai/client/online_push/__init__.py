@@ -8,11 +8,9 @@ This module is used to build and handle online push related packet.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import struct
-import tkinter
 from typing import TYPE_CHECKING, List, Tuple, Optional, Sequence
 
-from jce import types, JceDecoder
+from jce import types, JceDecoder, JceStruct, JceEncoder
 
 from cai.log import logger
 from cai.utils.binary import Packet
@@ -235,6 +233,20 @@ def _parse_poke(params: Sequence[TemplParam]) -> dict:
     return res
 
 
+"""def encode_resp_push_pkg(uin: int, svrip: int, seq: int, items: Sequence[DelMsgInfo]) -> bytes:
+    pkg = SvcRespPushMsg(
+        uin=uin,
+        del_infos=items,
+        svrip=svrip & 0xffffffff,
+        service_type=0
+    )
+    return RequestPacketVersion3(
+        servant_name="OnlinePush",
+        func_name="SvcRespPushMsg",
+        req_id=seq,
+        data=types.MAP({types.STRING("SvcRespPushMsg"): types.BYTES(SvcRespPushMsg.to_bytes(0, pkg))})
+    ).encode()
+"""
 
 # OnlinePush.ReqPush
 async def handle_req_push(
@@ -242,23 +254,25 @@ async def handle_req_push(
     packet: IncomingPacket,
     device: Tuple[_DeviceInfo_t, ApkInfo],
 ) -> PushMsgCommand:
-    data = JceDecoder.decode_single(  # type: ignore
-        RequestPacket.decode(packet.data).buffer
-    )[1]["req"]["OnlinePushPack.SvcReqPushMsg"]
-    body = JceDecoder.decode_bytes(data)[0]
-    _, stime, content = body[0], body[1], body[2][0][6]
-    # TODO: Send OnlinePush.RespPush
-    if body[2][0][2] == 732:  # group
+    body = JceDecoder.decode_bytes(
+        JceDecoder.decode_single(  # type: ignore
+            RequestPacket.decode(packet.data).buffer
+        )[1]["req"]["OnlinePushPack.SvcReqPushMsg"]
+    )[0]
+
+    _uin, stime, push_type, content = body[0], body[1], body[2][0][2], body[2][0][6]
+
+    if push_type == 732:  # group
         gid = int.from_bytes(content[0:4], "big")
-        dtype = content[4]
-        if dtype in (0x14, 0x11):
+        stype = content[4]
+        if stype in (0x14, 0x11):
             notify = NotifyMsgBody.FromString(content[7:])
-            if dtype == 0x14:  # nudge
+            if stype == 0x14:  # nudge
                 client.dispatch_event(events.NudgeEvent(
                     **_parse_poke(notify.optGeneralGrayTip.msgTemplParam),
                     group=gid
                 ))
-            elif dtype == 0x11:  # recall
+            elif stype == 0x11:  # recall
                 msg = notify.optMsgRecall.recalledMsgList[0]
                 client.dispatch_event(events.MemberRecallMessageEvent(
                     gid,
@@ -269,7 +283,7 @@ async def handle_req_push(
                     msg.seq,
                     msg.time
                 ))
-        elif dtype == 0x0c:  # mute event
+        elif stype == 0x0c:  # mute event
             operator = int.from_bytes(content[6:10], "big", signed=False)
             target = int.from_bytes(content[16:20], "big", signed=False)
             duration = int.from_bytes(content[20:24], "big", signed=False)
@@ -286,7 +300,28 @@ async def handle_req_push(
                     operator,
                     target
                 ))
-    # TODO: parse friend event
+    elif push_type == 528:
+        pass
+        # TODO: parse friend event
+
+    await client.send_and_wait(  # resp ack
+        seq=client.next_seq(),
+        command_name="OnlinePush.RespPush",
+        packet=encode_push_response(
+            body[1],
+            client._session_id,
+            _uin,
+            client._siginfo.d2key,
+            client.uin,
+            body[3] & 0xffffffff,
+            [DelMsgInfo(
+                from_uin=_uin,
+                msg_seq=body[1],
+                msg_time=stime
+            )]
+        )
+    )
+
     return PushMsgCommand(
         packet.uin,
         packet.seq,

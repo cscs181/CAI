@@ -347,7 +347,7 @@ class Client:
                 asyncio.create_task(self.reconnect_and_login())
         else:
             log.network.warning("receiver stopped")
-            asyncio.create_task(self.disconnect())
+            asyncio.create_task(self.close())
 
     async def disconnect(self) -> None:
         """Disconnect if already connected to the server."""
@@ -392,8 +392,7 @@ class Client:
             await self._init(drop_offline_msg=False)
         except asyncio.exceptions.TimeoutError:  # fallback
             log.network.warning("register failed, trying to re-login")
-            await self.disconnect()
-            await self.connect()
+            await self.reconnect()
             await self.login()
 
     async def close(self) -> None:

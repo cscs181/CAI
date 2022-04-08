@@ -307,6 +307,7 @@ async def handle_force_offline(
     client: "Client", packet: IncomingPacket
 ) -> PushForceOfflineCommand:
     client._status = OnlineStatus.Offline
+    client._reconnect = False
     await client.disconnect()
     request = PushForceOfflineCommand.decode_response(
         packet.uin,

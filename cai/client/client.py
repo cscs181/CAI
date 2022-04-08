@@ -372,7 +372,8 @@ class Client:
         if not change_server and self._connection:
             log.network.warning("reconnecting...")
             await self._connection.reconnect()
-            await self.register(register_reason=RegPushReason.MsfByNetChange)
+            # FIXME: register reason msfByNetChange?
+            await self._init(drop_offline_msg=False)
             log.network.info("reconnected")
             return
 
@@ -642,13 +643,15 @@ class Client:
                 response.uin, response.status, "Unknown login status."
             )
 
-    async def _init(self) -> None:
+    async def _init(self, drop_offline_msg: bool = True) -> None:
         if not self.connected or self.status == OnlineStatus.Offline:
             raise RuntimeError("Client is offline.")
 
-        self._init_flag = True
+        self._init_flag = drop_offline_msg
+
+        previous_status = self._status or OnlineStatus.Online
         # register client online status
-        await self.register()
+        await self.register(status=previous_status)
         # force refresh group list
         await self._refresh_group_list()
         # force refresh friend list

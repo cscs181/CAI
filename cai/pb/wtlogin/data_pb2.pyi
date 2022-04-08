@@ -26,10 +26,11 @@ from typing_extensions import (
 )
 
 
-DESCRIPTOR: FileDescriptor = ...
+DESCRIPTOR: FileDescriptor
 
 class DeviceReport(Message):
-    DESCRIPTOR: Descriptor = ...
+    """oicq/wlogin_sdk/pb/device_report.java"""
+    DESCRIPTOR: Descriptor
     BOOTLOADER_FIELD_NUMBER: int
     PROC_VERSION_FIELD_NUMBER: int
     CODENAME_FIELD_NUMBER: int
@@ -39,33 +40,33 @@ class DeviceReport(Message):
     ANDROID_ID_FIELD_NUMBER: int
     BASE_BAND_FIELD_NUMBER: int
     INNER_VERSION_FIELD_NUMBER: int
-    bootloader: Text = ...
-    proc_version: Text = ...
-    codename: Text = ...
-    incremental: Text = ...
-    fingerprint: Text = ...
-    boot_id: Text = ...
-    android_id: Text = ...
-    base_band: Text = ...
-    inner_version: Text = ...
-
+    bootloader: Text
+    proc_version: Text
+    codename: Text
+    incremental: Text
+    fingerprint: Text
+    boot_id: Text
+    android_id: Text
+    base_band: Text
+    inner_version: Text
     def __init__(self,
         *,
-        bootloader : Optional[Text] = ...,
-        proc_version : Optional[Text] = ...,
-        codename : Optional[Text] = ...,
-        incremental : Optional[Text] = ...,
-        fingerprint : Optional[Text] = ...,
-        boot_id : Optional[Text] = ...,
-        android_id : Optional[Text] = ...,
-        base_band : Optional[Text] = ...,
-        inner_version : Optional[Text] = ...,
+        bootloader: Optional[Text] = ...,
+        proc_version: Optional[Text] = ...,
+        codename: Optional[Text] = ...,
+        incremental: Optional[Text] = ...,
+        fingerprint: Optional[Text] = ...,
+        boot_id: Optional[Text] = ...,
+        android_id: Optional[Text] = ...,
+        base_band: Optional[Text] = ...,
+        inner_version: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"android_id",b"android_id",u"base_band",b"base_band",u"boot_id",b"boot_id",u"bootloader",b"bootloader",u"codename",b"codename",u"fingerprint",b"fingerprint",u"incremental",b"incremental",u"inner_version",b"inner_version",u"proc_version",b"proc_version"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"android_id",b"android_id",u"base_band",b"base_band",u"boot_id",b"boot_id",u"bootloader",b"bootloader",u"codename",b"codename",u"fingerprint",b"fingerprint",u"incremental",b"incremental",u"inner_version",b"inner_version",u"proc_version",b"proc_version"]) -> None: ...
+    def HasField(self, field_name: Literal["android_id",b"android_id","base_band",b"base_band","boot_id",b"boot_id","bootloader",b"bootloader","codename",b"codename","fingerprint",b"fingerprint","incremental",b"incremental","inner_version",b"inner_version","proc_version",b"proc_version"]) -> bool: ...
+    def ClearField(self, field_name: Literal["android_id",b"android_id","base_band",b"base_band","boot_id",b"boot_id","bootloader",b"bootloader","codename",b"codename","fingerprint",b"fingerprint","incremental",b"incremental","inner_version",b"inner_version","proc_version",b"proc_version"]) -> None: ...
 
 class SecTransInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    """oicq/wlogin_sdk/pb/sec_trans.java"""
+    DESCRIPTOR: Descriptor
     PHONE_BRAND_FIELD_NUMBER: int
     MODEL_TYPE_FIELD_NUMBER: int
     WIFI_MAC_FIELD_NUMBER: int
@@ -73,23 +74,22 @@ class SecTransInfo(Message):
     OS_LANGUAGE_FIELD_NUMBER: int
     QQ_LANGUAGE_FIELD_NUMBER: int
     GPS_LOCATION_FIELD_NUMBER: int
-    phone_brand: Text = ...
-    model_type: Text = ...
-    wifi_mac: Text = ...
-    bssid: Text = ...
-    os_language: Text = ...
-    qq_language: int = ...
-    gps_location: Text = ...
-
+    phone_brand: Text
+    model_type: Text
+    wifi_mac: Text
+    bssid: Text
+    os_language: Text
+    qq_language: int
+    gps_location: Text
     def __init__(self,
         *,
-        phone_brand : Optional[Text] = ...,
-        model_type : Optional[Text] = ...,
-        wifi_mac : Optional[Text] = ...,
-        bssid : Optional[Text] = ...,
-        os_language : Optional[Text] = ...,
-        qq_language : Optional[int] = ...,
-        gps_location : Optional[Text] = ...,
+        phone_brand: Optional[Text] = ...,
+        model_type: Optional[Text] = ...,
+        wifi_mac: Optional[Text] = ...,
+        bssid: Optional[Text] = ...,
+        os_language: Optional[Text] = ...,
+        qq_language: Optional[int] = ...,
+        gps_location: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"bssid",b"bssid",u"gps_location",b"gps_location",u"model_type",b"model_type",u"os_language",b"os_language",u"phone_brand",b"phone_brand",u"qq_language",b"qq_language",u"wifi_mac",b"wifi_mac"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"bssid",b"bssid",u"gps_location",b"gps_location",u"model_type",b"model_type",u"os_language",b"os_language",u"phone_brand",b"phone_brand",u"qq_language",b"qq_language",u"wifi_mac",b"wifi_mac"]) -> None: ...
+    def HasField(self, field_name: Literal["bssid",b"bssid","gps_location",b"gps_location","model_type",b"model_type","os_language",b"os_language","phone_brand",b"phone_brand","qq_language",b"qq_language","wifi_mac",b"wifi_mac"]) -> bool: ...
+    def ClearField(self, field_name: Literal["bssid",b"bssid","gps_location",b"gps_location","model_type",b"model_type","os_language",b"os_language","phone_brand",b"phone_brand","qq_language",b"qq_language","wifi_mac",b"wifi_mac"]) -> None: ...

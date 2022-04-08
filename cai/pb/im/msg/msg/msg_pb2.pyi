@@ -36,56 +36,49 @@ from typing_extensions import (
 )
 
 
-DESCRIPTOR: FileDescriptor = ...
+DESCRIPTOR: FileDescriptor
 
 class C2C(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     SENDER_FIELD_NUMBER: int
     RECEIVER_FIELD_NUMBER: int
     C2C_RELATION_FIELD_NUMBER: int
-
     @property
     def sender(self) -> User: ...
-
     @property
     def receiver(self) -> User: ...
-
     @property
     def c2c_relation(self) -> C2CRelation: ...
-
     def __init__(self,
         *,
-        sender : Optional[User] = ...,
-        receiver : Optional[User] = ...,
-        c2c_relation : Optional[C2CRelation] = ...,
+        sender: Optional[User] = ...,
+        receiver: Optional[User] = ...,
+        c2c_relation: Optional[C2CRelation] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"c2c_relation",b"c2c_relation",u"receiver",b"receiver",u"sender",b"sender"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"c2c_relation",b"c2c_relation",u"receiver",b"receiver",u"sender",b"sender"]) -> None: ...
+    def HasField(self, field_name: Literal["c2c_relation",b"c2c_relation","receiver",b"receiver","sender",b"sender"]) -> bool: ...
+    def ClearField(self, field_name: Literal["c2c_relation",b"c2c_relation","receiver",b"receiver","sender",b"sender"]) -> None: ...
 
 class C2CRelation(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     C2C_TYPE_FIELD_NUMBER: int
     GROUP_INFO_FIELD_NUMBER: int
     TOKEN_FIELD_NUMBER: int
-    c2c_type: int = ...
-
+    c2c_type: int
     @property
     def group_info(self) -> GroupInfo: ...
-
     @property
     def token(self) -> Token: ...
-
     def __init__(self,
         *,
-        c2c_type : Optional[int] = ...,
-        group_info : Optional[GroupInfo] = ...,
-        token : Optional[Token] = ...,
+        c2c_type: Optional[int] = ...,
+        group_info: Optional[GroupInfo] = ...,
+        token: Optional[Token] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"c2c_type",b"c2c_type",u"group_info",b"group_info",u"token",b"token"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"c2c_type",b"c2c_type",u"group_info",b"group_info",u"token",b"token"]) -> None: ...
+    def HasField(self, field_name: Literal["c2c_type",b"c2c_type","group_info",b"group_info","token",b"token"]) -> bool: ...
+    def ClearField(self, field_name: Literal["c2c_type",b"c2c_type","group_info",b"group_info","token",b"token"]) -> None: ...
 
 class ContentHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     PKG_NUM_FIELD_NUMBER: int
     PKG_INDEX_FIELD_NUMBER: int
     SEQ_FIELD_NUMBER: int
@@ -96,145 +89,128 @@ class ContentHead(Message):
     MSGDB_SEQ_FIELD_NUMBER: int
     WORD_MSG_SEQ_FIELD_NUMBER: int
     RAND_FIELD_NUMBER: int
-    pkg_num: int = ...
-    pkg_index: int = ...
-    seq: int = ...
-    date_time: int = ...
-    type: int = ...
-    div_seq: int = ...
-    msgdb_uin: int = ...
-    msgdb_seq: int = ...
-    word_msg_seq: int = ...
-    rand: int = ...
-
+    pkg_num: int
+    pkg_index: int
+    seq: int
+    date_time: int
+    type: int
+    div_seq: int
+    msgdb_uin: int
+    msgdb_seq: int
+    word_msg_seq: int
+    rand: int
     def __init__(self,
         *,
-        pkg_num : Optional[int] = ...,
-        pkg_index : Optional[int] = ...,
-        seq : Optional[int] = ...,
-        date_time : Optional[int] = ...,
-        type : Optional[int] = ...,
-        div_seq : Optional[int] = ...,
-        msgdb_uin : Optional[int] = ...,
-        msgdb_seq : Optional[int] = ...,
-        word_msg_seq : Optional[int] = ...,
-        rand : Optional[int] = ...,
+        pkg_num: Optional[int] = ...,
+        pkg_index: Optional[int] = ...,
+        seq: Optional[int] = ...,
+        date_time: Optional[int] = ...,
+        type: Optional[int] = ...,
+        div_seq: Optional[int] = ...,
+        msgdb_uin: Optional[int] = ...,
+        msgdb_seq: Optional[int] = ...,
+        word_msg_seq: Optional[int] = ...,
+        rand: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"date_time",b"date_time",u"div_seq",b"div_seq",u"msgdb_seq",b"msgdb_seq",u"msgdb_uin",b"msgdb_uin",u"pkg_index",b"pkg_index",u"pkg_num",b"pkg_num",u"rand",b"rand",u"seq",b"seq",u"type",b"type",u"word_msg_seq",b"word_msg_seq"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"date_time",b"date_time",u"div_seq",b"div_seq",u"msgdb_seq",b"msgdb_seq",u"msgdb_uin",b"msgdb_uin",u"pkg_index",b"pkg_index",u"pkg_num",b"pkg_num",u"rand",b"rand",u"seq",b"seq",u"type",b"type",u"word_msg_seq",b"word_msg_seq"]) -> None: ...
+    def HasField(self, field_name: Literal["date_time",b"date_time","div_seq",b"div_seq","msgdb_seq",b"msgdb_seq","msgdb_uin",b"msgdb_uin","pkg_index",b"pkg_index","pkg_num",b"pkg_num","rand",b"rand","seq",b"seq","type",b"type","word_msg_seq",b"word_msg_seq"]) -> bool: ...
+    def ClearField(self, field_name: Literal["date_time",b"date_time","div_seq",b"div_seq","msgdb_seq",b"msgdb_seq","msgdb_uin",b"msgdb_uin","pkg_index",b"pkg_index","pkg_num",b"pkg_num","rand",b"rand","seq",b"seq","type",b"type","word_msg_seq",b"word_msg_seq"]) -> None: ...
 
 class Group(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     SENDER_FIELD_NUMBER: int
     RECEIVER_FIELD_NUMBER: int
     GROUP_INFO_FIELD_NUMBER: int
-
     @property
     def sender(self) -> User: ...
-
     @property
     def receiver(self) -> User: ...
-
     @property
     def group_info(self) -> GroupInfo: ...
-
     def __init__(self,
         *,
-        sender : Optional[User] = ...,
-        receiver : Optional[User] = ...,
-        group_info : Optional[GroupInfo] = ...,
+        sender: Optional[User] = ...,
+        receiver: Optional[User] = ...,
+        group_info: Optional[GroupInfo] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"group_info",b"group_info",u"receiver",b"receiver",u"sender",b"sender"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"group_info",b"group_info",u"receiver",b"receiver",u"sender",b"sender"]) -> None: ...
+    def HasField(self, field_name: Literal["group_info",b"group_info","receiver",b"receiver","sender",b"sender"]) -> bool: ...
+    def ClearField(self, field_name: Literal["group_info",b"group_info","receiver",b"receiver","sender",b"sender"]) -> None: ...
 
 class Msg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     HEAD_FIELD_NUMBER: int
     BODY_FIELD_NUMBER: int
-
     @property
     def head(self) -> MsgHead: ...
-
     @property
     def body(self) -> MsgBody: ...
-
     def __init__(self,
         *,
-        head : Optional[MsgHead] = ...,
-        body : Optional[MsgBody] = ...,
+        head: Optional[MsgHead] = ...,
+        body: Optional[MsgBody] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"body",b"body",u"head",b"head"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"body",b"body",u"head",b"head"]) -> None: ...
+    def HasField(self, field_name: Literal["body",b"body","head",b"head"]) -> bool: ...
+    def ClearField(self, field_name: Literal["body",b"body","head",b"head"]) -> None: ...
 
 class MsgHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     ROUTING_HEAD_FIELD_NUMBER: int
     CONTENT_HEAD_FIELD_NUMBER: int
     GBK_TMP_MSG_BODY_FIELD_NUMBER: int
-    gbk_tmp_msg_body: bytes = ...
-
     @property
     def routing_head(self) -> RoutingHead: ...
-
     @property
     def content_head(self) -> ContentHead: ...
-
+    gbk_tmp_msg_body: bytes
     def __init__(self,
         *,
-        routing_head : Optional[RoutingHead] = ...,
-        content_head : Optional[ContentHead] = ...,
-        gbk_tmp_msg_body : Optional[bytes] = ...,
+        routing_head: Optional[RoutingHead] = ...,
+        content_head: Optional[ContentHead] = ...,
+        gbk_tmp_msg_body: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"content_head",b"content_head",u"gbk_tmp_msg_body",b"gbk_tmp_msg_body",u"routing_head",b"routing_head"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"content_head",b"content_head",u"gbk_tmp_msg_body",b"gbk_tmp_msg_body",u"routing_head",b"routing_head"]) -> None: ...
+    def HasField(self, field_name: Literal["content_head",b"content_head","gbk_tmp_msg_body",b"gbk_tmp_msg_body","routing_head",b"routing_head"]) -> bool: ...
+    def ClearField(self, field_name: Literal["content_head",b"content_head","gbk_tmp_msg_body",b"gbk_tmp_msg_body","routing_head",b"routing_head"]) -> None: ...
 
 class MsgSendReq(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     MSG_FIELD_NUMBER: int
     BU_MSG_FIELD_NUMBER: int
     TAIL_ID_FIELD_NUMBER: int
     CONN_MSG_FLAG_FIELD_NUMBER: int
     COOKIE_FIELD_NUMBER: int
-    bu_msg: bytes = ...
-    tail_id: int = ...
-    conn_msg_flag: int = ...
-    cookie: bytes = ...
-
     @property
     def msg(self) -> Msg: ...
-
+    bu_msg: bytes
+    tail_id: int
+    conn_msg_flag: int
+    cookie: bytes
     def __init__(self,
         *,
-        msg : Optional[Msg] = ...,
-        bu_msg : Optional[bytes] = ...,
-        tail_id : Optional[int] = ...,
-        conn_msg_flag : Optional[int] = ...,
-        cookie : Optional[bytes] = ...,
+        msg: Optional[Msg] = ...,
+        bu_msg: Optional[bytes] = ...,
+        tail_id: Optional[int] = ...,
+        conn_msg_flag: Optional[int] = ...,
+        cookie: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"bu_msg",b"bu_msg",u"conn_msg_flag",b"conn_msg_flag",u"cookie",b"cookie",u"msg",b"msg",u"tail_id",b"tail_id"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"bu_msg",b"bu_msg",u"conn_msg_flag",b"conn_msg_flag",u"cookie",b"cookie",u"msg",b"msg",u"tail_id",b"tail_id"]) -> None: ...
+    def HasField(self, field_name: Literal["bu_msg",b"bu_msg","conn_msg_flag",b"conn_msg_flag","cookie",b"cookie","msg",b"msg","tail_id",b"tail_id"]) -> bool: ...
+    def ClearField(self, field_name: Literal["bu_msg",b"bu_msg","conn_msg_flag",b"conn_msg_flag","cookie",b"cookie","msg",b"msg","tail_id",b"tail_id"]) -> None: ...
 
 class MsgSendResp(Message):
-    DESCRIPTOR: Descriptor = ...
-
+    DESCRIPTOR: Descriptor
     def __init__(self,
         ) -> None: ...
 
 class RoutingHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     C2_C_FIELD_NUMBER: int
     GROUP_FIELD_NUMBER: int
-
     @property
     def c2_c(self) -> C2C: ...
-
     @property
     def group(self) -> Group: ...
-
     def __init__(self,
         *,
-        c2_c : Optional[C2C] = ...,
-        group : Optional[Group] = ...,
+        c2_c: Optional[C2C] = ...,
+        group: Optional[Group] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"c2_c",b"c2_c",u"group",b"group"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"c2_c",b"c2_c",u"group",b"group"]) -> None: ...
+    def HasField(self, field_name: Literal["c2_c",b"c2_c","group",b"group"]) -> bool: ...
+    def ClearField(self, field_name: Literal["c2_c",b"c2_c","group",b"group"]) -> None: ...

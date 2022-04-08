@@ -62,9 +62,8 @@ class Connection:
         # return self._writer is None
         return self._closed.is_set()
 
-    @property
     async def wait_closed(self):
-        return self._closed.wait
+        await self._closed.wait()
 
     async def __aenter__(self):
         await self._connect()
@@ -96,12 +95,12 @@ class Connection:
         self._closed.clear()
 
     async def close(self):
-        self._closed.set()
         if self._writer:
             self._writer.close()
             await self._writer.wait_closed()
         self._writer = None
         self._reader = None
+        self._closed.set()
 
     async def reconnect(self) -> None:
         await self.close()

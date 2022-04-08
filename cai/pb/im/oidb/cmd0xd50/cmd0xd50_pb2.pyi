@@ -32,10 +32,13 @@ from typing_extensions import (
 )
 
 
-DESCRIPTOR: FileDescriptor = ...
+DESCRIPTOR: FileDescriptor
 
 class ExtSnsFrdData(Message):
-    DESCRIPTOR: Descriptor = ...
+    """tencent/im/oidb/cmd0xd50/Oidb_0xd50.java
+
+    """
+    DESCRIPTOR: Descriptor
     FRD_UIN_FIELD_NUMBER: int
     LOVERS_FIELD_NUMBER: int
     CONFIDANTE_FIELD_NUMBER: int
@@ -61,77 +64,75 @@ class ExtSnsFrdData(Message):
     MY_STEAL_RECORD_FIELD_NUMBER: int
     AVGAME_FIELD_NUMBER: int
     AIO_QUICK_APP_FIELD_NUMBER: int
-    frd_uin: int = ...
-    lovers: bytes = ...
-    confidante: bytes = ...
-    buddy: bytes = ...
-    frd_tree: bytes = ...
-    chat: bytes = ...
-    praise: bytes = ...
-    qzone_love: bytes = ...
-    qzone_house: bytes = ...
-    music_switch: bytes = ...
-    mutualmark_alienation: bytes = ...
-    unread_message: bytes = ...
-    boat: bytes = ...
-    close_frd: bytes = ...
-    mutualmark_score: bytes = ...
-    ksing_switch: bytes = ...
-    lbs_share: bytes = ...
-    dont_forget_me: bytes = ...
-    my_online_status_visible_to_frd: bytes = ...
-    frd_online_status_visible_to_me: bytes = ...
-    visitor_record: bytes = ...
-    frd_steal_record: bytes = ...
-    my_steal_record: bytes = ...
-    avgame: bytes = ...
-    aio_quick_app: bytes = ...
-
+    frd_uin: int
+    lovers: bytes
+    confidante: bytes
+    buddy: bytes
+    frd_tree: bytes
+    chat: bytes
+    praise: bytes
+    qzone_love: bytes
+    qzone_house: bytes
+    music_switch: bytes
+    mutualmark_alienation: bytes
+    unread_message: bytes
+    boat: bytes
+    close_frd: bytes
+    mutualmark_score: bytes
+    ksing_switch: bytes
+    lbs_share: bytes
+    dont_forget_me: bytes
+    my_online_status_visible_to_frd: bytes
+    frd_online_status_visible_to_me: bytes
+    visitor_record: bytes
+    frd_steal_record: bytes
+    my_steal_record: bytes
+    avgame: bytes
+    aio_quick_app: bytes
     def __init__(self,
         *,
-        frd_uin : Optional[int] = ...,
-        lovers : Optional[bytes] = ...,
-        confidante : Optional[bytes] = ...,
-        buddy : Optional[bytes] = ...,
-        frd_tree : Optional[bytes] = ...,
-        chat : Optional[bytes] = ...,
-        praise : Optional[bytes] = ...,
-        qzone_love : Optional[bytes] = ...,
-        qzone_house : Optional[bytes] = ...,
-        music_switch : Optional[bytes] = ...,
-        mutualmark_alienation : Optional[bytes] = ...,
-        unread_message : Optional[bytes] = ...,
-        boat : Optional[bytes] = ...,
-        close_frd : Optional[bytes] = ...,
-        mutualmark_score : Optional[bytes] = ...,
-        ksing_switch : Optional[bytes] = ...,
-        lbs_share : Optional[bytes] = ...,
-        dont_forget_me : Optional[bytes] = ...,
-        my_online_status_visible_to_frd : Optional[bytes] = ...,
-        frd_online_status_visible_to_me : Optional[bytes] = ...,
-        visitor_record : Optional[bytes] = ...,
-        frd_steal_record : Optional[bytes] = ...,
-        my_steal_record : Optional[bytes] = ...,
-        avgame : Optional[bytes] = ...,
-        aio_quick_app : Optional[bytes] = ...,
+        frd_uin: Optional[int] = ...,
+        lovers: Optional[bytes] = ...,
+        confidante: Optional[bytes] = ...,
+        buddy: Optional[bytes] = ...,
+        frd_tree: Optional[bytes] = ...,
+        chat: Optional[bytes] = ...,
+        praise: Optional[bytes] = ...,
+        qzone_love: Optional[bytes] = ...,
+        qzone_house: Optional[bytes] = ...,
+        music_switch: Optional[bytes] = ...,
+        mutualmark_alienation: Optional[bytes] = ...,
+        unread_message: Optional[bytes] = ...,
+        boat: Optional[bytes] = ...,
+        close_frd: Optional[bytes] = ...,
+        mutualmark_score: Optional[bytes] = ...,
+        ksing_switch: Optional[bytes] = ...,
+        lbs_share: Optional[bytes] = ...,
+        dont_forget_me: Optional[bytes] = ...,
+        my_online_status_visible_to_frd: Optional[bytes] = ...,
+        frd_online_status_visible_to_me: Optional[bytes] = ...,
+        visitor_record: Optional[bytes] = ...,
+        frd_steal_record: Optional[bytes] = ...,
+        my_steal_record: Optional[bytes] = ...,
+        avgame: Optional[bytes] = ...,
+        aio_quick_app: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"aio_quick_app",b"aio_quick_app",u"avgame",b"avgame",u"boat",b"boat",u"buddy",b"buddy",u"chat",b"chat",u"close_frd",b"close_frd",u"confidante",b"confidante",u"dont_forget_me",b"dont_forget_me",u"frd_online_status_visible_to_me",b"frd_online_status_visible_to_me",u"frd_steal_record",b"frd_steal_record",u"frd_tree",b"frd_tree",u"frd_uin",b"frd_uin",u"ksing_switch",b"ksing_switch",u"lbs_share",b"lbs_share",u"lovers",b"lovers",u"music_switch",b"music_switch",u"mutualmark_alienation",b"mutualmark_alienation",u"mutualmark_score",b"mutualmark_score",u"my_online_status_visible_to_frd",b"my_online_status_visible_to_frd",u"my_steal_record",b"my_steal_record",u"praise",b"praise",u"qzone_house",b"qzone_house",u"qzone_love",b"qzone_love",u"unread_message",b"unread_message",u"visitor_record",b"visitor_record"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"aio_quick_app",b"aio_quick_app",u"avgame",b"avgame",u"boat",b"boat",u"buddy",b"buddy",u"chat",b"chat",u"close_frd",b"close_frd",u"confidante",b"confidante",u"dont_forget_me",b"dont_forget_me",u"frd_online_status_visible_to_me",b"frd_online_status_visible_to_me",u"frd_steal_record",b"frd_steal_record",u"frd_tree",b"frd_tree",u"frd_uin",b"frd_uin",u"ksing_switch",b"ksing_switch",u"lbs_share",b"lbs_share",u"lovers",b"lovers",u"music_switch",b"music_switch",u"mutualmark_alienation",b"mutualmark_alienation",u"mutualmark_score",b"mutualmark_score",u"my_online_status_visible_to_frd",b"my_online_status_visible_to_frd",u"my_steal_record",b"my_steal_record",u"praise",b"praise",u"qzone_house",b"qzone_house",u"qzone_love",b"qzone_love",u"unread_message",b"unread_message",u"visitor_record",b"visitor_record"]) -> None: ...
+    def HasField(self, field_name: Literal["aio_quick_app",b"aio_quick_app","avgame",b"avgame","boat",b"boat","buddy",b"buddy","chat",b"chat","close_frd",b"close_frd","confidante",b"confidante","dont_forget_me",b"dont_forget_me","frd_online_status_visible_to_me",b"frd_online_status_visible_to_me","frd_steal_record",b"frd_steal_record","frd_tree",b"frd_tree","frd_uin",b"frd_uin","ksing_switch",b"ksing_switch","lbs_share",b"lbs_share","lovers",b"lovers","music_switch",b"music_switch","mutualmark_alienation",b"mutualmark_alienation","mutualmark_score",b"mutualmark_score","my_online_status_visible_to_frd",b"my_online_status_visible_to_frd","my_steal_record",b"my_steal_record","praise",b"praise","qzone_house",b"qzone_house","qzone_love",b"qzone_love","unread_message",b"unread_message","visitor_record",b"visitor_record"]) -> bool: ...
+    def ClearField(self, field_name: Literal["aio_quick_app",b"aio_quick_app","avgame",b"avgame","boat",b"boat","buddy",b"buddy","chat",b"chat","close_frd",b"close_frd","confidante",b"confidante","dont_forget_me",b"dont_forget_me","frd_online_status_visible_to_me",b"frd_online_status_visible_to_me","frd_steal_record",b"frd_steal_record","frd_tree",b"frd_tree","frd_uin",b"frd_uin","ksing_switch",b"ksing_switch","lbs_share",b"lbs_share","lovers",b"lovers","music_switch",b"music_switch","mutualmark_alienation",b"mutualmark_alienation","mutualmark_score",b"mutualmark_score","my_online_status_visible_to_frd",b"my_online_status_visible_to_frd","my_steal_record",b"my_steal_record","praise",b"praise","qzone_house",b"qzone_house","qzone_love",b"qzone_love","unread_message",b"unread_message","visitor_record",b"visitor_record"]) -> None: ...
 
 class KSingRelationInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FLAG_FIELD_NUMBER: int
-    flag: int = ...
-
+    flag: int
     def __init__(self,
         *,
-        flag : Optional[int] = ...,
+        flag: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"flag",b"flag"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"flag",b"flag"]) -> None: ...
+    def HasField(self, field_name: Literal["flag",b"flag"]) -> bool: ...
+    def ClearField(self, field_name: Literal["flag",b"flag"]) -> None: ...
 
 class ReqBody(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     APPID_FIELD_NUMBER: int
     MAX_PKG_SIZE_FIELD_NUMBER: int
     START_TIME_FIELD_NUMBER: int
@@ -162,92 +163,91 @@ class ReqBody(Message):
     REQ_MY_STEAL_RECORD_FIELD_NUMBER: int
     REQ_AVGAME_FIELD_NUMBER: int
     REQ_AIO_QUICK_APP_FIELD_NUMBER: int
-    appid: int = ...
-    max_pkg_size: int = ...
-    start_time: int = ...
-    start_index: int = ...
-    req_num: int = ...
-    uin_list: RepeatedScalarFieldContainer[int] = ...
-    req_lovers: int = ...
-    req_confidante: int = ...
-    req_buddy: int = ...
-    req_frd_tree: int = ...
-    req_chat: int = ...
-    req_praise: int = ...
-    req_qzone_love: int = ...
-    req_qzone_house: int = ...
-    req_music_switch: int = ...
-    req_mutualmark_alienation: int = ...
-    req_unread_message: int = ...
-    req_boat: int = ...
-    req_close_frd: int = ...
-    req_mutualmark_score: int = ...
-    req_ksing_switch: int = ...
-    req_mutualmark_lbsshare: int = ...
-    req_dont_forget_me: int = ...
-    req_my_online_status_visible_to_frd: int = ...
-    req_frd_online_status_visible_to_me: int = ...
-    req_visitor_record: int = ...
-    req_frd_steal_record: int = ...
-    req_my_steal_record: int = ...
-    req_avgame: int = ...
-    req_aio_quick_app: int = ...
-
+    appid: int
+    max_pkg_size: int
+    start_time: int
+    start_index: int
+    req_num: int
+    @property
+    def uin_list(self) -> RepeatedScalarFieldContainer[int]: ...
+    req_lovers: int
+    req_confidante: int
+    req_buddy: int
+    req_frd_tree: int
+    req_chat: int
+    req_praise: int
+    req_qzone_love: int
+    req_qzone_house: int
+    req_music_switch: int
+    req_mutualmark_alienation: int
+    req_unread_message: int
+    req_boat: int
+    req_close_frd: int
+    req_mutualmark_score: int
+    req_ksing_switch: int
+    req_mutualmark_lbsshare: int
+    req_dont_forget_me: int
+    req_my_online_status_visible_to_frd: int
+    req_frd_online_status_visible_to_me: int
+    req_visitor_record: int
+    req_frd_steal_record: int
+    req_my_steal_record: int
+    req_avgame: int
+    req_aio_quick_app: int
     def __init__(self,
         *,
-        appid : Optional[int] = ...,
-        max_pkg_size : Optional[int] = ...,
-        start_time : Optional[int] = ...,
-        start_index : Optional[int] = ...,
-        req_num : Optional[int] = ...,
-        uin_list : Optional[Iterable[int]] = ...,
-        req_lovers : Optional[int] = ...,
-        req_confidante : Optional[int] = ...,
-        req_buddy : Optional[int] = ...,
-        req_frd_tree : Optional[int] = ...,
-        req_chat : Optional[int] = ...,
-        req_praise : Optional[int] = ...,
-        req_qzone_love : Optional[int] = ...,
-        req_qzone_house : Optional[int] = ...,
-        req_music_switch : Optional[int] = ...,
-        req_mutualmark_alienation : Optional[int] = ...,
-        req_unread_message : Optional[int] = ...,
-        req_boat : Optional[int] = ...,
-        req_close_frd : Optional[int] = ...,
-        req_mutualmark_score : Optional[int] = ...,
-        req_ksing_switch : Optional[int] = ...,
-        req_mutualmark_lbsshare : Optional[int] = ...,
-        req_dont_forget_me : Optional[int] = ...,
-        req_my_online_status_visible_to_frd : Optional[int] = ...,
-        req_frd_online_status_visible_to_me : Optional[int] = ...,
-        req_visitor_record : Optional[int] = ...,
-        req_frd_steal_record : Optional[int] = ...,
-        req_my_steal_record : Optional[int] = ...,
-        req_avgame : Optional[int] = ...,
-        req_aio_quick_app : Optional[int] = ...,
+        appid: Optional[int] = ...,
+        max_pkg_size: Optional[int] = ...,
+        start_time: Optional[int] = ...,
+        start_index: Optional[int] = ...,
+        req_num: Optional[int] = ...,
+        uin_list: Optional[Iterable[int]] = ...,
+        req_lovers: Optional[int] = ...,
+        req_confidante: Optional[int] = ...,
+        req_buddy: Optional[int] = ...,
+        req_frd_tree: Optional[int] = ...,
+        req_chat: Optional[int] = ...,
+        req_praise: Optional[int] = ...,
+        req_qzone_love: Optional[int] = ...,
+        req_qzone_house: Optional[int] = ...,
+        req_music_switch: Optional[int] = ...,
+        req_mutualmark_alienation: Optional[int] = ...,
+        req_unread_message: Optional[int] = ...,
+        req_boat: Optional[int] = ...,
+        req_close_frd: Optional[int] = ...,
+        req_mutualmark_score: Optional[int] = ...,
+        req_ksing_switch: Optional[int] = ...,
+        req_mutualmark_lbsshare: Optional[int] = ...,
+        req_dont_forget_me: Optional[int] = ...,
+        req_my_online_status_visible_to_frd: Optional[int] = ...,
+        req_frd_online_status_visible_to_me: Optional[int] = ...,
+        req_visitor_record: Optional[int] = ...,
+        req_frd_steal_record: Optional[int] = ...,
+        req_my_steal_record: Optional[int] = ...,
+        req_avgame: Optional[int] = ...,
+        req_aio_quick_app: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"appid",b"appid",u"max_pkg_size",b"max_pkg_size",u"req_aio_quick_app",b"req_aio_quick_app",u"req_avgame",b"req_avgame",u"req_boat",b"req_boat",u"req_buddy",b"req_buddy",u"req_chat",b"req_chat",u"req_close_frd",b"req_close_frd",u"req_confidante",b"req_confidante",u"req_dont_forget_me",b"req_dont_forget_me",u"req_frd_online_status_visible_to_me",b"req_frd_online_status_visible_to_me",u"req_frd_steal_record",b"req_frd_steal_record",u"req_frd_tree",b"req_frd_tree",u"req_ksing_switch",b"req_ksing_switch",u"req_lovers",b"req_lovers",u"req_music_switch",b"req_music_switch",u"req_mutualmark_alienation",b"req_mutualmark_alienation",u"req_mutualmark_lbsshare",b"req_mutualmark_lbsshare",u"req_mutualmark_score",b"req_mutualmark_score",u"req_my_online_status_visible_to_frd",b"req_my_online_status_visible_to_frd",u"req_my_steal_record",b"req_my_steal_record",u"req_num",b"req_num",u"req_praise",b"req_praise",u"req_qzone_house",b"req_qzone_house",u"req_qzone_love",b"req_qzone_love",u"req_unread_message",b"req_unread_message",u"req_visitor_record",b"req_visitor_record",u"start_index",b"start_index",u"start_time",b"start_time"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"appid",b"appid",u"max_pkg_size",b"max_pkg_size",u"req_aio_quick_app",b"req_aio_quick_app",u"req_avgame",b"req_avgame",u"req_boat",b"req_boat",u"req_buddy",b"req_buddy",u"req_chat",b"req_chat",u"req_close_frd",b"req_close_frd",u"req_confidante",b"req_confidante",u"req_dont_forget_me",b"req_dont_forget_me",u"req_frd_online_status_visible_to_me",b"req_frd_online_status_visible_to_me",u"req_frd_steal_record",b"req_frd_steal_record",u"req_frd_tree",b"req_frd_tree",u"req_ksing_switch",b"req_ksing_switch",u"req_lovers",b"req_lovers",u"req_music_switch",b"req_music_switch",u"req_mutualmark_alienation",b"req_mutualmark_alienation",u"req_mutualmark_lbsshare",b"req_mutualmark_lbsshare",u"req_mutualmark_score",b"req_mutualmark_score",u"req_my_online_status_visible_to_frd",b"req_my_online_status_visible_to_frd",u"req_my_steal_record",b"req_my_steal_record",u"req_num",b"req_num",u"req_praise",b"req_praise",u"req_qzone_house",b"req_qzone_house",u"req_qzone_love",b"req_qzone_love",u"req_unread_message",b"req_unread_message",u"req_visitor_record",b"req_visitor_record",u"start_index",b"start_index",u"start_time",b"start_time",u"uin_list",b"uin_list"]) -> None: ...
+    def HasField(self, field_name: Literal["appid",b"appid","max_pkg_size",b"max_pkg_size","req_aio_quick_app",b"req_aio_quick_app","req_avgame",b"req_avgame","req_boat",b"req_boat","req_buddy",b"req_buddy","req_chat",b"req_chat","req_close_frd",b"req_close_frd","req_confidante",b"req_confidante","req_dont_forget_me",b"req_dont_forget_me","req_frd_online_status_visible_to_me",b"req_frd_online_status_visible_to_me","req_frd_steal_record",b"req_frd_steal_record","req_frd_tree",b"req_frd_tree","req_ksing_switch",b"req_ksing_switch","req_lovers",b"req_lovers","req_music_switch",b"req_music_switch","req_mutualmark_alienation",b"req_mutualmark_alienation","req_mutualmark_lbsshare",b"req_mutualmark_lbsshare","req_mutualmark_score",b"req_mutualmark_score","req_my_online_status_visible_to_frd",b"req_my_online_status_visible_to_frd","req_my_steal_record",b"req_my_steal_record","req_num",b"req_num","req_praise",b"req_praise","req_qzone_house",b"req_qzone_house","req_qzone_love",b"req_qzone_love","req_unread_message",b"req_unread_message","req_visitor_record",b"req_visitor_record","start_index",b"start_index","start_time",b"start_time"]) -> bool: ...
+    def ClearField(self, field_name: Literal["appid",b"appid","max_pkg_size",b"max_pkg_size","req_aio_quick_app",b"req_aio_quick_app","req_avgame",b"req_avgame","req_boat",b"req_boat","req_buddy",b"req_buddy","req_chat",b"req_chat","req_close_frd",b"req_close_frd","req_confidante",b"req_confidante","req_dont_forget_me",b"req_dont_forget_me","req_frd_online_status_visible_to_me",b"req_frd_online_status_visible_to_me","req_frd_steal_record",b"req_frd_steal_record","req_frd_tree",b"req_frd_tree","req_ksing_switch",b"req_ksing_switch","req_lovers",b"req_lovers","req_music_switch",b"req_music_switch","req_mutualmark_alienation",b"req_mutualmark_alienation","req_mutualmark_lbsshare",b"req_mutualmark_lbsshare","req_mutualmark_score",b"req_mutualmark_score","req_my_online_status_visible_to_frd",b"req_my_online_status_visible_to_frd","req_my_steal_record",b"req_my_steal_record","req_num",b"req_num","req_praise",b"req_praise","req_qzone_house",b"req_qzone_house","req_qzone_love",b"req_qzone_love","req_unread_message",b"req_unread_message","req_visitor_record",b"req_visitor_record","start_index",b"start_index","start_time",b"start_time","uin_list",b"uin_list"]) -> None: ...
 
 class RspBody(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     UPDATE_DATA_FIELD_NUMBER: int
     OVER_FIELD_NUMBER: int
     NEXT_START_FIELD_NUMBER: int
     UNFINISHED_UINS_FIELD_NUMBER: int
-    over: int = ...
-    next_start: int = ...
-    unfinished_uins: RepeatedScalarFieldContainer[int] = ...
-
     @property
     def update_data(self) -> RepeatedCompositeFieldContainer[ExtSnsFrdData]: ...
-
+    over: int
+    next_start: int
+    @property
+    def unfinished_uins(self) -> RepeatedScalarFieldContainer[int]: ...
     def __init__(self,
         *,
-        update_data : Optional[Iterable[ExtSnsFrdData]] = ...,
-        over : Optional[int] = ...,
-        next_start : Optional[int] = ...,
-        unfinished_uins : Optional[Iterable[int]] = ...,
+        update_data: Optional[Iterable[ExtSnsFrdData]] = ...,
+        over: Optional[int] = ...,
+        next_start: Optional[int] = ...,
+        unfinished_uins: Optional[Iterable[int]] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"next_start",b"next_start",u"over",b"over"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"next_start",b"next_start",u"over",b"over",u"unfinished_uins",b"unfinished_uins",u"update_data",b"update_data"]) -> None: ...
+    def HasField(self, field_name: Literal["next_start",b"next_start","over",b"over"]) -> bool: ...
+    def ClearField(self, field_name: Literal["next_start",b"next_start","over",b"over","unfinished_uins",b"unfinished_uins","update_data",b"update_data"]) -> None: ...

@@ -40,30 +40,28 @@ from typing_extensions import (
 )
 
 
-DESCRIPTOR: FileDescriptor = ...
+DESCRIPTOR: FileDescriptor
 
 class AppShareInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     APPSHARE_ID_FIELD_NUMBER: int
     APPSHARE_COOKIE_FIELD_NUMBER: int
     APPSHARE_RESOURCE_FIELD_NUMBER: int
-    appshare_id: int = ...
-    appshare_cookie: bytes = ...
-
+    appshare_id: int
+    appshare_cookie: bytes
     @property
     def appshare_resource(self) -> PluginInfo: ...
-
     def __init__(self,
         *,
-        appshare_id : Optional[int] = ...,
-        appshare_cookie : Optional[bytes] = ...,
-        appshare_resource : Optional[PluginInfo] = ...,
+        appshare_id: Optional[int] = ...,
+        appshare_cookie: Optional[bytes] = ...,
+        appshare_resource: Optional[PluginInfo] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"appshare_cookie",b"appshare_cookie",u"appshare_id",b"appshare_id",u"appshare_resource",b"appshare_resource"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"appshare_cookie",b"appshare_cookie",u"appshare_id",b"appshare_id",u"appshare_resource",b"appshare_resource"]) -> None: ...
+    def HasField(self, field_name: Literal["appshare_cookie",b"appshare_cookie","appshare_id",b"appshare_id","appshare_resource",b"appshare_resource"]) -> bool: ...
+    def ClearField(self, field_name: Literal["appshare_cookie",b"appshare_cookie","appshare_id",b"appshare_id","appshare_resource",b"appshare_resource"]) -> None: ...
 
 class C2CTmpMsgHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     C2C_TYPE_FIELD_NUMBER: int
     SERVICE_TYPE_FIELD_NUMBER: int
     GROUP_UIN_FIELD_NUMBER: int
@@ -77,107 +75,103 @@ class C2CTmpMsgHead(Message):
     RESERVED_FIELD_NUMBER: int
     BUSINESS_NAME_FIELD_NUMBER: int
     BUSINESS_SUB_CONTENT_FIELD_NUMBER: int
-    c2c_type: int = ...
-    service_type: int = ...
-    group_uin: int = ...
-    group_code: int = ...
-    sig: bytes = ...
-    sig_type: int = ...
-    from_phone: Text = ...
-    to_phone: Text = ...
-    lock_display: int = ...
-    direction_flag: int = ...
-    reserved: bytes = ...
-    business_name: bytes = ...
-    business_sub_content: bytes = ...
-
+    c2c_type: int
+    service_type: int
+    group_uin: int
+    group_code: int
+    sig: bytes
+    sig_type: int
+    from_phone: Text
+    to_phone: Text
+    lock_display: int
+    direction_flag: int
+    reserved: bytes
+    business_name: bytes
+    business_sub_content: bytes
     def __init__(self,
         *,
-        c2c_type : Optional[int] = ...,
-        service_type : Optional[int] = ...,
-        group_uin : Optional[int] = ...,
-        group_code : Optional[int] = ...,
-        sig : Optional[bytes] = ...,
-        sig_type : Optional[int] = ...,
-        from_phone : Optional[Text] = ...,
-        to_phone : Optional[Text] = ...,
-        lock_display : Optional[int] = ...,
-        direction_flag : Optional[int] = ...,
-        reserved : Optional[bytes] = ...,
-        business_name : Optional[bytes] = ...,
-        business_sub_content : Optional[bytes] = ...,
+        c2c_type: Optional[int] = ...,
+        service_type: Optional[int] = ...,
+        group_uin: Optional[int] = ...,
+        group_code: Optional[int] = ...,
+        sig: Optional[bytes] = ...,
+        sig_type: Optional[int] = ...,
+        from_phone: Optional[Text] = ...,
+        to_phone: Optional[Text] = ...,
+        lock_display: Optional[int] = ...,
+        direction_flag: Optional[int] = ...,
+        reserved: Optional[bytes] = ...,
+        business_name: Optional[bytes] = ...,
+        business_sub_content: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"business_name",b"business_name",u"business_sub_content",b"business_sub_content",u"c2c_type",b"c2c_type",u"direction_flag",b"direction_flag",u"from_phone",b"from_phone",u"group_code",b"group_code",u"group_uin",b"group_uin",u"lock_display",b"lock_display",u"reserved",b"reserved",u"service_type",b"service_type",u"sig",b"sig",u"sig_type",b"sig_type",u"to_phone",b"to_phone"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"business_name",b"business_name",u"business_sub_content",b"business_sub_content",u"c2c_type",b"c2c_type",u"direction_flag",b"direction_flag",u"from_phone",b"from_phone",u"group_code",b"group_code",u"group_uin",b"group_uin",u"lock_display",b"lock_display",u"reserved",b"reserved",u"service_type",b"service_type",u"sig",b"sig",u"sig_type",b"sig_type",u"to_phone",b"to_phone"]) -> None: ...
+    def HasField(self, field_name: Literal["business_name",b"business_name","business_sub_content",b"business_sub_content","c2c_type",b"c2c_type","direction_flag",b"direction_flag","from_phone",b"from_phone","group_code",b"group_code","group_uin",b"group_uin","lock_display",b"lock_display","reserved",b"reserved","service_type",b"service_type","sig",b"sig","sig_type",b"sig_type","to_phone",b"to_phone"]) -> bool: ...
+    def ClearField(self, field_name: Literal["business_name",b"business_name","business_sub_content",b"business_sub_content","c2c_type",b"c2c_type","direction_flag",b"direction_flag","from_phone",b"from_phone","group_code",b"group_code","group_uin",b"group_uin","lock_display",b"lock_display","reserved",b"reserved","service_type",b"service_type","sig",b"sig","sig_type",b"sig_type","to_phone",b"to_phone"]) -> None: ...
 
 class ContentHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     PKG_NUM_FIELD_NUMBER: int
     PKG_INDEX_FIELD_NUMBER: int
     DIV_SEQ_FIELD_NUMBER: int
     AUTO_REPLY_FIELD_NUMBER: int
-    pkg_num: int = ...
-    pkg_index: int = ...
-    div_seq: int = ...
-    auto_reply: int = ...
-
+    pkg_num: int
+    pkg_index: int
+    div_seq: int
+    auto_reply: int
     def __init__(self,
         *,
-        pkg_num : Optional[int] = ...,
-        pkg_index : Optional[int] = ...,
-        div_seq : Optional[int] = ...,
-        auto_reply : Optional[int] = ...,
+        pkg_num: Optional[int] = ...,
+        pkg_index: Optional[int] = ...,
+        div_seq: Optional[int] = ...,
+        auto_reply: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"auto_reply",b"auto_reply",u"div_seq",b"div_seq",u"pkg_index",b"pkg_index",u"pkg_num",b"pkg_num"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"auto_reply",b"auto_reply",u"div_seq",b"div_seq",u"pkg_index",b"pkg_index",u"pkg_num",b"pkg_num"]) -> None: ...
+    def HasField(self, field_name: Literal["auto_reply",b"auto_reply","div_seq",b"div_seq","pkg_index",b"pkg_index","pkg_num",b"pkg_num"]) -> bool: ...
+    def ClearField(self, field_name: Literal["auto_reply",b"auto_reply","div_seq",b"div_seq","pkg_index",b"pkg_index","pkg_num",b"pkg_num"]) -> None: ...
 
 class DiscussInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     DISCUSS_UIN_FIELD_NUMBER: int
     DISCUSS_TYPE_FIELD_NUMBER: int
     DISCUSS_INFO_SEQ_FIELD_NUMBER: int
     DISCUSS_REMARK_FIELD_NUMBER: int
     DISCUSS_NAME_FIELD_NUMBER: int
-    discuss_uin: int = ...
-    discuss_type: int = ...
-    discuss_info_seq: int = ...
-    discuss_remark: bytes = ...
-    discuss_name: bytes = ...
-
+    discuss_uin: int
+    discuss_type: int
+    discuss_info_seq: int
+    discuss_remark: bytes
+    discuss_name: bytes
     def __init__(self,
         *,
-        discuss_uin : Optional[int] = ...,
-        discuss_type : Optional[int] = ...,
-        discuss_info_seq : Optional[int] = ...,
-        discuss_remark : Optional[bytes] = ...,
-        discuss_name : Optional[bytes] = ...,
+        discuss_uin: Optional[int] = ...,
+        discuss_type: Optional[int] = ...,
+        discuss_info_seq: Optional[int] = ...,
+        discuss_remark: Optional[bytes] = ...,
+        discuss_name: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"discuss_info_seq",b"discuss_info_seq",u"discuss_name",b"discuss_name",u"discuss_remark",b"discuss_remark",u"discuss_type",b"discuss_type",u"discuss_uin",b"discuss_uin"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"discuss_info_seq",b"discuss_info_seq",u"discuss_name",b"discuss_name",u"discuss_remark",b"discuss_remark",u"discuss_type",b"discuss_type",u"discuss_uin",b"discuss_uin"]) -> None: ...
+    def HasField(self, field_name: Literal["discuss_info_seq",b"discuss_info_seq","discuss_name",b"discuss_name","discuss_remark",b"discuss_remark","discuss_type",b"discuss_type","discuss_uin",b"discuss_uin"]) -> bool: ...
+    def ClearField(self, field_name: Literal["discuss_info_seq",b"discuss_info_seq","discuss_name",b"discuss_name","discuss_remark",b"discuss_remark","discuss_type",b"discuss_type","discuss_uin",b"discuss_uin"]) -> None: ...
 
 class ExtGroupKeyInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     CUR_MAX_SEQ_FIELD_NUMBER: int
     CUR_TIME_FIELD_NUMBER: int
     OPERATE_BY_PARENTS_FIELD_NUMBER: int
     EXT_GROUP_INFO_FIELD_NUMBER: int
-    cur_max_seq: int = ...
-    cur_time: int = ...
-    operate_by_parents: int = ...
-    ext_group_info: bytes = ...
-
+    cur_max_seq: int
+    cur_time: int
+    operate_by_parents: int
+    ext_group_info: bytes
     def __init__(self,
         *,
-        cur_max_seq : Optional[int] = ...,
-        cur_time : Optional[int] = ...,
-        operate_by_parents : Optional[int] = ...,
-        ext_group_info : Optional[bytes] = ...,
+        cur_max_seq: Optional[int] = ...,
+        cur_time: Optional[int] = ...,
+        operate_by_parents: Optional[int] = ...,
+        ext_group_info: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"cur_max_seq",b"cur_max_seq",u"cur_time",b"cur_time",u"ext_group_info",b"ext_group_info",u"operate_by_parents",b"operate_by_parents"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"cur_max_seq",b"cur_max_seq",u"cur_time",b"cur_time",u"ext_group_info",b"ext_group_info",u"operate_by_parents",b"operate_by_parents"]) -> None: ...
+    def HasField(self, field_name: Literal["cur_max_seq",b"cur_max_seq","cur_time",b"cur_time","ext_group_info",b"ext_group_info","operate_by_parents",b"operate_by_parents"]) -> bool: ...
+    def ClearField(self, field_name: Literal["cur_max_seq",b"cur_max_seq","cur_time",b"cur_time","ext_group_info",b"ext_group_info","operate_by_parents",b"operate_by_parents"]) -> None: ...
 
 class GroupInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     GROUP_CODE_FIELD_NUMBER: int
     GROUP_TYPE_FIELD_NUMBER: int
     GROUP_INFO_SEQ_FIELD_NUMBER: int
@@ -186,60 +180,54 @@ class GroupInfo(Message):
     GROUP_LEVEL_FIELD_NUMBER: int
     GROUP_CARD_TYPE_FIELD_NUMBER: int
     GROUP_NAME_FIELD_NUMBER: int
-    group_code: int = ...
-    group_type: int = ...
-    group_info_seq: int = ...
-    group_card: bytes = ...
-    group_rank: bytes = ...
-    group_level: int = ...
-    group_card_type: int = ...
-    group_name: bytes = ...
-
+    group_code: int
+    group_type: int
+    group_info_seq: int
+    group_card: bytes
+    group_rank: bytes
+    group_level: int
+    group_card_type: int
+    group_name: bytes
     def __init__(self,
         *,
-        group_code : Optional[int] = ...,
-        group_type : Optional[int] = ...,
-        group_info_seq : Optional[int] = ...,
-        group_card : Optional[bytes] = ...,
-        group_rank : Optional[bytes] = ...,
-        group_level : Optional[int] = ...,
-        group_card_type : Optional[int] = ...,
-        group_name : Optional[bytes] = ...,
+        group_code: Optional[int] = ...,
+        group_type: Optional[int] = ...,
+        group_info_seq: Optional[int] = ...,
+        group_card: Optional[bytes] = ...,
+        group_rank: Optional[bytes] = ...,
+        group_level: Optional[int] = ...,
+        group_card_type: Optional[int] = ...,
+        group_name: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"group_card",b"group_card",u"group_card_type",b"group_card_type",u"group_code",b"group_code",u"group_info_seq",b"group_info_seq",u"group_level",b"group_level",u"group_name",b"group_name",u"group_rank",b"group_rank",u"group_type",b"group_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"group_card",b"group_card",u"group_card_type",b"group_card_type",u"group_code",b"group_code",u"group_info_seq",b"group_info_seq",u"group_level",b"group_level",u"group_name",b"group_name",u"group_rank",b"group_rank",u"group_type",b"group_type"]) -> None: ...
+    def HasField(self, field_name: Literal["group_card",b"group_card","group_card_type",b"group_card_type","group_code",b"group_code","group_info_seq",b"group_info_seq","group_level",b"group_level","group_name",b"group_name","group_rank",b"group_rank","group_type",b"group_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["group_card",b"group_card","group_card_type",b"group_card_type","group_code",b"group_code","group_info_seq",b"group_info_seq","group_level",b"group_level","group_name",b"group_name","group_rank",b"group_rank","group_type",b"group_type"]) -> None: ...
 
 class Msg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     HEAD_FIELD_NUMBER: int
     CONTENT_HEAD_FIELD_NUMBER: int
     BODY_FIELD_NUMBER: int
     APPSHARE_INFO_FIELD_NUMBER: int
-
     @property
     def head(self) -> MsgHead: ...
-
     @property
     def content_head(self) -> ContentHead: ...
-
     @property
     def body(self) -> MsgBody: ...
-
     @property
     def appshare_info(self) -> AppShareInfo: ...
-
     def __init__(self,
         *,
-        head : Optional[MsgHead] = ...,
-        content_head : Optional[ContentHead] = ...,
-        body : Optional[MsgBody] = ...,
-        appshare_info : Optional[AppShareInfo] = ...,
+        head: Optional[MsgHead] = ...,
+        content_head: Optional[ContentHead] = ...,
+        body: Optional[MsgBody] = ...,
+        appshare_info: Optional[AppShareInfo] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"appshare_info",b"appshare_info",u"body",b"body",u"content_head",b"content_head",u"head",b"head"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"appshare_info",b"appshare_info",u"body",b"body",u"content_head",b"content_head",u"head",b"head"]) -> None: ...
+    def HasField(self, field_name: Literal["appshare_info",b"appshare_info","body",b"body","content_head",b"content_head","head",b"head"]) -> bool: ...
+    def ClearField(self, field_name: Literal["appshare_info",b"appshare_info","body",b"body","content_head",b"content_head","head",b"head"]) -> None: ...
 
 class MsgHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FROM_UIN_FIELD_NUMBER: int
     TO_UIN_FIELD_NUMBER: int
     TYPE_FIELD_NUMBER: int
@@ -268,113 +256,104 @@ class MsgHead(Message):
     MULTI_COMPATIBLE_TEXT_FIELD_NUMBER: int
     AUTH_SEX_FIELD_NUMBER: int
     IS_SRC_MSG_FIELD_NUMBER: int
-    from_uin: int = ...
-    to_uin: int = ...
-    type: int = ...
-    c2c_cmd: int = ...
-    seq: int = ...
-    time: int = ...
-    uid: int = ...
-    from_appid: int = ...
-    from_instid: int = ...
-    user_active: int = ...
-    from_nick: Text = ...
-    auth_uin: int = ...
-    auth_nick: Text = ...
-    flag: int = ...
-    auth_remark: Text = ...
-    group_name: Text = ...
-    public_account_group_send_flag: int = ...
-    wseq_in_c2c_msghead: int = ...
-    cpid: int = ...
-    multi_compatible_text: Text = ...
-    auth_sex: int = ...
-    is_src_msg: bool = ...
-
+    from_uin: int
+    to_uin: int
+    type: int
+    c2c_cmd: int
+    seq: int
+    time: int
+    uid: int
     @property
     def c2c_tmp_msg_head(self) -> C2CTmpMsgHead: ...
-
     @property
     def group_info(self) -> GroupInfo: ...
-
+    from_appid: int
+    from_instid: int
+    user_active: int
     @property
     def discuss_info(self) -> DiscussInfo: ...
-
+    from_nick: Text
+    auth_uin: int
+    auth_nick: Text
+    flag: int
+    auth_remark: Text
+    group_name: Text
     @property
     def mutiltrans_head(self) -> MutilTransHead: ...
-
     @property
     def inst_ctrl(self) -> InstCtrl: ...
-
+    public_account_group_send_flag: int
+    wseq_in_c2c_msghead: int
+    cpid: int
     @property
     def ext_group_key_info(self) -> ExtGroupKeyInfo: ...
-
+    multi_compatible_text: Text
+    auth_sex: int
+    is_src_msg: bool
     def __init__(self,
         *,
-        from_uin : Optional[int] = ...,
-        to_uin : Optional[int] = ...,
-        type : Optional[int] = ...,
-        c2c_cmd : Optional[int] = ...,
-        seq : Optional[int] = ...,
-        time : Optional[int] = ...,
-        uid : Optional[int] = ...,
-        c2c_tmp_msg_head : Optional[C2CTmpMsgHead] = ...,
-        group_info : Optional[GroupInfo] = ...,
-        from_appid : Optional[int] = ...,
-        from_instid : Optional[int] = ...,
-        user_active : Optional[int] = ...,
-        discuss_info : Optional[DiscussInfo] = ...,
-        from_nick : Optional[Text] = ...,
-        auth_uin : Optional[int] = ...,
-        auth_nick : Optional[Text] = ...,
-        flag : Optional[int] = ...,
-        auth_remark : Optional[Text] = ...,
-        group_name : Optional[Text] = ...,
-        mutiltrans_head : Optional[MutilTransHead] = ...,
-        inst_ctrl : Optional[InstCtrl] = ...,
-        public_account_group_send_flag : Optional[int] = ...,
-        wseq_in_c2c_msghead : Optional[int] = ...,
-        cpid : Optional[int] = ...,
-        ext_group_key_info : Optional[ExtGroupKeyInfo] = ...,
-        multi_compatible_text : Optional[Text] = ...,
-        auth_sex : Optional[int] = ...,
-        is_src_msg : Optional[bool] = ...,
+        from_uin: Optional[int] = ...,
+        to_uin: Optional[int] = ...,
+        type: Optional[int] = ...,
+        c2c_cmd: Optional[int] = ...,
+        seq: Optional[int] = ...,
+        time: Optional[int] = ...,
+        uid: Optional[int] = ...,
+        c2c_tmp_msg_head: Optional[C2CTmpMsgHead] = ...,
+        group_info: Optional[GroupInfo] = ...,
+        from_appid: Optional[int] = ...,
+        from_instid: Optional[int] = ...,
+        user_active: Optional[int] = ...,
+        discuss_info: Optional[DiscussInfo] = ...,
+        from_nick: Optional[Text] = ...,
+        auth_uin: Optional[int] = ...,
+        auth_nick: Optional[Text] = ...,
+        flag: Optional[int] = ...,
+        auth_remark: Optional[Text] = ...,
+        group_name: Optional[Text] = ...,
+        mutiltrans_head: Optional[MutilTransHead] = ...,
+        inst_ctrl: Optional[InstCtrl] = ...,
+        public_account_group_send_flag: Optional[int] = ...,
+        wseq_in_c2c_msghead: Optional[int] = ...,
+        cpid: Optional[int] = ...,
+        ext_group_key_info: Optional[ExtGroupKeyInfo] = ...,
+        multi_compatible_text: Optional[Text] = ...,
+        auth_sex: Optional[int] = ...,
+        is_src_msg: Optional[bool] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"auth_nick",b"auth_nick",u"auth_remark",b"auth_remark",u"auth_sex",b"auth_sex",u"auth_uin",b"auth_uin",u"c2c_cmd",b"c2c_cmd",u"c2c_tmp_msg_head",b"c2c_tmp_msg_head",u"cpid",b"cpid",u"discuss_info",b"discuss_info",u"ext_group_key_info",b"ext_group_key_info",u"flag",b"flag",u"from_appid",b"from_appid",u"from_instid",b"from_instid",u"from_nick",b"from_nick",u"from_uin",b"from_uin",u"group_info",b"group_info",u"group_name",b"group_name",u"inst_ctrl",b"inst_ctrl",u"is_src_msg",b"is_src_msg",u"multi_compatible_text",b"multi_compatible_text",u"mutiltrans_head",b"mutiltrans_head",u"public_account_group_send_flag",b"public_account_group_send_flag",u"seq",b"seq",u"time",b"time",u"to_uin",b"to_uin",u"type",b"type",u"uid",b"uid",u"user_active",b"user_active",u"wseq_in_c2c_msghead",b"wseq_in_c2c_msghead"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"auth_nick",b"auth_nick",u"auth_remark",b"auth_remark",u"auth_sex",b"auth_sex",u"auth_uin",b"auth_uin",u"c2c_cmd",b"c2c_cmd",u"c2c_tmp_msg_head",b"c2c_tmp_msg_head",u"cpid",b"cpid",u"discuss_info",b"discuss_info",u"ext_group_key_info",b"ext_group_key_info",u"flag",b"flag",u"from_appid",b"from_appid",u"from_instid",b"from_instid",u"from_nick",b"from_nick",u"from_uin",b"from_uin",u"group_info",b"group_info",u"group_name",b"group_name",u"inst_ctrl",b"inst_ctrl",u"is_src_msg",b"is_src_msg",u"multi_compatible_text",b"multi_compatible_text",u"mutiltrans_head",b"mutiltrans_head",u"public_account_group_send_flag",b"public_account_group_send_flag",u"seq",b"seq",u"time",b"time",u"to_uin",b"to_uin",u"type",b"type",u"uid",b"uid",u"user_active",b"user_active",u"wseq_in_c2c_msghead",b"wseq_in_c2c_msghead"]) -> None: ...
+    def HasField(self, field_name: Literal["auth_nick",b"auth_nick","auth_remark",b"auth_remark","auth_sex",b"auth_sex","auth_uin",b"auth_uin","c2c_cmd",b"c2c_cmd","c2c_tmp_msg_head",b"c2c_tmp_msg_head","cpid",b"cpid","discuss_info",b"discuss_info","ext_group_key_info",b"ext_group_key_info","flag",b"flag","from_appid",b"from_appid","from_instid",b"from_instid","from_nick",b"from_nick","from_uin",b"from_uin","group_info",b"group_info","group_name",b"group_name","inst_ctrl",b"inst_ctrl","is_src_msg",b"is_src_msg","multi_compatible_text",b"multi_compatible_text","mutiltrans_head",b"mutiltrans_head","public_account_group_send_flag",b"public_account_group_send_flag","seq",b"seq","time",b"time","to_uin",b"to_uin","type",b"type","uid",b"uid","user_active",b"user_active","wseq_in_c2c_msghead",b"wseq_in_c2c_msghead"]) -> bool: ...
+    def ClearField(self, field_name: Literal["auth_nick",b"auth_nick","auth_remark",b"auth_remark","auth_sex",b"auth_sex","auth_uin",b"auth_uin","c2c_cmd",b"c2c_cmd","c2c_tmp_msg_head",b"c2c_tmp_msg_head","cpid",b"cpid","discuss_info",b"discuss_info","ext_group_key_info",b"ext_group_key_info","flag",b"flag","from_appid",b"from_appid","from_instid",b"from_instid","from_nick",b"from_nick","from_uin",b"from_uin","group_info",b"group_info","group_name",b"group_name","inst_ctrl",b"inst_ctrl","is_src_msg",b"is_src_msg","multi_compatible_text",b"multi_compatible_text","mutiltrans_head",b"mutiltrans_head","public_account_group_send_flag",b"public_account_group_send_flag","seq",b"seq","time",b"time","to_uin",b"to_uin","type",b"type","uid",b"uid","user_active",b"user_active","wseq_in_c2c_msghead",b"wseq_in_c2c_msghead"]) -> None: ...
 
 class MsgType0x210(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     SUB_MSG_TYPE_FIELD_NUMBER: int
     CONTENT_FIELD_NUMBER: int
-    sub_msg_type: int = ...
-    content: bytes = ...
-
+    sub_msg_type: int
+    content: bytes
     def __init__(self,
         *,
-        sub_msg_type : Optional[int] = ...,
-        content : Optional[bytes] = ...,
+        sub_msg_type: Optional[int] = ...,
+        content: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"content",b"content",u"sub_msg_type",b"sub_msg_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"content",b"content",u"sub_msg_type",b"sub_msg_type"]) -> None: ...
+    def HasField(self, field_name: Literal["content",b"content","sub_msg_type",b"sub_msg_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["content",b"content","sub_msg_type",b"sub_msg_type"]) -> None: ...
 
 class MutilTransHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     STATUS_FIELD_NUMBER: int
     MSG_ID_FIELD_NUMBER: int
-    status: int = ...
-    msg_id: int = ...
-
+    status: int
+    msg_id: int
     def __init__(self,
         *,
-        status : Optional[int] = ...,
-        msg_id : Optional[int] = ...,
+        status: Optional[int] = ...,
+        msg_id: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"msg_id",b"msg_id",u"status",b"status"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"msg_id",b"msg_id",u"status",b"status"]) -> None: ...
+    def HasField(self, field_name: Literal["msg_id",b"msg_id","status",b"status"]) -> bool: ...
+    def ClearField(self, field_name: Literal["msg_id",b"msg_id","status",b"status"]) -> None: ...
 
 class PluginInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     RES_ID_FIELD_NUMBER: int
     PKG_NAME_FIELD_NUMBER: int
     NEW_VER_FIELD_NUMBER: int
@@ -386,52 +365,50 @@ class PluginInfo(Message):
     RES_URL_BIG_FIELD_NUMBER: int
     RES_URL_SMALL_FIELD_NUMBER: int
     RES_CONF_FIELD_NUMBER: int
-    res_id: int = ...
-    pkg_name: Text = ...
-    new_ver: int = ...
-    res_type: int = ...
-    lan_type: int = ...
-    priority: int = ...
-    res_name: Text = ...
-    res_desc: Text = ...
-    res_url_big: Text = ...
-    res_url_small: Text = ...
-    res_conf: Text = ...
-
+    res_id: int
+    pkg_name: Text
+    new_ver: int
+    res_type: int
+    lan_type: int
+    priority: int
+    res_name: Text
+    res_desc: Text
+    res_url_big: Text
+    res_url_small: Text
+    res_conf: Text
     def __init__(self,
         *,
-        res_id : Optional[int] = ...,
-        pkg_name : Optional[Text] = ...,
-        new_ver : Optional[int] = ...,
-        res_type : Optional[int] = ...,
-        lan_type : Optional[int] = ...,
-        priority : Optional[int] = ...,
-        res_name : Optional[Text] = ...,
-        res_desc : Optional[Text] = ...,
-        res_url_big : Optional[Text] = ...,
-        res_url_small : Optional[Text] = ...,
-        res_conf : Optional[Text] = ...,
+        res_id: Optional[int] = ...,
+        pkg_name: Optional[Text] = ...,
+        new_ver: Optional[int] = ...,
+        res_type: Optional[int] = ...,
+        lan_type: Optional[int] = ...,
+        priority: Optional[int] = ...,
+        res_name: Optional[Text] = ...,
+        res_desc: Optional[Text] = ...,
+        res_url_big: Optional[Text] = ...,
+        res_url_small: Optional[Text] = ...,
+        res_conf: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"lan_type",b"lan_type",u"new_ver",b"new_ver",u"pkg_name",b"pkg_name",u"priority",b"priority",u"res_conf",b"res_conf",u"res_desc",b"res_desc",u"res_id",b"res_id",u"res_name",b"res_name",u"res_type",b"res_type",u"res_url_big",b"res_url_big",u"res_url_small",b"res_url_small"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"lan_type",b"lan_type",u"new_ver",b"new_ver",u"pkg_name",b"pkg_name",u"priority",b"priority",u"res_conf",b"res_conf",u"res_desc",b"res_desc",u"res_id",b"res_id",u"res_name",b"res_name",u"res_type",b"res_type",u"res_url_big",b"res_url_big",u"res_url_small",b"res_url_small"]) -> None: ...
+    def HasField(self, field_name: Literal["lan_type",b"lan_type","new_ver",b"new_ver","pkg_name",b"pkg_name","priority",b"priority","res_conf",b"res_conf","res_desc",b"res_desc","res_id",b"res_id","res_name",b"res_name","res_type",b"res_type","res_url_big",b"res_url_big","res_url_small",b"res_url_small"]) -> bool: ...
+    def ClearField(self, field_name: Literal["lan_type",b"lan_type","new_ver",b"new_ver","pkg_name",b"pkg_name","priority",b"priority","res_conf",b"res_conf","res_desc",b"res_desc","res_id",b"res_id","res_name",b"res_name","res_type",b"res_type","res_url_big",b"res_url_big","res_url_small",b"res_url_small"]) -> None: ...
 
 class Uin2Nick(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     UIN_FIELD_NUMBER: int
     NICK_FIELD_NUMBER: int
-    uin: int = ...
-    nick: Text = ...
-
+    uin: int
+    nick: Text
     def __init__(self,
         *,
-        uin : Optional[int] = ...,
-        nick : Optional[Text] = ...,
+        uin: Optional[int] = ...,
+        nick: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"nick",b"nick",u"uin",b"uin"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"nick",b"nick",u"uin",b"uin"]) -> None: ...
+    def HasField(self, field_name: Literal["nick",b"nick","uin",b"uin"]) -> bool: ...
+    def ClearField(self, field_name: Literal["nick",b"nick","uin",b"uin"]) -> None: ...
 
 class UinPairMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     LAST_READ_TIME_FIELD_NUMBER: int
     PEER_UIN_FIELD_NUMBER: int
     COMPLETED_FIELD_NUMBER: int
@@ -441,29 +418,27 @@ class UinPairMsg(Message):
     SERVICE_TYPE_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
     TO_TINY_ID_FIELD_NUMBER: int
-    last_read_time: int = ...
-    peer_uin: int = ...
-    completed: int = ...
-    unread_msg_num: int = ...
-    c2c_type: int = ...
-    service_type: int = ...
-    pb_reserve: bytes = ...
-    to_tiny_id: int = ...
-
+    last_read_time: int
+    peer_uin: int
+    completed: int
     @property
     def msg(self) -> RepeatedCompositeFieldContainer[Msg]: ...
-
+    unread_msg_num: int
+    c2c_type: int
+    service_type: int
+    pb_reserve: bytes
+    to_tiny_id: int
     def __init__(self,
         *,
-        last_read_time : Optional[int] = ...,
-        peer_uin : Optional[int] = ...,
-        completed : Optional[int] = ...,
-        msg : Optional[Iterable[Msg]] = ...,
-        unread_msg_num : Optional[int] = ...,
-        c2c_type : Optional[int] = ...,
-        service_type : Optional[int] = ...,
-        pb_reserve : Optional[bytes] = ...,
-        to_tiny_id : Optional[int] = ...,
+        last_read_time: Optional[int] = ...,
+        peer_uin: Optional[int] = ...,
+        completed: Optional[int] = ...,
+        msg: Optional[Iterable[Msg]] = ...,
+        unread_msg_num: Optional[int] = ...,
+        c2c_type: Optional[int] = ...,
+        service_type: Optional[int] = ...,
+        pb_reserve: Optional[bytes] = ...,
+        to_tiny_id: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"c2c_type",b"c2c_type",u"completed",b"completed",u"last_read_time",b"last_read_time",u"pb_reserve",b"pb_reserve",u"peer_uin",b"peer_uin",u"service_type",b"service_type",u"to_tiny_id",b"to_tiny_id",u"unread_msg_num",b"unread_msg_num"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"c2c_type",b"c2c_type",u"completed",b"completed",u"last_read_time",b"last_read_time",u"msg",b"msg",u"pb_reserve",b"pb_reserve",u"peer_uin",b"peer_uin",u"service_type",b"service_type",u"to_tiny_id",b"to_tiny_id",u"unread_msg_num",b"unread_msg_num"]) -> None: ...
+    def HasField(self, field_name: Literal["c2c_type",b"c2c_type","completed",b"completed","last_read_time",b"last_read_time","pb_reserve",b"pb_reserve","peer_uin",b"peer_uin","service_type",b"service_type","to_tiny_id",b"to_tiny_id","unread_msg_num",b"unread_msg_num"]) -> bool: ...
+    def ClearField(self, field_name: Literal["c2c_type",b"c2c_type","completed",b"completed","last_read_time",b"last_read_time","msg",b"msg","pb_reserve",b"pb_reserve","peer_uin",b"peer_uin","service_type",b"service_type","to_tiny_id",b"to_tiny_id","unread_msg_num",b"unread_msg_num"]) -> None: ...

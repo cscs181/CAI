@@ -10,18 +10,16 @@ This module is used to build and handle online push related packet.
 """
 from typing import TYPE_CHECKING, List, Tuple, Optional, Sequence
 
-from jce import JceStruct, JceDecoder, JceEncoder, types
+from jce import JceStruct, JceDecoder, types
 
 from cai.log import logger
+from cai.client import events
 from cai.utils.binary import Packet
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
-from cai.settings.device import DeviceInfo as _DeviceInfo_t
 from cai.utils.jce import RequestPacket, RequestPacketVersion3
 from cai.pb.im.oidb.group0x857.group0x857_pb2 import TemplParam, NotifyMsgBody
 
-from .. import events
-from ...settings.protocol import ApkInfo
 from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
 from .command import PushMsg, PushMsgError, PushMsgCommand
 

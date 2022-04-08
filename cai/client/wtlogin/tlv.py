@@ -12,7 +12,7 @@ import time
 import random
 import struct
 from hashlib import md5
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional
 
 from rtea import qqtea_decrypt, qqtea_encrypt
 
@@ -605,7 +605,7 @@ class TlvDecoder:
     def decode(
         cls,
         data: Union[bytes, bytearray],
-        tgtgt: bytes = None,
+        tgtgt: Optional[bytes] = None,
         offset: int = 0,
         tag_size: int = 2,
     ) -> Dict[int, Any]:

@@ -388,7 +388,13 @@ class Client:
     ) -> None:
         await self.reconnect(change_server=change_server, server=server)
         # FIXME: register reason msfByNetChange?
-        await self._init(drop_offline_msg=False)
+        try:
+            await self._init(drop_offline_msg=False)
+        except asyncio.exceptions.TimeoutError:  # fallback
+            log.network.warning("register failed, trying to re-login")
+            await self.disconnect()
+            await self.connect()
+            await self.login()
 
     async def close(self) -> None:
         """Close the client and logout."""

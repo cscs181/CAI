@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+message DelMsgCookies {
+  int32 msg_type = 1;
+  int64 msg_uid = 2;
+  int32 type = 3;  // idk, value is 3
+  int32 xid = 4;  // idk, value is 50015
+}

@@ -19,8 +19,9 @@ from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
 from cai.utils.jce import RequestPacket, RequestPacketVersion3
 from cai.pb.im.oidb.cmd0x857.troop_tips import TemplParam, NotifyMsgBody
+from cai.pb.im.op.online_push_pb2 import DelMsgCookies
 
-from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
+from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg, SvcReqPushMsg
 from .command import PushMsg, PushMsgError, PushMsgCommand
 
 if TYPE_CHECKING:
@@ -38,6 +39,7 @@ def encode_push_response(
     push_token: Optional[bytes] = None,
     service_type: int = 0,
     device_info: Optional[DeviceInfo] = None,
+    req_id: int = 0
 ) -> Packet:
     """Build online push response packet.
 
@@ -74,6 +76,7 @@ def encode_push_response(
     )
     payload = SvcRespPushMsg.to_bytes(0, resp)
     req_packet = RequestPacketVersion3(
+        req_id=req_id,
         servant_name="OnlinePush",
         func_name="SvcRespPushMsg",
         data=types.MAP({types.STRING("resp"): types.BYTES(payload)}),
@@ -225,42 +228,21 @@ def _parse_poke(params: Sequence[TemplParam]) -> dict:
     return res
 
 
-# OnlinePush.SvcRespPushMsg
-# def encode_resp_push_pkg(
-#     uin: int, svrip: int, seq: int, items: Sequence[DelMsgInfo]
-# ) -> bytes:
-#     pkg = SvcRespPushMsg(
-#         uin=uin, del_infos=items, svrip=svrip & 0xFFFFFFFF, service_type=0
-#     )
-#     return RequestPacketVersion3(
-#         servant_name="OnlinePush",
-#         func_name="SvcRespPushMsg",
-#         req_id=seq,
-#         data=types.MAP(
-#             {
-#                 types.STRING("SvcRespPushMsg"): types.BYTES(
-#                     SvcRespPushMsg.to_bytes(0, pkg)
-#                 )
-#             }
-#         ),
-#     ).encode()
-
-
 # OnlinePush.ReqPush
 async def handle_req_push(
     client: "Client", packet: IncomingPacket
 ) -> PushMsgCommand:
-    body = JceDecoder.decode_bytes(
-        JceDecoder.decode_single(  # type: ignore
-            RequestPacket.decode(packet.data).buffer
-        )[1]["req"]["OnlinePushPack.SvcReqPushMsg"]
-    )[0]
+    req_pkg = RequestPacket.decode(packet.data)
+
+    body = SvcReqPushMsg.decode(
+        JceDecoder.decode_single(req_pkg.buffer)[1]["req"]["OnlinePushPack.SvcReqPushMsg"]  # type: ignore
+    ).body
 
     _uin, stime, push_type, content = (
-        body[0],
-        body[1],
-        body[2][0][2],
-        body[2][0][6],
+        body.uin,
+        body.msg_time,
+        body.msg_info[0].msg_type,
+        body.msg_info[0].msg,
     )
 
     if push_type == 732:  # group
@@ -304,18 +286,31 @@ async def handle_req_push(
         pass
         # TODO: parse friend event
 
-    await client.send_and_wait(  # resp ack
-        seq=client.next_seq(),
-        command_name="OnlinePush.RespPush",
-        packet=encode_push_response(
-            body[1],
-            client._session_id,
-            _uin,
-            client._siginfo.d2key,
-            body[3] & 0xFFFFFFFF,
-            [DelMsgInfo(from_uin=_uin, msg_seq=body[1], msg_time=stime)],
-        ),
+    seq = client.next_seq()
+    pkg = encode_push_response(
+        seq,
+        client._session_id,
+        _uin,
+        client._siginfo.d2key,
+        body.svrip,
+        [
+            DelMsgInfo(
+                from_uin=info.from_uin,
+                msg_seq=info.msg_seq,
+                msg_time=info.msg_time,
+                msg_cookies=DelMsgCookies(
+                    msg_type=info.msg_type,
+                    msg_uid=info.msg_uid,
+                    type=3,
+                    xid=50015
+                ).SerializeToString()
+            ) for info in body.msg_info
+        ],
+        req_id=req_pkg.req_id
     )
+
+    # FIXME: useless
+    await client.send(seq, "OnlinePush.RespPush", pkg)
 
     return PushMsgCommand(
         packet.uin, packet.seq, packet.ret_code, packet.command_name

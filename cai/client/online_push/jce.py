@@ -49,6 +49,22 @@ class DeviceInfo(JceStruct):
     ios_idfa: types.STRING = JceField("", jce_id=5)
 
 
+class MsgInfo(JceStruct):
+    from_uin: types.INT64 = JceField(jce_id=0)
+    msg_time: types.INT64 = JceField(jce_id=1)
+    msg_type: types.INT8 = JceField(jce_id=2)
+    msg_seq: types.INT8 = JceField(jce_id=3)
+    str_msg: types.STRING = JceField("", jce_id=4)
+    real_msg_time: types.INT32 = JceField(0, jce_id=5)
+    msg: types.BYTES = JceField(jce_id=6)
+    share_id: types.INT64 = JceField(0, jce_id=7)
+    msg_cookie: types.BYTES = JceField(bytes(), jce_id=8)
+    app_share_cookie: types.BYTES = JceField(bytes(), jce_id=9)
+    msg_uid: types.INT64 = JceField(0, jce_id=10)
+    last_change_time: types.INT64 = JceField(0, jce_id=11)
+    # TODO: missed
+
+
 class SvcRespPushMsg(JceStruct):
     """OnlinePush Service Push Response Packet.
 
@@ -62,3 +78,15 @@ class SvcRespPushMsg(JceStruct):
     push_token: Optional[types.BYTES] = JceField(None, jce_id=3)
     service_type: types.INT32 = JceField(0, jce_id=4)
     device_info: Optional[DeviceInfo] = JceField(None, jce_id=5)
+
+
+class _SvcReqPushMsg(JceStruct):
+    uin: types.INT64 = JceField(jce_id=0)
+    msg_time: types.INT64 = JceField(jce_id=1)
+    msg_info: types.LIST[MsgInfo] = JceField(jce_id=2)
+    svrip: types.INT32 = JceField(0, jce_id=3)
+    sync_cookie: types.BYTES = JceField(bytes(), jce_id=4)
+
+
+class SvcReqPushMsg(JceStruct):
+    body: _SvcReqPushMsg = JceField(jce_id=0)

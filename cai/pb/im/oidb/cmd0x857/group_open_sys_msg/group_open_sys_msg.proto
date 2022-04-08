@@ -1,0 +1,47 @@
+syntax = "proto2";
+package im.oidb.cmd0x857.group_open_sys_msg;
+
+// im/oidb/cmd0x857/GroupOpenSysMsg.java
+
+message LightApp {
+  optional string app = 1;
+  optional string view = 2;
+  optional string desc = 3;
+  optional string prompt = 4;
+  optional string ver = 5;
+  optional string meta = 6;
+  optional string config = 7;
+  optional Source source = 8;
+}
+
+message RichMsg {
+  optional string title = 1;
+  optional string desc = 2;
+  optional string brief = 3;
+  optional string cover = 4;
+  optional string url = 5;
+  optional Source source = 6;
+}
+
+message Sender {
+  optional uint64 uin = 1;
+  optional string nick = 2;
+  optional string avatar = 3;
+  optional string url = 4;
+}
+
+message Source {
+  optional string name = 1;
+  optional string icon = 2;
+  optional string url = 3;
+}
+
+message SysMsgBody {
+  optional uint64 group_id = 1;
+  optional uint64 appid = 2;
+  optional Sender sender = 3;
+  optional uint32 type = 4;
+  optional string content = 5;
+  optional RichMsg rich_msg = 6;
+  optional LightApp light_app = 7;
+}

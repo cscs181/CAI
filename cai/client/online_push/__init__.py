@@ -18,7 +18,7 @@ from cai.utils.binary import Packet
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
 from cai.utils.jce import RequestPacket, RequestPacketVersion3
-from cai.pb.im.oidb.group0x857.group0x857_pb2 import TemplParam, NotifyMsgBody
+from cai.pb.im.oidb.cmd0x857.troop_tips import TemplParam, NotifyMsgBody
 
 from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
 from .command import PushMsg, PushMsgError, PushMsgCommand
@@ -271,19 +271,19 @@ async def handle_req_push(
             if stype == 0x14:  # nudge
                 client.dispatch_event(
                     events.NudgeEvent(
-                        **_parse_poke(notify.optGeneralGrayTip.msgTemplParam),
+                        **_parse_poke(notify.general_gray_tip.templ_param),
                         group=gid,
                     )
                 )
             elif stype == 0x11:  # recall
-                msg = notify.optMsgRecall.recalledMsgList[0]
+                msg = notify.recall.recalled_msg_list[0]
                 client.dispatch_event(
                     events.MemberRecallMessageEvent(
                         gid,
-                        notify.optMsgRecall.uin,
-                        notify.optMsgRecall.opType,
-                        msg.authorUin,
-                        msg.msgRandom,
+                        notify.recall.uin,
+                        notify.recall.op_type,
+                        msg.author_uin,
+                        msg.msg_random,
                         msg.seq,
                         msg.time,
                     )

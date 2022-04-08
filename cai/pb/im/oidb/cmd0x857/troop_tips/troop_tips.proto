@@ -1,0 +1,412 @@
+syntax = "proto2";
+package im.oidb.cmd0x857.troop_tips;
+
+// tencent/im/oidb/cmd0x857/TroopTips0x857.java
+
+message AIOGrayTipsInfo {
+  optional uint32 show_lastest = 1;
+  optional bytes content = 2;
+  optional uint32 remind = 3;
+  optional bytes brief = 4;
+  optional uint64 receiver_uin = 5;
+  optional uint32 reliao_admin_opt = 6;
+  optional uint32 robot_group_opt = 7;
+}
+
+message AIOTopTipsInfo {
+  optional bytes content = 1;
+  optional uint32 icon = 2;
+  optional uint32 enum_action = 3;
+  optional bytes url = 4;
+  optional bytes data = 5;
+  optional bytes data_i = 6;
+  optional bytes data_a = 7;
+  optional bytes data_p = 8;
+}
+
+message FloatedTipsInfo {
+  optional bytes content = 1;
+}
+
+message GeneralGrayTipInfo {
+  optional uint64 busi_type = 1;
+  optional uint64 busi_id = 2;
+  optional uint32 ctrl_flag = 3;
+  optional uint32 c2c_type = 4;
+  optional uint32 service_type = 5;
+  optional uint64 templ_id = 6;
+  repeated TemplParam templ_param = 7;
+  optional bytes content = 8;
+  optional uint64 tips_seq_id = 10;
+  optional bytes pb_reserv = 100;
+}
+
+message GoldMsgTipsElem {
+  optional uint32 type = 1;
+  optional string billno = 2;
+  optional uint32 result = 3;
+  optional uint32 amount = 4;
+  optional uint32 total = 5;
+  optional uint32 interval = 6;
+  optional uint32 finish = 7;
+  repeated uint64 uin = 8;
+  optional uint32 action = 9;
+}
+
+message GrayData {
+  optional uint32 all_read = 1;
+  optional string feed_id = 2;
+}
+
+message GroupAnnounceTBCInfo {
+  optional bytes feeds_id = 1;
+  optional uint64 group_id = 2;
+  optional uint32 action = 3;
+}
+
+message GroupAsyncNotify {
+  optional uint32 msg_type = 1;
+  optional uint64 msg_seq = 2;
+}
+
+message GroupInfoChange {
+  optional uint32 group_honor_switch = 1;
+  optional uint32 group_member_level_switch = 2;
+  optional uint32 group_flagext4 = 3;
+  optional uint32 appeal_deadline = 4;
+  optional uint32 group_flag = 5;
+  optional uint32 group_flagext3 = 7;
+  optional uint32 group_class_ext = 8;
+  optional uint32 group_info_ext_seq = 9;
+}
+
+message GroupNotifyInfo {
+  optional uint32 auto_pull_flag = 1;
+  optional bytes feeds_id = 2;
+}
+
+message InstCtrl {
+  repeated InstInfo send_to_inst = 1;
+  repeated InstInfo exclude_inst = 2;
+  optional InstInfo from_inst = 3;
+}
+
+message InstInfo {
+  optional uint32 apppid = 1;
+  optional uint32 instid = 2;
+  optional uint32 platform = 3;
+  optional uint32 open_appid = 4;
+  optional uint32 productid = 5;
+  optional uint32 sso_bid = 6;
+  optional bytes guid = 7;
+  optional uint32 ver_min = 8;
+  optional uint32 ver_max = 9;
+}
+
+message LbsShareChangePushInfo {
+  optional uint32 msg_type = 1;
+  optional bytes msg_info = 2;
+  optional bytes version_ctrl = 3;
+  optional uint64 group_id = 4;
+  optional uint64 oper_uin = 5;
+  optional bytes gray_tips = 6;
+  optional uint64 msg_seq = 7;
+  optional uint32 join_nums = 8;
+  optional uint32 push_type = 99;
+  optional bytes ext_info = 100;
+}
+
+message LuckyBagNotify {
+  optional bytes msg_tips = 1;
+}
+
+message MediaChangePushInfo {
+  optional uint32 msg_type = 1;
+  optional bytes msg_info = 2;
+  optional bytes version_ctrl = 3;
+  optional uint64 group_id = 4;
+  optional uint64 oper_uin = 5;
+  optional bytes gray_tips = 6;
+  optional uint64 msg_seq = 7;
+  optional uint32 join_nums = 8;
+  optional PersonalSetting per_setting = 9;
+  optional uint32 play_mode = 10;
+  optional bool is_join_when_start = 11;
+  optional uint32 media_type = 99;
+  optional bytes ext_info = 100;
+
+  message PersonalSetting {
+    optional uint32 theme_id = 1;
+    optional uint32 player_id = 2;
+    optional uint32 font_id = 3;
+  }
+}
+
+message MessageBoxInfo {
+  optional bytes content = 1;
+  optional bytes title = 2;
+  optional bytes button = 3;
+}
+
+message MessageRecallReminder {
+  optional uint64 uin = 1;
+  optional bytes nickname = 2;
+  repeated MessageMeta recalled_msg_list = 3;
+  optional bytes reminder_content = 4;
+  optional bytes userdef = 5;
+  optional uint32 group_type = 6;
+  optional uint32 op_type = 7;
+  optional uint64 admin_uin = 8;
+  optional WithDrawWordingInfo wording_info = 9;
+
+  message MessageMeta {
+    optional uint32 seq = 1;
+    optional uint32 time = 2;
+    optional uint32 msg_random = 3;
+    optional uint32 msg_type = 4;
+    optional uint32 msg_flag = 5;
+    optional uint64 author_uin = 6;
+    optional uint32 is_anony_msg = 7;
+  }
+
+  message WithDrawWordingInfo {
+    optional int32 item_id = 1;
+    optional string item_name = 2;
+  }
+}
+
+message MiniAppNotify {
+  optional bytes msg = 1;
+}
+
+message NotifyMsgBody {
+  optional uint32 enum_type = 1;
+  optional uint64 msg_time = 2;
+  optional uint64 msg_expires = 3;
+  optional uint64 group_code = 4;
+  optional AIOGrayTipsInfo graytips = 5;
+  optional MessageBoxInfo messagebox = 6;
+  optional FloatedTipsInfo floatedtips = 7;
+  optional AIOTopTipsInfo toptips = 8;
+  optional RedGrayTipsInfo redtips = 9;
+  optional GroupNotifyInfo group_notify = 10;
+  optional MessageRecallReminder recall = 11;
+  optional ThemeStateNotify theme_notify = 12;
+  optional uint32 service_type = 13;
+  optional NotifyObjmsgUpdate objmsg_update = 14;
+  optional WereWolfPush werewolf_push = 15;
+  // optional apollo_game_status.STCMGameMessage stcm_game_state = 16;
+  // optional apollo_push_msgInfo.STPushMsgElem apllo_msg_push = 17;
+  optional GoldMsgTipsElem goldtips = 18;
+  optional MiniAppNotify miniapp_notify = 20;
+  optional uint64 sender_uin = 21;
+  optional LuckyBagNotify luckybag_notify = 22;
+  optional TroopFormGrayTipsInfo troopformtips_push = 23;
+  optional MediaChangePushInfo media_push = 24;
+  optional GeneralGrayTipInfo general_gray_tip = 26;
+  optional VideoChangePushInfo video_push = 27;
+  optional LbsShareChangePushInfo lbs_share_change_plus_info = 28;
+  optional SingChangePushInfo sing_push = 29;
+  optional GroupInfoChange group_info_change = 30;
+  optional GroupAnnounceTBCInfo group_announce_tbc_info = 31;
+  optional QQVedioGamePushInfo qq_vedio_game_push_info = 32;
+  optional QQGroupDigestMsg qq_group_digest_msg = 33;
+  optional StudyRoomMemberChangePush study_room_member_msg = 34;
+  optional QQVaLiveNotifyMsg qq_live_notify = 35;
+  optional GroupAsyncNotify group_async_notidy = 36;
+  optional uint64 group_cur_msg_seq = 37;
+  optional QQGroupDigestMsgSummary group_digest_msg_summary = 38;
+  optional uint64 sysdb_msg_id = 39;
+  optional RevertGrayTipsMsgTraceless revert_graytips_traceless = 40;
+}
+
+message NotifyObjmsgUpdate {
+  optional bytes objmsg_id = 1;
+  optional uint32 update_type = 2;
+  optional bytes ext_msg = 3;
+}
+
+message QQGroupDigestMsg {
+  optional uint64 group_code = 1;
+  optional uint32 seq = 2;
+  optional uint32 random = 3;
+  optional int32 op_type = 4;
+  optional uint64 sender = 5;
+  optional uint64 digest_oper = 6;
+  optional uint32 op_time = 7;
+  optional uint32 lastest_msg_seq = 8;
+  optional bytes oper_nick = 9;
+  optional bytes sender_nick = 10;
+  optional int32 ext_info = 11;
+}
+
+message QQGroupDigestMsgSummary {
+  optional uint64 digest_oper = 1;
+  optional int32 op_type = 2;
+  optional uint32 op_time = 3;
+  optional bytes digest_nick = 4;
+  optional int32 succ_cnt = 5;
+  repeated QQGroupDigestSummaryInfo summary_info = 6;
+}
+
+message QQGroupDigestSummaryInfo {
+  optional uint32 seq = 1;
+  optional uint32 random = 2;
+  optional uint32 error_code = 3;
+}
+
+message QQVaLiveNotifyMsg {
+  optional bytes uid = 1;
+  optional int32 notify_type = 2;
+  optional bytes ext1 = 3;
+  optional bytes ext2 = 4;
+  optional bytes ext3 = 5;
+}
+
+message QQVedioGamePushInfo {
+  optional uint32 msg_type = 1;
+  optional uint64 group_code = 2;
+  optional uint64 oper_uin = 3;
+  optional bytes version_ctrl = 4;
+  optional bytes ext_info = 5;
+}
+
+message RedGrayTipsInfo {
+  optional uint32 show_lastest = 1;
+  optional uint64 sender_uin = 2;
+  optional uint64 receiver_uin = 3;
+  optional bytes sender_rich_content = 4;
+  optional bytes receiver_rich_content = 5;
+  optional bytes authkey = 6;
+  optional sint32 msgtype = 7;
+  optional uint32 lucky_flag = 8;
+  optional uint32 hide_flag = 9;
+  optional bytes pc_body = 10;
+  optional uint32 icon = 11;
+  optional uint64 lucky_uin = 12;
+  optional uint32 time = 13;
+  optional uint32 random = 14;
+  optional bytes broadcast_rich_content = 15;
+  optional bytes idiom = 16;
+  optional uint32 idiom_seq = 17;
+  optional bytes idiom_alpha = 18;
+  optional bytes jumpurl = 19;
+  optional uint32 subchannel = 20;
+  optional bytes poem_rule = 21;
+}
+
+message ReqBody {
+  optional uint64 group_code = 1;
+  repeated uint64 memberuins = 2;
+  optional uint32 offline = 3;
+  optional InstCtrl inst_ctrl = 4;
+  optional bytes msg = 5;
+  optional uint32 busi_type = 6;
+}
+
+message RevertGrayTipsMsgTraceless {
+  optional uint64 from = 1;
+  optional uint64 to = 2;
+  optional uint64 group_code = 3;
+  optional uint64 busi_id = 4;
+  optional uint64 tips_seq_id = 5;
+}
+
+message RspBody {
+  optional uint64 group_code = 1;
+}
+
+message SingChangePushInfo {
+  optional uint64 seq = 1;
+  optional uint32 action_type = 2;
+  optional uint64 group_id = 3;
+  optional uint64 oper_uin = 4;
+  optional bytes gray_tips = 5;
+  optional uint32 join_nums = 6;
+}
+
+message StudyRoomMemberChangePush {
+  optional uint32 member_count = 1;
+}
+
+message TemplParam {
+  optional bytes name = 1;
+  optional bytes value = 2;
+}
+
+message ThemeStateNotify {
+  optional uint32 state = 1;
+  optional bytes feeds_id = 2;
+  optional bytes theme_name = 3;
+  optional uint64 action_uin = 4;
+  optional uint64 create_uin = 5;
+}
+
+message TroopFormGrayTipsInfo {
+  optional uint64 writer_uin = 1;
+  optional uint64 creator_uin = 2;
+  optional bytes rich_content = 3;
+  optional bytes opt_bytes_url = 4;
+  optional bytes creator_nick = 5;
+}
+
+message VideoChangePushInfo {
+  optional uint64 seq = 1;
+  optional uint32 action_type = 2;
+  optional uint64 group_id = 3;
+  optional uint64 oper_uin = 4;
+  optional bytes gray_tips = 5;
+  optional uint32 join_nums = 6;
+  optional uint32 join_state = 7;
+  optional bytes ext_info = 100;
+}
+
+message WereWolfPush {
+  optional uint32 push_type = 1;
+  optional uint64 game_room = 2;
+  optional uint32 enum_game_state = 3;
+  optional uint32 game_round = 4;
+  repeated Role roles = 5;
+  optional uint64 speaker = 6;
+  optional uint64 judge_uin = 7;
+  optional bytes judge_words = 8;
+  optional uint32 enum_operation = 9;
+  optional uint64 src_user = 10;
+  optional uint64 dst_user = 11;
+  repeated uint64 dead_users = 12;
+  optional uint32 game_result = 13;
+  optional uint32 timeout_sec = 14;
+  optional uint32 kill_confirmed = 15;
+  optional bytes judge_nickname = 16;
+  repeated uint64 voted_tie_users = 17;
+
+  message GameRecord {
+    optional uint32 total = 1;
+    optional uint32 win = 2;
+    optional uint32 lose = 3;
+    optional uint32 draw = 4;
+  }
+
+  message Role {
+    optional uint64 uin = 1;
+    optional uint32 enum_type = 2;
+    optional uint32 enum_state = 3;
+    optional uint32 can_speak = 4;
+    optional uint32 can_listen = 5;
+    optional uint32 position = 6;
+    optional uint32 can_vote = 7;
+    optional uint32 can_voted = 8;
+    optional uint32 already_checked = 9;
+    optional uint32 already_saved = 10;
+    optional uint32 already_poisoned = 11;
+    optional uint32 player_state = 12;
+    optional uint32 enum_dead_op = 13;
+    optional uint32 enum_operation = 14;
+    optional uint64 dst_user = 15;
+    optional uint32 operation_round = 16;
+    optional GameRecord game_record = 17;
+    optional uint32 is_werewolf = 18;
+    optional uint64 defended_user = 19;
+    optional uint32 is_sheriff = 20;
+  }
+}

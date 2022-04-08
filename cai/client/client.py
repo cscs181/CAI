@@ -9,6 +9,7 @@ This module is used to control client actions (low-level api).
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import time
+import struct
 import asyncio
 import secrets
 from typing import (
@@ -28,6 +29,7 @@ from cachetools import TTLCache
 
 from cai import log
 from cai.utils.binary import Packet
+from cai.client.events.base import Event
 from cai.utils.future import FutureStore
 from cai.settings.protocol import ApkInfo
 from cai.settings.device import DeviceInfo
@@ -46,15 +48,14 @@ from cai.exceptions import (
     GroupMemberListException,
 )
 
-from cai.client.events.base import Event
 from .packet import UniPacket, IncomingPacket
 from .command import Command, _packet_to_command
 from .sso_server import SsoServer, get_sso_server
 from .multi_msg.long_msg import _handle_multi_resp_body
-from .online_push import handle_c2c_sync, handle_push_msg, handle_req_push
 from .heartbeat import Heartbeat, encode_heartbeat, handle_heartbeat
 from .models import Group, Friend, SigInfo, FriendGroup, GroupMember
 from .config_push import FileServerPushList, handle_config_push_request
+from .online_push import handle_c2c_sync, handle_push_msg, handle_req_push
 from .message_service import (
     SyncFlag,
     GetMessageCommand,
@@ -136,7 +137,7 @@ HANDLERS: Dict[str, HT] = {
     # "OnlinePush.PbPushBindUinGroupMsg": handle_push_msg,  # sub account
     # new
     "MultiMsg.ApplyUp": _handle_multi_resp_body,
-    "OnlinePush.ReqPush": handle_req_push
+    "OnlinePush.ReqPush": handle_req_push,
 }
 
 
@@ -202,6 +203,7 @@ class Client:
 
         # connection info
         self._reconnect: bool = auto_reconnect
+        self._reconnect_times: int = 0
         self._max_reconnections: Optional[int] = max_reconnections
         self._closed: asyncio.Event = asyncio.Event()
 
@@ -322,9 +324,8 @@ class Client:
             self._connection = await connect(
                 _server.host, _server.port, ssl=False, timeout=3.0
             )
-            asyncio.create_task(self.receive()).add_done_callback(
-                self._recv_done_cb
-            )
+            task = asyncio.create_task(self.receive())
+            task.add_done_callback(self._recv_done_cb)
         except ConnectionError as e:
             raise
         except Exception as e:
@@ -333,13 +334,23 @@ class Client:
                 f"server({_server.host}:{_server.port}): " + repr(e)
             )
 
-    def _recv_done_cb(self, _task):
+    def _recv_done_cb(self, task: asyncio.Task):
         if self._reconnect:
-            log.network.warning("receiver stopped, try to reconnect")
-            asyncio.create_task(self.reconnect())
+            if (
+                self._max_reconnections
+                and self._reconnect_times >= self._max_reconnections
+            ):
+                log.network.warning(
+                    "Max reconnections reached, stop reconnecting"
+                )
+                asyncio.create_task(self.disconnect())
+            else:
+                log.network.warning("receiver stopped, try to reconnect")
+                self._reconnect_times += 1
+                asyncio.create_task(self.reconnect())
         else:
             log.network.warning("receiver stopped")
-            asyncio.create_task(self.close())
+            asyncio.create_task(self.disconnect())
 
     async def disconnect(self) -> None:
         """Disconnect if already connected to the server."""
@@ -360,7 +371,7 @@ class Client:
 
         if not change_server and self._connection:
             log.network.warning("reconnecting...")
-            await self.connect()
+            await self._connection.reconnect()
             await self.register(register_reason=RegPushReason.MsfByNetChange)
             log.network.info("reconnected")
             return
@@ -425,7 +436,7 @@ class Client:
         Returns:
             None.
         """
-        log.network.debug(f"(send:{seq}): {command_name}")
+        log.network.debug(f"(send: {seq}): {command_name}")
         await self.connection.awrite(packet)
 
     async def send_and_wait(
@@ -449,6 +460,7 @@ class Client:
         await self.send(seq, command_name, packet)
         return await self._receive_store.fetch(seq, timeout)
 
+    # FIXME
     async def send_unipkg_and_wait(
         self, command_name: str, enc_packet: bytes, seq=-1, timeout=10.0
     ):
@@ -489,12 +501,10 @@ class Client:
         while self.connected:
             try:
                 length: int = (
-                    int.from_bytes(
-                        await self.connection.read_bytes(4), "big", signed=False
-                    )
+                    struct.unpack(">i", await self.connection.read_bytes(4))[0]
                     - 4
                 )
-
+                # FIXME: length < 0 ?
                 data = await self.connection.read_bytes(length)
                 packet = IncomingPacket.parse(
                     data,
@@ -502,9 +512,8 @@ class Client:
                     self._siginfo.d2key,
                     self._siginfo.wt_session_ticket_key,
                 )
-                #
                 log.network.debug(
-                    f"(receive:{packet.ret_code}): {packet.command_name}"
+                    f"(receive: {packet.ret_code}): {packet.command_name}"
                 )
                 # do not block receive
                 asyncio.create_task(self._handle_incoming_packet(packet))

@@ -214,17 +214,20 @@ async def handle_push_msg(
     return push
 
 
-def _parse_poke(params: Sequence[TemplParam]) -> dict:
+def _parse_poke(params: Sequence[TemplParam], default: int) -> dict:
     res = {"target": None, "sender": None, "action": None, "suffix": None}
     for p in params:
-        if p.name == "uin_str1":
-            res["sender"] = int(p.value)
-        elif p.name == "uin_str2":
-            res["target"] = int(p.value)
-        elif p.name == "suffix_str":
-            res["suffix"] = p.value
-        elif p.name == "action_str":
-            res["action"] = p.value
+        name, value = p.name.decode(), p.value.decode()
+        if name == "uin_str1":
+            res["sender"] = int(value)
+        elif name == "uin_str2":
+            res["target"] = int(value)
+        elif name == "suffix_str":
+            res["suffix"] = value
+        elif name == "action_str":
+            res["action"] = value
+    if not res["target"]:
+        res["target"] = default
     return res
 
 
@@ -262,7 +265,7 @@ async def handle_req_push(
             if stype == 0x14:  # nudge
                 client.dispatch_event(
                     events.NudgeEvent(
-                        **_parse_poke(notify.general_gray_tip.templ_param),
+                        **_parse_poke(notify.general_gray_tip.templ_param, default=_uin),
                         group=gid,
                     )
                 )

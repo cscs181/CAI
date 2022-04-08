@@ -111,9 +111,7 @@ from .wtlogin import (
     encode_login_request2_captcha,
 )
 
-HT = Callable[
-    ["Client", IncomingPacket, Tuple[DeviceInfo, ApkInfo]], Awaitable[Command]
-]
+HT = Callable[["Client", IncomingPacket], Awaitable[Command]]
 LT = Callable[["Client", Event], Awaitable[None]]
 
 HANDLERS: Dict[str, HT] = {
@@ -135,7 +133,6 @@ HANDLERS: Dict[str, HT] = {
     "OnlinePush.PbC2CMsgSync": handle_c2c_sync,
     "OnlinePush.PbPushC2CMsg": handle_push_msg,
     # "OnlinePush.PbPushBindUinGroupMsg": handle_push_msg,  # sub account
-    # new
     "MultiMsg.ApplyUp": _handle_multi_resp_body,
     "OnlinePush.ReqPush": handle_req_push,
 }
@@ -347,7 +344,7 @@ class Client:
             else:
                 log.network.warning("receiver stopped, try to reconnect")
                 self._reconnect_times += 1
-                asyncio.create_task(self.reconnect())
+                asyncio.create_task(self.reconnect_and_login())
         else:
             log.network.warning("receiver stopped")
             asyncio.create_task(self.disconnect())
@@ -372,8 +369,6 @@ class Client:
         if not change_server and self._connection:
             log.network.warning("reconnecting...")
             await self._connection.reconnect()
-            # FIXME: register reason msfByNetChange?
-            await self._init(drop_offline_msg=False)
             log.network.info("reconnected")
             return
 
@@ -387,6 +382,13 @@ class Client:
         )
         await self.disconnect()
         await self.connect(_server)
+
+    async def reconnect_and_login(
+        self, change_server: bool = False, server: Optional[SsoServer] = None
+    ) -> None:
+        await self.reconnect(change_server=change_server, server=server)
+        # FIXME: register reason msfByNetChange?
+        await self._init(drop_offline_msg=False)
 
     async def close(self) -> None:
         """Close the client and logout."""
@@ -485,9 +487,7 @@ class Client:
     async def _handle_incoming_packet(self, in_packet: IncomingPacket) -> None:
         try:
             handler = HANDLERS.get(in_packet.command_name, _packet_to_command)
-            packet = await handler(
-                self, in_packet, (self.device, self.apk_info)
-            )
+            packet = await handler(self, in_packet)
             self._receive_store.store_result(packet.seq, packet)
         except Exception as e:
             # TODO: handle exception
@@ -644,12 +644,14 @@ class Client:
             )
 
     async def _init(self, drop_offline_msg: bool = True) -> None:
-        if not self.connected or self.status == OnlineStatus.Offline:
-            raise RuntimeError("Client is offline.")
+        if not self.connected:
+            raise RuntimeError("Client not connected.")
 
         self._init_flag = drop_offline_msg
 
         previous_status = self._status or OnlineStatus.Online
+        if previous_status in (OnlineStatus.Offline, OnlineStatus.Unknown):
+            previous_status = OnlineStatus.Online
         # register client online status
         await self.register(status=previous_status)
         # force refresh group list
@@ -1050,7 +1052,7 @@ class Client:
 
         self._heartbeat_enabled = True
 
-        while self._heartbeat_enabled and not self._connection.closed:
+        while self._heartbeat_enabled and self.connected:
             seq = self.next_seq()
             packet = encode_heartbeat(
                 seq,

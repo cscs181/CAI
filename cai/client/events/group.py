@@ -34,4 +34,3 @@ class MemberRecallMessageEvent(GroupEvent):
     msg_rand: int
     msg_seq: int
     msg_time: int
-

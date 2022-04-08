@@ -104,7 +104,7 @@ def encode_get_friend_list(
 
 
 async def handle_friend_list(
-    client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> "FriendListCommand":
     return FriendListCommand.decode_response(
         packet.uin,
@@ -167,7 +167,7 @@ def encode_get_troop_list(
 
 
 async def handle_troop_list(
-    client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> TroopListCommand:
     return TroopListCommand.decode_response(
         packet.uin,
@@ -230,7 +230,7 @@ def encode_get_troop_member_list(
 
 
 async def handle_troop_member_list(
-    client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> TroopMemberListCommand:
     return TroopMemberListCommand.decode_response(
         packet.uin,

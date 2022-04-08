@@ -102,7 +102,7 @@ def encode_get_message(
 
 
 async def handle_get_message(
-    client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> "GetMessageCommand":
     """Handle Pb Get Message response.
 
@@ -247,7 +247,7 @@ def encode_delete_message(
 
 
 async def handle_push_notify(
-    client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> PushNotifyCommand:
     """Handle Push Notify Command.
 
@@ -304,10 +304,10 @@ async def handle_push_notify(
 
 # MessageSvc.PushForceOffline
 async def handle_force_offline(
-    client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> PushForceOfflineCommand:
     client._status = OnlineStatus.Offline
-    await client.close()
+    await client.disconnect()
     request = PushForceOfflineCommand.decode_response(
         packet.uin,
         packet.seq,

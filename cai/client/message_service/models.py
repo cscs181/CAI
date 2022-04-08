@@ -12,11 +12,11 @@ This module is used to define message models.
 import abc
 from enum import IntEnum
 from dataclasses import dataclass
-from typing import List, Optional, Union
+from typing import List, Union, Optional
 
-from cai.client.events.base import Event
 from cai.pb.msf.msg.comm import Msg
 from cai.pb.im.msg.msg_body import Ptt
+from cai.client.events.base import Event
 
 
 class PokeType(IntEnum):

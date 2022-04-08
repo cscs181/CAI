@@ -768,17 +768,15 @@ def encode_exchange_emp_15(
 
 
 async def handle_oicq_response(
-    client: "Client", packet: IncomingPacket, dev: Tuple[DeviceInfo, ApkInfo]
+    client: "Client", packet: IncomingPacket
 ) -> OICQResponse:
-    device, apk_info = dev
-
     response = OICQResponse.decode_response(
         packet.uin,
         packet.seq,
         packet.ret_code,
         packet.command_name,
         packet.data,
-        device.tgtgt,
+        client.device.tgtgt,
     )
     if not isinstance(response, UnknownLoginStatus):
         return response
@@ -792,7 +790,7 @@ async def handle_oicq_response(
         ).encode()
         client._t402 = response.t402
         client._siginfo.g = md5(
-            device.guid + client._siginfo.dpwd + client._t402
+            client.device.guid + client._siginfo.dpwd + client._t402
         ).digest()
 
     if isinstance(response, LoginSuccess):
@@ -849,7 +847,7 @@ async def handle_oicq_response(
             client._password_md5 + bytes(4) + struct.pack(">I", client._uin)
         ).digest()
         decrypted = qqtea_decrypt(response.encrypted_a1, key)
-        device.tgtgt = decrypted[51:67]
+        client.device.tgtgt = decrypted[51:67]
     elif isinstance(response, NeedCaptcha):
         client._t104 = response.t104 or client._t104
     elif isinstance(response, DeviceLocked):

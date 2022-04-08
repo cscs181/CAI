@@ -75,7 +75,7 @@ def encode_config_push_response(
 
 # ConfigPushSvc.PushReq
 async def handle_config_push_request(
-    client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> ConfigPushCommand:
     command = ConfigPushCommand.decode_push_req(
         packet.uin,

@@ -10,6 +10,7 @@ This module is main entry point for the application.
 """
 
 from cai.client.events.base import Event
+
 from .command import Command
 from .packet import IncomingPacket
 from .client import HANDLERS, Client

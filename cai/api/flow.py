@@ -7,7 +7,7 @@
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import Callable, Awaitable, TYPE_CHECKING
+from typing import TYPE_CHECKING, Callable, Awaitable
 
 from cai.log import logger
 from cai.client import HANDLERS, Event, Client, Command, IncomingPacket
@@ -20,8 +20,7 @@ if TYPE_CHECKING:
 
 class Events(BaseAPI):
     def add_event_listener(
-        self,
-        listener: Callable[["Client_T", Event], Awaitable[None]]
+        self, listener: Callable[["Client_T", Event], Awaitable[None]]
     ):
         """Add event listener.
 

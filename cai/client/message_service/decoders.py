@@ -13,8 +13,8 @@ from itertools import chain
 from typing import Dict, List, Callable, Optional, Sequence
 
 from cai.log import logger
-from cai.client.events.base import Event
 from cai.pb.msf.msg.comm import Msg
+from cai.client.events.base import Event
 from cai.pb.im.msg.msg_body import Ptt, Elem
 from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype2,

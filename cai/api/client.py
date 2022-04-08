@@ -24,9 +24,9 @@ from cai.client.message_service.models import (
     VoiceElement,
 )
 
-from .flow import Events as _Events
 from .group import Group as _Group
 from .login import Login as _Login
+from .flow import Events as _Events
 from .friend import Friend as _Friend
 from .error import (
     BotMutedException,

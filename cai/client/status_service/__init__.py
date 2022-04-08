@@ -296,7 +296,7 @@ def encode_set_status(
 
 
 async def handle_register_response(
-    client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> SvcRegisterResponse:
     response = SvcRegisterResponse.decode_response(
         packet.uin,
@@ -378,7 +378,7 @@ def encode_force_offline_response(
 
 
 async def handle_request_offline(
-    client: "Client", packet: IncomingPacket, device: Tuple[DeviceInfo, ApkInfo]
+    client: "Client", packet: IncomingPacket
 ) -> MSFForceOfflineCommand:
     request = MSFForceOfflineCommand.decode_response(
         packet.uin,
@@ -404,8 +404,8 @@ async def handle_request_offline(
             client._siginfo.d2key,
             request.request.uin,
             request.request.seq_no,
-            device[1].sub_app_id,
-            device[0],
+            client.apk_info.sub_app_id,
+            client.device,
         )
         await client.send(seq, "StatSvc.RspMSFForceOffline", resp_packet)
     client._status = OnlineStatus.Offline

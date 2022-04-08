@@ -65,7 +65,7 @@ class Heartbeat(Command):
 
 
 async def handle_heartbeat(
-    _client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> Heartbeat:
     return Heartbeat(
         packet.uin, packet.seq, packet.ret_code, packet.command_name

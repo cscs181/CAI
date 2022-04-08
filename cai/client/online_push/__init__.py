@@ -10,15 +10,15 @@ This module is used to build and handle online push related packet.
 """
 from typing import TYPE_CHECKING, List, Tuple, Optional, Sequence
 
-from jce import types, JceDecoder, JceStruct, JceEncoder
+from jce import JceStruct, JceDecoder, JceEncoder, types
 
 from cai.log import logger
 from cai.utils.binary import Packet
-from cai.utils.jce import RequestPacketVersion3, RequestPacket
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
 from cai.settings.device import DeviceInfo as _DeviceInfo_t
-from cai.pb.im.oidb.group0x857.group0x857_pb2 import NotifyMsgBody, TemplParam
+from cai.utils.jce import RequestPacket, RequestPacketVersion3
+from cai.pb.im.oidb.group0x857.group0x857_pb2 import TemplParam, NotifyMsgBody
 
 from .. import events
 from ...settings.protocol import ApkInfo
@@ -29,12 +29,12 @@ if TYPE_CHECKING:
     from cai.client import Client
 
 
+# OnlinePush.RespPush
 def encode_push_response(
     seq: int,
     session_id: bytes,
     uin: int,
     d2key: bytes,
-    resp_uin: int,  # warn: unused var
     svrip: int,
     delete_messages: List[DelMsgInfo] = [],
     push_token: Optional[bytes] = None,
@@ -55,7 +55,6 @@ def encode_push_response(
         session_id (bytes): Session ID.
         uin (int): User QQ number.
         d2key (bytes): Siginfo d2 key.
-        resp_uin (int): Push response uin.
         svrip (int): Svrip from push packet.
         delete_messages (List[DelMsgInfo]): List of delete messages.
         push_token (Optional[bytes]): Push token from push packet.
@@ -88,7 +87,7 @@ def encode_push_response(
 
 
 async def handle_c2c_sync(
-    client: "Client", packet: IncomingPacket, _device
+    client: "Client", packet: IncomingPacket
 ) -> PushMsgCommand:
     """Handle C2C Message Sync.
 
@@ -116,7 +115,6 @@ async def handle_c2c_sync(
             client._session_id,
             client.uin,
             client._siginfo.d2key,
-            message.head.from_uin,
             push.push.svrip,
             push_token=push.push.push_token or None,
         )
@@ -139,7 +137,6 @@ async def handle_c2c_sync(
 async def handle_push_msg(
     client: "Client",
     packet: IncomingPacket,
-    device: Tuple[_DeviceInfo_t, ApkInfo],
 ) -> PushMsgCommand:
     """Handle Push Message Command.
 
@@ -148,7 +145,6 @@ async def handle_push_msg(
 
         com.tencent.mobileqq.app.MessageHandler.b
     """
-    device = device[0]
 
     push = PushMsgCommand.decode_response(
         packet.uin,
@@ -170,16 +166,15 @@ async def handle_push_msg(
                     client._session_id,
                     client.uin,
                     client._siginfo.d2key,
-                    client.uin,
                     push.push.svrip,
                     push_token=push.push.push_token or None,
                     service_type=1,
                     device_info=DeviceInfo(
                         net_type=1,
-                        dev_type=device.model,
-                        os_ver=device.version.release,
-                        vendor_name=device.vendor_name,
-                        vendor_os_name=device.vendor_os_name,
+                        dev_type=client.device.model,
+                        os_ver=client.device.version.release,
+                        vendor_name=client.device.vendor_name,
+                        vendor_os_name=client.device.vendor_os_name,
                     ),
                 )
                 await client.send(push.seq, "OnlinePush.RespPush", resp_packet)
@@ -195,7 +190,6 @@ async def handle_push_msg(
                 client._session_id,
                 client.uin,
                 client._siginfo.d2key,
-                message.head.from_uin,
                 push.push.svrip,
                 [delete_info],
                 push_token=push.push.push_token or None,
@@ -233,26 +227,30 @@ def _parse_poke(params: Sequence[TemplParam]) -> dict:
     return res
 
 
-"""def encode_resp_push_pkg(uin: int, svrip: int, seq: int, items: Sequence[DelMsgInfo]) -> bytes:
-    pkg = SvcRespPushMsg(
-        uin=uin,
-        del_infos=items,
-        svrip=svrip & 0xffffffff,
-        service_type=0
-    )
-    return RequestPacketVersion3(
-        servant_name="OnlinePush",
-        func_name="SvcRespPushMsg",
-        req_id=seq,
-        data=types.MAP({types.STRING("SvcRespPushMsg"): types.BYTES(SvcRespPushMsg.to_bytes(0, pkg))})
-    ).encode()
-"""
+# OnlinePush.SvcRespPushMsg
+# def encode_resp_push_pkg(
+#     uin: int, svrip: int, seq: int, items: Sequence[DelMsgInfo]
+# ) -> bytes:
+#     pkg = SvcRespPushMsg(
+#         uin=uin, del_infos=items, svrip=svrip & 0xFFFFFFFF, service_type=0
+#     )
+#     return RequestPacketVersion3(
+#         servant_name="OnlinePush",
+#         func_name="SvcRespPushMsg",
+#         req_id=seq,
+#         data=types.MAP(
+#             {
+#                 types.STRING("SvcRespPushMsg"): types.BYTES(
+#                     SvcRespPushMsg.to_bytes(0, pkg)
+#                 )
+#             }
+#         ),
+#     ).encode()
+
 
 # OnlinePush.ReqPush
 async def handle_req_push(
-    client: "Client",
-    packet: IncomingPacket,
-    device: Tuple[_DeviceInfo_t, ApkInfo],
+    client: "Client", packet: IncomingPacket
 ) -> PushMsgCommand:
     body = JceDecoder.decode_bytes(
         JceDecoder.decode_single(  # type: ignore
@@ -260,7 +258,12 @@ async def handle_req_push(
         )[1]["req"]["OnlinePushPack.SvcReqPushMsg"]
     )[0]
 
-    _uin, stime, push_type, content = body[0], body[1], body[2][0][2], body[2][0][6]
+    _uin, stime, push_type, content = (
+        body[0],
+        body[1],
+        body[2][0][2],
+        body[2][0][6],
+    )
 
     if push_type == 732:  # group
         gid = int.from_bytes(content[0:4], "big")
@@ -268,38 +271,37 @@ async def handle_req_push(
         if stype in (0x14, 0x11):
             notify = NotifyMsgBody.FromString(content[7:])
             if stype == 0x14:  # nudge
-                client.dispatch_event(events.NudgeEvent(
-                    **_parse_poke(notify.optGeneralGrayTip.msgTemplParam),
-                    group=gid
-                ))
+                client.dispatch_event(
+                    events.NudgeEvent(
+                        **_parse_poke(notify.optGeneralGrayTip.msgTemplParam),
+                        group=gid,
+                    )
+                )
             elif stype == 0x11:  # recall
                 msg = notify.optMsgRecall.recalledMsgList[0]
-                client.dispatch_event(events.MemberRecallMessageEvent(
-                    gid,
-                    notify.optMsgRecall.uin,
-                    notify.optMsgRecall.opType,
-                    msg.authorUin,
-                    msg.msgRandom,
-                    msg.seq,
-                    msg.time
-                ))
-        elif stype == 0x0c:  # mute event
+                client.dispatch_event(
+                    events.MemberRecallMessageEvent(
+                        gid,
+                        notify.optMsgRecall.uin,
+                        notify.optMsgRecall.opType,
+                        msg.authorUin,
+                        msg.msgRandom,
+                        msg.seq,
+                        msg.time,
+                    )
+                )
+        elif stype == 0x0C:  # mute event
             operator = int.from_bytes(content[6:10], "big", signed=False)
             target = int.from_bytes(content[16:20], "big", signed=False)
             duration = int.from_bytes(content[20:24], "big", signed=False)
             if duration > 0:  # muted
-                client.dispatch_event(events.MemberMutedEvent(
-                    gid,
-                    operator,
-                    target,
-                    duration
-                ))
+                client.dispatch_event(
+                    events.MemberMutedEvent(gid, operator, target, duration)
+                )
             else:
-                client.dispatch_event(events.MemberUnMutedEvent(
-                    gid,
-                    operator,
-                    target
-                ))
+                client.dispatch_event(
+                    events.MemberUnMutedEvent(gid, operator, target)
+                )
     elif push_type == 528:
         pass
         # TODO: parse friend event
@@ -312,21 +314,13 @@ async def handle_req_push(
             client._session_id,
             _uin,
             client._siginfo.d2key,
-            client.uin,
-            body[3] & 0xffffffff,
-            [DelMsgInfo(
-                from_uin=_uin,
-                msg_seq=body[1],
-                msg_time=stime
-            )]
-        )
+            body[3] & 0xFFFFFFFF,
+            [DelMsgInfo(from_uin=_uin, msg_seq=body[1], msg_time=stime)],
+        ),
     )
 
     return PushMsgCommand(
-        packet.uin,
-        packet.seq,
-        packet.ret_code,
-        packet.command_name
+        packet.uin, packet.seq, packet.ret_code, packet.command_name
     )
 
 

@@ -228,11 +228,20 @@ def _parse_poke(params: Sequence[TemplParam]) -> dict:
     return res
 
 
+repeat_ev = set()
+
 # OnlinePush.ReqPush
 async def handle_req_push(
     client: "Client", packet: IncomingPacket
 ) -> PushMsgCommand:
     req_pkg = RequestPacket.decode(packet.data)
+
+    # sbtx
+    if req_pkg.req_id in repeat_ev:
+        repeat_ev.remove(req_pkg.req_id)
+        return PushMsgCommand(packet.uin, packet.seq, packet.ret_code, packet.command_name)
+    else:
+        repeat_ev.add(req_pkg.req_id)
 
     body = SvcReqPushMsg.decode(
         JceDecoder.decode_single(req_pkg.buffer)[1]["req"]["OnlinePushPack.SvcReqPushMsg"]  # type: ignore

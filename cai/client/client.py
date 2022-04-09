@@ -369,6 +369,7 @@ class Client:
         if not change_server and self._connection:
             log.network.warning("reconnecting...")
             await self._connection.reconnect()
+            asyncio.create_task(self.receive()).add_done_callback(self._recv_done_cb)
             log.network.info("reconnected")
             return
 
@@ -389,7 +390,7 @@ class Client:
         await self.reconnect(change_server=change_server, server=server)
         # FIXME: register reason msfByNetChange?
         try:
-            await self._init(drop_offline_msg=False)
+            await self._init()
         except asyncio.exceptions.TimeoutError:  # fallback
             log.network.warning("register failed, trying to re-login")
             await self.reconnect()

@@ -149,7 +149,7 @@ class Client:
         apk_info: ApkInfo,
         *,
         auto_reconnect: bool = True,
-        max_reconnections: Optional[int] = 3,
+        max_reconnections: int = 3,
     ):
         # client info
         self._device: DeviceInfo = device
@@ -196,12 +196,13 @@ class Client:
         self._sync_cookie: bytes = bytes()
         self._pubaccount_cookie: bytes = bytes()
         self._msg_cache: TTLCache = TTLCache(maxsize=1024, ttl=3600)
+        self._online_push_cache: TTLCache = TTLCache(maxsize=1024, ttl=3600)
         self._receive_store: FutureStore[int, Command] = FutureStore()
 
         # connection info
         self._reconnect: bool = auto_reconnect
         self._reconnect_times: int = 0
-        self._max_reconnections: Optional[int] = max_reconnections
+        self._max_reconnections: int = max_reconnections
         self._closed: asyncio.Event = asyncio.Event()
 
     def __str__(self) -> str:
@@ -394,9 +395,9 @@ class Client:
         # FIXME: register reason msfByNetChange?
         try:
             await self._init(drop_offline_msg=False)
-        except asyncio.exceptions.TimeoutError:  # fallback
+        except asyncio.TimeoutError:
             log.network.warning("register failed, trying to re-login")
-            await self.reconnect()
+            await self.reconnect(change_server=True, server=server)
             await self.login()
 
     async def close(self) -> None:

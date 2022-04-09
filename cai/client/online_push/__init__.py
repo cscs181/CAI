@@ -8,20 +8,20 @@ This module is used to build and handle online push related packet.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-from typing import TYPE_CHECKING, List, Tuple, Optional, Sequence
+from typing import TYPE_CHECKING, List, Optional, Sequence
 
-from jce import JceStruct, JceDecoder, types
+from jce import types
 
 from cai.log import logger
 from cai.client import events
 from cai.utils.binary import Packet
+from cai.utils.jce import RequestPacketVersion3
 from cai.pb.im.op.online_push_pb2 import DelMsgCookies
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
-from cai.utils.jce import RequestPacket, RequestPacketVersion3
 from cai.pb.im.oidb.cmd0x857.troop_tips import TemplParam, NotifyMsgBody
 
-from .jce import DelMsgInfo, DeviceInfo, SvcReqPushMsg, SvcRespPushMsg
+from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
 from .command import (
     PushMsg,
     SvcReqPush,
@@ -237,8 +237,6 @@ def _parse_poke(params: Sequence[TemplParam], default: int) -> dict:
     return res
 
 
-repeat_ev = set()
-
 # OnlinePush.ReqPush
 async def handle_req_push(
     client: "Client", packet: IncomingPacket
@@ -257,11 +255,6 @@ async def handle_req_push(
     )
 
     if isinstance(push, SvcReqPush):
-        if push.seq in client._msg_cache:  # duplicates msg, drop
-            return push
-        else:
-            client._msg_cache[push.seq] = None
-
         seq = client.next_seq()
         pkg = encode_push_response(
             seq,
@@ -285,20 +278,30 @@ async def handle_req_push(
             ],
             req_id=push.seq,
         )
-        #await client.send(seq, "OnlinePush.RespPush", pkg)
+        # await client.send(seq, "OnlinePush.RespPush", pkg)
 
-        for message in push.message.msg_info:
-            if message.message_type == 169:
+        for info in push.message.msg_info:
+            key = (
+                f"{info.message_seq}"
+                f"{info.message_time}"
+                f"{info.message_uid}"
+            )
+            should_skip = key in client._online_push_cache
+            client._online_push_cache[key] = None
+            if should_skip:
+                continue
+
+            if info.message_type == 169:
                 # handleC2COnlinePushMsgResp
                 pass
-            elif message.message_type == 8:
+            elif info.message_type == 8:
                 # HandleShMsgType0x08
                 pass
-            elif message.message_type == 132:
+            elif info.message_type == 132:
                 # HandleShMsgType0x84
                 pass
-            elif message.message_type == 732:
-                content = message.vec_message
+            elif info.message_type == 732:
+                content = info.vec_message
                 sub_type = content[4]
                 gid = int.from_bytes(content[:4], "big")
 
@@ -309,7 +312,7 @@ async def handle_req_push(
                             events.NudgeEvent(
                                 **_parse_poke(
                                     notify.general_gray_tip.templ_param,
-                                    default=message.from_uin,
+                                    default=info.from_uin,
                                 ),
                                 group=gid,
                             )
@@ -345,7 +348,7 @@ async def handle_req_push(
                         client.dispatch_event(
                             events.MemberUnMutedEvent(gid, operator, target)
                         )
-            elif message.message_type == 528:
+            elif info.message_type == 528:
                 # TODO: parse friend event
                 pass
 

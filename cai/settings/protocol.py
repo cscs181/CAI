@@ -10,14 +10,9 @@ Once the protocol setting is loaded, it will be cached until application shut do
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-import os
-from typing import Optional, NamedTuple
+from typing import NamedTuple
 
 from cai.storage import Storage
-
-MISSING = "MISSING"
-
-_protocol: Optional["ApkInfo"] = None
 
 
 class ApkInfo(NamedTuple):
@@ -176,18 +171,14 @@ def get_apk_info(_type: str = "IPAD") -> ApkInfo:
     return info[_type]
 
 
-def get_protocol(cache: bool = True) -> ApkInfo:
-    global _protocol
-    if cache and _protocol:
-        return _protocol
+def get_protocol(uin: int, cache: bool = True) -> ApkInfo:
+    protocol_file = Storage.get_account_cache_dir(uin) / "protocol"
 
-    type_ = os.getenv(Storage.protocol_env_name, MISSING)
-    if type_ is MISSING and os.path.exists(Storage.protocol_file):
-        with open(Storage.protocol_file, "r") as f:
-            type_ = f.read()
-    elif type_ is MISSING:
+    if protocol_file.exists():
+        type_ = protocol_file.read_text()
+    else:
         type_ = "IPAD"
-        with open(Storage.protocol_file, "w") as f:
-            f.write("IPAD")
-    _protocol = get_apk_info(type_)
-    return _protocol
+        protocol_file.write_text(type_)
+
+    protocol = get_apk_info(type_)
+    return protocol

@@ -11,7 +11,6 @@ Once the device setting is loaded, it will be cached until application shut down
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import os
-import time
 import uuid
 import random
 import secrets
@@ -22,8 +21,6 @@ from dataclasses import dataclass
 from cai.log import logger
 from cai.storage import Storage
 from cai.utils.dataclass import JsonableDataclass
-
-_device: Optional["DeviceInfo"] = None
 
 
 @dataclass(init=True, eq=False)
@@ -232,35 +229,29 @@ def new_device(
     )
 
 
-def get_device(cache: bool = True) -> DeviceInfo:
-    global _device
-    if cache and _device:
-        return _device
+def get_device(uin: int, cache: bool = True) -> DeviceInfo:
+    cache_file = Storage.get_account_cache_dir(uin) / "device.json"
+    backup_file = Storage.get_account_cache_dir(uin) / "device.json.bak"
 
     device: DeviceInfo
-    if not os.path.exists(Storage.device_file):
-        device = new_device()
-        with open(Storage.device_file, "w") as f:
-            device.to_file(f)
-    else:
-        with open(Storage.device_file, "r+") as f:
+    if cache and cache_file.exists():
+        with cache_file.open("r+") as f:
             try:
                 device = DeviceInfo.from_file(f)
             except Exception as e:
-                backup_file = f"{Storage.device_file}.{int(time.time())}.bak"
                 logger.error(
                     "Error when loading device info from config file:\n\n"
                     + repr(e)
-                    + f"\n\nRegenerating device info in `{Storage.device_file}`! "
+                    + f"\n\nRegenerating device info in `{cache_file}`! "
                     + f"The original device info has been backed up in `{backup_file}`."
                 )
                 f.seek(0)
-                with open(backup_file, "w") as fb:
-                    fb.write(f.read())
+                backup_file.write_text(f.read())
                 device = new_device()
                 f.seek(0)
                 f.truncate(0)
                 device.to_file(f)
-
-    _device = device
-    return _device
+    else:
+        device = new_device()
+        cache_file.write_text(device.to_json())
+    return device

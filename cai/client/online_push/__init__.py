@@ -256,9 +256,12 @@ async def handle_req_push(
         packet.data,
     )
 
-    # FIXME: cache and remove duplicates
-
     if isinstance(push, SvcReqPush):
+        if push.seq in client._msg_cache:  # duplicates msg, drop
+            return push
+        else:
+            client._msg_cache[push.seq] = None
+
         seq = client.next_seq()
         pkg = encode_push_response(
             seq,
@@ -282,7 +285,7 @@ async def handle_req_push(
             ],
             req_id=push.seq,
         )
-        await client.send(seq, "OnlinePush.RespPush", pkg)
+        #await client.send(seq, "OnlinePush.RespPush", pkg)
 
         for message in push.message.msg_info:
             if message.message_type == 169:

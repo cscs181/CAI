@@ -17,8 +17,6 @@ from io import BytesIO
 from PIL import Image
 
 from cai.api import Client, make_client
-from cai.settings.device import get_device
-from cai.settings.protocol import get_apk_info
 from cai.client.message_service.models import TextElement
 from cai.client import Event, GroupMessage, OnlineStatus, PrivateMessage
 from cai.exceptions import (
@@ -38,9 +36,7 @@ async def run(closed: asyncio.Event):
         assert password and account, ValueError("account or password not set")
 
         account = int(account)
-        ci = Client(
-            make_client(account, password, get_apk_info(), device=get_device())
-        )
+        ci = Client(make_client(account, password))
 
         try:
             await ci.login()

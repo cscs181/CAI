@@ -13,10 +13,10 @@ from typing import Union, BinaryIO, Optional, Sequence
 from cai import log
 from cai.client import OnlineStatus
 from cai.client import Client as client_t
-from cai.settings.protocol import ApkInfo
+from cai.settings.device import get_device
 from cai.pb.msf.msg.svc import PbSendMsgResp
 from cai.client.highway import HighWaySession
-from cai.settings.device import DeviceInfo, new_device
+from cai.settings.protocol import get_protocol
 from cai.client.message_service.encoders import build_msg, make_group_msg_pkg
 from cai.client.message_service.models import (
     Element,
@@ -35,20 +35,15 @@ from .error import (
 )
 
 
-def make_client(
-    uin: int,
-    passwd: Union[str, bytes],
-    apk_info: ApkInfo,
-    device: Optional[DeviceInfo] = None,
-) -> client_t:
+def make_client(uin: int, passwd: Union[str, bytes]) -> client_t:
     if not (isinstance(passwd, bytes) and len(passwd) == 16):
         # not a vailed md5 passwd
         if isinstance(passwd, bytes):
             passwd = hashlib.md5(passwd).digest()
         else:
             passwd = hashlib.md5(passwd.encode()).digest()
-    if not device:
-        device = new_device()
+    device = get_device(uin)
+    apk_info = get_protocol(uin)
     return client_t(uin, passwd, device, apk_info)
 
 

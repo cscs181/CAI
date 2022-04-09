@@ -244,8 +244,8 @@ class IncomingPacket:
             compress_type,
         ) = (
             sso_frame.start()
-            .uint32()
-            .uint32()
+            .int32()
+            .int32()
             .int32()
             .bytes_with_length(4, 4)
             .string(4, 4)

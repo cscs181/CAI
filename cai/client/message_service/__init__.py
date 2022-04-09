@@ -155,12 +155,15 @@ async def handle_get_message(
 
                 key = (
                     f"{message.head.from_uin}"
-                    f"{message.head.type}"
-                    f"{message.head.time}"
+                    f"{message.head.to_uin}"
+                    f"{message.head.seq}"
+                    f"{message.head.uid}"
                 )
-                if key in client._msg_cache:
-                    continue
+                # refresh key ttl first
+                should_skip = key in client._msg_cache
                 client._msg_cache[key] = None
+                if should_skip:
+                    continue
 
                 # drop messages when init
                 if client._init_flag:

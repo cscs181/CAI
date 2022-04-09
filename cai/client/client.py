@@ -520,7 +520,7 @@ class Client:
                     self._siginfo.wt_session_ticket_key,
                 )
                 log.network.debug(
-                    f"(receive: {packet.ret_code}): {packet.command_name}"
+                    f"(receive: {packet.seq}): {packet.command_name}"
                 )
                 # do not block receive
                 asyncio.create_task(self._handle_incoming_packet(packet))

@@ -152,7 +152,7 @@ class UniPacket(Packet):
         )
         data.write_with_length(body, offset=4)
         return cls().write_with_length(
-            struct.pack(">IBIB", 0xB, body_type, seq, 0),
+            struct.pack(">IBiB", 0xB, body_type, seq, 0),
             struct.pack(">I", len(str(uin)) + 4),
             str(uin).encode(),
             qqtea_encrypt(bytes(data), key),

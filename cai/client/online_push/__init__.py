@@ -16,7 +16,6 @@ from cai.log import logger
 from cai.client import events
 from cai.utils.binary import Packet
 from cai.utils.jce import RequestPacketVersion3
-from cai.pb.im.op.online_push_pb2 import DelMsgCookies
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
 from cai.pb.im.oidb.cmd0x857.troop_tips import TemplParam, NotifyMsgBody
@@ -265,43 +264,34 @@ async def handle_req_push(
             [
                 DelMsgInfo(
                     from_uin=info.from_uin,
-                    msg_seq=info.message_seq,
-                    msg_time=info.message_time,
-                    msg_cookies=DelMsgCookies(
-                        msg_type=info.message_type,
-                        msg_uid=info.message_uid,
-                        type=3,
-                        xid=50015,
-                    ).SerializeToString(),
+                    msg_seq=info.msg_seq,
+                    msg_time=info.msg_time,
+                    msg_cookies=info.msg_cookies,
                 )
                 for info in push.message.msg_info
             ],
             req_id=push.seq,
         )
-        # await client.send(seq, "OnlinePush.RespPush", pkg)
+        await client.send(seq, "OnlinePush.RespPush", pkg)
 
         for info in push.message.msg_info:
-            key = (
-                f"{info.message_seq}"
-                f"{info.message_time}"
-                f"{info.message_uid}"
-            )
+            key = f"{info.msg_seq}" f"{info.msg_time}" f"{info.msg_uid}"
             should_skip = key in client._online_push_cache
             client._online_push_cache[key] = None
             if should_skip:
                 continue
 
-            if info.message_type == 169:
+            if info.msg_type == 169:
                 # handleC2COnlinePushMsgResp
                 pass
-            elif info.message_type == 8:
+            elif info.msg_type == 8:
                 # HandleShMsgType0x08
                 pass
-            elif info.message_type == 132:
+            elif info.msg_type == 132:
                 # HandleShMsgType0x84
                 pass
-            elif info.message_type == 732:
-                content = info.vec_message
+            elif info.msg_type == 732:
+                content = info.vec_msg
                 sub_type = content[4]
                 gid = int.from_bytes(content[:4], "big")
 
@@ -348,7 +338,7 @@ async def handle_req_push(
                         client.dispatch_event(
                             events.MemberUnMutedEvent(gid, operator, target)
                         )
-            elif info.message_type == 528:
+            elif info.msg_type == 528:
                 # TODO: parse friend event
                 pass
 

@@ -321,8 +321,7 @@ class Client:
             self._connection = await connect(
                 _server.host, _server.port, ssl=False, timeout=3.0
             )
-            task = asyncio.create_task(self.receive())
-            task.add_done_callback(self._recv_done_cb)
+            self._start_receiver()
         except ConnectionError as e:
             raise
         except Exception as e:
@@ -330,6 +329,10 @@ class Client:
                 "An error occurred while connecting to "
                 f"server({_server.host}:{_server.port}): " + repr(e)
             )
+
+    def _start_receiver(self):
+        task = asyncio.create_task(self.receive())
+        task.add_done_callback(self._recv_done_cb)
 
     def _recv_done_cb(self, task: asyncio.Task):
         if self._reconnect:
@@ -369,7 +372,7 @@ class Client:
         if not change_server and self._connection:
             log.network.warning("reconnecting...")
             await self._connection.reconnect()
-            asyncio.create_task(self.receive()).add_done_callback(self._recv_done_cb)
+            self._start_receiver()
             log.network.info("reconnected")
             return
 

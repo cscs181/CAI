@@ -15,14 +15,20 @@ from jce import JceStruct, JceDecoder, types
 from cai.log import logger
 from cai.client import events
 from cai.utils.binary import Packet
+from cai.pb.im.op.online_push_pb2 import DelMsgCookies
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
 from cai.utils.jce import RequestPacket, RequestPacketVersion3
 from cai.pb.im.oidb.cmd0x857.troop_tips import TemplParam, NotifyMsgBody
-from cai.pb.im.op.online_push_pb2 import DelMsgCookies
 
-from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg, SvcReqPushMsg
-from .command import PushMsg, PushMsgError, PushMsgCommand
+from .jce import DelMsgInfo, DeviceInfo, SvcReqPushMsg, SvcRespPushMsg
+from .command import (
+    PushMsg,
+    SvcReqPush,
+    PushMsgError,
+    PushMsgCommand,
+    SvcReqPushCommand,
+)
 
 if TYPE_CHECKING:
     from cai.client import Client
@@ -39,7 +45,7 @@ def encode_push_response(
     push_token: Optional[bytes] = None,
     service_type: int = 0,
     device_info: Optional[DeviceInfo] = None,
-    req_id: int = 0
+    req_id: int = 0,
 ) -> Packet:
     """Build online push response packet.
 
@@ -236,97 +242,111 @@ repeat_ev = set()
 # OnlinePush.ReqPush
 async def handle_req_push(
     client: "Client", packet: IncomingPacket
-) -> PushMsgCommand:
-    req_pkg = RequestPacket.decode(packet.data)
+) -> SvcReqPushCommand:
+    """Handle Request Push Command.
 
-    # sbtx
-    if req_pkg.req_id in repeat_ev:
-        repeat_ev.remove(req_pkg.req_id)
-        return PushMsgCommand(packet.uin, packet.seq, packet.ret_code, packet.command_name)
-    else:
-        repeat_ev.add(req_pkg.req_id)
-
-    body = SvcReqPushMsg.decode(
-        JceDecoder.decode_single(req_pkg.buffer)[1]["req"]["OnlinePushPack.SvcReqPushMsg"]  # type: ignore
-    ).body
-
-    _uin, stime, push_type, content = (
-        body.uin,
-        body.msg_time,
-        body.msg_info[0].msg_type,
-        body.msg_info[0].msg,
+    Note:
+        Source: com.tencent.imcore.message.OnLinePushMessageProcessor.ProcessOneMsg.a
+    """
+    push = SvcReqPushCommand.decode_response(
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
     )
 
-    if push_type == 732:  # group
-        gid = int.from_bytes(content[0:4], "big")
-        stype = content[4]
-        if stype in (0x14, 0x11):
-            notify = NotifyMsgBody.FromString(content[7:])
-            if stype == 0x14:  # nudge
-                client.dispatch_event(
-                    events.NudgeEvent(
-                        **_parse_poke(notify.general_gray_tip.templ_param, default=_uin),
-                        group=gid,
+    # FIXME: cache and remove duplicates
+
+    if isinstance(push, SvcReqPush):
+        seq = client.next_seq()
+        pkg = encode_push_response(
+            seq,
+            client._session_id,
+            push.message.uin,
+            client._siginfo.d2key,
+            push.message.svrip,
+            [
+                DelMsgInfo(
+                    from_uin=info.from_uin,
+                    msg_seq=info.message_seq,
+                    msg_time=info.message_time,
+                    msg_cookies=DelMsgCookies(
+                        msg_type=info.message_type,
+                        msg_uid=info.message_uid,
+                        type=3,
+                        xid=50015,
+                    ).SerializeToString(),
+                )
+                for info in push.message.msg_info
+            ],
+            req_id=push.seq,
+        )
+        await client.send(seq, "OnlinePush.RespPush", pkg)
+
+        for message in push.message.msg_info:
+            if message.message_type == 169:
+                # handleC2COnlinePushMsgResp
+                pass
+            elif message.message_type == 8:
+                # HandleShMsgType0x08
+                pass
+            elif message.message_type == 132:
+                # HandleShMsgType0x84
+                pass
+            elif message.message_type == 732:
+                content = message.vec_message
+                sub_type = content[4]
+                gid = int.from_bytes(content[:4], "big")
+
+                if sub_type in (0x14, 0x11):
+                    notify = NotifyMsgBody.FromString(content[7:])
+                    if sub_type == 0x14:  # nudge
+                        client.dispatch_event(
+                            events.NudgeEvent(
+                                **_parse_poke(
+                                    notify.general_gray_tip.templ_param,
+                                    default=message.from_uin,
+                                ),
+                                group=gid,
+                            )
+                        )
+                    elif sub_type == 0x11:  # recall
+                        msg = notify.recall.recalled_msg_list[0]
+                        client.dispatch_event(
+                            events.MemberRecallMessageEvent(
+                                gid,
+                                notify.recall.uin,
+                                notify.recall.op_type,
+                                msg.author_uin,
+                                msg.msg_random,
+                                msg.seq,
+                                msg.time,
+                            )
+                        )
+                elif sub_type == 0x0C:  # mute event
+                    operator = int.from_bytes(
+                        content[6:10], "big", signed=False
                     )
-                )
-            elif stype == 0x11:  # recall
-                msg = notify.recall.recalled_msg_list[0]
-                client.dispatch_event(
-                    events.MemberRecallMessageEvent(
-                        gid,
-                        notify.recall.uin,
-                        notify.recall.op_type,
-                        msg.author_uin,
-                        msg.msg_random,
-                        msg.seq,
-                        msg.time,
+                    target = int.from_bytes(content[16:20], "big", signed=False)
+                    duration = int.from_bytes(
+                        content[20:24], "big", signed=False
                     )
-                )
-        elif stype == 0x0C:  # mute event
-            operator = int.from_bytes(content[6:10], "big", signed=False)
-            target = int.from_bytes(content[16:20], "big", signed=False)
-            duration = int.from_bytes(content[20:24], "big", signed=False)
-            if duration > 0:  # muted
-                client.dispatch_event(
-                    events.MemberMutedEvent(gid, operator, target, duration)
-                )
-            else:
-                client.dispatch_event(
-                    events.MemberUnMutedEvent(gid, operator, target)
-                )
-    elif push_type == 528:
-        pass
-        # TODO: parse friend event
+                    if duration > 0:  # muted
+                        client.dispatch_event(
+                            events.MemberMutedEvent(
+                                gid, operator, target, duration
+                            )
+                        )
+                    else:
+                        client.dispatch_event(
+                            events.MemberUnMutedEvent(gid, operator, target)
+                        )
+            elif message.message_type == 528:
+                # TODO: parse friend event
+                pass
 
-    seq = client.next_seq()
-    pkg = encode_push_response(
-        seq,
-        client._session_id,
-        _uin,
-        client._siginfo.d2key,
-        body.svrip,
-        [
-            DelMsgInfo(
-                from_uin=info.from_uin,
-                msg_seq=info.msg_seq,
-                msg_time=info.msg_time,
-                msg_cookies=DelMsgCookies(
-                    msg_type=info.msg_type,
-                    msg_uid=info.msg_uid,
-                    type=3,
-                    xid=50015
-                ).SerializeToString()
-            ) for info in body.msg_info
-        ],
-        req_id=req_pkg.req_id
-    )
-
-    # FIXME: useless
-    await client.send(seq, "OnlinePush.RespPush", pkg)
-
-    return PushMsgCommand(
-        packet.uin, packet.seq, packet.ret_code, packet.command_name
-    )
+    return push
 
 
 __all__ = [

@@ -44,7 +44,6 @@ def encode_push_response(
     push_token: Optional[bytes] = None,
     service_type: int = 0,
     device_info: Optional[DeviceInfo] = None,
-    req_id: int = 0,
 ) -> Packet:
     """Build online push response packet.
 
@@ -81,7 +80,6 @@ def encode_push_response(
     )
     payload = SvcRespPushMsg.to_bytes(0, resp)
     req_packet = RequestPacketVersion3(
-        req_id=req_id,
         servant_name="OnlinePush",
         func_name="SvcRespPushMsg",
         data=types.MAP({types.STRING("resp"): types.BYTES(payload)}),
@@ -254,9 +252,8 @@ async def handle_req_push(
     )
 
     if isinstance(push, SvcReqPush):
-        seq = client.next_seq()
         pkg = encode_push_response(
-            seq,
+            push.seq,
             client._session_id,
             push.message.uin,
             client._siginfo.d2key,
@@ -270,9 +267,8 @@ async def handle_req_push(
                 )
                 for info in push.message.msg_info
             ],
-            req_id=push.seq,
         )
-        await client.send(seq, "OnlinePush.RespPush", pkg)
+        await client.send(push.seq, "OnlinePush.RespPush", pkg)
 
         for info in push.message.msg_info:
             key = f"{info.msg_seq}" f"{info.msg_time}" f"{info.msg_uid}"

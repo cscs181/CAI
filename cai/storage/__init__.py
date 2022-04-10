@@ -45,6 +45,12 @@ class Storage:
         return cache
 
     @classmethod
+    def get_account_config_dir(cls, uin: int) -> Path:
+        config = cls.app_dir / str(uin)
+        config.mkdir(parents=True, exist_ok=True)
+        return config
+
+    @classmethod
     def clear_cache(cls):
         # FIXME: delete used dir only
         for path in cls.cache_dir.iterdir():

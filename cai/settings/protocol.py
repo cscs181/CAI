@@ -172,9 +172,9 @@ def get_apk_info(_type: str = "IPAD") -> ApkInfo:
 
 
 def get_protocol(uin: int, cache: bool = True) -> ApkInfo:
-    protocol_file = Storage.get_account_cache_dir(uin) / "protocol"
+    protocol_file = Storage.get_account_config_dir(uin) / "protocol"
 
-    if protocol_file.exists():
+    if cache and protocol_file.exists():
         type_ = protocol_file.read_text()
     else:
         type_ = "IPAD"

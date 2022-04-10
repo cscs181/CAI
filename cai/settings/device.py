@@ -230,8 +230,8 @@ def new_device(
 
 
 def get_device(uin: int, cache: bool = True) -> DeviceInfo:
-    cache_file = Storage.get_account_cache_dir(uin) / "device.json"
-    backup_file = Storage.get_account_cache_dir(uin) / "device.json.bak"
+    cache_file = Storage.get_account_config_dir(uin) / "device.json"
+    backup_file = Storage.get_account_config_dir(uin) / "device.json.bak"
 
     device: DeviceInfo
     if cache and cache_file.exists():

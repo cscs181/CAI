@@ -18,8 +18,9 @@ from cai.utils.binary import Packet
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
-from cai.pb.im.oidb.cmd0x857.troop_tips import TemplParam, NotifyMsgBody
+from cai.pb.im.oidb.cmd0x857.troop_tips import TemplParam
 
+from .decoders import ONLINEPUSH_DECODERS
 from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
 from .command import (
     PushMsg,
@@ -271,73 +272,21 @@ async def handle_req_push(
         await client.send(push.seq, "OnlinePush.RespPush", pkg)
 
         for info in push.message.msg_info:
-            key = f"{info.msg_seq}" f"{info.msg_time}" f"{info.msg_uid}"
+            key = f"{info.msg_seq}{info.msg_time}{info.msg_uid}"
             should_skip = key in client._online_push_cache
             client._online_push_cache[key] = None
             if should_skip:
                 continue
 
-            if info.msg_type == 169:
-                # handleC2COnlinePushMsgResp
-                pass
-            elif info.msg_type == 8:
-                # HandleShMsgType0x08
-                pass
-            elif info.msg_type == 132:
-                # HandleShMsgType0x84
-                pass
-            elif info.msg_type == 732:
-                content = info.vec_msg
-                sub_type = content[4]
-                gid = int.from_bytes(content[:4], "big")
-
-                if sub_type in (0x14, 0x11):
-                    notify = NotifyMsgBody.FromString(content[7:])
-                    if sub_type == 0x14:  # nudge
-                        client.dispatch_event(
-                            events.NudgeEvent(
-                                **_parse_poke(
-                                    notify.general_gray_tip.templ_param,
-                                    default=info.from_uin,
-                                ),
-                                group=gid,
-                            )
-                        )
-                    elif sub_type == 0x11:  # recall
-                        msg = notify.recall.recalled_msg_list[0]
-                        client.dispatch_event(
-                            events.MemberRecallMessageEvent(
-                                gid,
-                                notify.recall.uin,
-                                notify.recall.op_type,
-                                msg.author_uin,
-                                msg.msg_random,
-                                msg.seq,
-                                msg.time,
-                            )
-                        )
-                elif sub_type == 0x0C:  # mute event
-                    operator = int.from_bytes(
-                        content[6:10], "big", signed=False
-                    )
-                    target = int.from_bytes(content[16:20], "big", signed=False)
-                    duration = int.from_bytes(
-                        content[20:24], "big", signed=False
-                    )
-                    if duration > 0:  # muted
-                        client.dispatch_event(
-                            events.MemberMutedEvent(
-                                gid, operator, target, duration
-                            )
-                        )
-                    else:
-                        client.dispatch_event(
-                            events.MemberUnMutedEvent(gid, operator, target)
-                        )
-            elif info.msg_type == 528:
-                # TODO: parse friend event
-                pass
-
+            Decoder = ONLINEPUSH_DECODERS.get(info.msg_type, None)
+            if not Decoder:
+                logger.debug(
+                    f"{push.command_name}: "
+                    f"Received unknown onlinepush type {info.msg_type}."
+                )
+                continue
+            for event in Decoder(info):
+                client.dispatch_event(event)
     return push
 
 

@@ -8,6 +8,7 @@
 """
 import os
 import sys
+import signal
 import asyncio
 import logging
 import functools
@@ -29,30 +30,13 @@ from cai.exceptions import (
 )
 
 
-async def run(closed: asyncio.Event):
-    account = os.getenv("ACCOUNT", "")
-    password = os.getenv("PASSWORD")
+async def run(ci: Client):
     try:
-        assert password and account, ValueError("account or password not set")
-
-        account = int(account)
-        ci = Client(make_client(account, password))
-
-        try:
-            await ci.login()
-            print(f"Login Success! Client status: {ci.client.status!r}")
-        except Exception as e:
-            await handle_failure(ci, e)
-        ci.client.add_event_listener(functools.partial(listen_message, ci))
-        while True:
-            for status in OnlineStatus:
-                if status == OnlineStatus.Offline:
-                    continue
-                print(status, "Changed")
-                # await ci.set_status(status, 67, True)
-                await asyncio.sleep(360)
-    finally:
-        closed.set()
+        await ci.login()
+        print(f"Login Success! Client status: {ci.client.status!r}")
+    except Exception as e:
+        await handle_failure(ci, e)
+    ci.client.add_event_listener(functools.partial(listen_message, ci))
 
 
 async def listen_message(client: Client, _, event: Event):
@@ -169,14 +153,20 @@ if __name__ == "__main__":
         format="%(asctime)s %(name)s[%(levelname)s]: %(message)s",
     )
 
+    account = os.getenv("ACCOUNT", "")
+    password = os.getenv("PASSWORD")
+    assert password and account, ValueError("account or password not set")
+    account = int(account)
+    ci = Client(make_client(account, password))
+
     close = asyncio.Event()
 
     async def wait_cleanup():
         await close.wait()
+        await ci.client.close()
 
     loop = asyncio.get_event_loop()
-    loop.create_task(run(close))
-    try:
-        loop.run_until_complete(wait_cleanup())
-    except KeyboardInterrupt:
-        close.set()
+    loop.add_signal_handler(signal.SIGINT, close.set)
+    loop.add_signal_handler(signal.SIGTERM, close.set)
+    loop.create_task(run(ci))
+    loop.run_until_complete(wait_cleanup())

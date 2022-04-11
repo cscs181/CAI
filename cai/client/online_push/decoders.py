@@ -10,6 +10,11 @@ from cai.client.events.group import (
     GroupRedbagEvent,
     GroupNameChangedEvent,
     GroupMessageRecalledEvent,
+    GroupLuckyCharacterNewEvent,
+    GroupLuckyCharacterInitEvent,
+    GroupLuckyCharacterClosedEvent,
+    GroupLuckyCharacterOpenedEvent,
+    GroupLuckyCharacterChangedEvent,
     GroupMemberSpecialTitleChangedEvent,
 )
 
@@ -187,11 +192,67 @@ class GroupEventDecoder:
                             for p in graytip.templ_param
                         ),
                     )
+                # elif busi_type == 12 and busi_id == 1062:
+                #    # 动作，效果
+                elif busi_id == 1069:  # busi_type == 1
+                    yield GroupLuckyCharacterInitEvent(
+                        group_id=group_id,
+                        template_id=graytip.templ_id,
+                        template_text=graytip.content.decode("utf-8"),
+                        template_params=dict(
+                            (p.name.decode("utf-8"), p.value.decode("utf-8"))
+                            for p in graytip.templ_param
+                        ),
+                    )
+                elif busi_id == 1070:
+                    yield GroupLuckyCharacterNewEvent(
+                        group_id=group_id,
+                        template_id=graytip.templ_id,
+                        template_text=graytip.content.decode("utf-8"),
+                        template_params=dict(
+                            (p.name.decode("utf-8"), p.value.decode("utf-8"))
+                            for p in graytip.templ_param
+                        ),
+                    )
+                elif busi_id == 1071:
+                    yield GroupLuckyCharacterChangedEvent(
+                        group_id=group_id,
+                        template_id=graytip.templ_id,
+                        template_text=graytip.content.decode("utf-8"),
+                        template_params=dict(
+                            (p.name.decode("utf-8"), p.value.decode("utf-8"))
+                            for p in graytip.templ_param
+                        ),
+                    )
+                elif busi_id == 1072:
+                    yield GroupLuckyCharacterClosedEvent(
+                        group_id=group_id,
+                        template_id=graytip.templ_id,
+                        template_text=graytip.content.decode("utf-8"),
+                        template_params=dict(
+                            (p.name.decode("utf-8"), p.value.decode("utf-8"))
+                            for p in graytip.templ_param
+                        ),
+                    )
+                elif busi_id == 1073:
+                    yield GroupLuckyCharacterOpenedEvent(
+                        group_id=group_id,
+                        template_id=graytip.templ_id,
+                        template_text=graytip.content.decode("utf-8"),
+                        template_params=dict(
+                            (p.name.decode("utf-8"), p.value.decode("utf-8"))
+                            for p in graytip.templ_param
+                        ),
+                    )
+                # TODO: busi_id 1052, 1053, 1054, 1067 group honor
         elif prompt_type == 24:
             if tip.HasField("group_info_change"):
                 ...
         elif prompt_type == 27:
             if tip.HasField("qq_group_digest_msg"):
+                ...
+        elif prompt_type == 32:
+            if tip.HasField("revert_graytips_traceless"):
                 ...
 
 

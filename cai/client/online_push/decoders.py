@@ -6,6 +6,7 @@ from cai.log import logger
 from cai.client.events import Event
 from cai.pb.im.oidb.cmd0x857.troop_tips import NotifyMsgBody
 from cai.client.events.group import (
+    GroupNudgeEvent,
     GroupRedbagEvent,
     GroupNameChangedEvent,
     GroupMessageRecalledEvent,
@@ -119,7 +120,7 @@ class GroupEventDecoder:
         """
         content = info.vec_msg
         if len(content) <= 7:
-            raise StopIteration
+            return
         tip = NotifyMsgBody.FromString(content[7:])
         prompt_type = tip.enum_type
         group_id = tip.group_code
@@ -172,7 +173,20 @@ class GroupEventDecoder:
                     )
         elif prompt_type == 20:
             if tip.HasField("general_gray_tip"):
-                ...
+                graytip = tip.general_gray_tip
+                busi_type = graytip.busi_type
+                busi_id = graytip.busi_id
+                if busi_type == 12 and busi_id == 1061:
+                    # com.tencent.mobileqq.activity.aio.avatardoubletap.PaiYiPaiMsgUtil
+                    yield GroupNudgeEvent(
+                        group_id=group_id,
+                        template_id=graytip.templ_id,
+                        template_text=graytip.content.decode("utf-8"),
+                        template_params=dict(
+                            (p.name.decode("utf-8"), p.value.decode("utf-8"))
+                            for p in graytip.templ_param
+                        ),
+                    )
         elif prompt_type == 24:
             if tip.HasField("group_info_change"):
                 ...

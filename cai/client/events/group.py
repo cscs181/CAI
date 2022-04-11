@@ -20,6 +20,13 @@ class _GroupGrayTipEvent(GroupEvent):
     cmds: List[Dict[str, Any]]
 
 
+@dataclass
+class _GroupGeneralGrayTipEvent(GroupEvent):
+    template_id: int
+    template_text: str
+    template_params: Dict[str, str]
+
+
 # FIXME: unhandle details
 @dataclass
 class GroupRedbagEvent(GroupEvent):
@@ -45,6 +52,29 @@ class GroupMessageRecalledEvent(GroupEvent):
     msg_type: int
     msg_random: int
     is_anony_msg: bool
+
+
+@dataclass
+class GroupNudgeEvent(_GroupGeneralGrayTipEvent):
+    @property
+    def sender_id(self) -> int:
+        return int(self.template_params["uin_str1"])
+
+    @property
+    def receiver_id(self) -> int:
+        return int(self.template_params["uin_str2"])
+
+    @property
+    def action_text(self) -> str:
+        return self.template_params["action_str"]
+
+    @property
+    def action_img(self) -> str:
+        return self.template_params["action_img_url"]
+
+    @property
+    def suffix_text(self) -> str:
+        return self.template_params["suffix_str"]
 
 
 @dataclass

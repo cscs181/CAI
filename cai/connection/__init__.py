@@ -97,7 +97,6 @@ class Connection:
     async def close(self):
         if self._writer:
             self._writer.close()
-            await self._writer.wait_closed()
         self._writer = None
         self._reader = None
         self._closed.set()

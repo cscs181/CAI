@@ -352,6 +352,7 @@ class Client:
         else:
             log.network.warning("receiver stopped")
             asyncio.create_task(self.close())
+        task.cancel()
 
     async def disconnect(self) -> None:
         """Disconnect if already connected to the server."""
@@ -516,7 +517,13 @@ class Client:
                     - 4
                 )
                 # FIXME: length < 0 ?
+
                 data = await self.connection.read_bytes(length)
+            except ConnectionError as e:
+                log.logger.error(f"{self.uin} connection lost: {str(e)}")
+                break
+
+            try:
                 packet = IncomingPacket.parse(
                     data,
                     self._key,
@@ -528,11 +535,8 @@ class Client:
                 )
                 # do not block receive
                 asyncio.create_task(self._handle_incoming_packet(packet))
-            except ConnectionAbortedError as e:
-                log.logger.error(f"{self.uin} connection lost: {str(e)}")
-                break
             except Exception as e:
-                log.logger.exception(e)
+                log.logger.exception("Unexpected error raised")
 
     @property
     def listeners(self) -> Set[LT]:

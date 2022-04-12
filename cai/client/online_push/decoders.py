@@ -4,11 +4,14 @@ from typing import Any, Dict, List, Tuple, Callable, Iterator
 
 from cai.log import logger
 from cai.client.events import Event
+from cai.utils.binary import Packet
 from cai.pb.im.oidb.cmd0x857.troop_tips import NotifyMsgBody
 from cai.client.events.group import (
     GroupNudgeEvent,
     GroupRedbagEvent,
+    GroupMemberMutedEvent,
     GroupNameChangedEvent,
+    GroupMemberUnMutedEvent,
     GroupMessageRecalledEvent,
     GroupLuckyCharacterNewEvent,
     GroupLuckyCharacterInitEvent,
@@ -80,8 +83,36 @@ class GroupEventDecoder:
         """Troop Gag Manager.
 
         Sub Type: 12, 14
+
+        Note:
+            Source: com.tencent.mobileqq.troop.utils.TroopGagMgr.a
         """
-        ...
+        data = Packet(info.vec_msg)
+        group_id, sub_type = data.start().uint32().uint8().execute()
+        if sub_type == 12:
+            operator_id = data.start().offset(6).uint32().execute()[0]
+
+            offset = 16
+            count = info.vec_msg[14]
+            for _ in range(count):
+                target_id, duration = (
+                    data.start().offset(offset).uint32().uint32().execute()
+                )
+                offset += 8
+                if duration > 0:
+                    yield GroupMemberMutedEvent(
+                        group_id=group_id,
+                        operator_id=operator_id,
+                        target_id=target_id,
+                        duration=duration,
+                    )
+                else:
+                    yield GroupMemberUnMutedEvent(
+                        group_id=group_id,
+                        operator_id=operator_id,
+                        target_id=target_id,
+                    )
+        # elif sub_type == 14:
 
     @classmethod
     def decode_troop_tips(cls, info: MessageInfo) -> Iterator[Event]:
@@ -122,6 +153,9 @@ class GroupEventDecoder:
             30: qq live notify
             31: group digest msg summary
             32: revert gray tips traceless
+
+        Note:
+            Source: com.tencent.mobileqq.troop.utils.TroopTipsMsgMgr.a
         """
         content = info.vec_msg
         if len(content) <= 7:

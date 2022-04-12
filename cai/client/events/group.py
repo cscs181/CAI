@@ -127,13 +127,13 @@ class GroupLuckyCharacterOpenedEvent(GroupLuckyCharacterEvent):  # 开启
 
 
 @dataclass
-class MemberMutedEvent(GroupEvent):
-    operator: int
-    target: int
+class GroupMemberMutedEvent(GroupEvent):
+    operator_id: int
+    target_id: int
     duration: int
 
 
 @dataclass
-class MemberUnMutedEvent(GroupEvent):
-    operator: int
-    target: int
+class GroupMemberUnMutedEvent(GroupEvent):
+    operator_id: int
+    target_id: int

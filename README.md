@@ -16,8 +16,8 @@ _✨ Yet Another Bot Framework for Tencent QQ Written in Python ✨_
   <a target="_blank" href="https://github.com/sindresorhus/awesome">
     <img src="https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg">
   </a>
-  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=5NsG-WIp3hqzM3ihjY87JEvsNCRdUW2x&jump_from=webapi">
-    <img src="https://img.shields.io/badge/qq%E7%BE%A4-768887710-success" alt="QQ Chat">
+  <a target="_blank" href="https://qm.qq.com/cgi-bin/qm/qr?k=1SsvybRcQrgt6Kd5fV9W2Kpfje0l3VFw&jump_from=webapi">
+    <img src="https://img.shields.io/badge/qq%E7%BE%A4-552362998-success" alt="QQ Chat">
   </a>
 </p>
 

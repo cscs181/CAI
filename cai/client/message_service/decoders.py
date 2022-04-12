@@ -13,8 +13,8 @@ from itertools import chain
 from typing import Dict, List, Callable, Optional, Sequence
 
 from cai.log import logger
+from cai.client.events import Event
 from cai.pb.msf.msg.comm import Msg
-from cai.client.events.base import Event
 from cai.pb.im.msg.msg_body import Ptt, Elem
 from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype2,
@@ -217,11 +217,7 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
                     )
                 )
         elif elem.HasField("open_qq_data"):
-            res.append(
-                CustomDataElement(
-                    data=elem.open_qq_data.car_qq_data
-                )
-            )
+            res.append(CustomDataElement(data=elem.open_qq_data.car_qq_data))
         elif elem.HasField("common_elem"):
             service_type = elem.common_elem.service_type
             # PokeMsgElemDecoder
@@ -275,14 +271,15 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
 
 
 class BuddyMessageDecoder:
+    """Buddy Message Decoder.
+
+    Note:
+        Source:
+        com.tencent.mobileqq.service.message.codec.decoder.buddyMessage.BuddyMessageDecoder
+    """
+
     @classmethod
     def decode(cls, message: Msg) -> Optional[Event]:
-        """Buddy Message Decoder.
-
-        Note:
-            Source:
-            com.tencent.mobileqq.service.message.codec.decoder.buddyMessage.BuddyMessageDecoder
-        """
         sub_decoders: Dict[int, Callable[[Msg], Optional[Event]]] = {
             11: cls.decode_normal_buddy,
             # 129: OnlineFileDecoder,
@@ -344,10 +341,27 @@ class BuddyMessageDecoder:
 
 
 class TroopMessageDecoder:
+    """Troop Message Decoder(Processor).
+
+    Note:
+        Source: com.tencent.mobileqq.troop.data.TroopMessageProcessor
+    """
+
+    __slots__ = ()
+
     long_msg_fragment_store: Dict[int, List[Msg]] = {}
 
     @classmethod
     def decode(cls, message: Msg) -> Optional[Event]:
+        """Troop Message Processor.
+
+        Note:
+            Source:
+
+            com.tencent.mobileqq.troop.data.TroopMessageProcessor.a
+
+            com.tencent.imcore.message.BaseMessageProcessorForTroopAndDisc.a
+        """
         if not message.head.HasField("group_info"):
             return
 

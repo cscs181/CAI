@@ -44,16 +44,17 @@ def parse_cmds(content: str) -> Tuple[str, List[Dict[str, Any]]]:
 
 
 class GroupEventDecoder:
+    """Group Event Decoder.
+
+    Note:
+        Source:
+        com.tencent.imcore.message.OnLinePushMessageProcessor.ProcessOneMsg.a
+    """
+
     __slots__ = ()
 
     @classmethod
     def decode(cls, info: MessageInfo) -> Iterator[Event]:
-        """Group Event Decoder.
-
-        Note:
-            Source:
-            com.tencent.imcore.message.OnLinePushMessageProcessor.ProcessOneMsg.a
-        """
         content = info.vec_msg
         sub_type = content[4]
 

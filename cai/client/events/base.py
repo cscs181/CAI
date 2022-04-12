@@ -9,11 +9,11 @@ This module is used to build command from packet.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-import abc
+from dataclasses import dataclass
 
 
-class Event(abc.ABC):
+@dataclass
+class Event:
     @property
-    @abc.abstractmethod
     def type(self) -> str:
-        raise NotImplementedError
+        return self.__class__.__name__

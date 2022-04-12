@@ -218,23 +218,6 @@ async def handle_push_msg(
     return push
 
 
-def _parse_poke(params: Sequence[TemplParam], default: int) -> dict:
-    res = {"target": None, "sender": None, "action": None, "suffix": None}
-    for p in params:
-        name, value = p.name.decode(), p.value.decode()
-        if name == "uin_str1":
-            res["sender"] = int(value)
-        elif name == "uin_str2":
-            res["target"] = int(value)
-        elif name == "suffix_str":
-            res["suffix"] = value
-        elif name == "action_str":
-            res["action"] = value
-    if not res["target"]:
-        res["target"] = default
-    return res
-
-
 # OnlinePush.ReqPush
 async def handle_req_push(
     client: "Client", packet: IncomingPacket

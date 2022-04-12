@@ -8,10 +8,6 @@ from .base import Event
 class GroupEvent(Event):
     group_id: int
 
-    @property
-    def type(self) -> str:
-        return self.__class__.__name__
-
 
 # online push graytip
 @dataclass

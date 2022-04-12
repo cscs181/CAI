@@ -36,6 +36,7 @@ from .models import (
     VoiceElement,
     PrivateMessage,
     RichMsgElement,
+    CustomDataElement,
     FlashImageElement,
     SmallEmojiElement,
 )
@@ -215,6 +216,12 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
                         + "/0",
                     )
                 )
+        elif elem.HasField("open_qq_data"):
+            res.append(
+                CustomDataElement(
+                    data=elem.open_qq_data.car_qq_data
+                )
+            )
         elif elem.HasField("common_elem"):
             service_type = elem.common_elem.service_type
             # PokeMsgElemDecoder

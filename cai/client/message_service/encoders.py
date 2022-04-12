@@ -19,6 +19,7 @@ from cai.pb.im.msg.msg_body import (
     CustomFace,
     ShakeWindow,
     LightAppElem,
+    OpenQQData
 )
 
 from . import models
@@ -131,6 +132,12 @@ def build_msg(elements: Sequence[models.Element]) -> MsgBody:
         elif isinstance(e, models.VoiceElement):
             ptt = e.to_ptt()
             break
+        elif isinstance(e, models.CustomDataElement):
+            ret.append(
+                Elem(
+                    open_qq_data=OpenQQData(car_qq_data=e.data)
+                )
+            )
         else:
             raise NotImplementedError(e)
 

@@ -232,3 +232,13 @@ class ShakeElement(Element):
     @property
     def type(self) -> str:
         return "shake"
+
+
+@dataclass
+class CustomDataElement(Element):
+    data: bytes
+
+    @property
+    def type(self) -> str:
+        return "custom_daata"
+

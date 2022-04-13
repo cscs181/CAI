@@ -91,10 +91,11 @@ class GroupEventDecoder:
         data = Packet(info.vec_msg)
         group_id, sub_type = data.start().uint32().uint8().execute()
         if sub_type == 12:
-            operator_id = data.start().offset(6).uint32().execute()[0]
+            operator_id, count = (
+                data.start().offset(6).uint32().offset(4).uint16().execute()
+            )
 
             offset = 16
-            count = info.vec_msg[14]
             for _ in range(count):
                 target_id, duration = (
                     data.start().offset(offset).uint32().uint32().execute()

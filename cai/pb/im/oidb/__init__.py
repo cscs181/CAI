@@ -14,3 +14,5 @@ Generate all protobuf file using:
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
+
+from .oidb_pb2 import *

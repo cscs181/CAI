@@ -348,3 +348,4 @@ class IncomingPacket:
             raise NotImplementedError
         else:
             raise ValueError(f"Unknown encrypt type: {encrypt_type}")
+

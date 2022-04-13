@@ -11,6 +11,7 @@ from typing import List, Union, Optional
 
 from cai.client import GroupMember
 from cai.client import Group as group_t
+from cai.client.oidb import builder
 
 from .base import BaseAPI
 
@@ -80,6 +81,35 @@ class Group(BaseAPI):
             GroupMemberListException: Get group member list returned non-zero ret code.
         """
         return await self._executor("get_group_member_list", group, cache)
+
+    async def set_group_admin(self, group: int, uin: int, is_admin: bool):
+        await self.client.send_unipkg_and_wait(
+            "Oidb.0x55c_1",
+            builder.build_set_admin_pkg(
+                target_uin=uin,
+                group=group,
+                is_admin=is_admin
+            )
+        )
+
+    async def mute_member(self, group: int, uin: int, duration: int):
+        await self.client.send_unipkg_and_wait(
+            "Oidb.0x570_8",
+            builder.build_mute_member_pkg(
+                target_uin=uin,
+                group=group,
+                duration=duration
+            )
+        )
+
+    async def send_group_nudge(self, group: int, uin: int):
+        await self.client.send_unipkg_and_wait(
+            "Oidb.0xed3",
+            builder.build_send_nudge_pkg(
+                target_uin=uin,
+                group=group
+            )
+        )
 
 
 __all__ = ["Group"]

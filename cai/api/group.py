@@ -84,7 +84,7 @@ class Group(BaseAPI):
 
     async def set_group_admin(self, group: int, uin: int, is_admin: bool):
         await self.client.send_unipkg_and_wait(
-            "Oidb.0x55c_1",
+            "OidbSvc.0x55c_1",
             builder.build_set_admin_pkg(
                 target_uin=uin,
                 group=group,
@@ -94,7 +94,7 @@ class Group(BaseAPI):
 
     async def mute_member(self, group: int, uin: int, duration: int):
         await self.client.send_unipkg_and_wait(
-            "Oidb.0x570_8",
+            "OidbSvc.0x570_8",
             builder.build_mute_member_pkg(
                 target_uin=uin,
                 group=group,
@@ -104,7 +104,7 @@ class Group(BaseAPI):
 
     async def send_group_nudge(self, group: int, uin: int):
         await self.client.send_unipkg_and_wait(
-            "Oidb.0xed3",
+            "OidbSvc.0xed3",
             builder.build_send_nudge_pkg(
                 target_uin=uin,
                 group=group

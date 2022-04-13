@@ -10,7 +10,7 @@ def build_oidb_sso_packet(cmd: int, service_type: int, body: bytes) -> bytes:
     ).SerializeToString()
 
 
-# SendNudge, Oidb.0xed3
+# SendNudge, OidbSvc.0xed3
 def build_send_nudge_pkg(target_uin: int, group: int = None, from_uin: int = None) -> bytes:
     if not (group or from_uin):
         raise ValueError("no sender")
@@ -24,7 +24,7 @@ def build_send_nudge_pkg(target_uin: int, group: int = None, from_uin: int = Non
     )
 
 
-# SetAdmin, Oidb.0x55c_1
+# SetAdmin, OidbSvc.0x55c_1
 def build_set_admin_pkg(target_uin: int, group: int, is_admin: bool) -> bytes:
     return build_oidb_sso_packet(
         1372, 1,
@@ -37,7 +37,7 @@ def build_set_admin_pkg(target_uin: int, group: int, is_admin: bool) -> bytes:
     )
 
 
-# MuteMember, Oidb.0x570_8
+# MuteMember, OidbSvc.0x570_8
 def build_mute_member_pkg(target_uin: int, group: int, duration: int) -> bytes:
     if duration < 0:
         return ValueError("duration must be a positive value")

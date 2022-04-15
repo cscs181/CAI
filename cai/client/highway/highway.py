@@ -3,9 +3,10 @@ import logging
 from hashlib import md5
 from typing import TYPE_CHECKING, List, Tuple, BinaryIO, Optional
 
+from cai.utils.image import decoder
 from cai.pb.highway.protocol.highway_head_pb2 import highway_head
 
-from .encoders import encode_d388_req
+from .encoders import encode_upload_img_req, encode_upload_voice_req
 from .frame import read_frame, write_frame
 from .utils import to_id, timeit, calc_file_md5_and_length
 from ..message_service.models import ImageElement, VoiceElement
@@ -77,12 +78,13 @@ class HighWaySession:
 
     async def upload_image(self, file: BinaryIO, gid: int) -> ImageElement:
         fmd5, fl = calc_file_md5_and_length(file)
+        info = decoder.decode(file)
         ret = decode_upload_image_resp(
             (
                 await self._client.send_unipkg_and_wait(
                     "ImgStore.GroupPicUp",
-                    encode_d388_req(
-                        gid, self._client.uin, fmd5, fl, 1
+                    encode_upload_img_req(
+                        gid, self._client.uin, fmd5, fl, suffix=info.img_type, pic_type=info.pic_type
                     ).SerializeToString(),
                 )
             ).data
@@ -96,23 +98,12 @@ class HighWaySession:
                 ret.uploadAddr, file, 2, ret.uploadKey  # send to group
             )
 
-            ret = decode_upload_image_resp(
-                (
-                    await self._client.send_unipkg_and_wait(
-                        "ImgStore.GroupPicUp",
-                        encode_d388_req(
-                            gid, self._client.uin, fmd5, fl, 1
-                        ).SerializeToString(),
-                    )
-                ).data
-            )
-
         if ret.hasMetaData:
             image_type = ret.fileType
             w, h = ret.width, ret.height
         else:
-            image_type = 1000
-            w, h = (800, 600)
+            image_type = info.pic_type
+            w, h = info.width, info.height
 
         return ImageElement(
             id=ret.fileId,
@@ -127,8 +118,8 @@ class HighWaySession:
 
     async def upload_voice(self, file: BinaryIO, gid: int) -> VoiceElement:
         fmd5, fl = calc_file_md5_and_length(file)
-        ext = encode_d388_req(
-            gid, self._client.uin, fmd5, fl, 3
+        ext = encode_upload_voice_req(
+            gid, self._client.uin, fmd5, fl
         ).SerializeToString()
         if not (self._session_key and self._session_sig):
             self._decode_bdh_session()

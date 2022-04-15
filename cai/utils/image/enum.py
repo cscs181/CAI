@@ -2,10 +2,13 @@ from enum import IntEnum
 
 
 class ImageType(IntEnum):
-    img = 1000
+    jpg = 1000
+    png = 1001
+    webp = 1002
+    bmp = 1005
     gif = 2000
-    # jpg = 1003
+    apng = 2001
 
     @classmethod
     def _missing_(cls, value: object):
-        return cls.img
+        return cls.jpg

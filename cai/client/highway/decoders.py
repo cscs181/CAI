@@ -27,6 +27,7 @@ def decode_upload_image_resp(data: bytes) -> ImageUploadResponse:
             return ImageUploadResponse(isExists=True, fileId=pkg.fileid)
     return ImageUploadResponse(
         isExists=False,
+        fileId=pkg.fileid,
         uploadAddr=[(itoa(a), p) for a, p in zip(pkg.up_ip, pkg.up_port)],
         uploadKey=pkg.up_ukey,
     )

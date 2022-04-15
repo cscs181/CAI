@@ -97,15 +97,6 @@ class HighWaySession:
                 ret.uploadAddr, file, 2, ret.uploadKey  # send to group
             )
 
-            ret = decode_upload_image_resp(
-                (
-                    await self._client.send_unipkg_and_wait(
-                        "ImgStore.GroupPicUp",
-                        encode_upload_img_req(gid, self._client.uin, fmd5, fl, info).SerializeToString(),
-                    )
-                ).data
-            )
-
         if ret.hasMetaData:
             image_type = ret.fileType
             w, h = ret.width, ret.height

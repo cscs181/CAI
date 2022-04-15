@@ -6,5 +6,6 @@ class ImageType(IntEnum):
     gif = 2000
     # jpg = 1003
 
+    @classmethod
     def _missing_(cls, value: object):
         return cls.img

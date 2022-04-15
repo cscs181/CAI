@@ -8,14 +8,14 @@ from .enum import ImageType
 
 @dataclass
 class ImageInfo:
-    img_type: str
+    name: str
     width: int
     height: int
     depth: int
 
     @property
     def pic_type(self) -> ImageType:
-        return ImageType(self.img_type)
+        return getattr(ImageType, self.name)
 
 
 class BaseDecoder:

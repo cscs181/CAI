@@ -1,19 +1,20 @@
 from cai.pb.im.cs.cmd0x388 import ReqBody, TryUpImgReq, TryUpPttReq
-from typing import Sequence, Optional
+from typing import Sequence, TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from cai.utils.image.decoder import ImageInfo
 
 
 def encode_d388_req(
     subcmd: int,
     tryup_img: Sequence[TryUpImgReq] = None,
-    tryup_ptt: Sequence[TryUpPttReq] = None,
-    ext: Optional[bytes] = None
+    tryup_ptt: Sequence[TryUpPttReq] = None
 ) -> ReqBody:
     return ReqBody(
         net_type=8,
         subcmd=subcmd,
         tryup_img_req=tryup_img,
-        tryup_ptt_req=tryup_ptt,
-        extension=ext
+        tryup_ptt_req=tryup_ptt
     )
 
 
@@ -22,10 +23,10 @@ def encode_upload_img_req(
     uin: int,
     md5: bytes,
     size: int,
-    suffix: str = None,
-    pic_type: int = 1003
+    info: "ImageInfo"
 ) -> ReqBody:
-    fn = f"{md5.hex().upper()}.{'jpg' if not suffix else suffix}"
+    fn = f"{md5.hex().upper()}.{info.name or 'jpg'}"
+    print(info, fn)
     return encode_d388_req(
         subcmd=1,
         tryup_img=[
@@ -39,9 +40,9 @@ def encode_upload_img_req(
                 src_term=5,
                 platform_type=9,
                 bu_type=1,
-                pic_type=pic_type,
-                pic_width=1920,
-                pic_height=903,
+                pic_type=info.pic_type.value,
+                pic_width=info.width,
+                pic_height=info.height,
                 build_ver=b"8.8.50.2324",
                 app_pic_type=1052,
                 original_pic=1,

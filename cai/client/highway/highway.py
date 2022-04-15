@@ -79,13 +79,12 @@ class HighWaySession:
     async def upload_image(self, file: BinaryIO, gid: int) -> ImageElement:
         fmd5, fl = calc_file_md5_and_length(file)
         info = decoder.decode(file)
+        file.seek(0)
         ret = decode_upload_image_resp(
             (
                 await self._client.send_unipkg_and_wait(
                     "ImgStore.GroupPicUp",
-                    encode_upload_img_req(
-                        gid, self._client.uin, fmd5, fl, suffix=info.img_type, pic_type=info.pic_type
-                    ).SerializeToString(),
+                    encode_upload_img_req(gid, self._client.uin, fmd5, fl, info).SerializeToString(),
                 )
             ).data
         )
@@ -98,6 +97,15 @@ class HighWaySession:
                 ret.uploadAddr, file, 2, ret.uploadKey  # send to group
             )
 
+            ret = decode_upload_image_resp(
+                (
+                    await self._client.send_unipkg_and_wait(
+                        "ImgStore.GroupPicUp",
+                        encode_upload_img_req(gid, self._client.uin, fmd5, fl, info).SerializeToString(),
+                    )
+                ).data
+            )
+
         if ret.hasMetaData:
             image_type = ret.fileType
             w, h = ret.width, ret.height
@@ -107,7 +115,7 @@ class HighWaySession:
 
         return ImageElement(
             id=ret.fileId,
-            filename=to_id(fmd5) + ".png",
+            filename=to_id(fmd5) + f".{info.name}",
             size=fl,
             width=w,
             height=h,

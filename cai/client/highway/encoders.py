@@ -26,7 +26,6 @@ def encode_upload_img_req(
     info: "ImageInfo"
 ) -> ReqBody:
     fn = f"{md5.hex().upper()}.{info.name or 'jpg'}"
-    print(info, fn)
     return encode_d388_req(
         subcmd=1,
         tryup_img=[

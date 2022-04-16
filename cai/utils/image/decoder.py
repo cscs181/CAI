@@ -75,14 +75,31 @@ class GIFDecoder(BaseDecoder):
         return ImageInfo("gif", width, height, ((flag ^ 0x80) >> 4) + 2)
 
 
+class BMPDecoder(BaseDecoder):
+    @classmethod
+    def decode(cls, fio: BinaryIO) -> ImageInfo:
+        if fio.read(2) != b"BM":
+            raise TypeError("not a valid bmp file")
+        fio.read(12)  # offset
+        data = fio.read(16)
+        print(data)
+        _, width, height, _, depth = struct.unpack("<IiiHH", data)
+        return ImageInfo("bmp", width, height, depth)
+
+
 def decode(f: BinaryIO) -> ImageInfo:
     head = f.read(3)
     f.seek(0)
-    if head[:-1] == b"\xff\xd8":
-        return JPEGDecoder.decode(f)
-    elif head.hex() == "89504e":
-        return PNGDecoder.decode(f)
-    elif head == b"GIF":
-        return GIFDecoder.decode(f)
-    else:
-        raise NotImplementedError
+    try:
+        if head[:-1] == b"\xff\xd8":
+            return JPEGDecoder.decode(f)
+        elif head.hex() == "89504e":
+            return PNGDecoder.decode(f)
+        elif head == b"GIF":
+            return GIFDecoder.decode(f)
+        elif head[:-1] == b"BM":
+            return BMPDecoder.decode(f)
+        else:
+            raise NotImplementedError
+    finally:
+        f.seek(0)

@@ -79,7 +79,6 @@ class HighWaySession:
     async def upload_image(self, file: BinaryIO, gid: int) -> ImageElement:
         fmd5, fl = calc_file_md5_and_length(file)
         info = decoder.decode(file)
-        file.seek(0)
         ret = decode_upload_image_resp(
             (
                 await self._client.send_unipkg_and_wait(

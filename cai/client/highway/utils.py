@@ -23,7 +23,7 @@ def itoa(i: int) -> str:  # int to address(str)
 
 
 def to_id(b_uuid: bytes) -> str:
-    return f"{{{uuid.UUID(bytes=b_uuid)}}}"
+    return f"{{{str(uuid.UUID(bytes=b_uuid)).upper()}}}"
 
 
 async def timeit(func: Awaitable) -> Tuple[float, Any]:

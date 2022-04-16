@@ -51,6 +51,7 @@ def encode_upload_img_req(
         ]
     )
 
+
 def encode_upload_voice_req(
     group_code: int,
     uin: int,
@@ -79,4 +80,3 @@ def encode_upload_voice_req(
             )
         ]
     )
-

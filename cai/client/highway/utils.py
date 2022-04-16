@@ -23,7 +23,7 @@ def itoa(i: int) -> str:  # int to address(str)
 
 
 def to_id(b_uuid: bytes) -> str:
-    return b_uuid.hex()
+    return f"{{{uuid.UUID(bytes=b_uuid)}}}"
 
 
 async def timeit(func: Awaitable) -> Tuple[float, Any]:

@@ -16,6 +16,7 @@ from cai.log import logger
 from cai.client.events import Event
 from cai.pb.msf.msg.comm import Msg
 from cai.pb.im.msg.msg_body import Ptt, Elem
+from cai.pb.im.msg.obj_msg import ObjMsg
 from cai.pb.im.msg.service.comm_elem import (
     MsgElemInfo_servtype2,
     MsgElemInfo_servtype3,
@@ -39,6 +40,7 @@ from .models import (
     CustomDataElement,
     FlashImageElement,
     SmallEmojiElement,
+    GroupFileElement,
 )
 
 
@@ -266,6 +268,17 @@ def parse_elements(elems: Sequence[Elem], ptt: Optional[Ptt]) -> List[Element]:
                     stype=elem.shake_window.type, uin=elem.shake_window.uin
                 )
             )
+        elif elem.HasField("trans_elem_info"):
+            if elem.trans_elem_info.elem_type == 24:  # QQ File
+                if elem.trans_elem_info.elem_value[0]:
+                    obj = ObjMsg.FromString(elem.trans_elem_info.elem_value[3:])
+                    for info in obj.content_info:
+                        res.append(GroupFileElement(
+                            info.file.file_name,
+                            info.file.file_size,
+                            info.file.file_path.decode(),
+                            bytes.fromhex(info.file.file_md5.decode())
+                        ))
         index += 1
     return res
 

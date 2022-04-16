@@ -242,3 +242,14 @@ class CustomDataElement(Element):
     def type(self) -> str:
         return "custom_daata"
 
+
+@dataclass
+class GroupFileElement(Element):
+    name: str
+    size: int
+    path: str
+    md5: bytes
+
+    @property
+    def type(self) -> str:
+        return "group_file"

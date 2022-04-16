@@ -36,8 +36,6 @@ class JPEGDecoder(BaseDecoder):
             data = fio.read(
                 int.from_bytes(fio.read(2), "big") - 2
             )
-            # if btype == b"\xe0":
-            #    _, _, hdpi, wdpi, *_ = struct.unpack("!BBBHHBB", data[5:])
             if btype == b"\xc0":
                 depth, height, width, _ = struct.unpack("!BHHB", data[:6])
                 print(width, height)
@@ -62,8 +60,6 @@ class PNGDecoder(BaseDecoder):
             elif btype == b"IHDR":
                 width, height, depth, *_ = struct.unpack("!IIBBBBB", data)
                 return ImageInfo("png", width, height, depth)
-            # else:
-            #     print(length, btype)
 
 
 class GIFDecoder(BaseDecoder):
@@ -82,7 +78,6 @@ class BMPDecoder(BaseDecoder):
             raise TypeError("not a valid bmp file")
         fio.read(12)  # offset
         data = fio.read(16)
-        print(data)
         _, width, height, _, depth = struct.unpack("<IiiHH", data)
         return ImageInfo("bmp", width, height, depth)
 

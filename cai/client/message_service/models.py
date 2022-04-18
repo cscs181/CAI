@@ -124,7 +124,7 @@ class ImageElement(Element):
     width: int
     height: int
     md5: bytes
-    id: Optional[int] = -1
+    id: Optional[int] = 0
     url: Optional[str] = None
     filetype: Optional[int] = 1000
 

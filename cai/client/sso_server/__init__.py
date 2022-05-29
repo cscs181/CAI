@@ -16,9 +16,9 @@ from jce import types
 from rtea import qqtea_decrypt, qqtea_encrypt
 
 from cai.connection import connect
-from cai.settings.device import get_device
+from cai.settings.device import new_device
 from cai.exceptions import SsoServerException
-from cai.settings.protocol import get_protocol
+from cai.settings.protocol import get_apk_info
 from cai.utils.jce import RequestPacketVersion3
 from cai.connection.utils import tcp_latency_test
 
@@ -57,8 +57,8 @@ async def get_sso_list() -> SsoServerResponse:
     Raises:
         SsoServerException: Get sso server list failed.
     """
-    device = get_device()
-    protocol = get_protocol()
+    device = new_device()
+    protocol = get_apk_info()
     key = bytes(
         [
             0xF0,

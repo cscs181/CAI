@@ -7,55 +7,47 @@
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-from typing import Callable, Optional, Awaitable
+from typing import TYPE_CHECKING, Callable, Awaitable
 
 from cai.log import logger
 from cai.client import HANDLERS, Event, Client, Command, IncomingPacket
 
-from .client import get_client
+from .base import BaseAPI
+
+if TYPE_CHECKING:
+    from .client import Client as Client_T
 
 
-def add_event_listener(
-    listener: Callable[[Client, Event], Awaitable[None]],
-    uin: Optional[int] = None,
-):
-    """Add event listener.
+class Events(BaseAPI):
+    def add_event_listener(
+        self, listener: Callable[["Client_T", Event], Awaitable[None]]
+    ):
+        """Add event listener.
 
-    If uin is ``None``, listener will receive events from all clients.
+        Args:
+            listener (Callable[[Client, Event], Awaitable[None]]): Event listener.
+        """
+        self.client.add_event_listener(lambda _, e: listener(self, e))  # type: ignore
 
-    Args:
-        listener (Callable[[Client, Event], Awaitable[None]]): Event listener.
-        uin (Optional[int], optional): Account of the client want to listen.
-            Defaults to None.
-    """
-    if uin:
-        client = get_client(uin)
-        client.add_event_listener(listener)
-    else:
-        Client.LISTENERS.add(listener)
+    def register_packet_handler(
+        self,
+        cmd: str,
+        packet_handler: Callable[[Client, IncomingPacket], Awaitable[Command]],
+    ) -> None:
+        """Register custom packet handler.
 
+        Note:
+            This function is a low-level api to mock default behavior.
+            Be aware of what you are doing!
 
-def register_packet_handler(
-    cmd: str,
-    packet_handler: Callable[[Client, IncomingPacket], Awaitable[Command]],
-) -> None:
-    """Register custom packet handler.
-
-    Note:
-        This function is a low-level api to mock default behavior.
-        Be aware of what you are doing!
-
-    Args:
-        cmd (str): Command name of the packet.
-        packet_handler (Callable[[Client, IncomingPacket], Awaitable[Command]]):
-            Asynchronous packet handler. A :obj:`~cai.client.command.Command`
-            object should be returned.
-    """
-    if cmd in HANDLERS:
-        logger.warning(
-            f"You are overwriting an existing handler for command {cmd}!"
-        )
-    HANDLERS[cmd] = packet_handler
-
-
-__all__ = ["add_event_listener", "register_packet_handler"]
+        Args:
+            cmd (str): Command name of the packet.
+            packet_handler (Callable[[Client, IncomingPacket], Awaitable[Command]]):
+                Asynchronous packet handler. A :obj:`~cai.client.command.Command`
+                object should be returned.
+        """
+        if cmd in HANDLERS:
+            logger.warning(
+                f"You are overwriting an existing handler for command {cmd}!"
+            )
+        HANDLERS[cmd] = packet_handler

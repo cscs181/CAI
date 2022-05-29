@@ -7,15 +7,19 @@
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import os
+import sys
 import signal
 import asyncio
+import logging
+import functools
 import traceback
 from io import BytesIO
-from hashlib import md5
 
 from PIL import Image
 
-import cai
+from cai.api import Client, make_client
+from cai.client.message.models import TextElement
+from cai.client import Event, GroupMessage, OnlineStatus, PrivateMessage
 from cai.exceptions import (
     LoginException,
     ApiResponseError,
@@ -26,46 +30,70 @@ from cai.exceptions import (
 )
 
 
-async def run():
-    account = os.getenv("ACCOUNT", "")
-    password = os.getenv("PASSWORD")
+async def run(ci: Client):
     try:
-        account = int(account)
-        assert password
-    except Exception:
-        print(
-            f"Error: account '{account}', password '{password}'"  # type: ignore
-        )
-        return
-
-    try:
-        client = await cai.login(account, md5(password.encode()).digest())
-        print(f"Login Success! Client status: {client.status!r}")
+        await ci.login()
+        print(f"Login Success! Client status: {ci.client.status!r}")
     except Exception as e:
-        await handle_failure(e)
+        await handle_failure(ci, e)
+    ci.client.add_event_listener(functools.partial(listen_message, ci))
 
 
-async def handle_failure(exception: Exception):
+async def listen_message(client: Client, _, event: Event):
+    if isinstance(event, PrivateMessage):
+        print(f"{event.from_nick}(f{event.from_uin}) -> {event.message}")
+    elif isinstance(event, GroupMessage):
+        print(
+            f"{event.group_name}({event.group_id}:{event.from_uin}) -> {event.message}"
+        )
+        if event.message and hasattr(event.message[0], "content"):
+            if event.message[0].content == "0x114514":
+                await client.send_group_msg(
+                    event.group_id,
+                    [
+                        TextElement("Hello\n"),
+                        TextElement("Multiple element "),
+                        TextElement("Supported."),
+                    ],
+                )
+            elif event.message[0].content == "1919":
+                await client.send_group_msg(
+                    event.group_id,
+                    [
+                        await client.upload_image(
+                            event.group_id, open("test.png", "rb")
+                        ),
+                        TextElement("1234"),
+                    ],
+                )
+
+
+async def handle_failure(client: Client, exception: Exception):
     if isinstance(exception, LoginSliderNeeded):
-        print("Verify url:", exception.verify_url)
+        print(
+            "Verify url:",
+            exception.verify_url.replace(
+                "ssl.captcha.qq.com", "txhelper.glitch.me"
+            ),
+        )
         ticket = input("Please enter the ticket: ").strip()
         try:
-            await cai.submit_slider_ticket(ticket)
+            await client.submit_slider_ticket(ticket)
             print("Login Success!")
             await asyncio.sleep(3)
         except Exception as e:
-            await handle_failure(e)
+            await handle_failure(client, e)
     elif isinstance(exception, LoginCaptchaNeeded):
         print("Captcha:")
         image = Image.open(BytesIO(exception.captcha_image))
         image.show()
         captcha = input("Please enter the captcha: ").strip()
         try:
-            await cai.submit_captcha(captcha, exception.captcha_sign)
+            await client.submit_captcha(captcha, exception.captcha_sign)
             print("Login Success!")
             await asyncio.sleep(3)
         except Exception as e:
-            await handle_failure(e)
+            await handle_failure(client, e)
     elif isinstance(exception, LoginAccountFrozen):
         print("Account is frozen!")
     elif isinstance(exception, LoginDeviceLocked):
@@ -93,21 +121,21 @@ async def handle_failure(exception: Exception):
         if not way:
             print("No way to verify device...")
         elif way == "sms":
-            await cai.request_sms()
+            await client.request_sms()
             print(f"SMS was sent to {exception.sms_phone}!")
             sms_code = input("Please enter the sms_code: ").strip()
             try:
-                await cai.submit_sms(sms_code)
+                await client.submit_sms(sms_code)
             except Exception as e:
-                await handle_failure(e)
+                await handle_failure(client, e)
         elif way == "url":
-            await cai.close()
+            await client.close()
             print(f"Go to {exception.verify_url} to verify device!")
             input("Press ENTER after verification to continue login...")
             try:
-                await cai.login(exception.uin)
+                await client.login()
             except Exception as e:
-                await handle_failure(e)
+                await handle_failure(client, e)
     elif isinstance(exception, LoginException):
         print("Login Error:", repr(exception))
     elif isinstance(exception, ApiResponseError):
@@ -118,14 +146,27 @@ async def handle_failure(exception: Exception):
 
 
 if __name__ == "__main__":
+
+    logging.basicConfig(
+        level=logging.DEBUG,
+        handlers=[logging.StreamHandler(sys.stdout)],
+        format="%(asctime)s %(name)s[%(levelname)s]: %(message)s",
+    )
+
+    account = os.getenv("ACCOUNT", "")
+    password = os.getenv("PASSWORD")
+    assert password and account, ValueError("account or password not set")
+    account = int(account)
+    ci = Client(make_client(account, password))
+
     close = asyncio.Event()
 
     async def wait_cleanup():
         await close.wait()
-        await cai.close_all()
+        await ci.client.close()
 
     loop = asyncio.get_event_loop()
     loop.add_signal_handler(signal.SIGINT, close.set)
     loop.add_signal_handler(signal.SIGTERM, close.set)
-    loop.create_task(run())
+    loop.create_task(run(ci))
     loop.run_until_complete(wait_cleanup())

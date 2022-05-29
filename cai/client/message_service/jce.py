@@ -13,59 +13,7 @@ from typing import Optional
 
 from jce import JceField, JceStruct, types
 
-from cai.client.qq_service.jce import StShareData
-
-
-# Push Notify
-class CPicInfo(JceStruct):
-    """MessageSvc Online Push CPic Info jce packet.
-
-    Note:
-        Source: OnlinePushPack.CPicInfo
-    """
-
-    path: types.BYTES = JceField(jce_id=0)
-    host: types.BYTES = JceField(bytes(), jce_id=1)
-
-
-class TempMsgHead(JceStruct):
-    """MessageSvc Online Push Temp Message Head jce packet.
-
-    Note:
-        Source: OnlinePushPack.TempMsgHead
-    """
-
-    c2c_type: types.INT32 = JceField(0, jce_id=0)
-    service_type: types.INT32 = JceField(0, jce_id=1)
-
-
-class MessageInfo(JceStruct):
-    """MessageSvc Online Push Message Info jce packet.
-
-    Note:
-        Source: OnlinePushPack.MsgInfo
-    """
-
-    from_uin: types.INT64 = JceField(jce_id=0)
-    message_time: types.INT64 = JceField(jce_id=1)
-    message_type: types.INT16 = JceField(jce_id=2)
-    message_seq: types.INT16 = JceField(jce_id=3)
-    message: types.STRING = JceField(jce_id=4)
-    real_message_time: types.INT32 = JceField(0, jce_id=5)
-    vec_message: types.BYTES = JceField(bytes(), jce_id=6)
-    app_share_id: types.INT64 = JceField(0, jce_id=7)
-    message_cookies: types.BYTES = JceField(bytes(), jce_id=8)
-    app_share_cookie: types.BYTES = JceField(bytes(), jce_id=9)
-    message_uid: types.INT64 = JceField(0, jce_id=10)
-    last_change_time: types.INT64 = JceField(0, jce_id=11)
-    cpic_info: types.LIST[CPicInfo] = JceField([], jce_id=12)
-    share_data: Optional[StShareData] = JceField(None, jce_id=13)
-    from_inst_id: types.INT64 = JceField(0, jce_id=14)
-    remark_of_sender: types.BYTES = JceField(bytes(), jce_id=15)
-    from_mobile: types.STRING = JceField("", jce_id=16)
-    from_name: types.STRING = JceField("", jce_id=17)
-    nickname: types.LIST[types.STRING] = JceField([], jce_id=18)
-    c2c_temp_msg_head: Optional[TempMsgHead] = JceField(None, jce_id=19)
+from cai.client.online_push.jce import MessageInfo
 
 
 class RequestPushNotify(JceStruct):

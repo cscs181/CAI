@@ -8,33 +8,38 @@ This module is used to build and handle online push related packet.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-
-from typing import TYPE_CHECKING, List, Union, Optional
+from typing import TYPE_CHECKING, List, Optional, Sequence
 
 from jce import types
 
 from cai.log import logger
+from cai.client import events
 from cai.utils.binary import Packet
-from cai.settings.device import get_device
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.message_service import MESSAGE_DECODERS
 from cai.client.packet import UniPacket, IncomingPacket
+from cai.pb.im.oidb.cmd0x857.troop_tips import TemplParam
 
+from .decoders import ONLINEPUSH_DECODERS
 from .jce import DelMsgInfo, DeviceInfo, SvcRespPushMsg
-from .command import PushMsg, PushMsgError, PushMsgCommand
+from .command import (
+    PushMsg,
+    SvcReqPush,
+    PushMsgError,
+    PushMsgCommand,
+    SvcReqPushCommand,
+)
 
 if TYPE_CHECKING:
     from cai.client import Client
 
-DEVICE = get_device()
 
-
+# OnlinePush.RespPush
 def encode_push_response(
     seq: int,
     session_id: bytes,
     uin: int,
     d2key: bytes,
-    resp_uin: int,
     svrip: int,
     delete_messages: List[DelMsgInfo] = [],
     push_token: Optional[bytes] = None,
@@ -55,7 +60,6 @@ def encode_push_response(
         session_id (bytes): Session ID.
         uin (int): User QQ number.
         d2key (bytes): Siginfo d2 key.
-        resp_uin (int): Push response uin.
         svrip (int): Svrip from push packet.
         delete_messages (List[DelMsgInfo]): List of delete messages.
         push_token (Optional[bytes]): Push token from push packet.
@@ -116,7 +120,6 @@ async def handle_c2c_sync(
             client._session_id,
             client.uin,
             client._siginfo.d2key,
-            message.head.from_uin,
             push.push.svrip,
             push_token=push.push.push_token or None,
         )
@@ -137,7 +140,8 @@ async def handle_c2c_sync(
 
 
 async def handle_push_msg(
-    client: "Client", packet: IncomingPacket
+    client: "Client",
+    packet: IncomingPacket,
 ) -> PushMsgCommand:
     """Handle Push Message Command.
 
@@ -146,6 +150,7 @@ async def handle_push_msg(
 
         com.tencent.mobileqq.app.MessageHandler.b
     """
+
     push = PushMsgCommand.decode_response(
         packet.uin,
         packet.seq,
@@ -166,16 +171,15 @@ async def handle_push_msg(
                     client._session_id,
                     client.uin,
                     client._siginfo.d2key,
-                    client.uin,
                     push.push.svrip,
                     push_token=push.push.push_token or None,
                     service_type=1,
                     device_info=DeviceInfo(
                         net_type=1,
-                        dev_type=DEVICE.model,
-                        os_ver=DEVICE.version.release,
-                        vendor_name=DEVICE.vendor_name,
-                        vendor_os_name=DEVICE.vendor_os_name,
+                        dev_type=client.device.model,
+                        os_ver=client.device.version.release,
+                        vendor_name=client.device.vendor_name,
+                        vendor_os_name=client.device.vendor_os_name,
                     ),
                 )
                 await client.send(push.seq, "OnlinePush.RespPush", resp_packet)
@@ -191,7 +195,6 @@ async def handle_push_msg(
                 client._session_id,
                 client.uin,
                 client._siginfo.d2key,
-                message.head.from_uin,
                 push.push.svrip,
                 [delete_info],
                 push_token=push.push.push_token or None,
@@ -212,6 +215,61 @@ async def handle_push_msg(
         if decoded_message:
             client.dispatch_event(decoded_message)
 
+    return push
+
+
+# OnlinePush.ReqPush
+async def handle_req_push(
+    client: "Client", packet: IncomingPacket
+) -> SvcReqPushCommand:
+    """Handle Request Push Command.
+
+    Note:
+        Source: com.tencent.imcore.message.OnLinePushMessageProcessor.ProcessOneMsg.a
+    """
+    push = SvcReqPushCommand.decode_response(
+        packet.uin,
+        packet.seq,
+        packet.ret_code,
+        packet.command_name,
+        packet.data,
+    )
+
+    if isinstance(push, SvcReqPush):
+        pkg = encode_push_response(
+            push.seq,
+            client._session_id,
+            push.message.uin,
+            client._siginfo.d2key,
+            push.message.svrip,
+            [
+                DelMsgInfo(
+                    from_uin=info.from_uin,
+                    msg_seq=info.msg_seq,
+                    msg_time=info.msg_time,
+                    msg_cookies=info.msg_cookies,
+                )
+                for info in push.message.msg_info
+            ],
+        )
+        await client.send(push.seq, "OnlinePush.RespPush", pkg)
+
+        for info in push.message.msg_info:
+            key = f"{info.msg_seq}{info.msg_time}{info.msg_uid}"
+            should_skip = key in client._online_push_cache
+            client._online_push_cache[key] = None
+            if should_skip:
+                continue
+
+            Decoder = ONLINEPUSH_DECODERS.get(info.msg_type, None)
+            if not Decoder:
+                logger.debug(
+                    f"{push.command_name}: "
+                    f"Received unknown onlinepush type {info.msg_type}."
+                )
+                continue
+            for event in Decoder(info):
+                client.dispatch_event(event)
     return push
 
 

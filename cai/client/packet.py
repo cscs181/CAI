@@ -152,7 +152,7 @@ class UniPacket(Packet):
         )
         data.write_with_length(body, offset=4)
         return cls().write_with_length(
-            struct.pack(">IBIB", 0xB, body_type, seq, 0),
+            struct.pack(">IBiB", 0xB, body_type, seq, 0),
             struct.pack(">I", len(str(uin)) + 4),
             str(uin).encode(),
             qqtea_encrypt(bytes(data), key),
@@ -244,8 +244,8 @@ class IncomingPacket:
             compress_type,
         ) = (
             sso_frame.start()
-            .uint32()
-            .uint32()
+            .int32()
+            .int32()
             .int32()
             .bytes_with_length(4, 4)
             .string(4, 4)
@@ -348,3 +348,4 @@ class IncomingPacket:
             raise NotImplementedError
         else:
             raise ValueError(f"Unknown encrypt type: {encrypt_type}")
+

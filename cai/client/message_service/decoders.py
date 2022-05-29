@@ -8,186 +8,25 @@ This module is used to decode message protobuf.
 .. _LICENSE:
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
-
 from itertools import chain
-from typing import Dict, List, Callable, Optional, Sequence
+from typing import Dict, List, Callable, Optional
 
 from cai.log import logger
-from cai.client.event import Event
 from cai.pb.msf.msg.comm import Msg
-from cai.pb.im.msg.msg_body import Elem
-from cai.pb.im.msg.service.comm_elem import (
-    MsgElemInfo_servtype2,
-    MsgElemInfo_servtype33,
-)
-
-from .models import (
-    Element,
-    FaceElement,
-    PokeElement,
-    TextElement,
-    GroupMessage,
-    ImageElement,
-    ReplyElement,
-    PrivateMessage,
-    SmallEmojiElement,
-)
-
-
-def parse_elements(elems: Sequence[Elem]) -> List[Element]:
-    """Parse message rich text elements.
-
-    Only parse ``text``, ``face``, ``small_smoji``, ``common_elem service 33``
-    for plain text.
-
-    Note:
-        Source: com.tencent.imcore.message.ext.codec.decoder.pbelement.*
-
-    Args:
-        elems (Sequence[Elem]): Sequence of rich text elements.
-
-    Returns:
-        List[Element]: List of decoded message elements.
-    """
-    res: List[Element] = []
-    index = 0
-    while index < len(elems):
-        elem = elems[index]
-        # SrcElemDecoder
-        if elem.HasField("src_msg"):
-            if len(elem.src_msg.orig_seqs) > 0:
-                res.append(
-                    ReplyElement(
-                        elem.src_msg.orig_seqs[0],
-                        elem.src_msg.time,
-                        elem.src_msg.sender_uin,
-                        parse_elements(elem.src_msg.elems),
-                        elem.src_msg.troop_name.decode("utf-8") or None,
-                    )
-                )
-        # TextElemDecoder
-        if elem.HasField("text"):
-            res.append(TextElement(elem.text.str.decode("utf-8")))
-        # TextElemDecoder
-        if elem.HasField("face"):
-            res.append(FaceElement(elem.face.index))
-        # TextElemDecoder
-        if elem.HasField("small_emoji"):
-            index += 1
-            text = elems[index].text.str.decode("utf-8")
-            res.append(
-                SmallEmojiElement(
-                    elem.small_emoji.pack_id_sum,
-                    text,
-                    # bytes(
-                    #     [
-                    #         0x1FF
-                    #         if elem.small_emoji.image_type & 0xFFFF == 2
-                    #         else 0xFF,
-                    #         elem.small_emoji.pack_id_sum & 0xFFFF,
-                    #         elem.small_emoji.pack_id_sum >> 16 & 0xFF,
-                    #         elem.small_emoji.pack_id_sum >> 24,
-                    #     ]
-                    # ),
-                )
-            )
-        # PictureElemDecoder
-        if elem.HasField("custom_face"):
-            if elem.custom_face.md5 and elem.custom_face.orig_url:
-                res.append(
-                    ImageElement(
-                        elem.custom_face.file_path,
-                        elem.custom_face.size,
-                        elem.custom_face.width,
-                        elem.custom_face.height,
-                        elem.custom_face.md5,
-                        "https://gchat.qpic.cn" + elem.custom_face.orig_url,
-                    )
-                )
-            elif elem.custom_face.md5:
-                res.append(
-                    ImageElement(
-                        elem.custom_face.file_path,
-                        elem.custom_face.size,
-                        elem.custom_face.width,
-                        elem.custom_face.height,
-                        elem.custom_face.md5,
-                        "https://gchat.qpic.cn/gchatpic_new/0/0-0-"
-                        + elem.custom_face.md5.decode().upper()
-                        + "/0",
-                    )
-                )
-        # PictureElemDecoder
-        if elem.HasField("not_online_image"):
-            if elem.not_online_image.orig_url:
-                res.append(
-                    ImageElement(
-                        elem.not_online_image.file_path.decode("utf-8"),
-                        elem.not_online_image.file_len,
-                        elem.not_online_image.pic_width,
-                        elem.not_online_image.pic_height,
-                        elem.not_online_image.pic_md5,
-                        "https://c2cpicdw.qpic.cn"
-                        + elem.not_online_image.orig_url,
-                    )
-                )
-            elif (
-                elem.not_online_image.res_id
-                or elem.not_online_image.download_path
-            ):
-                res.append(
-                    ImageElement(
-                        elem.not_online_image.file_path.decode("utf-8"),
-                        elem.not_online_image.file_len,
-                        elem.not_online_image.pic_width,
-                        elem.not_online_image.pic_height,
-                        elem.not_online_image.pic_md5,
-                        "https://c2cpicdw.qpic.cn/offpic_new/0/"
-                        + (
-                            elem.not_online_image.res_id
-                            or elem.not_online_image.download_path
-                        ).decode("utf-8")
-                        + "/0",
-                    )
-                )
-        if elem.HasField("common_elem"):
-            service_type = elem.common_elem.service_type
-            # PokeMsgElemDecoder
-            if service_type == 2:
-                poke = MsgElemInfo_servtype2.FromString(
-                    elem.common_elem.pb_elem
-                )
-                res = [
-                    PokeElement(
-                        poke.poke_type
-                        if poke.vaspoke_id == 0xFFFFFFFF
-                        else poke.vaspoke_id,
-                        poke.vaspoke_name.decode("utf-8"),
-                        poke.poke_strength,
-                        poke.double_hit,
-                    )
-                ]
-                break
-            # TextElemDecoder
-            elif service_type == 33:
-                info = MsgElemInfo_servtype33.FromString(
-                    elem.common_elem.pb_elem
-                )
-                res.append(FaceElement(info.index))
-
-        index += 1
-    return res
+from cai.client.message import parse_ptt, parse_elements
+from cai.client.events import Event, GroupMessageEvent, PrivateMessageEvent
 
 
 class BuddyMessageDecoder:
+    """Buddy Message Decoder.
+
+    Note:
+        Source:
+        com.tencent.mobileqq.service.message.codec.decoder.buddyMessage.BuddyMessageDecoder
+    """
+
     @classmethod
     def decode(cls, message: Msg) -> Optional[Event]:
-        """Buddy Message Decoder.
-
-        Note:
-            Source:
-            com.tencent.mobileqq.service.message.codec.decoder.buddyMessage.BuddyMessageDecoder
-        """
         sub_decoders: Dict[int, Callable[[Msg], Optional[Event]]] = {
             11: cls.decode_normal_buddy,
             # 129: OnlineFileDecoder,
@@ -199,7 +38,7 @@ class BuddyMessageDecoder:
             # 242: OfflineFileDecoder,
             # 243: OfflineFileDecoder,
         }
-        Decoder = sub_decoders.get(message.head.c2c_cmd, None)
+        Decoder = sub_decoders.get(message.head.c2c_cmd)
         if not Decoder:
             logger.debug(
                 "MessageSvc.PbGetMsg: BuddyMessageDecoder cannot "
@@ -233,25 +72,45 @@ class BuddyMessageDecoder:
         from_uin = message.head.from_uin
         from_nick = message.head.from_nick
         to_uin = message.head.to_uin
-        elems = message.body.rich_text.elems
+        parsed_elems = []
+        if message.body.rich_text.HasField("ptt"):
+            parsed_elems.append(parse_ptt(message.body.rich_text.ptt))
+        parsed_elems.extend(parse_elements(message.body.rich_text.elems))
 
-        return PrivateMessage(
-            message,
-            seq,
-            time,
-            auto_reply,
-            from_uin,
-            from_nick,
-            to_uin,
-            parse_elements(elems),
+        return PrivateMessageEvent(
+            _msg=message,
+            seq=seq,
+            time=time,
+            auto_reply=auto_reply,
+            user_id=from_uin,
+            user_nick=from_nick,
+            to_id=to_uin,
+            message=parsed_elems,
         )
 
 
 class TroopMessageDecoder:
+    """Troop Message Decoder(Processor).
+
+    Note:
+        Source: com.tencent.mobileqq.troop.data.TroopMessageProcessor
+    """
+
+    __slots__ = ()
+
     long_msg_fragment_store: Dict[int, List[Msg]] = {}
 
     @classmethod
     def decode(cls, message: Msg) -> Optional[Event]:
+        """Troop Message Processor.
+
+        Note:
+            Source:
+
+            com.tencent.mobileqq.troop.data.TroopMessageProcessor.a
+
+            com.tencent.imcore.message.BaseMessageProcessorForTroopAndDisc.a
+        """
         if not message.head.HasField("group_info"):
             return
 
@@ -260,6 +119,12 @@ class TroopMessageDecoder:
         from_uin = message.head.from_uin
         troop = message.head.group_info
         content_head = message.content_head
+        parsed_elems = []
+        ptts = (
+            [message.body.rich_text.ptt]
+            if message.body.rich_text.HasField("ptt")
+            else []
+        )
         elems = message.body.rich_text.elems
 
         # long msg fragment
@@ -272,25 +137,29 @@ class TroopMessageDecoder:
                 return
 
             cls.long_msg_fragment_store.pop(content_head.div_seq)
+            f = sorted(fragments, key=lambda f: f.content_head.pkg_index)
+            ptts = [
+                msg.body.rich_text.ptt
+                for msg in f
+                if msg.body.rich_text.HasField("ptt")
+            ]
             elems = list(
-                chain.from_iterable(
-                    msg.body.rich_text.elems
-                    for msg in sorted(
-                        fragments, key=lambda f: f.content_head.pkg_index
-                    )
-                )
+                chain.from_iterable(msg.body.rich_text.elems for msg in f)
             )
 
-        return GroupMessage(
-            message,
-            seq,
-            time,
-            troop.group_code,
-            troop.group_name.decode("utf-8"),
-            troop.group_level,
-            from_uin,
-            troop.group_card.decode("utf-8"),
-            parse_elements(elems),
+        parsed_elems.extend(map(parse_ptt, ptts))
+        parsed_elems.extend(parse_elements(elems))
+
+        return GroupMessageEvent(
+            _msg=message,
+            seq=seq,
+            time=time,
+            group_id=troop.group_code,
+            group_name=troop.group_name.decode("utf-8"),
+            group_level=troop.group_level,
+            from_uin=from_uin,
+            from_group_card=troop.group_card.decode("utf-8"),
+            message=parsed_elems,
         )
 
 

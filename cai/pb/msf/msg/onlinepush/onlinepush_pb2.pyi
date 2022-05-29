@@ -30,33 +30,31 @@ from typing_extensions import (
 )
 
 
-DESCRIPTOR: FileDescriptor = ...
+DESCRIPTOR: FileDescriptor
 
 class PbPushMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     MSG_FIELD_NUMBER: int
     SVRIP_FIELD_NUMBER: int
     PUSH_TOKEN_FIELD_NUMBER: int
     PING_FLAG_FIELD_NUMBER: int
     GENERAL_FLAG_FIELD_NUMBER: int
     BIND_UIN_FIELD_NUMBER: int
-    svrip: int = ...
-    push_token: bytes = ...
-    ping_flag: int = ...
-    general_flag: int = ...
-    bind_uin: int = ...
-
     @property
     def msg(self) -> Msg: ...
-
+    svrip: int
+    push_token: bytes
+    ping_flag: int
+    general_flag: int
+    bind_uin: int
     def __init__(self,
         *,
-        msg : Optional[Msg] = ...,
-        svrip : Optional[int] = ...,
-        push_token : Optional[bytes] = ...,
-        ping_flag : Optional[int] = ...,
-        general_flag : Optional[int] = ...,
-        bind_uin : Optional[int] = ...,
+        msg: Optional[Msg] = ...,
+        svrip: Optional[int] = ...,
+        push_token: Optional[bytes] = ...,
+        ping_flag: Optional[int] = ...,
+        general_flag: Optional[int] = ...,
+        bind_uin: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"bind_uin",b"bind_uin",u"general_flag",b"general_flag",u"msg",b"msg",u"ping_flag",b"ping_flag",u"push_token",b"push_token",u"svrip",b"svrip"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"bind_uin",b"bind_uin",u"general_flag",b"general_flag",u"msg",b"msg",u"ping_flag",b"ping_flag",u"push_token",b"push_token",u"svrip",b"svrip"]) -> None: ...
+    def HasField(self, field_name: Literal["bind_uin",b"bind_uin","general_flag",b"general_flag","msg",b"msg","ping_flag",b"ping_flag","push_token",b"push_token","svrip",b"svrip"]) -> bool: ...
+    def ClearField(self, field_name: Literal["bind_uin",b"bind_uin","general_flag",b"general_flag","msg",b"msg","ping_flag",b"ping_flag","push_token",b"push_token","svrip",b"svrip"]) -> None: ...

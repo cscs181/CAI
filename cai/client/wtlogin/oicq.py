@@ -58,7 +58,13 @@ class OICQRequest(Packet):
 class OICQResponse(Command):
     @classmethod
     def decode_response(
-        cls, uin: int, seq: int, ret_code: int, command_name: str, data: bytes
+        cls,
+        uin: int,
+        seq: int,
+        ret_code: int,
+        command_name: str,
+        data: bytes,
+        tgtgt: bytes,
     ) -> "OICQResponse":
         """Decode login response and wrap main info of the response.
 
@@ -71,6 +77,7 @@ class OICQResponse(Command):
             ret_code (int): Return code of the response.
             command_name (str): Command name of the response.
             data (bytes): Payload data of the response.
+            tgtgt (bytes): decode key for t119
 
         Returns:
             LoginSuccess: Login success.
@@ -91,7 +98,7 @@ class OICQResponse(Command):
             data_.start().uint16().uint8().offset(2).remain().execute()
         )
 
-        _tlv_map = TlvDecoder.decode(_tlv_bytes)
+        _tlv_map = TlvDecoder.decode(_tlv_bytes, tgtgt)
 
         if status == 0:
             return LoginSuccess(
@@ -306,7 +313,10 @@ class DeviceLocked(UnknownLoginStatus):
         self.t174 = _tlv_map.get(0x174)
         if self.t174:
             t178 = Packet(_tlv_map[0x178])
-            self.sms_phone = t178.start().string(4).execute()[0]
+            try:
+                self.sms_phone = t178.start().string(4).execute()[0]
+            except struct.error:
+                self.sms_phone = None
 
 
 @dataclass

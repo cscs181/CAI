@@ -7,92 +7,121 @@
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 
-import asyncio
-from typing import Union, Optional
+import hashlib
+from typing import Union, BinaryIO, Optional, Sequence
 
-from cai.client import Client, OnlineStatus
-from cai.exceptions import ClientNotAvailable
+from cai import log
+from cai.client import OnlineStatus
+from cai.client import Client as client_t
+from cai.settings.device import get_device
+from cai.pb.msf.msg.svc import PbSendMsgResp
+from cai.client.highway import HighWaySession
+from cai.settings.protocol import get_protocol
+from cai.client.message_service.encoders import build_msg, make_group_msg_pkg
+from cai.client.message.models import (
+    Element,
+    ImageElement,
+    VoiceElement,
+)
 
-from . import _clients
-
-
-def get_client(uin: Optional[int] = None) -> Client:
-    """Get the specific client or existing client.
-
-    Args:
-        uin (Optional[int], optional): Specific account client to get. Defaults to None.
-
-    Raises:
-        ClientNotAvailable: Client not exists.
-        ClientNotAvailable: No client available.
-        ClientNotAvailable: Multiple clients found and not specify which one to get.
-
-    Returns:
-        Client: Current client to use.
-    """
-    if not _clients:
-        raise ClientNotAvailable(uin, f"No client available!")
-    elif len(_clients) == 1 and not uin:
-        return list(_clients.values())[0]
-    else:
-        if not uin:
-            raise ClientNotAvailable(
-                None, f"Multiple clients found! Specify uin to choose."
-            )
-        if uin not in _clients:
-            raise ClientNotAvailable(None, f"Client {uin} not exists!")
-        return _clients[uin]
+from .group import Group as _Group
+from .login import Login as _Login
+from .flow import Events as _Events
+from .friend import Friend as _Friend
+from .error import (
+    BotMutedException,
+    AtAllLimitException,
+    GroupMsgLimitException,
+)
 
 
-async def close(uin: Optional[int] = None) -> None:
-    """Close an existing client and delete it from clients.
-
-    Args:
-        uin (Optional[int], optional): Account of the client want to close. Defaults to None.
-    """
-    client = get_client(uin)
-    await client.close()
-    del _clients[client.uin]
-
-
-async def close_all() -> None:
-    """Close all existing clients and delete them."""
-    tasks = [close(uin) for uin in _clients.keys()]
-    await asyncio.gather(*tasks)
+def make_client(uin: int, passwd: Union[str, bytes]) -> client_t:
+    if not (isinstance(passwd, bytes) and len(passwd) == 16):
+        # not a vailed md5 passwd
+        if isinstance(passwd, bytes):
+            passwd = hashlib.md5(passwd).digest()
+        else:
+            passwd = hashlib.md5(passwd.encode()).digest()
+    device = get_device(uin)
+    apk_info = get_protocol(uin)
+    return client_t(uin, passwd, device, apk_info)
 
 
-async def set_status(
-    status: Union[int, OnlineStatus],
-    battery_status: Optional[int] = None,
-    is_power_connected: bool = False,
-    uin: Optional[int] = None,
-) -> None:
-    """Change client status.
+class Client(_Login, _Friend, _Group, _Events):
+    def __init__(self, client: client_t):
+        self.client = client
+        self._highway_session = HighWaySession(client, logger=log.highway)
 
-    This function wraps the :meth:`~cai.client.client.Client.register`
-    method of the client.
+    @property
+    def connected(self) -> bool:
+        return self.client.connected
 
-    Args:
-        status (OnlineStatus): Status want to change.
-        battery_status (Optional[int], optional): Battery capacity.
-            Defaults to None.
-        is_power_connected (bool, optional): Is power connected to phone.
-            Defaults to False.
-        uin (Optional[int], optional): Account of the client want to change.
-            Defaults to None.
+    @property
+    def status(self) -> Optional[OnlineStatus]:
+        return self.client.status
 
-    Raises:
-        RuntimeError: Client already exists and is running.
-        RuntimeError: Password not provided when login a new account.
-        ApiResponseError: Invalid API request.
-        RegisterException: Register Failed.
-    """
-    client = get_client(uin)
-    await client.set_status(
-        status,
-        battery_status,
-        is_power_connected,
-    )
+    async def send_group_msg(self, gid: int, msg: Sequence[Element]):
+        # todo: split long msg
+        resp: PbSendMsgResp = PbSendMsgResp.FromString(
+            (
+                await self.client.send_unipkg_and_wait(
+                    "MessageSvc.PbSendMsg",
+                    make_group_msg_pkg(
+                        self.client.next_seq(), gid, build_msg(msg)
+                    ).SerializeToString(),
+                )
+            ).data
+        )
+
+        if resp.result == 120:
+            raise BotMutedException
+        elif resp.result == 121:
+            raise AtAllLimitException
+        elif resp.result == 299:
+            raise GroupMsgLimitException
+        else:
+            # todo: store msg
+            return resp
+
+    async def upload_image(self, group_id: int, file: BinaryIO) -> ImageElement:
+        return await self._highway_session.upload_image(file, group_id)
+
+    async def upload_voice(self, group_id: int, file: BinaryIO) -> VoiceElement:
+        return await self._highway_session.upload_voice(file, group_id)
+
+    async def close(self):
+        """Stop Client"""
+        await self.client.close()
+
+    async def set_status(
+        self,
+        status: Union[int, OnlineStatus],
+        battery_status: Optional[int] = None,
+        is_power_connected: bool = False,
+    ) -> None:
+        """Change client status.
+
+        This function wraps the :meth:`~cai.client.client.Client.register`
+        method of the client.
+
+        Args:
+            status (OnlineStatus): Status want to change.
+            battery_status (Optional[int], optional): Battery capacity.
+                Defaults to None.
+            is_power_connected (bool, optional): Is power connected to phone.
+                Defaults to False.
+
+        Raises:
+            RuntimeError: Client already exists and is running.
+            RuntimeError: Password not provided when login a new account.
+            ApiResponseError: Invalid API request.
+            RegisterException: Register Failed.
+        """
+        await self.client.set_status(
+            status,
+            battery_status,
+            is_power_connected,
+        )
 
 
-__all__ = ["get_client", "close", "close_all", "set_status"]
+__all__ = ["Client"]

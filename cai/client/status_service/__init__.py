@@ -11,14 +11,14 @@ This module is used to build and handle status service related packet.
 
 import time
 from enum import Enum, IntEnum
-from typing import TYPE_CHECKING, Union, Optional
+from typing import TYPE_CHECKING, Tuple, Union, Optional
 
 from jce import types
 
 from cai.log import logger
 from cai.utils.binary import Packet
-from cai.settings.device import get_device
-from cai.settings.protocol import get_protocol
+from cai.settings.protocol import ApkInfo
+from cai.settings.device import DeviceInfo
 from cai.utils.jce import RequestPacketVersion3
 from cai.pb.im.oidb.cmd0x769 import ReqBody, ConfigSeq
 from cai.client.packet import (
@@ -40,9 +40,6 @@ from .command import (
 
 if TYPE_CHECKING:
     from cai.client import Client
-
-DEVICE = get_device()
-APK_INFO = get_protocol()
 
 
 class OnlineStatus(IntEnum):
@@ -134,6 +131,7 @@ def _encode_svc_request(
     uin: int,
     status: Union[int, OnlineStatus],
     reg_push_reason: Union[str, RegPushReason],
+    device: DeviceInfo,
     battery_status: Optional[int] = None,
     is_power_connected: bool = False,
 ) -> SvcReqRegister:
@@ -146,7 +144,7 @@ def _encode_svc_request(
         bid=0 if status == OnlineStatus.Offline else 7,
         status=status if status < 1000 else OnlineStatus.Online,
         timestamp=int(time.time()),
-        ios_version=DEVICE.version.sdk,
+        ios_version=device.version.sdk,
         nettype=bytes([1]),
         reg_type=bytes(1)
         if reg_push_reason
@@ -157,13 +155,13 @@ def _encode_svc_request(
             RegPushReason.SetOnlineStatus,
         )
         else bytes([1]),
-        guid=DEVICE.guid,
-        dev_name=DEVICE.model,
-        dev_type=DEVICE.model,
-        os_version=DEVICE.version.release,
+        guid=device.guid,
+        dev_name=device.model,
+        dev_type=device.model,
+        os_version=device.version.release,
         large_seq=0,
-        vendor_name=DEVICE.vendor_name,
-        vendor_os_name=DEVICE.vendor_os_name,
+        vendor_name=device.vendor_name,
+        vendor_os_name=device.vendor_os_name,
         b769_req=ReqBody(
             config_list=[
                 ConfigSeq(type=46, version=0),
@@ -188,6 +186,8 @@ def encode_register(
     d2key: bytes,
     status: Union[int, OnlineStatus],
     reg_push_reason: Union[str, RegPushReason],
+    sub_app_id: int,
+    device: DeviceInfo,
 ) -> Packet:
     """Build status service register packet.
 
@@ -208,18 +208,16 @@ def encode_register(
         d2key (bytes): Siginfo d2 key.
         status (Union[int, OnlineStatus]): Online status.
         reg_push_reason (Union[str, RegPushReason]): Reg push reason.
-        battery_status (Optional[int], optional): Battery capacity.
-            Defaults to None.
-        is_power_connected (bool, optional): Is power connected to phone.
-            Defaults to False.
+        device (DeviceInfo): your device info
+        sub_app_id (int): ApkInfo
 
     Returns:
         Packet: Register packet.
     """
     COMMAND_NAME = "StatSvc.register"
-    SUB_APP_ID = APK_INFO.sub_app_id
+    SUB_APP_ID = sub_app_id
 
-    svc = _encode_svc_request(uin, status, reg_push_reason)
+    svc = _encode_svc_request(uin, status, reg_push_reason, device)
     payload = SvcReqRegister.to_bytes(0, svc)
     req_packet = RequestPacketVersion3(
         servant_name="PushService",
@@ -230,7 +228,7 @@ def encode_register(
         seq,
         SUB_APP_ID,
         COMMAND_NAME,
-        DEVICE.imei,
+        device.imei,
         session_id,
         ksid,
         body=req_packet,
@@ -246,6 +244,7 @@ def encode_set_status(
     session_id: bytes,
     uin: int,
     d2key: bytes,
+    device: DeviceInfo,
     status: Union[int, OnlineStatus],
     battery_status: Optional[int] = None,
     is_power_connected: bool = False,
@@ -265,7 +264,7 @@ def encode_set_status(
         uin (int): User QQ number.
         d2key (bytes): Siginfo d2 key.
         status (Union[int, OnlineStatus]): Online status.
-        reg_push_reason (Union[str, RegPushReason]): Reg push reason.
+        device (DeviceInfo): your device info
         battery_status (Optional[int], optional): Battery capacity.
             Only works when status is :obj:`.OnlineStatus.Battery`. Defaults to None.
         is_power_connected (bool, optional): Is power connected to phone.
@@ -275,12 +274,12 @@ def encode_set_status(
         Packet: Register packet.
     """
     COMMAND_NAME = "StatSvc.SetStatusFromClient"
-    SUB_APP_ID = APK_INFO.sub_app_id
 
     svc = _encode_svc_request(
         uin,
         status,
         RegPushReason.SetOnlineStatus,
+        device,
         ((status == OnlineStatus.Battery) or None) and battery_status,
         (status == OnlineStatus.Battery) and is_power_connected,
     )
@@ -324,6 +323,8 @@ def encode_force_offline_response(
     d2key: bytes,
     req_uin: int,
     seq_no: int,
+    sub_app_id: int,
+    device: DeviceInfo,
 ) -> Packet:
     """Build status service msf offline response packet.
 
@@ -344,12 +345,14 @@ def encode_force_offline_response(
         d2key (bytes): Siginfo d2 key.
         req_uin (int): Request offline uin.
         seq_no (int): Request sequence number.
+        sub_app_id (int): ApkInfo
+        device (DeviceInfo): your device info
 
     Returns:
         Packet: msf force offline response packet.
     """
     COMMAND_NAME = "StatSvc.RspMSFForceOffline"
-    SUB_APP_ID = APK_INFO.sub_app_id
+    SUB_APP_ID = sub_app_id
 
     resp = ResponseMSFForceOffline(uin=req_uin, seq_no=seq_no, c=bytes(1))
     payload = ResponseMSFForceOffline.to_bytes(0, resp)
@@ -364,7 +367,7 @@ def encode_force_offline_response(
         seq,
         SUB_APP_ID,
         COMMAND_NAME,
-        DEVICE.imei,
+        device.imei,
         session_id,
         ksid,
         body=resp_packet,
@@ -401,6 +404,8 @@ async def handle_request_offline(
             client._siginfo.d2key,
             request.request.uin,
             request.request.seq_no,
+            client.apk_info.sub_app_id,
+            client.device,
         )
         await client.send(seq, "StatSvc.RspMSFForceOffline", resp_packet)
     client._status = OnlineStatus.Offline

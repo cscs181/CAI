@@ -9,19 +9,22 @@ This module is used to build Binary tools.
     https://github.com/cscs181/CAI/blob/master/LICENSE
 """
 import struct
+from typing_extensions import Unpack, TypeVarTuple
 from typing import (
+    TYPE_CHECKING,
     Any,
     List,
     Type,
     Tuple,
     Union,
+    Generic,
     NewType,
     TypeVar,
     Callable,
-    Optional,
 )
 
 P = TypeVar("P", bound="BasePacket")
+Ts = TypeVarTuple("Ts")
 
 BOOL = NewType("BOOL", bool)
 INT8 = NewType("INT8", int)
@@ -147,7 +150,7 @@ class BasePacket(bytearray):
         return STRING(self.read_bytes(length, offset + 4).decode())
 
 
-class Packet(BasePacket):
+class Packet(BasePacket, Generic[Unpack[Ts]]):
     """Packet Class for extracting data more efficiently.
 
     Support `PEP646`_ typing hints. Using ``pyright`` or ``pylance`` for type checking.
@@ -162,7 +165,12 @@ class Packet(BasePacket):
 
     """
 
-    def __init__(self, *args, **kwargs):
+    if TYPE_CHECKING:
+
+        def __new__(cls, *args, **kwargs) -> "Packet[()]":
+            ...
+
+    def __init__(self: "Packet[Unpack[Ts]]", *args, **kwargs):
         super(Packet, self).__init__(*args, **kwargs)
         self.start()
 
@@ -172,107 +180,116 @@ class Packet(BasePacket):
     def _get_position(self) -> int:
         return struct.calcsize(self._query) + self._offset
 
-    def start(self, offset: int = 0):
+    def start(self: "Packet[Unpack[Ts]]", offset: int = 0) -> "Packet[()]":
         self._query: str = ">"
         self._offset: int = offset
         self._executed: bool = False
         self._filters: List[Callable[[Any], Any]] = []
-        return self
+        return self  # type: ignore
 
-    def bool(self):
+    def bool(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], BOOL]":
         self._query += "?"
         self._add_filter(BOOL)
-        return self
+        return self  # type: ignore
 
-    def int8(self):
+    def int8(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], INT8]":
         self._query += "b"
         self._add_filter(INT8)
-        return self
+        return self  # type: ignore
 
-    def uint8(self):
+    def uint8(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], UINT8]":
         self._query += "B"
         self._add_filter(UINT8)
-        return self
+        return self  # type: ignore
 
-    def int16(self):
+    def int16(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], INT16]":
         self._query += "h"
         self._add_filter(INT16)
-        return self
+        return self  # type: ignore
 
-    def uint16(self):
+    def uint16(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], UINT16]":
         self._query += "H"
         self._add_filter(UINT16)
-        return self
+        return self  # type: ignore
 
-    def int32(self):
+    def int32(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], INT32]":
         self._query += "i"
         self._add_filter(INT32)
-        return self
+        return self  # type: ignore
 
-    def uint32(self):
+    def uint32(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], UINT32]":
         self._query += "I"
         self._add_filter(UINT32)
-        return self
+        return self  # type: ignore
 
-    def int64(self):
+    def int64(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], INT64]":
         self._query += "q"
         self._add_filter(INT64)
-        return self
+        return self  # type: ignore
 
-    def uint64(self):
+    def uint64(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], UINT64]":
         self._query += "Q"
         self._add_filter(UINT64)
-        return self
+        return self  # type: ignore
 
-    def float(self):
+    def float(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], FLOAT]":
         self._query += "f"
         self._add_filter(FLOAT)
-        return self
+        return self  # type: ignore
 
-    def double(self):
+    def double(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], DOUBLE]":
         self._query += "d"
         self._add_filter(DOUBLE)
-        return self
+        return self  # type: ignore
 
-    def byte(self):
+    def byte(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], BYTE]":
         self._query += "c"
         self._add_filter(BYTE)
-        return self
+        return self  # type: ignore
 
-    def bytes(self, length: int):
+    def bytes(
+        self: "Packet[Unpack[Ts]]", length: int
+    ) -> "Packet[Unpack[Ts], BYTES]":
         self._query += f"{length}s"
         self._add_filter(BYTES)
-        return self
+        return self  # type: ignore
 
-    def bytes_with_length(self, head_bytes: int, offset: int = 0):
+    def bytes_with_length(
+        self: "Packet[Unpack[Ts]]", head_bytes: int, offset: int = 0
+    ) -> "Packet[Unpack[Ts], BYTES]":
         length = int.from_bytes(
             self.read_bytes(head_bytes, self._get_position()),
             "big",
         )
         self._query += f"{head_bytes}x{length - offset}s"
         self._add_filter(BYTES)
-        return self
+        return self  # type: ignore
 
-    def string(self, head_bytes: int, offset: int = 0, encoding: str = "utf-8"):
+    def string(
+        self: "Packet[Unpack[Ts]]",
+        head_bytes: int,
+        offset: int = 0,
+        encoding: str = "utf-8",
+    ) -> "Packet[Unpack[Ts], STRING]":
         length = int.from_bytes(
             self.read_bytes(head_bytes, self._get_position()),
             "big",
         )
         self._query += f"{head_bytes}x{length - offset}s"
         self._add_filter(lambda x: STRING(x.decode(encoding)))
-        return self
+        return self  # type: ignore
 
-    def offset(self, offset: int):
+    def offset(self: "Packet[Unpack[Ts]]", offset: int) -> "Packet[Unpack[Ts]]":
         self._query += f"{offset}x"
         return self
 
-    def remain(self):
+    def remain(self: "Packet[Unpack[Ts]]") -> "Packet[Unpack[Ts], Packet[()]]":
         length = struct.calcsize(self._query)
         self._query += f"{len(self) - length}s"
         self._add_filter(Packet)
-        return self
+        return self  # type: ignore
 
-    def execute(self):
+    def execute(self: "Packet[Unpack[Ts]]") -> Tuple[Unpack[Ts]]:
         if self._executed:
             raise RuntimeError("Cannot re-execute query. Call `start()` first.")
         query = self._query
@@ -286,4 +303,4 @@ class Packet(BasePacket):
                 filters,
                 self.unpack_from(query, self._offset),
             )
-        )
+        )  # type: ignore

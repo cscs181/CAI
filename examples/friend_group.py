@@ -11,7 +11,7 @@ import signal
 import asyncio
 from hashlib import md5
 
-import cai
+from cai.api.client import Client
 
 
 async def run():
@@ -26,6 +26,7 @@ async def run():
         )
         return
 
+    client = Client()
     client = await cai.login(account, md5(password.encode()).digest())
 
     # friend

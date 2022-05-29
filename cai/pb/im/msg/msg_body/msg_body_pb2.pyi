@@ -34,10 +34,13 @@ from typing_extensions import (
 )
 
 
-DESCRIPTOR: FileDescriptor = ...
+DESCRIPTOR: FileDescriptor
 
 class AnonymousGroupMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    """tencent/im/msg/im_msg_body.java
+
+    """
+    DESCRIPTOR: Descriptor
     FLAGS_FIELD_NUMBER: int
     ANON_ID_FIELD_NUMBER: int
     ANON_NICK_FIELD_NUMBER: int
@@ -45,29 +48,28 @@ class AnonymousGroupMsg(Message):
     EXPIRE_TIME_FIELD_NUMBER: int
     BUBBLE_ID_FIELD_NUMBER: int
     RANK_COLOR_FIELD_NUMBER: int
-    flags: int = ...
-    anon_id: bytes = ...
-    anon_nick: bytes = ...
-    head_portrait: int = ...
-    expire_time: int = ...
-    bubble_id: int = ...
-    rank_color: bytes = ...
-
+    flags: int
+    anon_id: bytes
+    anon_nick: bytes
+    head_portrait: int
+    expire_time: int
+    bubble_id: int
+    rank_color: bytes
     def __init__(self,
         *,
-        flags : Optional[int] = ...,
-        anon_id : Optional[bytes] = ...,
-        anon_nick : Optional[bytes] = ...,
-        head_portrait : Optional[int] = ...,
-        expire_time : Optional[int] = ...,
-        bubble_id : Optional[int] = ...,
-        rank_color : Optional[bytes] = ...,
+        flags: Optional[int] = ...,
+        anon_id: Optional[bytes] = ...,
+        anon_nick: Optional[bytes] = ...,
+        head_portrait: Optional[int] = ...,
+        expire_time: Optional[int] = ...,
+        bubble_id: Optional[int] = ...,
+        rank_color: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"anon_id",b"anon_id",u"anon_nick",b"anon_nick",u"bubble_id",b"bubble_id",u"expire_time",b"expire_time",u"flags",b"flags",u"head_portrait",b"head_portrait",u"rank_color",b"rank_color"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"anon_id",b"anon_id",u"anon_nick",b"anon_nick",u"bubble_id",b"bubble_id",u"expire_time",b"expire_time",u"flags",b"flags",u"head_portrait",b"head_portrait",u"rank_color",b"rank_color"]) -> None: ...
+    def HasField(self, field_name: Literal["anon_id",b"anon_id","anon_nick",b"anon_nick","bubble_id",b"bubble_id","expire_time",b"expire_time","flags",b"flags","head_portrait",b"head_portrait","rank_color",b"rank_color"]) -> bool: ...
+    def ClearField(self, field_name: Literal["anon_id",b"anon_id","anon_nick",b"anon_nick","bubble_id",b"bubble_id","expire_time",b"expire_time","flags",b"flags","head_portrait",b"head_portrait","rank_color",b"rank_color"]) -> None: ...
 
 class ApolloActMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     ACTION_ID_FIELD_NUMBER: int
     ACTION_NAME_FIELD_NUMBER: int
     ACTION_TEXT_FIELD_NUMBER: int
@@ -81,62 +83,60 @@ class ApolloActMsg(Message):
     DIYTEXT_CONTENT_FIELD_NUMBER: int
     INPUT_TEXT_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    action_id: int = ...
-    action_name: bytes = ...
-    action_text: bytes = ...
-    flag: int = ...
-    peer_uin: int = ...
-    sender_ts: int = ...
-    peer_ts: int = ...
-    sender_status: int = ...
-    peer_status: int = ...
-    diytext_id: int = ...
-    diytext_content: bytes = ...
-    input_text: bytes = ...
-    pb_reserve: bytes = ...
-
+    action_id: int
+    action_name: bytes
+    action_text: bytes
+    flag: int
+    peer_uin: int
+    sender_ts: int
+    peer_ts: int
+    sender_status: int
+    peer_status: int
+    diytext_id: int
+    diytext_content: bytes
+    input_text: bytes
+    pb_reserve: bytes
     def __init__(self,
         *,
-        action_id : Optional[int] = ...,
-        action_name : Optional[bytes] = ...,
-        action_text : Optional[bytes] = ...,
-        flag : Optional[int] = ...,
-        peer_uin : Optional[int] = ...,
-        sender_ts : Optional[int] = ...,
-        peer_ts : Optional[int] = ...,
-        sender_status : Optional[int] = ...,
-        peer_status : Optional[int] = ...,
-        diytext_id : Optional[int] = ...,
-        diytext_content : Optional[bytes] = ...,
-        input_text : Optional[bytes] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        action_id: Optional[int] = ...,
+        action_name: Optional[bytes] = ...,
+        action_text: Optional[bytes] = ...,
+        flag: Optional[int] = ...,
+        peer_uin: Optional[int] = ...,
+        sender_ts: Optional[int] = ...,
+        peer_ts: Optional[int] = ...,
+        sender_status: Optional[int] = ...,
+        peer_status: Optional[int] = ...,
+        diytext_id: Optional[int] = ...,
+        diytext_content: Optional[bytes] = ...,
+        input_text: Optional[bytes] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"action_id",b"action_id",u"action_name",b"action_name",u"action_text",b"action_text",u"diytext_content",b"diytext_content",u"diytext_id",b"diytext_id",u"flag",b"flag",u"input_text",b"input_text",u"pb_reserve",b"pb_reserve",u"peer_status",b"peer_status",u"peer_ts",b"peer_ts",u"peer_uin",b"peer_uin",u"sender_status",b"sender_status",u"sender_ts",b"sender_ts"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"action_id",b"action_id",u"action_name",b"action_name",u"action_text",b"action_text",u"diytext_content",b"diytext_content",u"diytext_id",b"diytext_id",u"flag",b"flag",u"input_text",b"input_text",u"pb_reserve",b"pb_reserve",u"peer_status",b"peer_status",u"peer_ts",b"peer_ts",u"peer_uin",b"peer_uin",u"sender_status",b"sender_status",u"sender_ts",b"sender_ts"]) -> None: ...
+    def HasField(self, field_name: Literal["action_id",b"action_id","action_name",b"action_name","action_text",b"action_text","diytext_content",b"diytext_content","diytext_id",b"diytext_id","flag",b"flag","input_text",b"input_text","pb_reserve",b"pb_reserve","peer_status",b"peer_status","peer_ts",b"peer_ts","peer_uin",b"peer_uin","sender_status",b"sender_status","sender_ts",b"sender_ts"]) -> bool: ...
+    def ClearField(self, field_name: Literal["action_id",b"action_id","action_name",b"action_name","action_text",b"action_text","diytext_content",b"diytext_content","diytext_id",b"diytext_id","flag",b"flag","input_text",b"input_text","pb_reserve",b"pb_reserve","peer_status",b"peer_status","peer_ts",b"peer_ts","peer_uin",b"peer_uin","sender_status",b"sender_status","sender_ts",b"sender_ts"]) -> None: ...
 
 class ArkAppElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     APP_NAME_FIELD_NUMBER: int
     MIN_VERSION_FIELD_NUMBER: int
     XML_TEMPLATE_FIELD_NUMBER: int
     DATA_FIELD_NUMBER: int
-    app_name: Text = ...
-    min_version: Text = ...
-    xml_template: Text = ...
-    data: bytes = ...
-
+    app_name: Text
+    min_version: Text
+    xml_template: Text
+    data: bytes
     def __init__(self,
         *,
-        app_name : Optional[Text] = ...,
-        min_version : Optional[Text] = ...,
-        xml_template : Optional[Text] = ...,
-        data : Optional[bytes] = ...,
+        app_name: Optional[Text] = ...,
+        min_version: Optional[Text] = ...,
+        xml_template: Optional[Text] = ...,
+        data: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"app_name",b"app_name",u"data",b"data",u"min_version",b"min_version",u"xml_template",b"xml_template"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"app_name",b"app_name",u"data",b"data",u"min_version",b"min_version",u"xml_template",b"xml_template"]) -> None: ...
+    def HasField(self, field_name: Literal["app_name",b"app_name","data",b"data","min_version",b"min_version","xml_template",b"xml_template"]) -> bool: ...
+    def ClearField(self, field_name: Literal["app_name",b"app_name","data",b"data","min_version",b"min_version","xml_template",b"xml_template"]) -> None: ...
 
 class Attr(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     CODE_PAGE_FIELD_NUMBER: int
     TIME_FIELD_NUMBER: int
     RANDOM_FIELD_NUMBER: int
@@ -147,146 +147,139 @@ class Attr(Message):
     PITCH_AND_FAMILY_FIELD_NUMBER: int
     FONT_NAME_FIELD_NUMBER: int
     RESERVE_DATA_FIELD_NUMBER: int
-    code_page: int = ...
-    time: int = ...
-    random: int = ...
-    color: int = ...
-    size: int = ...
-    effect: int = ...
-    char_set: int = ...
-    pitch_and_family: int = ...
-    font_name: Text = ...
-    reserve_data: bytes = ...
-
+    code_page: int
+    time: int
+    random: int
+    color: int
+    size: int
+    effect: int
+    char_set: int
+    pitch_and_family: int
+    font_name: Text
+    reserve_data: bytes
     def __init__(self,
         *,
-        code_page : Optional[int] = ...,
-        time : Optional[int] = ...,
-        random : Optional[int] = ...,
-        color : Optional[int] = ...,
-        size : Optional[int] = ...,
-        effect : Optional[int] = ...,
-        char_set : Optional[int] = ...,
-        pitch_and_family : Optional[int] = ...,
-        font_name : Optional[Text] = ...,
-        reserve_data : Optional[bytes] = ...,
+        code_page: Optional[int] = ...,
+        time: Optional[int] = ...,
+        random: Optional[int] = ...,
+        color: Optional[int] = ...,
+        size: Optional[int] = ...,
+        effect: Optional[int] = ...,
+        char_set: Optional[int] = ...,
+        pitch_and_family: Optional[int] = ...,
+        font_name: Optional[Text] = ...,
+        reserve_data: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"char_set",b"char_set",u"code_page",b"code_page",u"color",b"color",u"effect",b"effect",u"font_name",b"font_name",u"pitch_and_family",b"pitch_and_family",u"random",b"random",u"reserve_data",b"reserve_data",u"size",b"size",u"time",b"time"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"char_set",b"char_set",u"code_page",b"code_page",u"color",b"color",u"effect",b"effect",u"font_name",b"font_name",u"pitch_and_family",b"pitch_and_family",u"random",b"random",u"reserve_data",b"reserve_data",u"size",b"size",u"time",b"time"]) -> None: ...
+    def HasField(self, field_name: Literal["char_set",b"char_set","code_page",b"code_page","color",b"color","effect",b"effect","font_name",b"font_name","pitch_and_family",b"pitch_and_family","random",b"random","reserve_data",b"reserve_data","size",b"size","time",b"time"]) -> bool: ...
+    def ClearField(self, field_name: Literal["char_set",b"char_set","code_page",b"code_page","color",b"color","effect",b"effect","font_name",b"font_name","pitch_and_family",b"pitch_and_family","random",b"random","reserve_data",b"reserve_data","size",b"size","time",b"time"]) -> None: ...
 
 class BitAppMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     BUF_FIELD_NUMBER: int
-    buf: bytes = ...
-
+    buf: bytes
     def __init__(self,
         *,
-        buf : Optional[bytes] = ...,
+        buf: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"buf",b"buf"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"buf",b"buf"]) -> None: ...
+    def HasField(self, field_name: Literal["buf",b"buf"]) -> bool: ...
+    def ClearField(self, field_name: Literal["buf",b"buf"]) -> None: ...
 
 class BlessingMessage(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     MSG_TYPE_FIELD_NUMBER: int
     EX_FLAG_FIELD_NUMBER: int
-    msg_type: int = ...
-    ex_flag: int = ...
-
+    msg_type: int
+    ex_flag: int
     def __init__(self,
         *,
-        msg_type : Optional[int] = ...,
-        ex_flag : Optional[int] = ...,
+        msg_type: Optional[int] = ...,
+        ex_flag: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"ex_flag",b"ex_flag",u"msg_type",b"msg_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"ex_flag",b"ex_flag",u"msg_type",b"msg_type"]) -> None: ...
+    def HasField(self, field_name: Literal["ex_flag",b"ex_flag","msg_type",b"msg_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["ex_flag",b"ex_flag","msg_type",b"msg_type"]) -> None: ...
 
 class CommonElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     SERVICE_TYPE_FIELD_NUMBER: int
     PB_ELEM_FIELD_NUMBER: int
     BUSINESS_TYPE_FIELD_NUMBER: int
-    service_type: int = ...
-    pb_elem: bytes = ...
-    business_type: int = ...
-
+    service_type: int
+    pb_elem: bytes
+    business_type: int
     def __init__(self,
         *,
-        service_type : Optional[int] = ...,
-        pb_elem : Optional[bytes] = ...,
-        business_type : Optional[int] = ...,
+        service_type: Optional[int] = ...,
+        pb_elem: Optional[bytes] = ...,
+        business_type: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"business_type",b"business_type",u"pb_elem",b"pb_elem",u"service_type",b"service_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"business_type",b"business_type",u"pb_elem",b"pb_elem",u"service_type",b"service_type"]) -> None: ...
+    def HasField(self, field_name: Literal["business_type",b"business_type","pb_elem",b"pb_elem","service_type",b"service_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["business_type",b"business_type","pb_elem",b"pb_elem","service_type",b"service_type"]) -> None: ...
 
 class ConferenceTipsInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     SESSION_TYPE_FIELD_NUMBER: int
     SESSION_UIN_FIELD_NUMBER: int
     TEXT_FIELD_NUMBER: int
-    session_type: int = ...
-    session_uin: int = ...
-    text: Text = ...
-
+    session_type: int
+    session_uin: int
+    text: Text
     def __init__(self,
         *,
-        session_type : Optional[int] = ...,
-        session_uin : Optional[int] = ...,
-        text : Optional[Text] = ...,
+        session_type: Optional[int] = ...,
+        session_uin: Optional[int] = ...,
+        text: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"session_type",b"session_type",u"session_uin",b"session_uin",u"text",b"text"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"session_type",b"session_type",u"session_uin",b"session_uin",u"text",b"text"]) -> None: ...
+    def HasField(self, field_name: Literal["session_type",b"session_type","session_uin",b"session_uin","text",b"text"]) -> bool: ...
+    def ClearField(self, field_name: Literal["session_type",b"session_type","session_uin",b"session_uin","text",b"text"]) -> None: ...
 
 class CrmElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     CRM_BUF_FIELD_NUMBER: int
     MSG_RESID_FIELD_NUMBER: int
     QIDIAN_FLAG_FIELD_NUMBER: int
     PUSH_FLAG_FIELD_NUMBER: int
     COUNT_FLAG_FIELD_NUMBER: int
-    crm_buf: bytes = ...
-    msg_resid: bytes = ...
-    qidian_flag: int = ...
-    push_flag: int = ...
-    count_flag: int = ...
-
+    crm_buf: bytes
+    msg_resid: bytes
+    qidian_flag: int
+    push_flag: int
+    count_flag: int
     def __init__(self,
         *,
-        crm_buf : Optional[bytes] = ...,
-        msg_resid : Optional[bytes] = ...,
-        qidian_flag : Optional[int] = ...,
-        push_flag : Optional[int] = ...,
-        count_flag : Optional[int] = ...,
+        crm_buf: Optional[bytes] = ...,
+        msg_resid: Optional[bytes] = ...,
+        qidian_flag: Optional[int] = ...,
+        push_flag: Optional[int] = ...,
+        count_flag: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"count_flag",b"count_flag",u"crm_buf",b"crm_buf",u"msg_resid",b"msg_resid",u"push_flag",b"push_flag",u"qidian_flag",b"qidian_flag"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"count_flag",b"count_flag",u"crm_buf",b"crm_buf",u"msg_resid",b"msg_resid",u"push_flag",b"push_flag",u"qidian_flag",b"qidian_flag"]) -> None: ...
+    def HasField(self, field_name: Literal["count_flag",b"count_flag","crm_buf",b"crm_buf","msg_resid",b"msg_resid","push_flag",b"push_flag","qidian_flag",b"qidian_flag"]) -> bool: ...
+    def ClearField(self, field_name: Literal["count_flag",b"count_flag","crm_buf",b"crm_buf","msg_resid",b"msg_resid","push_flag",b"push_flag","qidian_flag",b"qidian_flag"]) -> None: ...
 
 class CustomElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     DESC_FIELD_NUMBER: int
     DATA_FIELD_NUMBER: int
     ENUM_TYPE_FIELD_NUMBER: int
     EXT_FIELD_NUMBER: int
     SOUND_FIELD_NUMBER: int
-    desc: bytes = ...
-    data: bytes = ...
-    enum_type: int = ...
-    ext: bytes = ...
-    sound: bytes = ...
-
+    desc: bytes
+    data: bytes
+    enum_type: int
+    ext: bytes
+    sound: bytes
     def __init__(self,
         *,
-        desc : Optional[bytes] = ...,
-        data : Optional[bytes] = ...,
-        enum_type : Optional[int] = ...,
-        ext : Optional[bytes] = ...,
-        sound : Optional[bytes] = ...,
+        desc: Optional[bytes] = ...,
+        data: Optional[bytes] = ...,
+        enum_type: Optional[int] = ...,
+        ext: Optional[bytes] = ...,
+        sound: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"data",b"data",u"desc",b"desc",u"enum_type",b"enum_type",u"ext",b"ext",u"sound",b"sound"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"data",b"data",u"desc",b"desc",u"enum_type",b"enum_type",u"ext",b"ext",u"sound",b"sound"]) -> None: ...
+    def HasField(self, field_name: Literal["data",b"data","desc",b"desc","enum_type",b"enum_type","ext",b"ext","sound",b"sound"]) -> bool: ...
+    def ClearField(self, field_name: Literal["data",b"data","desc",b"desc","enum_type",b"enum_type","ext",b"ext","sound",b"sound"]) -> None: ...
 
 class CustomFace(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     GUID_FIELD_NUMBER: int
     FILE_PATH_FIELD_NUMBER: int
     SHORTCUT_FIELD_NUMBER: int
@@ -321,83 +314,82 @@ class CustomFace(Message):
     _400_WIDTH_FIELD_NUMBER: int
     _400_HEIGHT_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    guid: bytes = ...
-    file_path: Text = ...
-    shortcut: Text = ...
-    buffer: bytes = ...
-    flag: bytes = ...
-    old_data: bytes = ...
-    file_id: int = ...
-    server_ip: int = ...
-    server_port: int = ...
-    file_type: int = ...
-    signature: bytes = ...
-    useful: int = ...
-    md5: bytes = ...
-    thumb_url: Text = ...
-    big_url: Text = ...
-    orig_url: Text = ...
-    biz_type: int = ...
-    repeat_index: int = ...
-    repeat_image: int = ...
-    image_type: int = ...
-    index: int = ...
-    width: int = ...
-    height: int = ...
-    source: int = ...
-    size: int = ...
-    origin: int = ...
-    thumb_width: int = ...
-    thumb_height: int = ...
-    show_len: int = ...
-    download_len: int = ...
-    _400_url: Text = ...
-    _400_width: int = ...
-    _400_height: int = ...
-    pb_reserve: bytes = ...
-
+    guid: bytes
+    file_path: Text
+    shortcut: Text
+    buffer: bytes
+    flag: bytes
+    old_data: bytes
+    file_id: int
+    server_ip: int
+    server_port: int
+    file_type: int
+    signature: bytes
+    useful: int
+    md5: bytes
+    thumb_url: Text
+    big_url: Text
+    orig_url: Text
+    biz_type: int
+    repeat_index: int
+    repeat_image: int
+    image_type: int
+    index: int
+    width: int
+    height: int
+    source: int
+    size: int
+    origin: int
+    thumb_width: int
+    thumb_height: int
+    show_len: int
+    download_len: int
+    _400_url: Text
+    _400_width: int
+    _400_height: int
+    pb_reserve: bytes
     def __init__(self,
         *,
-        guid : Optional[bytes] = ...,
-        file_path : Optional[Text] = ...,
-        shortcut : Optional[Text] = ...,
-        buffer : Optional[bytes] = ...,
-        flag : Optional[bytes] = ...,
-        old_data : Optional[bytes] = ...,
-        file_id : Optional[int] = ...,
-        server_ip : Optional[int] = ...,
-        server_port : Optional[int] = ...,
-        file_type : Optional[int] = ...,
-        signature : Optional[bytes] = ...,
-        useful : Optional[int] = ...,
-        md5 : Optional[bytes] = ...,
-        thumb_url : Optional[Text] = ...,
-        big_url : Optional[Text] = ...,
-        orig_url : Optional[Text] = ...,
-        biz_type : Optional[int] = ...,
-        repeat_index : Optional[int] = ...,
-        repeat_image : Optional[int] = ...,
-        image_type : Optional[int] = ...,
-        index : Optional[int] = ...,
-        width : Optional[int] = ...,
-        height : Optional[int] = ...,
-        source : Optional[int] = ...,
-        size : Optional[int] = ...,
-        origin : Optional[int] = ...,
-        thumb_width : Optional[int] = ...,
-        thumb_height : Optional[int] = ...,
-        show_len : Optional[int] = ...,
-        download_len : Optional[int] = ...,
-        _400_url : Optional[Text] = ...,
-        _400_width : Optional[int] = ...,
-        _400_height : Optional[int] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        guid: Optional[bytes] = ...,
+        file_path: Optional[Text] = ...,
+        shortcut: Optional[Text] = ...,
+        buffer: Optional[bytes] = ...,
+        flag: Optional[bytes] = ...,
+        old_data: Optional[bytes] = ...,
+        file_id: Optional[int] = ...,
+        server_ip: Optional[int] = ...,
+        server_port: Optional[int] = ...,
+        file_type: Optional[int] = ...,
+        signature: Optional[bytes] = ...,
+        useful: Optional[int] = ...,
+        md5: Optional[bytes] = ...,
+        thumb_url: Optional[Text] = ...,
+        big_url: Optional[Text] = ...,
+        orig_url: Optional[Text] = ...,
+        biz_type: Optional[int] = ...,
+        repeat_index: Optional[int] = ...,
+        repeat_image: Optional[int] = ...,
+        image_type: Optional[int] = ...,
+        index: Optional[int] = ...,
+        width: Optional[int] = ...,
+        height: Optional[int] = ...,
+        source: Optional[int] = ...,
+        size: Optional[int] = ...,
+        origin: Optional[int] = ...,
+        thumb_width: Optional[int] = ...,
+        thumb_height: Optional[int] = ...,
+        show_len: Optional[int] = ...,
+        download_len: Optional[int] = ...,
+        _400_url: Optional[Text] = ...,
+        _400_width: Optional[int] = ...,
+        _400_height: Optional[int] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"_400_height",b"_400_height",u"_400_url",b"_400_url",u"_400_width",b"_400_width",u"big_url",b"big_url",u"biz_type",b"biz_type",u"buffer",b"buffer",u"download_len",b"download_len",u"file_id",b"file_id",u"file_path",b"file_path",u"file_type",b"file_type",u"flag",b"flag",u"guid",b"guid",u"height",b"height",u"image_type",b"image_type",u"index",b"index",u"md5",b"md5",u"old_data",b"old_data",u"orig_url",b"orig_url",u"origin",b"origin",u"pb_reserve",b"pb_reserve",u"repeat_image",b"repeat_image",u"repeat_index",b"repeat_index",u"server_ip",b"server_ip",u"server_port",b"server_port",u"shortcut",b"shortcut",u"show_len",b"show_len",u"signature",b"signature",u"size",b"size",u"source",b"source",u"thumb_height",b"thumb_height",u"thumb_url",b"thumb_url",u"thumb_width",b"thumb_width",u"useful",b"useful",u"width",b"width"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"_400_height",b"_400_height",u"_400_url",b"_400_url",u"_400_width",b"_400_width",u"big_url",b"big_url",u"biz_type",b"biz_type",u"buffer",b"buffer",u"download_len",b"download_len",u"file_id",b"file_id",u"file_path",b"file_path",u"file_type",b"file_type",u"flag",b"flag",u"guid",b"guid",u"height",b"height",u"image_type",b"image_type",u"index",b"index",u"md5",b"md5",u"old_data",b"old_data",u"orig_url",b"orig_url",u"origin",b"origin",u"pb_reserve",b"pb_reserve",u"repeat_image",b"repeat_image",u"repeat_index",b"repeat_index",u"server_ip",b"server_ip",u"server_port",b"server_port",u"shortcut",b"shortcut",u"show_len",b"show_len",u"signature",b"signature",u"size",b"size",u"source",b"source",u"thumb_height",b"thumb_height",u"thumb_url",b"thumb_url",u"thumb_width",b"thumb_width",u"useful",b"useful",u"width",b"width"]) -> None: ...
+    def HasField(self, field_name: Literal["_400_height",b"_400_height","_400_url",b"_400_url","_400_width",b"_400_width","big_url",b"big_url","biz_type",b"biz_type","buffer",b"buffer","download_len",b"download_len","file_id",b"file_id","file_path",b"file_path","file_type",b"file_type","flag",b"flag","guid",b"guid","height",b"height","image_type",b"image_type","index",b"index","md5",b"md5","old_data",b"old_data","orig_url",b"orig_url","origin",b"origin","pb_reserve",b"pb_reserve","repeat_image",b"repeat_image","repeat_index",b"repeat_index","server_ip",b"server_ip","server_port",b"server_port","shortcut",b"shortcut","show_len",b"show_len","signature",b"signature","size",b"size","source",b"source","thumb_height",b"thumb_height","thumb_url",b"thumb_url","thumb_width",b"thumb_width","useful",b"useful","width",b"width"]) -> bool: ...
+    def ClearField(self, field_name: Literal["_400_height",b"_400_height","_400_url",b"_400_url","_400_width",b"_400_width","big_url",b"big_url","biz_type",b"biz_type","buffer",b"buffer","download_len",b"download_len","file_id",b"file_id","file_path",b"file_path","file_type",b"file_type","flag",b"flag","guid",b"guid","height",b"height","image_type",b"image_type","index",b"index","md5",b"md5","old_data",b"old_data","orig_url",b"orig_url","origin",b"origin","pb_reserve",b"pb_reserve","repeat_image",b"repeat_image","repeat_index",b"repeat_index","server_ip",b"server_ip","server_port",b"server_port","shortcut",b"shortcut","show_len",b"show_len","signature",b"signature","size",b"size","source",b"source","thumb_height",b"thumb_height","thumb_url",b"thumb_url","thumb_width",b"thumb_width","useful",b"useful","width",b"width"]) -> None: ...
 
 class DeliverGiftMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     GRAY_TIP_CONTENT_FIELD_NUMBER: int
     ANIMATION_PACKAGE_ID_FIELD_NUMBER: int
     ANIMATION_PACKAGE_URL_A_FIELD_NUMBER: int
@@ -420,74 +412,72 @@ class DeliverGiftMsg(Message):
     RECEIVER_NAME_FIELD_NUMBER: int
     RECEIVER_PIC_FIELD_NUMBER: int
     STMESSAGE_GIFTURL_FIELD_NUMBER: int
-    gray_tip_content: bytes = ...
-    animation_package_id: int = ...
-    animation_package_url_a: bytes = ...
-    animation_package_url_i: bytes = ...
-    remind_brief: bytes = ...
-    gift_id: int = ...
-    gift_count: int = ...
-    animation_brief: bytes = ...
-    sender_uin: int = ...
-    receiver_uin: int = ...
-    stmessage_title: bytes = ...
-    stmessage_subtitle: bytes = ...
-    stmessage_message: bytes = ...
-    stmessage_giftpicid: int = ...
-    stmessage_comefrom: bytes = ...
-    stmessage_exflag: int = ...
-    to_all_gift_id: bytes = ...
-    comefrom_link: bytes = ...
-    pb_reserve: bytes = ...
-    receiver_name: bytes = ...
-    receiver_pic: bytes = ...
-    stmessage_gifturl: bytes = ...
-
+    gray_tip_content: bytes
+    animation_package_id: int
+    animation_package_url_a: bytes
+    animation_package_url_i: bytes
+    remind_brief: bytes
+    gift_id: int
+    gift_count: int
+    animation_brief: bytes
+    sender_uin: int
+    receiver_uin: int
+    stmessage_title: bytes
+    stmessage_subtitle: bytes
+    stmessage_message: bytes
+    stmessage_giftpicid: int
+    stmessage_comefrom: bytes
+    stmessage_exflag: int
+    to_all_gift_id: bytes
+    comefrom_link: bytes
+    pb_reserve: bytes
+    receiver_name: bytes
+    receiver_pic: bytes
+    stmessage_gifturl: bytes
     def __init__(self,
         *,
-        gray_tip_content : Optional[bytes] = ...,
-        animation_package_id : Optional[int] = ...,
-        animation_package_url_a : Optional[bytes] = ...,
-        animation_package_url_i : Optional[bytes] = ...,
-        remind_brief : Optional[bytes] = ...,
-        gift_id : Optional[int] = ...,
-        gift_count : Optional[int] = ...,
-        animation_brief : Optional[bytes] = ...,
-        sender_uin : Optional[int] = ...,
-        receiver_uin : Optional[int] = ...,
-        stmessage_title : Optional[bytes] = ...,
-        stmessage_subtitle : Optional[bytes] = ...,
-        stmessage_message : Optional[bytes] = ...,
-        stmessage_giftpicid : Optional[int] = ...,
-        stmessage_comefrom : Optional[bytes] = ...,
-        stmessage_exflag : Optional[int] = ...,
-        to_all_gift_id : Optional[bytes] = ...,
-        comefrom_link : Optional[bytes] = ...,
-        pb_reserve : Optional[bytes] = ...,
-        receiver_name : Optional[bytes] = ...,
-        receiver_pic : Optional[bytes] = ...,
-        stmessage_gifturl : Optional[bytes] = ...,
+        gray_tip_content: Optional[bytes] = ...,
+        animation_package_id: Optional[int] = ...,
+        animation_package_url_a: Optional[bytes] = ...,
+        animation_package_url_i: Optional[bytes] = ...,
+        remind_brief: Optional[bytes] = ...,
+        gift_id: Optional[int] = ...,
+        gift_count: Optional[int] = ...,
+        animation_brief: Optional[bytes] = ...,
+        sender_uin: Optional[int] = ...,
+        receiver_uin: Optional[int] = ...,
+        stmessage_title: Optional[bytes] = ...,
+        stmessage_subtitle: Optional[bytes] = ...,
+        stmessage_message: Optional[bytes] = ...,
+        stmessage_giftpicid: Optional[int] = ...,
+        stmessage_comefrom: Optional[bytes] = ...,
+        stmessage_exflag: Optional[int] = ...,
+        to_all_gift_id: Optional[bytes] = ...,
+        comefrom_link: Optional[bytes] = ...,
+        pb_reserve: Optional[bytes] = ...,
+        receiver_name: Optional[bytes] = ...,
+        receiver_pic: Optional[bytes] = ...,
+        stmessage_gifturl: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"animation_brief",b"animation_brief",u"animation_package_id",b"animation_package_id",u"animation_package_url_a",b"animation_package_url_a",u"animation_package_url_i",b"animation_package_url_i",u"comefrom_link",b"comefrom_link",u"gift_count",b"gift_count",u"gift_id",b"gift_id",u"gray_tip_content",b"gray_tip_content",u"pb_reserve",b"pb_reserve",u"receiver_name",b"receiver_name",u"receiver_pic",b"receiver_pic",u"receiver_uin",b"receiver_uin",u"remind_brief",b"remind_brief",u"sender_uin",b"sender_uin",u"stmessage_comefrom",b"stmessage_comefrom",u"stmessage_exflag",b"stmessage_exflag",u"stmessage_giftpicid",b"stmessage_giftpicid",u"stmessage_gifturl",b"stmessage_gifturl",u"stmessage_message",b"stmessage_message",u"stmessage_subtitle",b"stmessage_subtitle",u"stmessage_title",b"stmessage_title",u"to_all_gift_id",b"to_all_gift_id"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"animation_brief",b"animation_brief",u"animation_package_id",b"animation_package_id",u"animation_package_url_a",b"animation_package_url_a",u"animation_package_url_i",b"animation_package_url_i",u"comefrom_link",b"comefrom_link",u"gift_count",b"gift_count",u"gift_id",b"gift_id",u"gray_tip_content",b"gray_tip_content",u"pb_reserve",b"pb_reserve",u"receiver_name",b"receiver_name",u"receiver_pic",b"receiver_pic",u"receiver_uin",b"receiver_uin",u"remind_brief",b"remind_brief",u"sender_uin",b"sender_uin",u"stmessage_comefrom",b"stmessage_comefrom",u"stmessage_exflag",b"stmessage_exflag",u"stmessage_giftpicid",b"stmessage_giftpicid",u"stmessage_gifturl",b"stmessage_gifturl",u"stmessage_message",b"stmessage_message",u"stmessage_subtitle",b"stmessage_subtitle",u"stmessage_title",b"stmessage_title",u"to_all_gift_id",b"to_all_gift_id"]) -> None: ...
+    def HasField(self, field_name: Literal["animation_brief",b"animation_brief","animation_package_id",b"animation_package_id","animation_package_url_a",b"animation_package_url_a","animation_package_url_i",b"animation_package_url_i","comefrom_link",b"comefrom_link","gift_count",b"gift_count","gift_id",b"gift_id","gray_tip_content",b"gray_tip_content","pb_reserve",b"pb_reserve","receiver_name",b"receiver_name","receiver_pic",b"receiver_pic","receiver_uin",b"receiver_uin","remind_brief",b"remind_brief","sender_uin",b"sender_uin","stmessage_comefrom",b"stmessage_comefrom","stmessage_exflag",b"stmessage_exflag","stmessage_giftpicid",b"stmessage_giftpicid","stmessage_gifturl",b"stmessage_gifturl","stmessage_message",b"stmessage_message","stmessage_subtitle",b"stmessage_subtitle","stmessage_title",b"stmessage_title","to_all_gift_id",b"to_all_gift_id"]) -> bool: ...
+    def ClearField(self, field_name: Literal["animation_brief",b"animation_brief","animation_package_id",b"animation_package_id","animation_package_url_a",b"animation_package_url_a","animation_package_url_i",b"animation_package_url_i","comefrom_link",b"comefrom_link","gift_count",b"gift_count","gift_id",b"gift_id","gray_tip_content",b"gray_tip_content","pb_reserve",b"pb_reserve","receiver_name",b"receiver_name","receiver_pic",b"receiver_pic","receiver_uin",b"receiver_uin","remind_brief",b"remind_brief","sender_uin",b"sender_uin","stmessage_comefrom",b"stmessage_comefrom","stmessage_exflag",b"stmessage_exflag","stmessage_giftpicid",b"stmessage_giftpicid","stmessage_gifturl",b"stmessage_gifturl","stmessage_message",b"stmessage_message","stmessage_subtitle",b"stmessage_subtitle","stmessage_title",b"stmessage_title","to_all_gift_id",b"to_all_gift_id"]) -> None: ...
 
 class EIMInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     ROOT_ID_FIELD_NUMBER: int
     FLAG_FIELD_NUMBER: int
-    root_id: int = ...
-    flag: int = ...
-
+    root_id: int
+    flag: int
     def __init__(self,
         *,
-        root_id : Optional[int] = ...,
-        flag : Optional[int] = ...,
+        root_id: Optional[int] = ...,
+        flag: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"flag",b"flag",u"root_id",b"root_id"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"flag",b"flag",u"root_id",b"root_id"]) -> None: ...
+    def HasField(self, field_name: Literal["flag",b"flag","root_id",b"root_id"]) -> bool: ...
+    def ClearField(self, field_name: Literal["flag",b"flag","root_id",b"root_id"]) -> None: ...
 
 class Elem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     TEXT_FIELD_NUMBER: int
     FACE_FIELD_NUMBER: int
     ONLINE_IMAGE_FIELD_NUMBER: int
@@ -541,240 +531,186 @@ class Elem(Message):
     LIGHT_APP_FIELD_NUMBER: int
     EIM_INFO_FIELD_NUMBER: int
     COMMON_ELEM_FIELD_NUMBER: int
-    bankcode_ctrl_info: bytes = ...
-
     @property
     def text(self) -> PlainText: ...
-
     @property
     def face(self) -> Face: ...
-
     @property
     def online_image(self) -> OnlineImage: ...
-
     @property
     def not_online_image(self) -> NotOnlineImage: ...
-
     @property
     def trans_elem_info(self) -> TransElem: ...
-
     @property
     def market_face(self) -> MarketFace: ...
-
     @property
     def elem_flags(self) -> ElemFlags: ...
-
     @property
     def custom_face(self) -> CustomFace: ...
-
     @property
     def elem_flags2(self) -> ElemFlags2: ...
-
     @property
     def fun_face(self) -> FunFace: ...
-
     @property
     def secret_file(self) -> SecretFileMsg: ...
-
     @property
     def rich_msg(self) -> RichMsg: ...
-
     @property
     def group_file(self) -> GroupFile: ...
-
     @property
     def pub_group(self) -> PubGroup: ...
-
     @property
     def market_trans(self) -> MarketTrans: ...
-
     @property
     def extra_info(self) -> ExtraInfo: ...
-
     @property
     def shake_window(self) -> ShakeWindow: ...
-
     @property
     def pub_account(self) -> PubAccount: ...
-
     @property
     def video_file(self) -> VideoFile: ...
-
     @property
     def tips_info(self) -> TipsInfo: ...
-
     @property
     def anon_group_msg(self) -> AnonymousGroupMsg: ...
-
     @property
     def qq_live_old(self) -> QQLiveOld: ...
-
     @property
     def life_online(self) -> LifeOnlineAccount: ...
-
     @property
     def qqwallet_msg(self) -> QQWalletMsg: ...
-
     @property
     def crm_elem(self) -> CrmElem: ...
-
     @property
     def conference_tips_info(self) -> ConferenceTipsInfo: ...
-
     @property
     def redbag_info(self) -> RedBagInfo: ...
-
     @property
     def low_version_tips(self) -> LowVersionTips: ...
-
+    bankcode_ctrl_info: bytes
     @property
     def near_by_msg(self) -> NearByMessageType: ...
-
     @property
     def custom_elem(self) -> CustomElem: ...
-
     @property
     def location_info(self) -> LocationInfo: ...
-
     @property
     def pub_acc_info(self) -> PubAccInfo: ...
-
     @property
     def small_emoji(self) -> SmallEmoji: ...
-
     @property
     def fsj_msg_elem(self) -> FSJMessageElem: ...
-
     @property
     def ark_app(self) -> ArkAppElem: ...
-
     @property
     def general_flags(self) -> GeneralFlags: ...
-
     @property
     def hc_flash_pic(self) -> CustomFace: ...
-
     @property
     def deliver_gift_msg(self) -> DeliverGiftMsg: ...
-
     @property
     def bitapp_msg(self) -> BitAppMsg: ...
-
     @property
     def open_qq_data(self) -> OpenQQData: ...
-
     @property
     def apollo_msg(self) -> ApolloActMsg: ...
-
     @property
     def group_pub_acc_info(self) -> GroupPubAccountInfo: ...
-
     @property
     def bless_msg(self) -> BlessingMessage: ...
-
     @property
     def src_msg(self) -> SourceMsg: ...
-
     @property
     def lola_msg(self) -> LolaMsg: ...
-
     @property
     def group_business_msg(self) -> GroupBusinessMsg: ...
-
     @property
     def workflow_notify(self) -> WorkflowNotifyMsg: ...
-
     @property
     def pat_elem(self) -> PatsElem: ...
-
     @property
     def group_post_elem(self) -> GroupPostElem: ...
-
     @property
     def light_app(self) -> LightAppElem: ...
-
     @property
     def eim_info(self) -> EIMInfo: ...
-
     @property
     def common_elem(self) -> CommonElem: ...
-
     def __init__(self,
         *,
-        text : Optional[PlainText] = ...,
-        face : Optional[Face] = ...,
-        online_image : Optional[OnlineImage] = ...,
-        not_online_image : Optional[NotOnlineImage] = ...,
-        trans_elem_info : Optional[TransElem] = ...,
-        market_face : Optional[MarketFace] = ...,
-        elem_flags : Optional[ElemFlags] = ...,
-        custom_face : Optional[CustomFace] = ...,
-        elem_flags2 : Optional[ElemFlags2] = ...,
-        fun_face : Optional[FunFace] = ...,
-        secret_file : Optional[SecretFileMsg] = ...,
-        rich_msg : Optional[RichMsg] = ...,
-        group_file : Optional[GroupFile] = ...,
-        pub_group : Optional[PubGroup] = ...,
-        market_trans : Optional[MarketTrans] = ...,
-        extra_info : Optional[ExtraInfo] = ...,
-        shake_window : Optional[ShakeWindow] = ...,
-        pub_account : Optional[PubAccount] = ...,
-        video_file : Optional[VideoFile] = ...,
-        tips_info : Optional[TipsInfo] = ...,
-        anon_group_msg : Optional[AnonymousGroupMsg] = ...,
-        qq_live_old : Optional[QQLiveOld] = ...,
-        life_online : Optional[LifeOnlineAccount] = ...,
-        qqwallet_msg : Optional[QQWalletMsg] = ...,
-        crm_elem : Optional[CrmElem] = ...,
-        conference_tips_info : Optional[ConferenceTipsInfo] = ...,
-        redbag_info : Optional[RedBagInfo] = ...,
-        low_version_tips : Optional[LowVersionTips] = ...,
-        bankcode_ctrl_info : Optional[bytes] = ...,
-        near_by_msg : Optional[NearByMessageType] = ...,
-        custom_elem : Optional[CustomElem] = ...,
-        location_info : Optional[LocationInfo] = ...,
-        pub_acc_info : Optional[PubAccInfo] = ...,
-        small_emoji : Optional[SmallEmoji] = ...,
-        fsj_msg_elem : Optional[FSJMessageElem] = ...,
-        ark_app : Optional[ArkAppElem] = ...,
-        general_flags : Optional[GeneralFlags] = ...,
-        hc_flash_pic : Optional[CustomFace] = ...,
-        deliver_gift_msg : Optional[DeliverGiftMsg] = ...,
-        bitapp_msg : Optional[BitAppMsg] = ...,
-        open_qq_data : Optional[OpenQQData] = ...,
-        apollo_msg : Optional[ApolloActMsg] = ...,
-        group_pub_acc_info : Optional[GroupPubAccountInfo] = ...,
-        bless_msg : Optional[BlessingMessage] = ...,
-        src_msg : Optional[SourceMsg] = ...,
-        lola_msg : Optional[LolaMsg] = ...,
-        group_business_msg : Optional[GroupBusinessMsg] = ...,
-        workflow_notify : Optional[WorkflowNotifyMsg] = ...,
-        pat_elem : Optional[PatsElem] = ...,
-        group_post_elem : Optional[GroupPostElem] = ...,
-        light_app : Optional[LightAppElem] = ...,
-        eim_info : Optional[EIMInfo] = ...,
-        common_elem : Optional[CommonElem] = ...,
+        text: Optional[PlainText] = ...,
+        face: Optional[Face] = ...,
+        online_image: Optional[OnlineImage] = ...,
+        not_online_image: Optional[NotOnlineImage] = ...,
+        trans_elem_info: Optional[TransElem] = ...,
+        market_face: Optional[MarketFace] = ...,
+        elem_flags: Optional[ElemFlags] = ...,
+        custom_face: Optional[CustomFace] = ...,
+        elem_flags2: Optional[ElemFlags2] = ...,
+        fun_face: Optional[FunFace] = ...,
+        secret_file: Optional[SecretFileMsg] = ...,
+        rich_msg: Optional[RichMsg] = ...,
+        group_file: Optional[GroupFile] = ...,
+        pub_group: Optional[PubGroup] = ...,
+        market_trans: Optional[MarketTrans] = ...,
+        extra_info: Optional[ExtraInfo] = ...,
+        shake_window: Optional[ShakeWindow] = ...,
+        pub_account: Optional[PubAccount] = ...,
+        video_file: Optional[VideoFile] = ...,
+        tips_info: Optional[TipsInfo] = ...,
+        anon_group_msg: Optional[AnonymousGroupMsg] = ...,
+        qq_live_old: Optional[QQLiveOld] = ...,
+        life_online: Optional[LifeOnlineAccount] = ...,
+        qqwallet_msg: Optional[QQWalletMsg] = ...,
+        crm_elem: Optional[CrmElem] = ...,
+        conference_tips_info: Optional[ConferenceTipsInfo] = ...,
+        redbag_info: Optional[RedBagInfo] = ...,
+        low_version_tips: Optional[LowVersionTips] = ...,
+        bankcode_ctrl_info: Optional[bytes] = ...,
+        near_by_msg: Optional[NearByMessageType] = ...,
+        custom_elem: Optional[CustomElem] = ...,
+        location_info: Optional[LocationInfo] = ...,
+        pub_acc_info: Optional[PubAccInfo] = ...,
+        small_emoji: Optional[SmallEmoji] = ...,
+        fsj_msg_elem: Optional[FSJMessageElem] = ...,
+        ark_app: Optional[ArkAppElem] = ...,
+        general_flags: Optional[GeneralFlags] = ...,
+        hc_flash_pic: Optional[CustomFace] = ...,
+        deliver_gift_msg: Optional[DeliverGiftMsg] = ...,
+        bitapp_msg: Optional[BitAppMsg] = ...,
+        open_qq_data: Optional[OpenQQData] = ...,
+        apollo_msg: Optional[ApolloActMsg] = ...,
+        group_pub_acc_info: Optional[GroupPubAccountInfo] = ...,
+        bless_msg: Optional[BlessingMessage] = ...,
+        src_msg: Optional[SourceMsg] = ...,
+        lola_msg: Optional[LolaMsg] = ...,
+        group_business_msg: Optional[GroupBusinessMsg] = ...,
+        workflow_notify: Optional[WorkflowNotifyMsg] = ...,
+        pat_elem: Optional[PatsElem] = ...,
+        group_post_elem: Optional[GroupPostElem] = ...,
+        light_app: Optional[LightAppElem] = ...,
+        eim_info: Optional[EIMInfo] = ...,
+        common_elem: Optional[CommonElem] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"anon_group_msg",b"anon_group_msg",u"apollo_msg",b"apollo_msg",u"ark_app",b"ark_app",u"bankcode_ctrl_info",b"bankcode_ctrl_info",u"bitapp_msg",b"bitapp_msg",u"bless_msg",b"bless_msg",u"common_elem",b"common_elem",u"conference_tips_info",b"conference_tips_info",u"crm_elem",b"crm_elem",u"custom_elem",b"custom_elem",u"custom_face",b"custom_face",u"deliver_gift_msg",b"deliver_gift_msg",u"eim_info",b"eim_info",u"elem_flags",b"elem_flags",u"elem_flags2",b"elem_flags2",u"extra_info",b"extra_info",u"face",b"face",u"fsj_msg_elem",b"fsj_msg_elem",u"fun_face",b"fun_face",u"general_flags",b"general_flags",u"group_business_msg",b"group_business_msg",u"group_file",b"group_file",u"group_post_elem",b"group_post_elem",u"group_pub_acc_info",b"group_pub_acc_info",u"hc_flash_pic",b"hc_flash_pic",u"life_online",b"life_online",u"light_app",b"light_app",u"location_info",b"location_info",u"lola_msg",b"lola_msg",u"low_version_tips",b"low_version_tips",u"market_face",b"market_face",u"market_trans",b"market_trans",u"near_by_msg",b"near_by_msg",u"not_online_image",b"not_online_image",u"online_image",b"online_image",u"open_qq_data",b"open_qq_data",u"pat_elem",b"pat_elem",u"pub_acc_info",b"pub_acc_info",u"pub_account",b"pub_account",u"pub_group",b"pub_group",u"qq_live_old",b"qq_live_old",u"qqwallet_msg",b"qqwallet_msg",u"redbag_info",b"redbag_info",u"rich_msg",b"rich_msg",u"secret_file",b"secret_file",u"shake_window",b"shake_window",u"small_emoji",b"small_emoji",u"src_msg",b"src_msg",u"text",b"text",u"tips_info",b"tips_info",u"trans_elem_info",b"trans_elem_info",u"video_file",b"video_file",u"workflow_notify",b"workflow_notify"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"anon_group_msg",b"anon_group_msg",u"apollo_msg",b"apollo_msg",u"ark_app",b"ark_app",u"bankcode_ctrl_info",b"bankcode_ctrl_info",u"bitapp_msg",b"bitapp_msg",u"bless_msg",b"bless_msg",u"common_elem",b"common_elem",u"conference_tips_info",b"conference_tips_info",u"crm_elem",b"crm_elem",u"custom_elem",b"custom_elem",u"custom_face",b"custom_face",u"deliver_gift_msg",b"deliver_gift_msg",u"eim_info",b"eim_info",u"elem_flags",b"elem_flags",u"elem_flags2",b"elem_flags2",u"extra_info",b"extra_info",u"face",b"face",u"fsj_msg_elem",b"fsj_msg_elem",u"fun_face",b"fun_face",u"general_flags",b"general_flags",u"group_business_msg",b"group_business_msg",u"group_file",b"group_file",u"group_post_elem",b"group_post_elem",u"group_pub_acc_info",b"group_pub_acc_info",u"hc_flash_pic",b"hc_flash_pic",u"life_online",b"life_online",u"light_app",b"light_app",u"location_info",b"location_info",u"lola_msg",b"lola_msg",u"low_version_tips",b"low_version_tips",u"market_face",b"market_face",u"market_trans",b"market_trans",u"near_by_msg",b"near_by_msg",u"not_online_image",b"not_online_image",u"online_image",b"online_image",u"open_qq_data",b"open_qq_data",u"pat_elem",b"pat_elem",u"pub_acc_info",b"pub_acc_info",u"pub_account",b"pub_account",u"pub_group",b"pub_group",u"qq_live_old",b"qq_live_old",u"qqwallet_msg",b"qqwallet_msg",u"redbag_info",b"redbag_info",u"rich_msg",b"rich_msg",u"secret_file",b"secret_file",u"shake_window",b"shake_window",u"small_emoji",b"small_emoji",u"src_msg",b"src_msg",u"text",b"text",u"tips_info",b"tips_info",u"trans_elem_info",b"trans_elem_info",u"video_file",b"video_file",u"workflow_notify",b"workflow_notify"]) -> None: ...
+    def HasField(self, field_name: Literal["anon_group_msg",b"anon_group_msg","apollo_msg",b"apollo_msg","ark_app",b"ark_app","bankcode_ctrl_info",b"bankcode_ctrl_info","bitapp_msg",b"bitapp_msg","bless_msg",b"bless_msg","common_elem",b"common_elem","conference_tips_info",b"conference_tips_info","crm_elem",b"crm_elem","custom_elem",b"custom_elem","custom_face",b"custom_face","deliver_gift_msg",b"deliver_gift_msg","eim_info",b"eim_info","elem_flags",b"elem_flags","elem_flags2",b"elem_flags2","extra_info",b"extra_info","face",b"face","fsj_msg_elem",b"fsj_msg_elem","fun_face",b"fun_face","general_flags",b"general_flags","group_business_msg",b"group_business_msg","group_file",b"group_file","group_post_elem",b"group_post_elem","group_pub_acc_info",b"group_pub_acc_info","hc_flash_pic",b"hc_flash_pic","life_online",b"life_online","light_app",b"light_app","location_info",b"location_info","lola_msg",b"lola_msg","low_version_tips",b"low_version_tips","market_face",b"market_face","market_trans",b"market_trans","near_by_msg",b"near_by_msg","not_online_image",b"not_online_image","online_image",b"online_image","open_qq_data",b"open_qq_data","pat_elem",b"pat_elem","pub_acc_info",b"pub_acc_info","pub_account",b"pub_account","pub_group",b"pub_group","qq_live_old",b"qq_live_old","qqwallet_msg",b"qqwallet_msg","redbag_info",b"redbag_info","rich_msg",b"rich_msg","secret_file",b"secret_file","shake_window",b"shake_window","small_emoji",b"small_emoji","src_msg",b"src_msg","text",b"text","tips_info",b"tips_info","trans_elem_info",b"trans_elem_info","video_file",b"video_file","workflow_notify",b"workflow_notify"]) -> bool: ...
+    def ClearField(self, field_name: Literal["anon_group_msg",b"anon_group_msg","apollo_msg",b"apollo_msg","ark_app",b"ark_app","bankcode_ctrl_info",b"bankcode_ctrl_info","bitapp_msg",b"bitapp_msg","bless_msg",b"bless_msg","common_elem",b"common_elem","conference_tips_info",b"conference_tips_info","crm_elem",b"crm_elem","custom_elem",b"custom_elem","custom_face",b"custom_face","deliver_gift_msg",b"deliver_gift_msg","eim_info",b"eim_info","elem_flags",b"elem_flags","elem_flags2",b"elem_flags2","extra_info",b"extra_info","face",b"face","fsj_msg_elem",b"fsj_msg_elem","fun_face",b"fun_face","general_flags",b"general_flags","group_business_msg",b"group_business_msg","group_file",b"group_file","group_post_elem",b"group_post_elem","group_pub_acc_info",b"group_pub_acc_info","hc_flash_pic",b"hc_flash_pic","life_online",b"life_online","light_app",b"light_app","location_info",b"location_info","lola_msg",b"lola_msg","low_version_tips",b"low_version_tips","market_face",b"market_face","market_trans",b"market_trans","near_by_msg",b"near_by_msg","not_online_image",b"not_online_image","online_image",b"online_image","open_qq_data",b"open_qq_data","pat_elem",b"pat_elem","pub_acc_info",b"pub_acc_info","pub_account",b"pub_account","pub_group",b"pub_group","qq_live_old",b"qq_live_old","qqwallet_msg",b"qqwallet_msg","redbag_info",b"redbag_info","rich_msg",b"rich_msg","secret_file",b"secret_file","shake_window",b"shake_window","small_emoji",b"small_emoji","src_msg",b"src_msg","text",b"text","tips_info",b"tips_info","trans_elem_info",b"trans_elem_info","video_file",b"video_file","workflow_notify",b"workflow_notify"]) -> None: ...
 
 class ElemFlags(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FLAGS1_FIELD_NUMBER: int
     BUSINESS_DATA_FIELD_NUMBER: int
-    flags1: bytes = ...
-    business_data: bytes = ...
-
+    flags1: bytes
+    business_data: bytes
     def __init__(self,
         *,
-        flags1 : Optional[bytes] = ...,
-        business_data : Optional[bytes] = ...,
+        flags1: Optional[bytes] = ...,
+        business_data: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"business_data",b"business_data",u"flags1",b"flags1"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"business_data",b"business_data",u"flags1",b"flags1"]) -> None: ...
+    def HasField(self, field_name: Literal["business_data",b"business_data","flags1",b"flags1"]) -> bool: ...
+    def ClearField(self, field_name: Literal["business_data",b"business_data","flags1",b"flags1"]) -> None: ...
 
 class ElemFlags2(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     COLOR_TEXT_ID_FIELD_NUMBER: int
     MSG_ID_FIELD_NUMBER: int
     WHISPER_SESSION_ID_FIELD_NUMBER: int
@@ -789,64 +725,59 @@ class ElemFlags2(Message):
     CUSTOM_FONT_FIELD_NUMBER: int
     PC_SUPPORT_DEF_FIELD_NUMBER: int
     CRM_FLAGS_FIELD_NUMBER: int
-    color_text_id: int = ...
-    msg_id: int = ...
-    whisper_session_id: int = ...
-    ptt_change_bit: int = ...
-    vip_status: int = ...
-    compatible_id: int = ...
-    msg_rpt_cnt: int = ...
-    longtitude: int = ...
-    latitude: int = ...
-    custom_font: int = ...
-    crm_flags: int = ...
-
+    color_text_id: int
+    msg_id: int
+    whisper_session_id: int
+    ptt_change_bit: int
+    vip_status: int
+    compatible_id: int
     @property
     def insts(self) -> RepeatedCompositeFieldContainer[Inst]: ...
-
+    msg_rpt_cnt: int
     @property
     def src_inst(self) -> Inst: ...
-
+    longtitude: int
+    latitude: int
+    custom_font: int
     @property
     def pc_support_def(self) -> PcSupportDef: ...
-
+    crm_flags: int
     def __init__(self,
         *,
-        color_text_id : Optional[int] = ...,
-        msg_id : Optional[int] = ...,
-        whisper_session_id : Optional[int] = ...,
-        ptt_change_bit : Optional[int] = ...,
-        vip_status : Optional[int] = ...,
-        compatible_id : Optional[int] = ...,
-        insts : Optional[Iterable[Inst]] = ...,
-        msg_rpt_cnt : Optional[int] = ...,
-        src_inst : Optional[Inst] = ...,
-        longtitude : Optional[int] = ...,
-        latitude : Optional[int] = ...,
-        custom_font : Optional[int] = ...,
-        pc_support_def : Optional[PcSupportDef] = ...,
-        crm_flags : Optional[int] = ...,
+        color_text_id: Optional[int] = ...,
+        msg_id: Optional[int] = ...,
+        whisper_session_id: Optional[int] = ...,
+        ptt_change_bit: Optional[int] = ...,
+        vip_status: Optional[int] = ...,
+        compatible_id: Optional[int] = ...,
+        insts: Optional[Iterable[Inst]] = ...,
+        msg_rpt_cnt: Optional[int] = ...,
+        src_inst: Optional[Inst] = ...,
+        longtitude: Optional[int] = ...,
+        latitude: Optional[int] = ...,
+        custom_font: Optional[int] = ...,
+        pc_support_def: Optional[PcSupportDef] = ...,
+        crm_flags: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"color_text_id",b"color_text_id",u"compatible_id",b"compatible_id",u"crm_flags",b"crm_flags",u"custom_font",b"custom_font",u"latitude",b"latitude",u"longtitude",b"longtitude",u"msg_id",b"msg_id",u"msg_rpt_cnt",b"msg_rpt_cnt",u"pc_support_def",b"pc_support_def",u"ptt_change_bit",b"ptt_change_bit",u"src_inst",b"src_inst",u"vip_status",b"vip_status",u"whisper_session_id",b"whisper_session_id"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"color_text_id",b"color_text_id",u"compatible_id",b"compatible_id",u"crm_flags",b"crm_flags",u"custom_font",b"custom_font",u"insts",b"insts",u"latitude",b"latitude",u"longtitude",b"longtitude",u"msg_id",b"msg_id",u"msg_rpt_cnt",b"msg_rpt_cnt",u"pc_support_def",b"pc_support_def",u"ptt_change_bit",b"ptt_change_bit",u"src_inst",b"src_inst",u"vip_status",b"vip_status",u"whisper_session_id",b"whisper_session_id"]) -> None: ...
+    def HasField(self, field_name: Literal["color_text_id",b"color_text_id","compatible_id",b"compatible_id","crm_flags",b"crm_flags","custom_font",b"custom_font","latitude",b"latitude","longtitude",b"longtitude","msg_id",b"msg_id","msg_rpt_cnt",b"msg_rpt_cnt","pc_support_def",b"pc_support_def","ptt_change_bit",b"ptt_change_bit","src_inst",b"src_inst","vip_status",b"vip_status","whisper_session_id",b"whisper_session_id"]) -> bool: ...
+    def ClearField(self, field_name: Literal["color_text_id",b"color_text_id","compatible_id",b"compatible_id","crm_flags",b"crm_flags","custom_font",b"custom_font","insts",b"insts","latitude",b"latitude","longtitude",b"longtitude","msg_id",b"msg_id","msg_rpt_cnt",b"msg_rpt_cnt","pc_support_def",b"pc_support_def","ptt_change_bit",b"ptt_change_bit","src_inst",b"src_inst","vip_status",b"vip_status","whisper_session_id",b"whisper_session_id"]) -> None: ...
 
 class Inst(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     APP_ID_FIELD_NUMBER: int
     INST_ID_FIELD_NUMBER: int
-    app_id: int = ...
-    inst_id: int = ...
-
+    app_id: int
+    inst_id: int
     def __init__(self,
         *,
-        app_id : Optional[int] = ...,
-        inst_id : Optional[int] = ...,
+        app_id: Optional[int] = ...,
+        inst_id: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"app_id",b"app_id",u"inst_id",b"inst_id"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"app_id",b"app_id",u"inst_id",b"inst_id"]) -> None: ...
+    def HasField(self, field_name: Literal["app_id",b"app_id","inst_id",b"inst_id"]) -> bool: ...
+    def ClearField(self, field_name: Literal["app_id",b"app_id","inst_id",b"inst_id"]) -> None: ...
 
 class ExtraInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     NICK_FIELD_NUMBER: int
     GROUP_CARD_FIELD_NUMBER: int
     LEVEL_FIELD_NUMBER: int
@@ -859,118 +790,111 @@ class ExtraInfo(Message):
     MSG_STATE_FLAG_FIELD_NUMBER: int
     APNS_SOUND_TYPE_FIELD_NUMBER: int
     NEW_GROUP_FLAG_FIELD_NUMBER: int
-    nick: bytes = ...
-    group_card: bytes = ...
-    level: int = ...
-    flags: int = ...
-    group_mask: int = ...
-    msg_tail_id: int = ...
-    sender_title: bytes = ...
-    apns_tips: bytes = ...
-    uin: int = ...
-    msg_state_flag: int = ...
-    apns_sound_type: int = ...
-    new_group_flag: int = ...
-
+    nick: bytes
+    group_card: bytes
+    level: int
+    flags: int
+    group_mask: int
+    msg_tail_id: int
+    sender_title: bytes
+    apns_tips: bytes
+    uin: int
+    msg_state_flag: int
+    apns_sound_type: int
+    new_group_flag: int
     def __init__(self,
         *,
-        nick : Optional[bytes] = ...,
-        group_card : Optional[bytes] = ...,
-        level : Optional[int] = ...,
-        flags : Optional[int] = ...,
-        group_mask : Optional[int] = ...,
-        msg_tail_id : Optional[int] = ...,
-        sender_title : Optional[bytes] = ...,
-        apns_tips : Optional[bytes] = ...,
-        uin : Optional[int] = ...,
-        msg_state_flag : Optional[int] = ...,
-        apns_sound_type : Optional[int] = ...,
-        new_group_flag : Optional[int] = ...,
+        nick: Optional[bytes] = ...,
+        group_card: Optional[bytes] = ...,
+        level: Optional[int] = ...,
+        flags: Optional[int] = ...,
+        group_mask: Optional[int] = ...,
+        msg_tail_id: Optional[int] = ...,
+        sender_title: Optional[bytes] = ...,
+        apns_tips: Optional[bytes] = ...,
+        uin: Optional[int] = ...,
+        msg_state_flag: Optional[int] = ...,
+        apns_sound_type: Optional[int] = ...,
+        new_group_flag: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"apns_sound_type",b"apns_sound_type",u"apns_tips",b"apns_tips",u"flags",b"flags",u"group_card",b"group_card",u"group_mask",b"group_mask",u"level",b"level",u"msg_state_flag",b"msg_state_flag",u"msg_tail_id",b"msg_tail_id",u"new_group_flag",b"new_group_flag",u"nick",b"nick",u"sender_title",b"sender_title",u"uin",b"uin"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"apns_sound_type",b"apns_sound_type",u"apns_tips",b"apns_tips",u"flags",b"flags",u"group_card",b"group_card",u"group_mask",b"group_mask",u"level",b"level",u"msg_state_flag",b"msg_state_flag",u"msg_tail_id",b"msg_tail_id",u"new_group_flag",b"new_group_flag",u"nick",b"nick",u"sender_title",b"sender_title",u"uin",b"uin"]) -> None: ...
+    def HasField(self, field_name: Literal["apns_sound_type",b"apns_sound_type","apns_tips",b"apns_tips","flags",b"flags","group_card",b"group_card","group_mask",b"group_mask","level",b"level","msg_state_flag",b"msg_state_flag","msg_tail_id",b"msg_tail_id","new_group_flag",b"new_group_flag","nick",b"nick","sender_title",b"sender_title","uin",b"uin"]) -> bool: ...
+    def ClearField(self, field_name: Literal["apns_sound_type",b"apns_sound_type","apns_tips",b"apns_tips","flags",b"flags","group_card",b"group_card","group_mask",b"group_mask","level",b"level","msg_state_flag",b"msg_state_flag","msg_tail_id",b"msg_tail_id","new_group_flag",b"new_group_flag","nick",b"nick","sender_title",b"sender_title","uin",b"uin"]) -> None: ...
 
 class FSJMessageElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     MSG_TYPE_FIELD_NUMBER: int
-    msg_type: int = ...
-
+    msg_type: int
     def __init__(self,
         *,
-        msg_type : Optional[int] = ...,
+        msg_type: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"msg_type",b"msg_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"msg_type",b"msg_type"]) -> None: ...
+    def HasField(self, field_name: Literal["msg_type",b"msg_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["msg_type",b"msg_type"]) -> None: ...
 
 class Face(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     INDEX_FIELD_NUMBER: int
     OLD_FIELD_NUMBER: int
     BUF_FIELD_NUMBER: int
-    index: int = ...
-    old: bytes = ...
-    buf: bytes = ...
-
+    index: int
+    old: bytes
+    buf: bytes
     def __init__(self,
         *,
-        index : Optional[int] = ...,
-        old : Optional[bytes] = ...,
-        buf : Optional[bytes] = ...,
+        index: Optional[int] = ...,
+        old: Optional[bytes] = ...,
+        buf: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"buf",b"buf",u"index",b"index",u"old",b"old"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"buf",b"buf",u"index",b"index",u"old",b"old"]) -> None: ...
+    def HasField(self, field_name: Literal["buf",b"buf","index",b"index","old",b"old"]) -> bool: ...
+    def ClearField(self, field_name: Literal["buf",b"buf","index",b"index","old",b"old"]) -> None: ...
 
 class FunFace(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     TURNTABLE_FIELD_NUMBER: int
     BOMB_FIELD_NUMBER: int
-
     @property
     def turntable(self) -> Turntable: ...
-
     @property
     def bomb(self) -> Bomb: ...
-
     def __init__(self,
         *,
-        turntable : Optional[Turntable] = ...,
-        bomb : Optional[Bomb] = ...,
+        turntable: Optional[Turntable] = ...,
+        bomb: Optional[Bomb] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"bomb",b"bomb",u"turntable",b"turntable"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"bomb",b"bomb",u"turntable",b"turntable"]) -> None: ...
+    def HasField(self, field_name: Literal["bomb",b"bomb","turntable",b"turntable"]) -> bool: ...
+    def ClearField(self, field_name: Literal["bomb",b"bomb","turntable",b"turntable"]) -> None: ...
 
 class Bomb(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     BURST_FIELD_NUMBER: int
-    burst: bool = ...
-
+    burst: bool
     def __init__(self,
         *,
-        burst : Optional[bool] = ...,
+        burst: Optional[bool] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"burst",b"burst"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"burst",b"burst"]) -> None: ...
+    def HasField(self, field_name: Literal["burst",b"burst"]) -> bool: ...
+    def ClearField(self, field_name: Literal["burst",b"burst"]) -> None: ...
 
 class Turntable(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     UIN_LIST_FIELD_NUMBER: int
     HIT_UIN_FIELD_NUMBER: int
     HIT_UIN_NICK_FIELD_NUMBER: int
-    uin_list: RepeatedScalarFieldContainer[int] = ...
-    hit_uin: int = ...
-    hit_uin_nick: Text = ...
-
+    @property
+    def uin_list(self) -> RepeatedScalarFieldContainer[int]: ...
+    hit_uin: int
+    hit_uin_nick: Text
     def __init__(self,
         *,
-        uin_list : Optional[Iterable[int]] = ...,
-        hit_uin : Optional[int] = ...,
-        hit_uin_nick : Optional[Text] = ...,
+        uin_list: Optional[Iterable[int]] = ...,
+        hit_uin: Optional[int] = ...,
+        hit_uin_nick: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"hit_uin",b"hit_uin",u"hit_uin_nick",b"hit_uin_nick"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"hit_uin",b"hit_uin",u"hit_uin_nick",b"hit_uin_nick",u"uin_list",b"uin_list"]) -> None: ...
+    def HasField(self, field_name: Literal["hit_uin",b"hit_uin","hit_uin_nick",b"hit_uin_nick"]) -> bool: ...
+    def ClearField(self, field_name: Literal["hit_uin",b"hit_uin","hit_uin_nick",b"hit_uin_nick","uin_list",b"uin_list"]) -> None: ...
 
 class GeneralFlags(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     BUBBLE_DIY_TEXT_ID_FIELD_NUMBER: int
     GROUP_FLAG_NEW_FIELD_NUMBER: int
     UIN_FIELD_NUMBER: int
@@ -990,53 +914,52 @@ class GeneralFlags(Message):
     PENDANT_ID_FIELD_NUMBER: int
     RP_INDEX_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    bubble_diy_text_id: int = ...
-    group_flag_new: int = ...
-    uin: int = ...
-    rp_id: bytes = ...
-    prp_fold: int = ...
-    long_text_flag: int = ...
-    long_text_resid: bytes = ...
-    group_type: int = ...
-    to_uin_flag: int = ...
-    glamour_level: int = ...
-    member_level: int = ...
-    group_rank_seq: int = ...
-    olympic_torch: int = ...
-    babyq_guide_msg_cookie: bytes = ...
-    uin32_expert_flag: int = ...
-    bubble_sub_id: int = ...
-    pendant_id: int = ...
-    rp_index: bytes = ...
-    pb_reserve: bytes = ...
-
+    bubble_diy_text_id: int
+    group_flag_new: int
+    uin: int
+    rp_id: bytes
+    prp_fold: int
+    long_text_flag: int
+    long_text_resid: bytes
+    group_type: int
+    to_uin_flag: int
+    glamour_level: int
+    member_level: int
+    group_rank_seq: int
+    olympic_torch: int
+    babyq_guide_msg_cookie: bytes
+    uin32_expert_flag: int
+    bubble_sub_id: int
+    pendant_id: int
+    rp_index: bytes
+    pb_reserve: bytes
     def __init__(self,
         *,
-        bubble_diy_text_id : Optional[int] = ...,
-        group_flag_new : Optional[int] = ...,
-        uin : Optional[int] = ...,
-        rp_id : Optional[bytes] = ...,
-        prp_fold : Optional[int] = ...,
-        long_text_flag : Optional[int] = ...,
-        long_text_resid : Optional[bytes] = ...,
-        group_type : Optional[int] = ...,
-        to_uin_flag : Optional[int] = ...,
-        glamour_level : Optional[int] = ...,
-        member_level : Optional[int] = ...,
-        group_rank_seq : Optional[int] = ...,
-        olympic_torch : Optional[int] = ...,
-        babyq_guide_msg_cookie : Optional[bytes] = ...,
-        uin32_expert_flag : Optional[int] = ...,
-        bubble_sub_id : Optional[int] = ...,
-        pendant_id : Optional[int] = ...,
-        rp_index : Optional[bytes] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        bubble_diy_text_id: Optional[int] = ...,
+        group_flag_new: Optional[int] = ...,
+        uin: Optional[int] = ...,
+        rp_id: Optional[bytes] = ...,
+        prp_fold: Optional[int] = ...,
+        long_text_flag: Optional[int] = ...,
+        long_text_resid: Optional[bytes] = ...,
+        group_type: Optional[int] = ...,
+        to_uin_flag: Optional[int] = ...,
+        glamour_level: Optional[int] = ...,
+        member_level: Optional[int] = ...,
+        group_rank_seq: Optional[int] = ...,
+        olympic_torch: Optional[int] = ...,
+        babyq_guide_msg_cookie: Optional[bytes] = ...,
+        uin32_expert_flag: Optional[int] = ...,
+        bubble_sub_id: Optional[int] = ...,
+        pendant_id: Optional[int] = ...,
+        rp_index: Optional[bytes] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"babyq_guide_msg_cookie",b"babyq_guide_msg_cookie",u"bubble_diy_text_id",b"bubble_diy_text_id",u"bubble_sub_id",b"bubble_sub_id",u"glamour_level",b"glamour_level",u"group_flag_new",b"group_flag_new",u"group_rank_seq",b"group_rank_seq",u"group_type",b"group_type",u"long_text_flag",b"long_text_flag",u"long_text_resid",b"long_text_resid",u"member_level",b"member_level",u"olympic_torch",b"olympic_torch",u"pb_reserve",b"pb_reserve",u"pendant_id",b"pendant_id",u"prp_fold",b"prp_fold",u"rp_id",b"rp_id",u"rp_index",b"rp_index",u"to_uin_flag",b"to_uin_flag",u"uin",b"uin",u"uin32_expert_flag",b"uin32_expert_flag"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"babyq_guide_msg_cookie",b"babyq_guide_msg_cookie",u"bubble_diy_text_id",b"bubble_diy_text_id",u"bubble_sub_id",b"bubble_sub_id",u"glamour_level",b"glamour_level",u"group_flag_new",b"group_flag_new",u"group_rank_seq",b"group_rank_seq",u"group_type",b"group_type",u"long_text_flag",b"long_text_flag",u"long_text_resid",b"long_text_resid",u"member_level",b"member_level",u"olympic_torch",b"olympic_torch",u"pb_reserve",b"pb_reserve",u"pendant_id",b"pendant_id",u"prp_fold",b"prp_fold",u"rp_id",b"rp_id",u"rp_index",b"rp_index",u"to_uin_flag",b"to_uin_flag",u"uin",b"uin",u"uin32_expert_flag",b"uin32_expert_flag"]) -> None: ...
+    def HasField(self, field_name: Literal["babyq_guide_msg_cookie",b"babyq_guide_msg_cookie","bubble_diy_text_id",b"bubble_diy_text_id","bubble_sub_id",b"bubble_sub_id","glamour_level",b"glamour_level","group_flag_new",b"group_flag_new","group_rank_seq",b"group_rank_seq","group_type",b"group_type","long_text_flag",b"long_text_flag","long_text_resid",b"long_text_resid","member_level",b"member_level","olympic_torch",b"olympic_torch","pb_reserve",b"pb_reserve","pendant_id",b"pendant_id","prp_fold",b"prp_fold","rp_id",b"rp_id","rp_index",b"rp_index","to_uin_flag",b"to_uin_flag","uin",b"uin","uin32_expert_flag",b"uin32_expert_flag"]) -> bool: ...
+    def ClearField(self, field_name: Literal["babyq_guide_msg_cookie",b"babyq_guide_msg_cookie","bubble_diy_text_id",b"bubble_diy_text_id","bubble_sub_id",b"bubble_sub_id","glamour_level",b"glamour_level","group_flag_new",b"group_flag_new","group_rank_seq",b"group_rank_seq","group_type",b"group_type","long_text_flag",b"long_text_flag","long_text_resid",b"long_text_resid","member_level",b"member_level","olympic_torch",b"olympic_torch","pb_reserve",b"pb_reserve","pendant_id",b"pendant_id","prp_fold",b"prp_fold","rp_id",b"rp_id","rp_index",b"rp_index","to_uin_flag",b"to_uin_flag","uin",b"uin","uin32_expert_flag",b"uin32_expert_flag"]) -> None: ...
 
 class GroupBusinessMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FLAGS_FIELD_NUMBER: int
     HEAD_URL_FIELD_NUMBER: int
     HEAD_CLK_URL_FIELD_NUMBER: int
@@ -1045,31 +968,30 @@ class GroupBusinessMsg(Message):
     RANK_FIELD_NUMBER: int
     RANK_COLOR_FIELD_NUMBER: int
     RANK_BGCOLOR_FIELD_NUMBER: int
-    flags: int = ...
-    head_url: bytes = ...
-    head_clk_url: bytes = ...
-    nick: bytes = ...
-    nick_color: bytes = ...
-    rank: bytes = ...
-    rank_color: bytes = ...
-    rank_bgcolor: bytes = ...
-
+    flags: int
+    head_url: bytes
+    head_clk_url: bytes
+    nick: bytes
+    nick_color: bytes
+    rank: bytes
+    rank_color: bytes
+    rank_bgcolor: bytes
     def __init__(self,
         *,
-        flags : Optional[int] = ...,
-        head_url : Optional[bytes] = ...,
-        head_clk_url : Optional[bytes] = ...,
-        nick : Optional[bytes] = ...,
-        nick_color : Optional[bytes] = ...,
-        rank : Optional[bytes] = ...,
-        rank_color : Optional[bytes] = ...,
-        rank_bgcolor : Optional[bytes] = ...,
+        flags: Optional[int] = ...,
+        head_url: Optional[bytes] = ...,
+        head_clk_url: Optional[bytes] = ...,
+        nick: Optional[bytes] = ...,
+        nick_color: Optional[bytes] = ...,
+        rank: Optional[bytes] = ...,
+        rank_color: Optional[bytes] = ...,
+        rank_bgcolor: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"flags",b"flags",u"head_clk_url",b"head_clk_url",u"head_url",b"head_url",u"nick",b"nick",u"nick_color",b"nick_color",u"rank",b"rank",u"rank_bgcolor",b"rank_bgcolor",u"rank_color",b"rank_color"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"flags",b"flags",u"head_clk_url",b"head_clk_url",u"head_url",b"head_url",u"nick",b"nick",u"nick_color",b"nick_color",u"rank",b"rank",u"rank_bgcolor",b"rank_bgcolor",u"rank_color",b"rank_color"]) -> None: ...
+    def HasField(self, field_name: Literal["flags",b"flags","head_clk_url",b"head_clk_url","head_url",b"head_url","nick",b"nick","nick_color",b"nick_color","rank",b"rank","rank_bgcolor",b"rank_bgcolor","rank_color",b"rank_color"]) -> bool: ...
+    def ClearField(self, field_name: Literal["flags",b"flags","head_clk_url",b"head_clk_url","head_url",b"head_url","nick",b"nick","nick_color",b"nick_color","rank",b"rank","rank_bgcolor",b"rank_bgcolor","rank_color",b"rank_color"]) -> None: ...
 
 class GroupFile(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FILENAME_FIELD_NUMBER: int
     FILE_SIZE_FIELD_NUMBER: int
     FILE_ID_FIELD_NUMBER: int
@@ -1080,62 +1002,59 @@ class GroupFile(Message):
     BATCH_ITEM_ID_FIELD_NUMBER: int
     FEED_MSG_TIME_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    filename: bytes = ...
-    file_size: int = ...
-    file_id: bytes = ...
-    batch_id: bytes = ...
-    file_key: bytes = ...
-    mark: bytes = ...
-    sequence: int = ...
-    batch_item_id: bytes = ...
-    feed_msg_time: int = ...
-    pb_reserve: bytes = ...
-
+    filename: bytes
+    file_size: int
+    file_id: bytes
+    batch_id: bytes
+    file_key: bytes
+    mark: bytes
+    sequence: int
+    batch_item_id: bytes
+    feed_msg_time: int
+    pb_reserve: bytes
     def __init__(self,
         *,
-        filename : Optional[bytes] = ...,
-        file_size : Optional[int] = ...,
-        file_id : Optional[bytes] = ...,
-        batch_id : Optional[bytes] = ...,
-        file_key : Optional[bytes] = ...,
-        mark : Optional[bytes] = ...,
-        sequence : Optional[int] = ...,
-        batch_item_id : Optional[bytes] = ...,
-        feed_msg_time : Optional[int] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        filename: Optional[bytes] = ...,
+        file_size: Optional[int] = ...,
+        file_id: Optional[bytes] = ...,
+        batch_id: Optional[bytes] = ...,
+        file_key: Optional[bytes] = ...,
+        mark: Optional[bytes] = ...,
+        sequence: Optional[int] = ...,
+        batch_item_id: Optional[bytes] = ...,
+        feed_msg_time: Optional[int] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"batch_id",b"batch_id",u"batch_item_id",b"batch_item_id",u"feed_msg_time",b"feed_msg_time",u"file_id",b"file_id",u"file_key",b"file_key",u"file_size",b"file_size",u"filename",b"filename",u"mark",b"mark",u"pb_reserve",b"pb_reserve",u"sequence",b"sequence"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"batch_id",b"batch_id",u"batch_item_id",b"batch_item_id",u"feed_msg_time",b"feed_msg_time",u"file_id",b"file_id",u"file_key",b"file_key",u"file_size",b"file_size",u"filename",b"filename",u"mark",b"mark",u"pb_reserve",b"pb_reserve",u"sequence",b"sequence"]) -> None: ...
+    def HasField(self, field_name: Literal["batch_id",b"batch_id","batch_item_id",b"batch_item_id","feed_msg_time",b"feed_msg_time","file_id",b"file_id","file_key",b"file_key","file_size",b"file_size","filename",b"filename","mark",b"mark","pb_reserve",b"pb_reserve","sequence",b"sequence"]) -> bool: ...
+    def ClearField(self, field_name: Literal["batch_id",b"batch_id","batch_item_id",b"batch_item_id","feed_msg_time",b"feed_msg_time","file_id",b"file_id","file_key",b"file_key","file_size",b"file_size","filename",b"filename","mark",b"mark","pb_reserve",b"pb_reserve","sequence",b"sequence"]) -> None: ...
 
 class GroupPostElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     TRANS_TYPE_FIELD_NUMBER: int
     TRANS_MSG_FIELD_NUMBER: int
-    trans_type: int = ...
-    trans_msg: bytes = ...
-
+    trans_type: int
+    trans_msg: bytes
     def __init__(self,
         *,
-        trans_type : Optional[int] = ...,
-        trans_msg : Optional[bytes] = ...,
+        trans_type: Optional[int] = ...,
+        trans_msg: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"trans_msg",b"trans_msg",u"trans_type",b"trans_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"trans_msg",b"trans_msg",u"trans_type",b"trans_type"]) -> None: ...
+    def HasField(self, field_name: Literal["trans_msg",b"trans_msg","trans_type",b"trans_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["trans_msg",b"trans_msg","trans_type",b"trans_type"]) -> None: ...
 
 class GroupPubAccountInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     PUB_ACCOUNT_FIELD_NUMBER: int
-    pub_account: int = ...
-
+    pub_account: int
     def __init__(self,
         *,
-        pub_account : Optional[int] = ...,
+        pub_account: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"pub_account",b"pub_account"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"pub_account",b"pub_account"]) -> None: ...
+    def HasField(self, field_name: Literal["pub_account",b"pub_account"]) -> bool: ...
+    def ClearField(self, field_name: Literal["pub_account",b"pub_account"]) -> None: ...
 
 class LifeOnlineAccount(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     UNIQUE_ID_FIELD_NUMBER: int
     OP_FIELD_NUMBER: int
     SHOW_TIME_FIELD_NUMBER: int
@@ -1145,93 +1064,89 @@ class LifeOnlineAccount(Message):
     GDT_IMP_DATA_FIELD_NUMBER: int
     GDT_CLI_DATA_FIELD_NUMBER: int
     VIEW_ID_FIELD_NUMBER: int
-    unique_id: int = ...
-    op: int = ...
-    show_time: int = ...
-    report: int = ...
-    ack: int = ...
-    bitmap: int = ...
-    gdt_imp_data: bytes = ...
-    gdt_cli_data: bytes = ...
-    view_id: bytes = ...
-
+    unique_id: int
+    op: int
+    show_time: int
+    report: int
+    ack: int
+    bitmap: int
+    gdt_imp_data: bytes
+    gdt_cli_data: bytes
+    view_id: bytes
     def __init__(self,
         *,
-        unique_id : Optional[int] = ...,
-        op : Optional[int] = ...,
-        show_time : Optional[int] = ...,
-        report : Optional[int] = ...,
-        ack : Optional[int] = ...,
-        bitmap : Optional[int] = ...,
-        gdt_imp_data : Optional[bytes] = ...,
-        gdt_cli_data : Optional[bytes] = ...,
-        view_id : Optional[bytes] = ...,
+        unique_id: Optional[int] = ...,
+        op: Optional[int] = ...,
+        show_time: Optional[int] = ...,
+        report: Optional[int] = ...,
+        ack: Optional[int] = ...,
+        bitmap: Optional[int] = ...,
+        gdt_imp_data: Optional[bytes] = ...,
+        gdt_cli_data: Optional[bytes] = ...,
+        view_id: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"ack",b"ack",u"bitmap",b"bitmap",u"gdt_cli_data",b"gdt_cli_data",u"gdt_imp_data",b"gdt_imp_data",u"op",b"op",u"report",b"report",u"show_time",b"show_time",u"unique_id",b"unique_id",u"view_id",b"view_id"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"ack",b"ack",u"bitmap",b"bitmap",u"gdt_cli_data",b"gdt_cli_data",u"gdt_imp_data",b"gdt_imp_data",u"op",b"op",u"report",b"report",u"show_time",b"show_time",u"unique_id",b"unique_id",u"view_id",b"view_id"]) -> None: ...
+    def HasField(self, field_name: Literal["ack",b"ack","bitmap",b"bitmap","gdt_cli_data",b"gdt_cli_data","gdt_imp_data",b"gdt_imp_data","op",b"op","report",b"report","show_time",b"show_time","unique_id",b"unique_id","view_id",b"view_id"]) -> bool: ...
+    def ClearField(self, field_name: Literal["ack",b"ack","bitmap",b"bitmap","gdt_cli_data",b"gdt_cli_data","gdt_imp_data",b"gdt_imp_data","op",b"op","report",b"report","show_time",b"show_time","unique_id",b"unique_id","view_id",b"view_id"]) -> None: ...
 
 class LightAppElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     DATA_FIELD_NUMBER: int
     MSG_RESID_FIELD_NUMBER: int
-    data: bytes = ...
-    msg_resid: bytes = ...
-
+    data: bytes
+    msg_resid: bytes
     def __init__(self,
         *,
-        data : Optional[bytes] = ...,
-        msg_resid : Optional[bytes] = ...,
+        data: Optional[bytes] = ...,
+        msg_resid: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"data",b"data",u"msg_resid",b"msg_resid"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"data",b"data",u"msg_resid",b"msg_resid"]) -> None: ...
+    def HasField(self, field_name: Literal["data",b"data","msg_resid",b"msg_resid"]) -> bool: ...
+    def ClearField(self, field_name: Literal["data",b"data","msg_resid",b"msg_resid"]) -> None: ...
 
 class LolaMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     MSG_RESID_FIELD_NUMBER: int
     ENCODE_CONTENT_FIELD_NUMBER: int
     LONG_MSG_URL_FIELD_NUMBER: int
     DOWNLOAD_KEY_FIELD_NUMBER: int
-    msg_resid: bytes = ...
-    encode_content: bytes = ...
-    long_msg_url: bytes = ...
-    download_key: bytes = ...
-
+    msg_resid: bytes
+    encode_content: bytes
+    long_msg_url: bytes
+    download_key: bytes
     def __init__(self,
         *,
-        msg_resid : Optional[bytes] = ...,
-        encode_content : Optional[bytes] = ...,
-        long_msg_url : Optional[bytes] = ...,
-        download_key : Optional[bytes] = ...,
+        msg_resid: Optional[bytes] = ...,
+        encode_content: Optional[bytes] = ...,
+        long_msg_url: Optional[bytes] = ...,
+        download_key: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"download_key",b"download_key",u"encode_content",b"encode_content",u"long_msg_url",b"long_msg_url",u"msg_resid",b"msg_resid"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"download_key",b"download_key",u"encode_content",b"encode_content",u"long_msg_url",b"long_msg_url",u"msg_resid",b"msg_resid"]) -> None: ...
+    def HasField(self, field_name: Literal["download_key",b"download_key","encode_content",b"encode_content","long_msg_url",b"long_msg_url","msg_resid",b"msg_resid"]) -> bool: ...
+    def ClearField(self, field_name: Literal["download_key",b"download_key","encode_content",b"encode_content","long_msg_url",b"long_msg_url","msg_resid",b"msg_resid"]) -> None: ...
 
 class LowVersionTips(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     BUSINESS_ID_FIELD_NUMBER: int
     SESSION_TYPE_FIELD_NUMBER: int
     SESSION_UIN_FIELD_NUMBER: int
     SENDER_UIN_FIELD_NUMBER: int
     TEXT_FIELD_NUMBER: int
-    business_id: int = ...
-    session_type: int = ...
-    session_uin: int = ...
-    sender_uin: int = ...
-    text: Text = ...
-
+    business_id: int
+    session_type: int
+    session_uin: int
+    sender_uin: int
+    text: Text
     def __init__(self,
         *,
-        business_id : Optional[int] = ...,
-        session_type : Optional[int] = ...,
-        session_uin : Optional[int] = ...,
-        sender_uin : Optional[int] = ...,
-        text : Optional[Text] = ...,
+        business_id: Optional[int] = ...,
+        session_type: Optional[int] = ...,
+        session_uin: Optional[int] = ...,
+        sender_uin: Optional[int] = ...,
+        text: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"business_id",b"business_id",u"sender_uin",b"sender_uin",u"session_type",b"session_type",u"session_uin",b"session_uin",u"text",b"text"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"business_id",b"business_id",u"sender_uin",b"sender_uin",u"session_type",b"session_type",u"session_uin",b"session_uin",u"text",b"text"]) -> None: ...
+    def HasField(self, field_name: Literal["business_id",b"business_id","sender_uin",b"sender_uin","session_type",b"session_type","session_uin",b"session_uin","text",b"text"]) -> bool: ...
+    def ClearField(self, field_name: Literal["business_id",b"business_id","sender_uin",b"sender_uin","session_type",b"session_type","session_uin",b"session_uin","text",b"text"]) -> None: ...
 
 class MarketFace(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FACE_NAME_FIELD_NUMBER: int
     ITEM_TYPE_FIELD_NUMBER: int
     FACE_INFO_FIELD_NUMBER: int
@@ -1245,117 +1160,110 @@ class MarketFace(Message):
     IMAGE_HEIGHT_FIELD_NUMBER: int
     MOBILEPARAM_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    face_name: bytes = ...
-    item_type: int = ...
-    face_info: int = ...
-    face_id: bytes = ...
-    tab_id: int = ...
-    sub_type: int = ...
-    key: bytes = ...
-    param: bytes = ...
-    media_type: int = ...
-    image_width: int = ...
-    image_height: int = ...
-    mobileparam: bytes = ...
-    pb_reserve: bytes = ...
-
+    face_name: bytes
+    item_type: int
+    face_info: int
+    face_id: bytes
+    tab_id: int
+    sub_type: int
+    key: bytes
+    param: bytes
+    media_type: int
+    image_width: int
+    image_height: int
+    mobileparam: bytes
+    pb_reserve: bytes
     def __init__(self,
         *,
-        face_name : Optional[bytes] = ...,
-        item_type : Optional[int] = ...,
-        face_info : Optional[int] = ...,
-        face_id : Optional[bytes] = ...,
-        tab_id : Optional[int] = ...,
-        sub_type : Optional[int] = ...,
-        key : Optional[bytes] = ...,
-        param : Optional[bytes] = ...,
-        media_type : Optional[int] = ...,
-        image_width : Optional[int] = ...,
-        image_height : Optional[int] = ...,
-        mobileparam : Optional[bytes] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        face_name: Optional[bytes] = ...,
+        item_type: Optional[int] = ...,
+        face_info: Optional[int] = ...,
+        face_id: Optional[bytes] = ...,
+        tab_id: Optional[int] = ...,
+        sub_type: Optional[int] = ...,
+        key: Optional[bytes] = ...,
+        param: Optional[bytes] = ...,
+        media_type: Optional[int] = ...,
+        image_width: Optional[int] = ...,
+        image_height: Optional[int] = ...,
+        mobileparam: Optional[bytes] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"face_id",b"face_id",u"face_info",b"face_info",u"face_name",b"face_name",u"image_height",b"image_height",u"image_width",b"image_width",u"item_type",b"item_type",u"key",b"key",u"media_type",b"media_type",u"mobileparam",b"mobileparam",u"param",b"param",u"pb_reserve",b"pb_reserve",u"sub_type",b"sub_type",u"tab_id",b"tab_id"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"face_id",b"face_id",u"face_info",b"face_info",u"face_name",b"face_name",u"image_height",b"image_height",u"image_width",b"image_width",u"item_type",b"item_type",u"key",b"key",u"media_type",b"media_type",u"mobileparam",b"mobileparam",u"param",b"param",u"pb_reserve",b"pb_reserve",u"sub_type",b"sub_type",u"tab_id",b"tab_id"]) -> None: ...
+    def HasField(self, field_name: Literal["face_id",b"face_id","face_info",b"face_info","face_name",b"face_name","image_height",b"image_height","image_width",b"image_width","item_type",b"item_type","key",b"key","media_type",b"media_type","mobileparam",b"mobileparam","param",b"param","pb_reserve",b"pb_reserve","sub_type",b"sub_type","tab_id",b"tab_id"]) -> bool: ...
+    def ClearField(self, field_name: Literal["face_id",b"face_id","face_info",b"face_info","face_name",b"face_name","image_height",b"image_height","image_width",b"image_width","item_type",b"item_type","key",b"key","media_type",b"media_type","mobileparam",b"mobileparam","param",b"param","pb_reserve",b"pb_reserve","sub_type",b"sub_type","tab_id",b"tab_id"]) -> None: ...
 
 class MarketTrans(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FLAG_FIELD_NUMBER: int
     XML_FIELD_NUMBER: int
     MSG_RESID_FIELD_NUMBER: int
     ABILITY_FIELD_NUMBER: int
     MIN_ABILITY_FIELD_NUMBER: int
-    flag: int = ...
-    xml: bytes = ...
-    msg_resid: bytes = ...
-    ability: int = ...
-    min_ability: int = ...
-
+    flag: int
+    xml: bytes
+    msg_resid: bytes
+    ability: int
+    min_ability: int
     def __init__(self,
         *,
-        flag : Optional[int] = ...,
-        xml : Optional[bytes] = ...,
-        msg_resid : Optional[bytes] = ...,
-        ability : Optional[int] = ...,
-        min_ability : Optional[int] = ...,
+        flag: Optional[int] = ...,
+        xml: Optional[bytes] = ...,
+        msg_resid: Optional[bytes] = ...,
+        ability: Optional[int] = ...,
+        min_ability: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"ability",b"ability",u"flag",b"flag",u"min_ability",b"min_ability",u"msg_resid",b"msg_resid",u"xml",b"xml"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"ability",b"ability",u"flag",b"flag",u"min_ability",b"min_ability",u"msg_resid",b"msg_resid",u"xml",b"xml"]) -> None: ...
+    def HasField(self, field_name: Literal["ability",b"ability","flag",b"flag","min_ability",b"min_ability","msg_resid",b"msg_resid","xml",b"xml"]) -> bool: ...
+    def ClearField(self, field_name: Literal["ability",b"ability","flag",b"flag","min_ability",b"min_ability","msg_resid",b"msg_resid","xml",b"xml"]) -> None: ...
 
 class MsgBody(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     RICH_TEXT_FIELD_NUMBER: int
     CONTENT_FIELD_NUMBER: int
     ENCRYPT_CONTENT_FIELD_NUMBER: int
-    content: bytes = ...
-    encrypt_content: bytes = ...
-
     @property
     def rich_text(self) -> RichText: ...
-
+    content: bytes
+    encrypt_content: bytes
     def __init__(self,
         *,
-        rich_text : Optional[RichText] = ...,
-        content : Optional[bytes] = ...,
-        encrypt_content : Optional[bytes] = ...,
+        rich_text: Optional[RichText] = ...,
+        content: Optional[bytes] = ...,
+        encrypt_content: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"content",b"content",u"encrypt_content",b"encrypt_content",u"rich_text",b"rich_text"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"content",b"content",u"encrypt_content",b"encrypt_content",u"rich_text",b"rich_text"]) -> None: ...
+    def HasField(self, field_name: Literal["content",b"content","encrypt_content",b"encrypt_content","rich_text",b"rich_text"]) -> bool: ...
+    def ClearField(self, field_name: Literal["content",b"content","encrypt_content",b"encrypt_content","rich_text",b"rich_text"]) -> None: ...
 
 class MsgBody_subtype4(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     NOT_ONLINE_FILE_FIELD_NUMBER: int
     MSG_TIME_FIELD_NUMBER: int
-    msg_time: int = ...
-
     @property
     def not_online_file(self) -> NotOnlineFile: ...
-
+    msg_time: int
     def __init__(self,
         *,
-        not_online_file : Optional[NotOnlineFile] = ...,
-        msg_time : Optional[int] = ...,
+        not_online_file: Optional[NotOnlineFile] = ...,
+        msg_time: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"msg_time",b"msg_time",u"not_online_file",b"not_online_file"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"msg_time",b"msg_time",u"not_online_file",b"not_online_file"]) -> None: ...
+    def HasField(self, field_name: Literal["msg_time",b"msg_time","not_online_file",b"not_online_file"]) -> bool: ...
+    def ClearField(self, field_name: Literal["msg_time",b"msg_time","not_online_file",b"not_online_file"]) -> None: ...
 
 class NearByMessageType(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     TYPE_FIELD_NUMBER: int
     IDENTIFY_TYPE_FIELD_NUMBER: int
-    type: int = ...
-    identify_type: int = ...
-
+    type: int
+    identify_type: int
     def __init__(self,
         *,
-        type : Optional[int] = ...,
-        identify_type : Optional[int] = ...,
+        type: Optional[int] = ...,
+        identify_type: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"identify_type",b"identify_type",u"type",b"type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"identify_type",b"identify_type",u"type",b"type"]) -> None: ...
+    def HasField(self, field_name: Literal["identify_type",b"identify_type","type",b"type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["identify_type",b"identify_type","type",b"type"]) -> None: ...
 
 class NotOnlineFile(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FILE_TYPE_FIELD_NUMBER: int
     SIG_FIELD_NUMBER: int
     FILE_UUID_FIELD_NUMBER: int
@@ -1376,55 +1284,55 @@ class NotOnlineFile(Message):
     EXPIRE_TIME_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
     FILEIDCRC_MEDIA_FIELD_NUMBER: int
-    file_type: int = ...
-    sig: bytes = ...
-    file_uuid: bytes = ...
-    file_md5: bytes = ...
-    file_name: bytes = ...
-    file_size: int = ...
-    note: bytes = ...
-    reserved: int = ...
-    subcmd: int = ...
-    micro_cloud: int = ...
-    file_urls: RepeatedScalarFieldContainer[bytes] = ...
-    download_flag: int = ...
-    danger_evel: int = ...
-    life_time: int = ...
-    upload_time: int = ...
-    abs_file_type: int = ...
-    client_type: int = ...
-    expire_time: int = ...
-    pb_reserve: bytes = ...
-    fileidcrc_media: Text = ...
-
+    file_type: int
+    sig: bytes
+    file_uuid: bytes
+    file_md5: bytes
+    file_name: bytes
+    file_size: int
+    note: bytes
+    reserved: int
+    subcmd: int
+    micro_cloud: int
+    @property
+    def file_urls(self) -> RepeatedScalarFieldContainer[bytes]: ...
+    download_flag: int
+    danger_evel: int
+    life_time: int
+    upload_time: int
+    abs_file_type: int
+    client_type: int
+    expire_time: int
+    pb_reserve: bytes
+    fileidcrc_media: Text
     def __init__(self,
         *,
-        file_type : Optional[int] = ...,
-        sig : Optional[bytes] = ...,
-        file_uuid : Optional[bytes] = ...,
-        file_md5 : Optional[bytes] = ...,
-        file_name : Optional[bytes] = ...,
-        file_size : Optional[int] = ...,
-        note : Optional[bytes] = ...,
-        reserved : Optional[int] = ...,
-        subcmd : Optional[int] = ...,
-        micro_cloud : Optional[int] = ...,
-        file_urls : Optional[Iterable[bytes]] = ...,
-        download_flag : Optional[int] = ...,
-        danger_evel : Optional[int] = ...,
-        life_time : Optional[int] = ...,
-        upload_time : Optional[int] = ...,
-        abs_file_type : Optional[int] = ...,
-        client_type : Optional[int] = ...,
-        expire_time : Optional[int] = ...,
-        pb_reserve : Optional[bytes] = ...,
-        fileidcrc_media : Optional[Text] = ...,
+        file_type: Optional[int] = ...,
+        sig: Optional[bytes] = ...,
+        file_uuid: Optional[bytes] = ...,
+        file_md5: Optional[bytes] = ...,
+        file_name: Optional[bytes] = ...,
+        file_size: Optional[int] = ...,
+        note: Optional[bytes] = ...,
+        reserved: Optional[int] = ...,
+        subcmd: Optional[int] = ...,
+        micro_cloud: Optional[int] = ...,
+        file_urls: Optional[Iterable[bytes]] = ...,
+        download_flag: Optional[int] = ...,
+        danger_evel: Optional[int] = ...,
+        life_time: Optional[int] = ...,
+        upload_time: Optional[int] = ...,
+        abs_file_type: Optional[int] = ...,
+        client_type: Optional[int] = ...,
+        expire_time: Optional[int] = ...,
+        pb_reserve: Optional[bytes] = ...,
+        fileidcrc_media: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"abs_file_type",b"abs_file_type",u"client_type",b"client_type",u"danger_evel",b"danger_evel",u"download_flag",b"download_flag",u"expire_time",b"expire_time",u"file_md5",b"file_md5",u"file_name",b"file_name",u"file_size",b"file_size",u"file_type",b"file_type",u"file_uuid",b"file_uuid",u"fileidcrc_media",b"fileidcrc_media",u"life_time",b"life_time",u"micro_cloud",b"micro_cloud",u"note",b"note",u"pb_reserve",b"pb_reserve",u"reserved",b"reserved",u"sig",b"sig",u"subcmd",b"subcmd",u"upload_time",b"upload_time"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"abs_file_type",b"abs_file_type",u"client_type",b"client_type",u"danger_evel",b"danger_evel",u"download_flag",b"download_flag",u"expire_time",b"expire_time",u"file_md5",b"file_md5",u"file_name",b"file_name",u"file_size",b"file_size",u"file_type",b"file_type",u"file_urls",b"file_urls",u"file_uuid",b"file_uuid",u"fileidcrc_media",b"fileidcrc_media",u"life_time",b"life_time",u"micro_cloud",b"micro_cloud",u"note",b"note",u"pb_reserve",b"pb_reserve",u"reserved",b"reserved",u"sig",b"sig",u"subcmd",b"subcmd",u"upload_time",b"upload_time"]) -> None: ...
+    def HasField(self, field_name: Literal["abs_file_type",b"abs_file_type","client_type",b"client_type","danger_evel",b"danger_evel","download_flag",b"download_flag","expire_time",b"expire_time","file_md5",b"file_md5","file_name",b"file_name","file_size",b"file_size","file_type",b"file_type","file_uuid",b"file_uuid","fileidcrc_media",b"fileidcrc_media","life_time",b"life_time","micro_cloud",b"micro_cloud","note",b"note","pb_reserve",b"pb_reserve","reserved",b"reserved","sig",b"sig","subcmd",b"subcmd","upload_time",b"upload_time"]) -> bool: ...
+    def ClearField(self, field_name: Literal["abs_file_type",b"abs_file_type","client_type",b"client_type","danger_evel",b"danger_evel","download_flag",b"download_flag","expire_time",b"expire_time","file_md5",b"file_md5","file_name",b"file_name","file_size",b"file_size","file_type",b"file_type","file_urls",b"file_urls","file_uuid",b"file_uuid","fileidcrc_media",b"fileidcrc_media","life_time",b"life_time","micro_cloud",b"micro_cloud","note",b"note","pb_reserve",b"pb_reserve","reserved",b"reserved","sig",b"sig","subcmd",b"subcmd","upload_time",b"upload_time"]) -> None: ...
 
 class NotOnlineImage(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FILE_PATH_FIELD_NUMBER: int
     FILE_LEN_FIELD_NUMBER: int
     DOWNLOAD_PATH_FIELD_NUMBER: int
@@ -1454,145 +1362,142 @@ class NotOnlineImage(Message):
     _400_WIDTH_FIELD_NUMBER: int
     _400_HEIGHT_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    file_path: bytes = ...
-    file_len: int = ...
-    download_path: bytes = ...
-    old_ver_send_file: bytes = ...
-    img_type: int = ...
-    previews_image: bytes = ...
-    pic_md5: bytes = ...
-    pic_height: int = ...
-    pic_width: int = ...
-    res_id: bytes = ...
-    flag: bytes = ...
-    thumb_url: Text = ...
-    original: int = ...
-    big_url: Text = ...
-    orig_url: Text = ...
-    biz_type: int = ...
-    result: int = ...
-    index: int = ...
-    op_face_buf: bytes = ...
-    old_pic_md5: bool = ...
-    thumb_width: int = ...
-    thumb_height: int = ...
-    file_id: int = ...
-    show_len: int = ...
-    download_len: int = ...
-    _400_url: Text = ...
-    _400_width: int = ...
-    _400_height: int = ...
-    pb_reserve: bytes = ...
-
+    file_path: bytes
+    file_len: int
+    download_path: bytes
+    old_ver_send_file: bytes
+    img_type: int
+    previews_image: bytes
+    pic_md5: bytes
+    pic_height: int
+    pic_width: int
+    res_id: bytes
+    flag: bytes
+    thumb_url: Text
+    original: int
+    big_url: Text
+    orig_url: Text
+    biz_type: int
+    result: int
+    index: int
+    op_face_buf: bytes
+    old_pic_md5: bool
+    thumb_width: int
+    thumb_height: int
+    file_id: int
+    show_len: int
+    download_len: int
+    _400_url: Text
+    _400_width: int
+    _400_height: int
+    pb_reserve: bytes
     def __init__(self,
         *,
-        file_path : Optional[bytes] = ...,
-        file_len : Optional[int] = ...,
-        download_path : Optional[bytes] = ...,
-        old_ver_send_file : Optional[bytes] = ...,
-        img_type : Optional[int] = ...,
-        previews_image : Optional[bytes] = ...,
-        pic_md5 : Optional[bytes] = ...,
-        pic_height : Optional[int] = ...,
-        pic_width : Optional[int] = ...,
-        res_id : Optional[bytes] = ...,
-        flag : Optional[bytes] = ...,
-        thumb_url : Optional[Text] = ...,
-        original : Optional[int] = ...,
-        big_url : Optional[Text] = ...,
-        orig_url : Optional[Text] = ...,
-        biz_type : Optional[int] = ...,
-        result : Optional[int] = ...,
-        index : Optional[int] = ...,
-        op_face_buf : Optional[bytes] = ...,
-        old_pic_md5 : Optional[bool] = ...,
-        thumb_width : Optional[int] = ...,
-        thumb_height : Optional[int] = ...,
-        file_id : Optional[int] = ...,
-        show_len : Optional[int] = ...,
-        download_len : Optional[int] = ...,
-        _400_url : Optional[Text] = ...,
-        _400_width : Optional[int] = ...,
-        _400_height : Optional[int] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        file_path: Optional[bytes] = ...,
+        file_len: Optional[int] = ...,
+        download_path: Optional[bytes] = ...,
+        old_ver_send_file: Optional[bytes] = ...,
+        img_type: Optional[int] = ...,
+        previews_image: Optional[bytes] = ...,
+        pic_md5: Optional[bytes] = ...,
+        pic_height: Optional[int] = ...,
+        pic_width: Optional[int] = ...,
+        res_id: Optional[bytes] = ...,
+        flag: Optional[bytes] = ...,
+        thumb_url: Optional[Text] = ...,
+        original: Optional[int] = ...,
+        big_url: Optional[Text] = ...,
+        orig_url: Optional[Text] = ...,
+        biz_type: Optional[int] = ...,
+        result: Optional[int] = ...,
+        index: Optional[int] = ...,
+        op_face_buf: Optional[bytes] = ...,
+        old_pic_md5: Optional[bool] = ...,
+        thumb_width: Optional[int] = ...,
+        thumb_height: Optional[int] = ...,
+        file_id: Optional[int] = ...,
+        show_len: Optional[int] = ...,
+        download_len: Optional[int] = ...,
+        _400_url: Optional[Text] = ...,
+        _400_width: Optional[int] = ...,
+        _400_height: Optional[int] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"_400_height",b"_400_height",u"_400_url",b"_400_url",u"_400_width",b"_400_width",u"big_url",b"big_url",u"biz_type",b"biz_type",u"download_len",b"download_len",u"download_path",b"download_path",u"file_id",b"file_id",u"file_len",b"file_len",u"file_path",b"file_path",u"flag",b"flag",u"img_type",b"img_type",u"index",b"index",u"old_pic_md5",b"old_pic_md5",u"old_ver_send_file",b"old_ver_send_file",u"op_face_buf",b"op_face_buf",u"orig_url",b"orig_url",u"original",b"original",u"pb_reserve",b"pb_reserve",u"pic_height",b"pic_height",u"pic_md5",b"pic_md5",u"pic_width",b"pic_width",u"previews_image",b"previews_image",u"res_id",b"res_id",u"result",b"result",u"show_len",b"show_len",u"thumb_height",b"thumb_height",u"thumb_url",b"thumb_url",u"thumb_width",b"thumb_width"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"_400_height",b"_400_height",u"_400_url",b"_400_url",u"_400_width",b"_400_width",u"big_url",b"big_url",u"biz_type",b"biz_type",u"download_len",b"download_len",u"download_path",b"download_path",u"file_id",b"file_id",u"file_len",b"file_len",u"file_path",b"file_path",u"flag",b"flag",u"img_type",b"img_type",u"index",b"index",u"old_pic_md5",b"old_pic_md5",u"old_ver_send_file",b"old_ver_send_file",u"op_face_buf",b"op_face_buf",u"orig_url",b"orig_url",u"original",b"original",u"pb_reserve",b"pb_reserve",u"pic_height",b"pic_height",u"pic_md5",b"pic_md5",u"pic_width",b"pic_width",u"previews_image",b"previews_image",u"res_id",b"res_id",u"result",b"result",u"show_len",b"show_len",u"thumb_height",b"thumb_height",u"thumb_url",b"thumb_url",u"thumb_width",b"thumb_width"]) -> None: ...
+    def HasField(self, field_name: Literal["_400_height",b"_400_height","_400_url",b"_400_url","_400_width",b"_400_width","big_url",b"big_url","biz_type",b"biz_type","download_len",b"download_len","download_path",b"download_path","file_id",b"file_id","file_len",b"file_len","file_path",b"file_path","flag",b"flag","img_type",b"img_type","index",b"index","old_pic_md5",b"old_pic_md5","old_ver_send_file",b"old_ver_send_file","op_face_buf",b"op_face_buf","orig_url",b"orig_url","original",b"original","pb_reserve",b"pb_reserve","pic_height",b"pic_height","pic_md5",b"pic_md5","pic_width",b"pic_width","previews_image",b"previews_image","res_id",b"res_id","result",b"result","show_len",b"show_len","thumb_height",b"thumb_height","thumb_url",b"thumb_url","thumb_width",b"thumb_width"]) -> bool: ...
+    def ClearField(self, field_name: Literal["_400_height",b"_400_height","_400_url",b"_400_url","_400_width",b"_400_width","big_url",b"big_url","biz_type",b"biz_type","download_len",b"download_len","download_path",b"download_path","file_id",b"file_id","file_len",b"file_len","file_path",b"file_path","flag",b"flag","img_type",b"img_type","index",b"index","old_pic_md5",b"old_pic_md5","old_ver_send_file",b"old_ver_send_file","op_face_buf",b"op_face_buf","orig_url",b"orig_url","original",b"original","pb_reserve",b"pb_reserve","pic_height",b"pic_height","pic_md5",b"pic_md5","pic_width",b"pic_width","previews_image",b"previews_image","res_id",b"res_id","result",b"result","show_len",b"show_len","thumb_height",b"thumb_height","thumb_url",b"thumb_url","thumb_width",b"thumb_width"]) -> None: ...
 
 class OnlineImage(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     GUID_FIELD_NUMBER: int
     FILE_PATH_FIELD_NUMBER: int
     OLD_VER_SEND_FILE_FIELD_NUMBER: int
-    guid: bytes = ...
-    file_path: bytes = ...
-    old_ver_send_file: bytes = ...
-
+    guid: bytes
+    file_path: bytes
+    old_ver_send_file: bytes
     def __init__(self,
         *,
-        guid : Optional[bytes] = ...,
-        file_path : Optional[bytes] = ...,
-        old_ver_send_file : Optional[bytes] = ...,
+        guid: Optional[bytes] = ...,
+        file_path: Optional[bytes] = ...,
+        old_ver_send_file: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"file_path",b"file_path",u"guid",b"guid",u"old_ver_send_file",b"old_ver_send_file"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"file_path",b"file_path",u"guid",b"guid",u"old_ver_send_file",b"old_ver_send_file"]) -> None: ...
+    def HasField(self, field_name: Literal["file_path",b"file_path","guid",b"guid","old_ver_send_file",b"old_ver_send_file"]) -> bool: ...
+    def ClearField(self, field_name: Literal["file_path",b"file_path","guid",b"guid","old_ver_send_file",b"old_ver_send_file"]) -> None: ...
 
 class OpenQQData(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     CAR_QQ_DATA_FIELD_NUMBER: int
-    car_qq_data: bytes = ...
-
+    car_qq_data: bytes
     def __init__(self,
         *,
-        car_qq_data : Optional[bytes] = ...,
+        car_qq_data: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"car_qq_data",b"car_qq_data"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"car_qq_data",b"car_qq_data"]) -> None: ...
+    def HasField(self, field_name: Literal["car_qq_data",b"car_qq_data"]) -> bool: ...
+    def ClearField(self, field_name: Literal["car_qq_data",b"car_qq_data"]) -> None: ...
 
 class PatsElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     PAT_TYPE_FIELD_NUMBER: int
     PAT_COUNT_FIELD_NUMBER: int
-    pat_type: int = ...
-    pat_count: int = ...
-
+    pat_type: int
+    pat_count: int
     def __init__(self,
         *,
-        pat_type : Optional[int] = ...,
-        pat_count : Optional[int] = ...,
+        pat_type: Optional[int] = ...,
+        pat_count: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"pat_count",b"pat_count",u"pat_type",b"pat_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"pat_count",b"pat_count",u"pat_type",b"pat_type"]) -> None: ...
+    def HasField(self, field_name: Literal["pat_count",b"pat_count","pat_type",b"pat_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["pat_count",b"pat_count","pat_type",b"pat_type"]) -> None: ...
 
 class PcSupportDef(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     PC_PTL_BEGIN_FIELD_NUMBER: int
     PC_PTL_END_FIELD_NUMBER: int
     MAC_PTL_BEGIN_FIELD_NUMBER: int
     MAC_PTL_END_FIELD_NUMBER: int
     PTLS_SUPPORT_FIELD_NUMBER: int
     PTLS_NOT_SUPPORT_FIELD_NUMBER: int
-    pc_ptl_begin: int = ...
-    pc_ptl_end: int = ...
-    mac_ptl_begin: int = ...
-    mac_ptl_end: int = ...
-    ptls_support: RepeatedScalarFieldContainer[int] = ...
-    ptls_not_support: RepeatedScalarFieldContainer[int] = ...
-
+    pc_ptl_begin: int
+    pc_ptl_end: int
+    mac_ptl_begin: int
+    mac_ptl_end: int
+    @property
+    def ptls_support(self) -> RepeatedScalarFieldContainer[int]: ...
+    @property
+    def ptls_not_support(self) -> RepeatedScalarFieldContainer[int]: ...
     def __init__(self,
         *,
-        pc_ptl_begin : Optional[int] = ...,
-        pc_ptl_end : Optional[int] = ...,
-        mac_ptl_begin : Optional[int] = ...,
-        mac_ptl_end : Optional[int] = ...,
-        ptls_support : Optional[Iterable[int]] = ...,
-        ptls_not_support : Optional[Iterable[int]] = ...,
+        pc_ptl_begin: Optional[int] = ...,
+        pc_ptl_end: Optional[int] = ...,
+        mac_ptl_begin: Optional[int] = ...,
+        mac_ptl_end: Optional[int] = ...,
+        ptls_support: Optional[Iterable[int]] = ...,
+        ptls_not_support: Optional[Iterable[int]] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"mac_ptl_begin",b"mac_ptl_begin",u"mac_ptl_end",b"mac_ptl_end",u"pc_ptl_begin",b"pc_ptl_begin",u"pc_ptl_end",b"pc_ptl_end"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"mac_ptl_begin",b"mac_ptl_begin",u"mac_ptl_end",b"mac_ptl_end",u"pc_ptl_begin",b"pc_ptl_begin",u"pc_ptl_end",b"pc_ptl_end",u"ptls_not_support",b"ptls_not_support",u"ptls_support",b"ptls_support"]) -> None: ...
+    def HasField(self, field_name: Literal["mac_ptl_begin",b"mac_ptl_begin","mac_ptl_end",b"mac_ptl_end","pc_ptl_begin",b"pc_ptl_begin","pc_ptl_end",b"pc_ptl_end"]) -> bool: ...
+    def ClearField(self, field_name: Literal["mac_ptl_begin",b"mac_ptl_begin","mac_ptl_end",b"mac_ptl_end","pc_ptl_begin",b"pc_ptl_begin","pc_ptl_end",b"pc_ptl_end","ptls_not_support",b"ptls_not_support","ptls_support",b"ptls_support"]) -> None: ...
 
 class Ptt(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FILE_TYPE_FIELD_NUMBER: int
     SRC_UIN_FIELD_NUMBER: int
     FILE_UUID_FIELD_NUMBER: int
@@ -1617,141 +1522,137 @@ class Ptt(Message):
     PB_RESERVE_FIELD_NUMBER: int
     PTT_URLS_FIELD_NUMBER: int
     DOWNLOAD_FLAG_FIELD_NUMBER: int
-    file_type: int = ...
-    src_uin: int = ...
-    file_uuid: bytes = ...
-    file_md5: bytes = ...
-    file_name: bytes = ...
-    file_size: int = ...
-    reserve: bytes = ...
-    file_id: int = ...
-    server_ip: int = ...
-    server_port: int = ...
-    valid: bool = ...
-    signature: bytes = ...
-    shortcut: bytes = ...
-    file_key: bytes = ...
-    magic_ptt_index: int = ...
-    voice_switch: int = ...
-    ptt_url: bytes = ...
-    group_file_key: bytes = ...
-    time: int = ...
-    down_para: bytes = ...
-    format: int = ...
-    pb_reserve: bytes = ...
-    ptt_urls: RepeatedScalarFieldContainer[bytes] = ...
-    download_flag: int = ...
-
+    file_type: int
+    src_uin: int
+    file_uuid: bytes
+    file_md5: bytes
+    file_name: bytes
+    file_size: int
+    reserve: bytes
+    file_id: int
+    server_ip: int
+    server_port: int
+    valid: bool
+    signature: bytes
+    shortcut: bytes
+    file_key: bytes
+    magic_ptt_index: int
+    voice_switch: int
+    ptt_url: bytes
+    group_file_key: bytes
+    time: int
+    down_para: bytes
+    format: int
+    pb_reserve: bytes
+    @property
+    def ptt_urls(self) -> RepeatedScalarFieldContainer[bytes]: ...
+    download_flag: int
     def __init__(self,
         *,
-        file_type : Optional[int] = ...,
-        src_uin : Optional[int] = ...,
-        file_uuid : Optional[bytes] = ...,
-        file_md5 : Optional[bytes] = ...,
-        file_name : Optional[bytes] = ...,
-        file_size : Optional[int] = ...,
-        reserve : Optional[bytes] = ...,
-        file_id : Optional[int] = ...,
-        server_ip : Optional[int] = ...,
-        server_port : Optional[int] = ...,
-        valid : Optional[bool] = ...,
-        signature : Optional[bytes] = ...,
-        shortcut : Optional[bytes] = ...,
-        file_key : Optional[bytes] = ...,
-        magic_ptt_index : Optional[int] = ...,
-        voice_switch : Optional[int] = ...,
-        ptt_url : Optional[bytes] = ...,
-        group_file_key : Optional[bytes] = ...,
-        time : Optional[int] = ...,
-        down_para : Optional[bytes] = ...,
-        format : Optional[int] = ...,
-        pb_reserve : Optional[bytes] = ...,
-        ptt_urls : Optional[Iterable[bytes]] = ...,
-        download_flag : Optional[int] = ...,
+        file_type: Optional[int] = ...,
+        src_uin: Optional[int] = ...,
+        file_uuid: Optional[bytes] = ...,
+        file_md5: Optional[bytes] = ...,
+        file_name: Optional[bytes] = ...,
+        file_size: Optional[int] = ...,
+        reserve: Optional[bytes] = ...,
+        file_id: Optional[int] = ...,
+        server_ip: Optional[int] = ...,
+        server_port: Optional[int] = ...,
+        valid: Optional[bool] = ...,
+        signature: Optional[bytes] = ...,
+        shortcut: Optional[bytes] = ...,
+        file_key: Optional[bytes] = ...,
+        magic_ptt_index: Optional[int] = ...,
+        voice_switch: Optional[int] = ...,
+        ptt_url: Optional[bytes] = ...,
+        group_file_key: Optional[bytes] = ...,
+        time: Optional[int] = ...,
+        down_para: Optional[bytes] = ...,
+        format: Optional[int] = ...,
+        pb_reserve: Optional[bytes] = ...,
+        ptt_urls: Optional[Iterable[bytes]] = ...,
+        download_flag: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"down_para",b"down_para",u"download_flag",b"download_flag",u"file_id",b"file_id",u"file_key",b"file_key",u"file_md5",b"file_md5",u"file_name",b"file_name",u"file_size",b"file_size",u"file_type",b"file_type",u"file_uuid",b"file_uuid",u"format",b"format",u"group_file_key",b"group_file_key",u"magic_ptt_index",b"magic_ptt_index",u"pb_reserve",b"pb_reserve",u"ptt_url",b"ptt_url",u"reserve",b"reserve",u"server_ip",b"server_ip",u"server_port",b"server_port",u"shortcut",b"shortcut",u"signature",b"signature",u"src_uin",b"src_uin",u"time",b"time",u"valid",b"valid",u"voice_switch",b"voice_switch"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"down_para",b"down_para",u"download_flag",b"download_flag",u"file_id",b"file_id",u"file_key",b"file_key",u"file_md5",b"file_md5",u"file_name",b"file_name",u"file_size",b"file_size",u"file_type",b"file_type",u"file_uuid",b"file_uuid",u"format",b"format",u"group_file_key",b"group_file_key",u"magic_ptt_index",b"magic_ptt_index",u"pb_reserve",b"pb_reserve",u"ptt_url",b"ptt_url",u"ptt_urls",b"ptt_urls",u"reserve",b"reserve",u"server_ip",b"server_ip",u"server_port",b"server_port",u"shortcut",b"shortcut",u"signature",b"signature",u"src_uin",b"src_uin",u"time",b"time",u"valid",b"valid",u"voice_switch",b"voice_switch"]) -> None: ...
+    def HasField(self, field_name: Literal["down_para",b"down_para","download_flag",b"download_flag","file_id",b"file_id","file_key",b"file_key","file_md5",b"file_md5","file_name",b"file_name","file_size",b"file_size","file_type",b"file_type","file_uuid",b"file_uuid","format",b"format","group_file_key",b"group_file_key","magic_ptt_index",b"magic_ptt_index","pb_reserve",b"pb_reserve","ptt_url",b"ptt_url","reserve",b"reserve","server_ip",b"server_ip","server_port",b"server_port","shortcut",b"shortcut","signature",b"signature","src_uin",b"src_uin","time",b"time","valid",b"valid","voice_switch",b"voice_switch"]) -> bool: ...
+    def ClearField(self, field_name: Literal["down_para",b"down_para","download_flag",b"download_flag","file_id",b"file_id","file_key",b"file_key","file_md5",b"file_md5","file_name",b"file_name","file_size",b"file_size","file_type",b"file_type","file_uuid",b"file_uuid","format",b"format","group_file_key",b"group_file_key","magic_ptt_index",b"magic_ptt_index","pb_reserve",b"pb_reserve","ptt_url",b"ptt_url","ptt_urls",b"ptt_urls","reserve",b"reserve","server_ip",b"server_ip","server_port",b"server_port","shortcut",b"shortcut","signature",b"signature","src_uin",b"src_uin","time",b"time","valid",b"valid","voice_switch",b"voice_switch"]) -> None: ...
 
 class PubAccInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     IS_INTER_NUM_FIELD_NUMBER: int
     MSG_TEMPLATE_ID_FIELD_NUMBER: int
     LONG_MSG_URL_FIELD_NUMBER: int
     DOWNLOAD_KEY_FIELD_NUMBER: int
-    is_inter_num: int = ...
-    msg_template_id: Text = ...
-    long_msg_url: Text = ...
-    download_key: bytes = ...
-
+    is_inter_num: int
+    msg_template_id: Text
+    long_msg_url: Text
+    download_key: bytes
     def __init__(self,
         *,
-        is_inter_num : Optional[int] = ...,
-        msg_template_id : Optional[Text] = ...,
-        long_msg_url : Optional[Text] = ...,
-        download_key : Optional[bytes] = ...,
+        is_inter_num: Optional[int] = ...,
+        msg_template_id: Optional[Text] = ...,
+        long_msg_url: Optional[Text] = ...,
+        download_key: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"download_key",b"download_key",u"is_inter_num",b"is_inter_num",u"long_msg_url",b"long_msg_url",u"msg_template_id",b"msg_template_id"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"download_key",b"download_key",u"is_inter_num",b"is_inter_num",u"long_msg_url",b"long_msg_url",u"msg_template_id",b"msg_template_id"]) -> None: ...
+    def HasField(self, field_name: Literal["download_key",b"download_key","is_inter_num",b"is_inter_num","long_msg_url",b"long_msg_url","msg_template_id",b"msg_template_id"]) -> bool: ...
+    def ClearField(self, field_name: Literal["download_key",b"download_key","is_inter_num",b"is_inter_num","long_msg_url",b"long_msg_url","msg_template_id",b"msg_template_id"]) -> None: ...
 
 class PubAccount(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     BUF_FIELD_NUMBER: int
     PUB_ACCOUNT_UIN_FIELD_NUMBER: int
-    buf: bytes = ...
-    pub_account_uin: int = ...
-
+    buf: bytes
+    pub_account_uin: int
     def __init__(self,
         *,
-        buf : Optional[bytes] = ...,
-        pub_account_uin : Optional[int] = ...,
+        buf: Optional[bytes] = ...,
+        pub_account_uin: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"buf",b"buf",u"pub_account_uin",b"pub_account_uin"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"buf",b"buf",u"pub_account_uin",b"pub_account_uin"]) -> None: ...
+    def HasField(self, field_name: Literal["buf",b"buf","pub_account_uin",b"pub_account_uin"]) -> bool: ...
+    def ClearField(self, field_name: Literal["buf",b"buf","pub_account_uin",b"pub_account_uin"]) -> None: ...
 
 class PubGroup(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     NICKNAME_FIELD_NUMBER: int
     GENDER_FIELD_NUMBER: int
     AGE_FIELD_NUMBER: int
     DISTANCE_FIELD_NUMBER: int
-    nickname: bytes = ...
-    gender: int = ...
-    age: int = ...
-    distance: int = ...
-
+    nickname: bytes
+    gender: int
+    age: int
+    distance: int
     def __init__(self,
         *,
-        nickname : Optional[bytes] = ...,
-        gender : Optional[int] = ...,
-        age : Optional[int] = ...,
-        distance : Optional[int] = ...,
+        nickname: Optional[bytes] = ...,
+        gender: Optional[int] = ...,
+        age: Optional[int] = ...,
+        distance: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"age",b"age",u"distance",b"distance",u"gender",b"gender",u"nickname",b"nickname"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"age",b"age",u"distance",b"distance",u"gender",b"gender",u"nickname",b"nickname"]) -> None: ...
+    def HasField(self, field_name: Literal["age",b"age","distance",b"distance","gender",b"gender","nickname",b"nickname"]) -> bool: ...
+    def ClearField(self, field_name: Literal["age",b"age","distance",b"distance","gender",b"gender","nickname",b"nickname"]) -> None: ...
 
 class QQLiveOld(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     SUB_CMD_FIELD_NUMBER: int
     SHOW_TEXT_FIELD_NUMBER: int
     PARAM_FIELD_NUMBER: int
     INTRODUCE_FIELD_NUMBER: int
-    sub_cmd: int = ...
-    show_text: bytes = ...
-    param: bytes = ...
-    introduce: bytes = ...
-
+    sub_cmd: int
+    show_text: bytes
+    param: bytes
+    introduce: bytes
     def __init__(self,
         *,
-        sub_cmd : Optional[int] = ...,
-        show_text : Optional[bytes] = ...,
-        param : Optional[bytes] = ...,
-        introduce : Optional[bytes] = ...,
+        sub_cmd: Optional[int] = ...,
+        show_text: Optional[bytes] = ...,
+        param: Optional[bytes] = ...,
+        introduce: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"introduce",b"introduce",u"param",b"param",u"show_text",b"show_text",u"sub_cmd",b"sub_cmd"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"introduce",b"introduce",u"param",b"param",u"show_text",b"show_text",u"sub_cmd",b"sub_cmd"]) -> None: ...
+    def HasField(self, field_name: Literal["introduce",b"introduce","param",b"param","show_text",b"show_text","sub_cmd",b"sub_cmd"]) -> bool: ...
+    def ClearField(self, field_name: Literal["introduce",b"introduce","param",b"param","show_text",b"show_text","sub_cmd",b"sub_cmd"]) -> None: ...
 
 class QQWalletAioBody(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     SENDUIN_FIELD_NUMBER: int
     SENDER_FIELD_NUMBER: int
     RECEIVER_FIELD_NUMBER: int
@@ -1773,61 +1674,59 @@ class QQWalletAioBody(Message):
     REDCHANNEL_FIELD_NUMBER: int
     GRAP_UIN_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    senduin: int = ...
-    channelid: int = ...
-    templateid: int = ...
-    resend: int = ...
-    msg_priority: int = ...
-    redtype: int = ...
-    billno: bytes = ...
-    authkey: bytes = ...
-    sessiontype: int = ...
-    msgtype: int = ...
-    envelopeid: int = ...
-    name: bytes = ...
-    conftype: int = ...
-    msg_from: int = ...
-    pc_body: bytes = ...
-    index: bytes = ...
-    redchannel: int = ...
-    grap_uin: RepeatedScalarFieldContainer[int] = ...
-    pb_reserve: bytes = ...
-
+    senduin: int
     @property
     def sender(self) -> QQWalletAioElem: ...
-
     @property
     def receiver(self) -> QQWalletAioElem: ...
-
+    channelid: int
+    templateid: int
+    resend: int
+    msg_priority: int
+    redtype: int
+    billno: bytes
+    authkey: bytes
+    sessiontype: int
+    msgtype: int
+    envelopeid: int
+    name: bytes
+    conftype: int
+    msg_from: int
+    pc_body: bytes
+    index: bytes
+    redchannel: int
+    @property
+    def grap_uin(self) -> RepeatedScalarFieldContainer[int]: ...
+    pb_reserve: bytes
     def __init__(self,
         *,
-        senduin : Optional[int] = ...,
-        sender : Optional[QQWalletAioElem] = ...,
-        receiver : Optional[QQWalletAioElem] = ...,
-        channelid : Optional[int] = ...,
-        templateid : Optional[int] = ...,
-        resend : Optional[int] = ...,
-        msg_priority : Optional[int] = ...,
-        redtype : Optional[int] = ...,
-        billno : Optional[bytes] = ...,
-        authkey : Optional[bytes] = ...,
-        sessiontype : Optional[int] = ...,
-        msgtype : Optional[int] = ...,
-        envelopeid : Optional[int] = ...,
-        name : Optional[bytes] = ...,
-        conftype : Optional[int] = ...,
-        msg_from : Optional[int] = ...,
-        pc_body : Optional[bytes] = ...,
-        index : Optional[bytes] = ...,
-        redchannel : Optional[int] = ...,
-        grap_uin : Optional[Iterable[int]] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        senduin: Optional[int] = ...,
+        sender: Optional[QQWalletAioElem] = ...,
+        receiver: Optional[QQWalletAioElem] = ...,
+        channelid: Optional[int] = ...,
+        templateid: Optional[int] = ...,
+        resend: Optional[int] = ...,
+        msg_priority: Optional[int] = ...,
+        redtype: Optional[int] = ...,
+        billno: Optional[bytes] = ...,
+        authkey: Optional[bytes] = ...,
+        sessiontype: Optional[int] = ...,
+        msgtype: Optional[int] = ...,
+        envelopeid: Optional[int] = ...,
+        name: Optional[bytes] = ...,
+        conftype: Optional[int] = ...,
+        msg_from: Optional[int] = ...,
+        pc_body: Optional[bytes] = ...,
+        index: Optional[bytes] = ...,
+        redchannel: Optional[int] = ...,
+        grap_uin: Optional[Iterable[int]] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"authkey",b"authkey",u"billno",b"billno",u"channelid",b"channelid",u"conftype",b"conftype",u"envelopeid",b"envelopeid",u"index",b"index",u"msg_from",b"msg_from",u"msg_priority",b"msg_priority",u"msgtype",b"msgtype",u"name",b"name",u"pb_reserve",b"pb_reserve",u"pc_body",b"pc_body",u"receiver",b"receiver",u"redchannel",b"redchannel",u"redtype",b"redtype",u"resend",b"resend",u"sender",b"sender",u"senduin",b"senduin",u"sessiontype",b"sessiontype",u"templateid",b"templateid"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"authkey",b"authkey",u"billno",b"billno",u"channelid",b"channelid",u"conftype",b"conftype",u"envelopeid",b"envelopeid",u"grap_uin",b"grap_uin",u"index",b"index",u"msg_from",b"msg_from",u"msg_priority",b"msg_priority",u"msgtype",b"msgtype",u"name",b"name",u"pb_reserve",b"pb_reserve",u"pc_body",b"pc_body",u"receiver",b"receiver",u"redchannel",b"redchannel",u"redtype",b"redtype",u"resend",b"resend",u"sender",b"sender",u"senduin",b"senduin",u"sessiontype",b"sessiontype",u"templateid",b"templateid"]) -> None: ...
+    def HasField(self, field_name: Literal["authkey",b"authkey","billno",b"billno","channelid",b"channelid","conftype",b"conftype","envelopeid",b"envelopeid","index",b"index","msg_from",b"msg_from","msg_priority",b"msg_priority","msgtype",b"msgtype","name",b"name","pb_reserve",b"pb_reserve","pc_body",b"pc_body","receiver",b"receiver","redchannel",b"redchannel","redtype",b"redtype","resend",b"resend","sender",b"sender","senduin",b"senduin","sessiontype",b"sessiontype","templateid",b"templateid"]) -> bool: ...
+    def ClearField(self, field_name: Literal["authkey",b"authkey","billno",b"billno","channelid",b"channelid","conftype",b"conftype","envelopeid",b"envelopeid","grap_uin",b"grap_uin","index",b"index","msg_from",b"msg_from","msg_priority",b"msg_priority","msgtype",b"msgtype","name",b"name","pb_reserve",b"pb_reserve","pc_body",b"pc_body","receiver",b"receiver","redchannel",b"redchannel","redtype",b"redtype","resend",b"resend","sender",b"sender","senduin",b"senduin","sessiontype",b"sessiontype","templateid",b"templateid"]) -> None: ...
 
 class QQWalletAioElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     BACKGROUND_FIELD_NUMBER: int
     ICON_FIELD_NUMBER: int
     TITLE_FIELD_NUMBER: int
@@ -1849,149 +1748,137 @@ class QQWalletAioElem(Message):
     AIO_IMAGE_RIGHT_FIELD_NUMBER: int
     CFT_IMAGE_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    background: int = ...
-    icon: int = ...
-    title: bytes = ...
-    subtitle: bytes = ...
-    content: bytes = ...
-    linkurl: bytes = ...
-    blackstripe: bytes = ...
-    notice: bytes = ...
-    title_color: int = ...
-    subtitle_color: int = ...
-    actions_priority: bytes = ...
-    jump_url: bytes = ...
-    native_ios: bytes = ...
-    native_android: bytes = ...
-    iconurl: bytes = ...
-    content_color: int = ...
-    content_bgcolor: int = ...
-    aio_image_left: bytes = ...
-    aio_image_right: bytes = ...
-    cft_image: bytes = ...
-    pb_reserve: bytes = ...
-
+    background: int
+    icon: int
+    title: bytes
+    subtitle: bytes
+    content: bytes
+    linkurl: bytes
+    blackstripe: bytes
+    notice: bytes
+    title_color: int
+    subtitle_color: int
+    actions_priority: bytes
+    jump_url: bytes
+    native_ios: bytes
+    native_android: bytes
+    iconurl: bytes
+    content_color: int
+    content_bgcolor: int
+    aio_image_left: bytes
+    aio_image_right: bytes
+    cft_image: bytes
+    pb_reserve: bytes
     def __init__(self,
         *,
-        background : Optional[int] = ...,
-        icon : Optional[int] = ...,
-        title : Optional[bytes] = ...,
-        subtitle : Optional[bytes] = ...,
-        content : Optional[bytes] = ...,
-        linkurl : Optional[bytes] = ...,
-        blackstripe : Optional[bytes] = ...,
-        notice : Optional[bytes] = ...,
-        title_color : Optional[int] = ...,
-        subtitle_color : Optional[int] = ...,
-        actions_priority : Optional[bytes] = ...,
-        jump_url : Optional[bytes] = ...,
-        native_ios : Optional[bytes] = ...,
-        native_android : Optional[bytes] = ...,
-        iconurl : Optional[bytes] = ...,
-        content_color : Optional[int] = ...,
-        content_bgcolor : Optional[int] = ...,
-        aio_image_left : Optional[bytes] = ...,
-        aio_image_right : Optional[bytes] = ...,
-        cft_image : Optional[bytes] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        background: Optional[int] = ...,
+        icon: Optional[int] = ...,
+        title: Optional[bytes] = ...,
+        subtitle: Optional[bytes] = ...,
+        content: Optional[bytes] = ...,
+        linkurl: Optional[bytes] = ...,
+        blackstripe: Optional[bytes] = ...,
+        notice: Optional[bytes] = ...,
+        title_color: Optional[int] = ...,
+        subtitle_color: Optional[int] = ...,
+        actions_priority: Optional[bytes] = ...,
+        jump_url: Optional[bytes] = ...,
+        native_ios: Optional[bytes] = ...,
+        native_android: Optional[bytes] = ...,
+        iconurl: Optional[bytes] = ...,
+        content_color: Optional[int] = ...,
+        content_bgcolor: Optional[int] = ...,
+        aio_image_left: Optional[bytes] = ...,
+        aio_image_right: Optional[bytes] = ...,
+        cft_image: Optional[bytes] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"actions_priority",b"actions_priority",u"aio_image_left",b"aio_image_left",u"aio_image_right",b"aio_image_right",u"background",b"background",u"blackstripe",b"blackstripe",u"cft_image",b"cft_image",u"content",b"content",u"content_bgcolor",b"content_bgcolor",u"content_color",b"content_color",u"icon",b"icon",u"iconurl",b"iconurl",u"jump_url",b"jump_url",u"linkurl",b"linkurl",u"native_android",b"native_android",u"native_ios",b"native_ios",u"notice",b"notice",u"pb_reserve",b"pb_reserve",u"subtitle",b"subtitle",u"subtitle_color",b"subtitle_color",u"title",b"title",u"title_color",b"title_color"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"actions_priority",b"actions_priority",u"aio_image_left",b"aio_image_left",u"aio_image_right",b"aio_image_right",u"background",b"background",u"blackstripe",b"blackstripe",u"cft_image",b"cft_image",u"content",b"content",u"content_bgcolor",b"content_bgcolor",u"content_color",b"content_color",u"icon",b"icon",u"iconurl",b"iconurl",u"jump_url",b"jump_url",u"linkurl",b"linkurl",u"native_android",b"native_android",u"native_ios",b"native_ios",u"notice",b"notice",u"pb_reserve",b"pb_reserve",u"subtitle",b"subtitle",u"subtitle_color",b"subtitle_color",u"title",b"title",u"title_color",b"title_color"]) -> None: ...
+    def HasField(self, field_name: Literal["actions_priority",b"actions_priority","aio_image_left",b"aio_image_left","aio_image_right",b"aio_image_right","background",b"background","blackstripe",b"blackstripe","cft_image",b"cft_image","content",b"content","content_bgcolor",b"content_bgcolor","content_color",b"content_color","icon",b"icon","iconurl",b"iconurl","jump_url",b"jump_url","linkurl",b"linkurl","native_android",b"native_android","native_ios",b"native_ios","notice",b"notice","pb_reserve",b"pb_reserve","subtitle",b"subtitle","subtitle_color",b"subtitle_color","title",b"title","title_color",b"title_color"]) -> bool: ...
+    def ClearField(self, field_name: Literal["actions_priority",b"actions_priority","aio_image_left",b"aio_image_left","aio_image_right",b"aio_image_right","background",b"background","blackstripe",b"blackstripe","cft_image",b"cft_image","content",b"content","content_bgcolor",b"content_bgcolor","content_color",b"content_color","icon",b"icon","iconurl",b"iconurl","jump_url",b"jump_url","linkurl",b"linkurl","native_android",b"native_android","native_ios",b"native_ios","notice",b"notice","pb_reserve",b"pb_reserve","subtitle",b"subtitle","subtitle_color",b"subtitle_color","title",b"title","title_color",b"title_color"]) -> None: ...
 
 class QQWalletMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     AIO_BODY_FIELD_NUMBER: int
-
     @property
     def aio_body(self) -> QQWalletAioBody: ...
-
     def __init__(self,
         *,
-        aio_body : Optional[QQWalletAioBody] = ...,
+        aio_body: Optional[QQWalletAioBody] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"aio_body",b"aio_body"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"aio_body",b"aio_body"]) -> None: ...
+    def HasField(self, field_name: Literal["aio_body",b"aio_body"]) -> bool: ...
+    def ClearField(self, field_name: Literal["aio_body",b"aio_body"]) -> None: ...
 
 class RedBagInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     REDBAG_TYPE_FIELD_NUMBER: int
-    redbag_type: int = ...
-
+    redbag_type: int
     def __init__(self,
         *,
-        redbag_type : Optional[int] = ...,
+        redbag_type: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"redbag_type",b"redbag_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"redbag_type",b"redbag_type"]) -> None: ...
+    def HasField(self, field_name: Literal["redbag_type",b"redbag_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["redbag_type",b"redbag_type"]) -> None: ...
 
 class RichMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     TEMPLATE_1_FIELD_NUMBER: int
     SERVICE_ID_FIELD_NUMBER: int
     MSG_RESID_FIELD_NUMBER: int
     RAND_FIELD_NUMBER: int
     SEQ_FIELD_NUMBER: int
     FLAGS_FIELD_NUMBER: int
-    template_1: bytes = ...
-    service_id: int = ...
-    msg_resid: bytes = ...
-    rand: int = ...
-    seq: int = ...
-    flags: int = ...
-
+    template_1: bytes
+    service_id: int
+    msg_resid: bytes
+    rand: int
+    seq: int
+    flags: int
     def __init__(self,
         *,
-        template_1 : Optional[bytes] = ...,
-        service_id : Optional[int] = ...,
-        msg_resid : Optional[bytes] = ...,
-        rand : Optional[int] = ...,
-        seq : Optional[int] = ...,
-        flags : Optional[int] = ...,
+        template_1: Optional[bytes] = ...,
+        service_id: Optional[int] = ...,
+        msg_resid: Optional[bytes] = ...,
+        rand: Optional[int] = ...,
+        seq: Optional[int] = ...,
+        flags: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"flags",b"flags",u"msg_resid",b"msg_resid",u"rand",b"rand",u"seq",b"seq",u"service_id",b"service_id",u"template_1",b"template_1"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"flags",b"flags",u"msg_resid",b"msg_resid",u"rand",b"rand",u"seq",b"seq",u"service_id",b"service_id",u"template_1",b"template_1"]) -> None: ...
+    def HasField(self, field_name: Literal["flags",b"flags","msg_resid",b"msg_resid","rand",b"rand","seq",b"seq","service_id",b"service_id","template_1",b"template_1"]) -> bool: ...
+    def ClearField(self, field_name: Literal["flags",b"flags","msg_resid",b"msg_resid","rand",b"rand","seq",b"seq","service_id",b"service_id","template_1",b"template_1"]) -> None: ...
 
 class RichText(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     ATTR_FIELD_NUMBER: int
     ELEMS_FIELD_NUMBER: int
     NOT_ONLINE_FILE_FIELD_NUMBER: int
     PTT_FIELD_NUMBER: int
     TMP_PTT_FIELD_NUMBER: int
     TRANS_211_TMP_MSG_FIELD_NUMBER: int
-
     @property
     def attr(self) -> Attr: ...
-
     @property
     def elems(self) -> RepeatedCompositeFieldContainer[Elem]: ...
-
     @property
     def not_online_file(self) -> NotOnlineFile: ...
-
     @property
     def ptt(self) -> Ptt: ...
-
     @property
     def tmp_ptt(self) -> TmpPtt: ...
-
     @property
     def trans_211_tmp_msg(self) -> Trans211TmpMsg: ...
-
     def __init__(self,
         *,
-        attr : Optional[Attr] = ...,
-        elems : Optional[Iterable[Elem]] = ...,
-        not_online_file : Optional[NotOnlineFile] = ...,
-        ptt : Optional[Ptt] = ...,
-        tmp_ptt : Optional[TmpPtt] = ...,
-        trans_211_tmp_msg : Optional[Trans211TmpMsg] = ...,
+        attr: Optional[Attr] = ...,
+        elems: Optional[Iterable[Elem]] = ...,
+        not_online_file: Optional[NotOnlineFile] = ...,
+        ptt: Optional[Ptt] = ...,
+        tmp_ptt: Optional[TmpPtt] = ...,
+        trans_211_tmp_msg: Optional[Trans211TmpMsg] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"attr",b"attr",u"not_online_file",b"not_online_file",u"ptt",b"ptt",u"tmp_ptt",b"tmp_ptt",u"trans_211_tmp_msg",b"trans_211_tmp_msg"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"attr",b"attr",u"elems",b"elems",u"not_online_file",b"not_online_file",u"ptt",b"ptt",u"tmp_ptt",b"tmp_ptt",u"trans_211_tmp_msg",b"trans_211_tmp_msg"]) -> None: ...
+    def HasField(self, field_name: Literal["attr",b"attr","not_online_file",b"not_online_file","ptt",b"ptt","tmp_ptt",b"tmp_ptt","trans_211_tmp_msg",b"trans_211_tmp_msg"]) -> bool: ...
+    def ClearField(self, field_name: Literal["attr",b"attr","elems",b"elems","not_online_file",b"not_online_file","ptt",b"ptt","tmp_ptt",b"tmp_ptt","trans_211_tmp_msg",b"trans_211_tmp_msg"]) -> None: ...
 
 class SecretFileMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FILE_KEY_FIELD_NUMBER: int
     FROM_UIN_FIELD_NUMBER: int
     TO_UIN_FIELD_NUMBER: int
@@ -2007,82 +1894,77 @@ class SecretFileMsg(Message):
     ELEM_FLAGS2_FIELD_NUMBER: int
     OPERTYPE_FIELD_NUMBER: int
     FROMPHONENUM_FIELD_NUMBER: int
-    file_key: bytes = ...
-    from_uin: int = ...
-    to_uin: int = ...
-    status: int = ...
-    ttl: int = ...
-    type: int = ...
-    encrypt_prehead_length: int = ...
-    encrypt_type: int = ...
-    encrypt_key: bytes = ...
-    read_times: int = ...
-    left_time: int = ...
-    opertype: int = ...
-    fromphonenum: Text = ...
-
+    file_key: bytes
+    from_uin: int
+    to_uin: int
+    status: int
+    ttl: int
+    type: int
+    encrypt_prehead_length: int
+    encrypt_type: int
+    encrypt_key: bytes
+    read_times: int
+    left_time: int
     @property
     def not_online_image(self) -> NotOnlineImage: ...
-
     @property
     def elem_flags2(self) -> ElemFlags2: ...
-
+    opertype: int
+    fromphonenum: Text
     def __init__(self,
         *,
-        file_key : Optional[bytes] = ...,
-        from_uin : Optional[int] = ...,
-        to_uin : Optional[int] = ...,
-        status : Optional[int] = ...,
-        ttl : Optional[int] = ...,
-        type : Optional[int] = ...,
-        encrypt_prehead_length : Optional[int] = ...,
-        encrypt_type : Optional[int] = ...,
-        encrypt_key : Optional[bytes] = ...,
-        read_times : Optional[int] = ...,
-        left_time : Optional[int] = ...,
-        not_online_image : Optional[NotOnlineImage] = ...,
-        elem_flags2 : Optional[ElemFlags2] = ...,
-        opertype : Optional[int] = ...,
-        fromphonenum : Optional[Text] = ...,
+        file_key: Optional[bytes] = ...,
+        from_uin: Optional[int] = ...,
+        to_uin: Optional[int] = ...,
+        status: Optional[int] = ...,
+        ttl: Optional[int] = ...,
+        type: Optional[int] = ...,
+        encrypt_prehead_length: Optional[int] = ...,
+        encrypt_type: Optional[int] = ...,
+        encrypt_key: Optional[bytes] = ...,
+        read_times: Optional[int] = ...,
+        left_time: Optional[int] = ...,
+        not_online_image: Optional[NotOnlineImage] = ...,
+        elem_flags2: Optional[ElemFlags2] = ...,
+        opertype: Optional[int] = ...,
+        fromphonenum: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"elem_flags2",b"elem_flags2",u"encrypt_key",b"encrypt_key",u"encrypt_prehead_length",b"encrypt_prehead_length",u"encrypt_type",b"encrypt_type",u"file_key",b"file_key",u"from_uin",b"from_uin",u"fromphonenum",b"fromphonenum",u"left_time",b"left_time",u"not_online_image",b"not_online_image",u"opertype",b"opertype",u"read_times",b"read_times",u"status",b"status",u"to_uin",b"to_uin",u"ttl",b"ttl",u"type",b"type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"elem_flags2",b"elem_flags2",u"encrypt_key",b"encrypt_key",u"encrypt_prehead_length",b"encrypt_prehead_length",u"encrypt_type",b"encrypt_type",u"file_key",b"file_key",u"from_uin",b"from_uin",u"fromphonenum",b"fromphonenum",u"left_time",b"left_time",u"not_online_image",b"not_online_image",u"opertype",b"opertype",u"read_times",b"read_times",u"status",b"status",u"to_uin",b"to_uin",u"ttl",b"ttl",u"type",b"type"]) -> None: ...
+    def HasField(self, field_name: Literal["elem_flags2",b"elem_flags2","encrypt_key",b"encrypt_key","encrypt_prehead_length",b"encrypt_prehead_length","encrypt_type",b"encrypt_type","file_key",b"file_key","from_uin",b"from_uin","fromphonenum",b"fromphonenum","left_time",b"left_time","not_online_image",b"not_online_image","opertype",b"opertype","read_times",b"read_times","status",b"status","to_uin",b"to_uin","ttl",b"ttl","type",b"type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["elem_flags2",b"elem_flags2","encrypt_key",b"encrypt_key","encrypt_prehead_length",b"encrypt_prehead_length","encrypt_type",b"encrypt_type","file_key",b"file_key","from_uin",b"from_uin","fromphonenum",b"fromphonenum","left_time",b"left_time","not_online_image",b"not_online_image","opertype",b"opertype","read_times",b"read_times","status",b"status","to_uin",b"to_uin","ttl",b"ttl","type",b"type"]) -> None: ...
 
 class ShakeWindow(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     TYPE_FIELD_NUMBER: int
     RESERVE_FIELD_NUMBER: int
     UIN_FIELD_NUMBER: int
-    type: int = ...
-    reserve: int = ...
-    uin: int = ...
-
+    type: int
+    reserve: int
+    uin: int
     def __init__(self,
         *,
-        type : Optional[int] = ...,
-        reserve : Optional[int] = ...,
-        uin : Optional[int] = ...,
+        type: Optional[int] = ...,
+        reserve: Optional[int] = ...,
+        uin: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"reserve",b"reserve",u"type",b"type",u"uin",b"uin"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"reserve",b"reserve",u"type",b"type",u"uin",b"uin"]) -> None: ...
+    def HasField(self, field_name: Literal["reserve",b"reserve","type",b"type","uin",b"uin"]) -> bool: ...
+    def ClearField(self, field_name: Literal["reserve",b"reserve","type",b"type","uin",b"uin"]) -> None: ...
 
 class SmallEmoji(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     PACK_ID_SUM_FIELD_NUMBER: int
     IMAGE_TYPE_FIELD_NUMBER: int
-    pack_id_sum: int = ...
-    image_type: int = ...
-
+    pack_id_sum: int
+    image_type: int
     def __init__(self,
         *,
-        pack_id_sum : Optional[int] = ...,
-        image_type : Optional[int] = ...,
+        pack_id_sum: Optional[int] = ...,
+        image_type: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"image_type",b"image_type",u"pack_id_sum",b"pack_id_sum"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"image_type",b"image_type",u"pack_id_sum",b"pack_id_sum"]) -> None: ...
+    def HasField(self, field_name: Literal["image_type",b"image_type","pack_id_sum",b"pack_id_sum"]) -> bool: ...
+    def ClearField(self, field_name: Literal["image_type",b"image_type","pack_id_sum",b"pack_id_sum"]) -> None: ...
 
 class SourceMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     ORIG_SEQS_FIELD_NUMBER: int
     SENDER_UIN_FIELD_NUMBER: int
     TIME_FIELD_NUMBER: int
@@ -2094,78 +1976,75 @@ class SourceMsg(Message):
     SRC_MSG_FIELD_NUMBER: int
     TO_UIN_FIELD_NUMBER: int
     TROOP_NAME_FIELD_NUMBER: int
-    orig_seqs: RepeatedScalarFieldContainer[int] = ...
-    sender_uin: int = ...
-    time: int = ...
-    flag: int = ...
-    type: int = ...
-    rich_msg: bytes = ...
-    pb_reserve: bytes = ...
-    src_msg: bytes = ...
-    to_uin: int = ...
-    troop_name: bytes = ...
-
+    @property
+    def orig_seqs(self) -> RepeatedScalarFieldContainer[int]: ...
+    sender_uin: int
+    time: int
+    flag: int
     @property
     def elems(self) -> RepeatedCompositeFieldContainer[Elem]: ...
-
+    type: int
+    rich_msg: bytes
+    pb_reserve: bytes
+    src_msg: bytes
+    to_uin: int
+    troop_name: bytes
     def __init__(self,
         *,
-        orig_seqs : Optional[Iterable[int]] = ...,
-        sender_uin : Optional[int] = ...,
-        time : Optional[int] = ...,
-        flag : Optional[int] = ...,
-        elems : Optional[Iterable[Elem]] = ...,
-        type : Optional[int] = ...,
-        rich_msg : Optional[bytes] = ...,
-        pb_reserve : Optional[bytes] = ...,
-        src_msg : Optional[bytes] = ...,
-        to_uin : Optional[int] = ...,
-        troop_name : Optional[bytes] = ...,
+        orig_seqs: Optional[Iterable[int]] = ...,
+        sender_uin: Optional[int] = ...,
+        time: Optional[int] = ...,
+        flag: Optional[int] = ...,
+        elems: Optional[Iterable[Elem]] = ...,
+        type: Optional[int] = ...,
+        rich_msg: Optional[bytes] = ...,
+        pb_reserve: Optional[bytes] = ...,
+        src_msg: Optional[bytes] = ...,
+        to_uin: Optional[int] = ...,
+        troop_name: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"flag",b"flag",u"pb_reserve",b"pb_reserve",u"rich_msg",b"rich_msg",u"sender_uin",b"sender_uin",u"src_msg",b"src_msg",u"time",b"time",u"to_uin",b"to_uin",u"troop_name",b"troop_name",u"type",b"type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"elems",b"elems",u"flag",b"flag",u"orig_seqs",b"orig_seqs",u"pb_reserve",b"pb_reserve",u"rich_msg",b"rich_msg",u"sender_uin",b"sender_uin",u"src_msg",b"src_msg",u"time",b"time",u"to_uin",b"to_uin",u"troop_name",b"troop_name",u"type",b"type"]) -> None: ...
+    def HasField(self, field_name: Literal["flag",b"flag","pb_reserve",b"pb_reserve","rich_msg",b"rich_msg","sender_uin",b"sender_uin","src_msg",b"src_msg","time",b"time","to_uin",b"to_uin","troop_name",b"troop_name","type",b"type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["elems",b"elems","flag",b"flag","orig_seqs",b"orig_seqs","pb_reserve",b"pb_reserve","rich_msg",b"rich_msg","sender_uin",b"sender_uin","src_msg",b"src_msg","time",b"time","to_uin",b"to_uin","troop_name",b"troop_name","type",b"type"]) -> None: ...
 
 class PlainText(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     STR_FIELD_NUMBER: int
     LINK_FIELD_NUMBER: int
     ATTR_6_BUF_FIELD_NUMBER: int
     ATTR_7_BUF_FIELD_NUMBER: int
     BUF_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    str: bytes = ...
-    link: Text = ...
-    attr_6_buf: bytes = ...
-    attr_7_buf: bytes = ...
-    buf: bytes = ...
-    pb_reserve: bytes = ...
-
+    str: bytes
+    link: Text
+    attr_6_buf: bytes
+    attr_7_buf: bytes
+    buf: bytes
+    pb_reserve: bytes
     def __init__(self,
         *,
-        str : Optional[bytes] = ...,
-        link : Optional[Text] = ...,
-        attr_6_buf : Optional[bytes] = ...,
-        attr_7_buf : Optional[bytes] = ...,
-        buf : Optional[bytes] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        str: Optional[bytes] = ...,
+        link: Optional[Text] = ...,
+        attr_6_buf: Optional[bytes] = ...,
+        attr_7_buf: Optional[bytes] = ...,
+        buf: Optional[bytes] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"attr_6_buf",b"attr_6_buf",u"attr_7_buf",b"attr_7_buf",u"buf",b"buf",u"link",b"link",u"pb_reserve",b"pb_reserve",u"str",b"str"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"attr_6_buf",b"attr_6_buf",u"attr_7_buf",b"attr_7_buf",u"buf",b"buf",u"link",b"link",u"pb_reserve",b"pb_reserve",u"str",b"str"]) -> None: ...
+    def HasField(self, field_name: Literal["attr_6_buf",b"attr_6_buf","attr_7_buf",b"attr_7_buf","buf",b"buf","link",b"link","pb_reserve",b"pb_reserve","str",b"str"]) -> bool: ...
+    def ClearField(self, field_name: Literal["attr_6_buf",b"attr_6_buf","attr_7_buf",b"attr_7_buf","buf",b"buf","link",b"link","pb_reserve",b"pb_reserve","str",b"str"]) -> None: ...
 
 class TipsInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     TEXT_FIELD_NUMBER: int
-    text: Text = ...
-
+    text: Text
     def __init__(self,
         *,
-        text : Optional[Text] = ...,
+        text: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"text",b"text"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"text",b"text"]) -> None: ...
+    def HasField(self, field_name: Literal["text",b"text"]) -> bool: ...
+    def ClearField(self, field_name: Literal["text",b"text"]) -> None: ...
 
 class TmpPtt(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FILE_TYPE_FIELD_NUMBER: int
     FILE_UUID_FIELD_NUMBER: int
     FILE_MD5_FIELD_NUMBER: int
@@ -2178,69 +2057,66 @@ class TmpPtt(Message):
     MSG_ID_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
     PTT_ENCODE_DATA_FIELD_NUMBER: int
-    file_type: int = ...
-    file_uuid: bytes = ...
-    file_md5: bytes = ...
-    file_name: bytes = ...
-    file_size: int = ...
-    ptt_times: int = ...
-    user_type: int = ...
-    ptttrans_flag: int = ...
-    busi_type: int = ...
-    msg_id: int = ...
-    pb_reserve: bytes = ...
-    ptt_encode_data: bytes = ...
-
+    file_type: int
+    file_uuid: bytes
+    file_md5: bytes
+    file_name: bytes
+    file_size: int
+    ptt_times: int
+    user_type: int
+    ptttrans_flag: int
+    busi_type: int
+    msg_id: int
+    pb_reserve: bytes
+    ptt_encode_data: bytes
     def __init__(self,
         *,
-        file_type : Optional[int] = ...,
-        file_uuid : Optional[bytes] = ...,
-        file_md5 : Optional[bytes] = ...,
-        file_name : Optional[bytes] = ...,
-        file_size : Optional[int] = ...,
-        ptt_times : Optional[int] = ...,
-        user_type : Optional[int] = ...,
-        ptttrans_flag : Optional[int] = ...,
-        busi_type : Optional[int] = ...,
-        msg_id : Optional[int] = ...,
-        pb_reserve : Optional[bytes] = ...,
-        ptt_encode_data : Optional[bytes] = ...,
+        file_type: Optional[int] = ...,
+        file_uuid: Optional[bytes] = ...,
+        file_md5: Optional[bytes] = ...,
+        file_name: Optional[bytes] = ...,
+        file_size: Optional[int] = ...,
+        ptt_times: Optional[int] = ...,
+        user_type: Optional[int] = ...,
+        ptttrans_flag: Optional[int] = ...,
+        busi_type: Optional[int] = ...,
+        msg_id: Optional[int] = ...,
+        pb_reserve: Optional[bytes] = ...,
+        ptt_encode_data: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"busi_type",b"busi_type",u"file_md5",b"file_md5",u"file_name",b"file_name",u"file_size",b"file_size",u"file_type",b"file_type",u"file_uuid",b"file_uuid",u"msg_id",b"msg_id",u"pb_reserve",b"pb_reserve",u"ptt_encode_data",b"ptt_encode_data",u"ptt_times",b"ptt_times",u"ptttrans_flag",b"ptttrans_flag",u"user_type",b"user_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"busi_type",b"busi_type",u"file_md5",b"file_md5",u"file_name",b"file_name",u"file_size",b"file_size",u"file_type",b"file_type",u"file_uuid",b"file_uuid",u"msg_id",b"msg_id",u"pb_reserve",b"pb_reserve",u"ptt_encode_data",b"ptt_encode_data",u"ptt_times",b"ptt_times",u"ptttrans_flag",b"ptttrans_flag",u"user_type",b"user_type"]) -> None: ...
+    def HasField(self, field_name: Literal["busi_type",b"busi_type","file_md5",b"file_md5","file_name",b"file_name","file_size",b"file_size","file_type",b"file_type","file_uuid",b"file_uuid","msg_id",b"msg_id","pb_reserve",b"pb_reserve","ptt_encode_data",b"ptt_encode_data","ptt_times",b"ptt_times","ptttrans_flag",b"ptttrans_flag","user_type",b"user_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["busi_type",b"busi_type","file_md5",b"file_md5","file_name",b"file_name","file_size",b"file_size","file_type",b"file_type","file_uuid",b"file_uuid","msg_id",b"msg_id","pb_reserve",b"pb_reserve","ptt_encode_data",b"ptt_encode_data","ptt_times",b"ptt_times","ptttrans_flag",b"ptttrans_flag","user_type",b"user_type"]) -> None: ...
 
 class Trans211TmpMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     MSG_BODY_FIELD_NUMBER: int
     C2C_CMD_FIELD_NUMBER: int
-    msg_body: bytes = ...
-    c2c_cmd: int = ...
-
+    msg_body: bytes
+    c2c_cmd: int
     def __init__(self,
         *,
-        msg_body : Optional[bytes] = ...,
-        c2c_cmd : Optional[int] = ...,
+        msg_body: Optional[bytes] = ...,
+        c2c_cmd: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"c2c_cmd",b"c2c_cmd",u"msg_body",b"msg_body"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"c2c_cmd",b"c2c_cmd",u"msg_body",b"msg_body"]) -> None: ...
+    def HasField(self, field_name: Literal["c2c_cmd",b"c2c_cmd","msg_body",b"msg_body"]) -> bool: ...
+    def ClearField(self, field_name: Literal["c2c_cmd",b"c2c_cmd","msg_body",b"msg_body"]) -> None: ...
 
 class TransElem(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     ELEM_TYPE_FIELD_NUMBER: int
     ELEM_VALUE_FIELD_NUMBER: int
-    elem_type: int = ...
-    elem_value: bytes = ...
-
+    elem_type: int
+    elem_value: bytes
     def __init__(self,
         *,
-        elem_type : Optional[int] = ...,
-        elem_value : Optional[bytes] = ...,
+        elem_type: Optional[int] = ...,
+        elem_value: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"elem_type",b"elem_type",u"elem_value",b"elem_value"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"elem_type",b"elem_type",u"elem_value",b"elem_value"]) -> None: ...
+    def HasField(self, field_name: Literal["elem_type",b"elem_type","elem_value",b"elem_value"]) -> bool: ...
+    def ClearField(self, field_name: Literal["elem_type",b"elem_type","elem_value",b"elem_value"]) -> None: ...
 
 class VideoFile(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FILE_UUID_FIELD_NUMBER: int
     FILE_MD5_FIELD_NUMBER: int
     FILE_NAME_FIELD_NUMBER: int
@@ -2265,90 +2141,89 @@ class VideoFile(Message):
     THUMB_DOWNLOAD_FLAG_FIELD_NUMBER: int
     VIDEO_DOWNLOAD_FLAG_FIELD_NUMBER: int
     PB_RESERVE_FIELD_NUMBER: int
-    file_uuid: bytes = ...
-    file_md5: bytes = ...
-    file_name: bytes = ...
-    file_format: int = ...
-    file_time: int = ...
-    file_size: int = ...
-    thumb_width: int = ...
-    thumb_height: int = ...
-    thumb_file_md5: bytes = ...
-    source: bytes = ...
-    thumb_file_size: int = ...
-    busi_type: int = ...
-    from_chat_type: int = ...
-    to_chat_type: int = ...
-    support_progressive: bool = ...
-    file_width: int = ...
-    file_height: int = ...
-    sub_busi_type: int = ...
-    video_attr: int = ...
-    thumb_file_urls: RepeatedScalarFieldContainer[bytes] = ...
-    video_file_urls: RepeatedScalarFieldContainer[bytes] = ...
-    thumb_download_flag: int = ...
-    video_download_flag: int = ...
-    pb_reserve: bytes = ...
-
+    file_uuid: bytes
+    file_md5: bytes
+    file_name: bytes
+    file_format: int
+    file_time: int
+    file_size: int
+    thumb_width: int
+    thumb_height: int
+    thumb_file_md5: bytes
+    source: bytes
+    thumb_file_size: int
+    busi_type: int
+    from_chat_type: int
+    to_chat_type: int
+    support_progressive: bool
+    file_width: int
+    file_height: int
+    sub_busi_type: int
+    video_attr: int
+    @property
+    def thumb_file_urls(self) -> RepeatedScalarFieldContainer[bytes]: ...
+    @property
+    def video_file_urls(self) -> RepeatedScalarFieldContainer[bytes]: ...
+    thumb_download_flag: int
+    video_download_flag: int
+    pb_reserve: bytes
     def __init__(self,
         *,
-        file_uuid : Optional[bytes] = ...,
-        file_md5 : Optional[bytes] = ...,
-        file_name : Optional[bytes] = ...,
-        file_format : Optional[int] = ...,
-        file_time : Optional[int] = ...,
-        file_size : Optional[int] = ...,
-        thumb_width : Optional[int] = ...,
-        thumb_height : Optional[int] = ...,
-        thumb_file_md5 : Optional[bytes] = ...,
-        source : Optional[bytes] = ...,
-        thumb_file_size : Optional[int] = ...,
-        busi_type : Optional[int] = ...,
-        from_chat_type : Optional[int] = ...,
-        to_chat_type : Optional[int] = ...,
-        support_progressive : Optional[bool] = ...,
-        file_width : Optional[int] = ...,
-        file_height : Optional[int] = ...,
-        sub_busi_type : Optional[int] = ...,
-        video_attr : Optional[int] = ...,
-        thumb_file_urls : Optional[Iterable[bytes]] = ...,
-        video_file_urls : Optional[Iterable[bytes]] = ...,
-        thumb_download_flag : Optional[int] = ...,
-        video_download_flag : Optional[int] = ...,
-        pb_reserve : Optional[bytes] = ...,
+        file_uuid: Optional[bytes] = ...,
+        file_md5: Optional[bytes] = ...,
+        file_name: Optional[bytes] = ...,
+        file_format: Optional[int] = ...,
+        file_time: Optional[int] = ...,
+        file_size: Optional[int] = ...,
+        thumb_width: Optional[int] = ...,
+        thumb_height: Optional[int] = ...,
+        thumb_file_md5: Optional[bytes] = ...,
+        source: Optional[bytes] = ...,
+        thumb_file_size: Optional[int] = ...,
+        busi_type: Optional[int] = ...,
+        from_chat_type: Optional[int] = ...,
+        to_chat_type: Optional[int] = ...,
+        support_progressive: Optional[bool] = ...,
+        file_width: Optional[int] = ...,
+        file_height: Optional[int] = ...,
+        sub_busi_type: Optional[int] = ...,
+        video_attr: Optional[int] = ...,
+        thumb_file_urls: Optional[Iterable[bytes]] = ...,
+        video_file_urls: Optional[Iterable[bytes]] = ...,
+        thumb_download_flag: Optional[int] = ...,
+        video_download_flag: Optional[int] = ...,
+        pb_reserve: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"busi_type",b"busi_type",u"file_format",b"file_format",u"file_height",b"file_height",u"file_md5",b"file_md5",u"file_name",b"file_name",u"file_size",b"file_size",u"file_time",b"file_time",u"file_uuid",b"file_uuid",u"file_width",b"file_width",u"from_chat_type",b"from_chat_type",u"pb_reserve",b"pb_reserve",u"source",b"source",u"sub_busi_type",b"sub_busi_type",u"support_progressive",b"support_progressive",u"thumb_download_flag",b"thumb_download_flag",u"thumb_file_md5",b"thumb_file_md5",u"thumb_file_size",b"thumb_file_size",u"thumb_height",b"thumb_height",u"thumb_width",b"thumb_width",u"to_chat_type",b"to_chat_type",u"video_attr",b"video_attr",u"video_download_flag",b"video_download_flag"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"busi_type",b"busi_type",u"file_format",b"file_format",u"file_height",b"file_height",u"file_md5",b"file_md5",u"file_name",b"file_name",u"file_size",b"file_size",u"file_time",b"file_time",u"file_uuid",b"file_uuid",u"file_width",b"file_width",u"from_chat_type",b"from_chat_type",u"pb_reserve",b"pb_reserve",u"source",b"source",u"sub_busi_type",b"sub_busi_type",u"support_progressive",b"support_progressive",u"thumb_download_flag",b"thumb_download_flag",u"thumb_file_md5",b"thumb_file_md5",u"thumb_file_size",b"thumb_file_size",u"thumb_file_urls",b"thumb_file_urls",u"thumb_height",b"thumb_height",u"thumb_width",b"thumb_width",u"to_chat_type",b"to_chat_type",u"video_attr",b"video_attr",u"video_download_flag",b"video_download_flag",u"video_file_urls",b"video_file_urls"]) -> None: ...
+    def HasField(self, field_name: Literal["busi_type",b"busi_type","file_format",b"file_format","file_height",b"file_height","file_md5",b"file_md5","file_name",b"file_name","file_size",b"file_size","file_time",b"file_time","file_uuid",b"file_uuid","file_width",b"file_width","from_chat_type",b"from_chat_type","pb_reserve",b"pb_reserve","source",b"source","sub_busi_type",b"sub_busi_type","support_progressive",b"support_progressive","thumb_download_flag",b"thumb_download_flag","thumb_file_md5",b"thumb_file_md5","thumb_file_size",b"thumb_file_size","thumb_height",b"thumb_height","thumb_width",b"thumb_width","to_chat_type",b"to_chat_type","video_attr",b"video_attr","video_download_flag",b"video_download_flag"]) -> bool: ...
+    def ClearField(self, field_name: Literal["busi_type",b"busi_type","file_format",b"file_format","file_height",b"file_height","file_md5",b"file_md5","file_name",b"file_name","file_size",b"file_size","file_time",b"file_time","file_uuid",b"file_uuid","file_width",b"file_width","from_chat_type",b"from_chat_type","pb_reserve",b"pb_reserve","source",b"source","sub_busi_type",b"sub_busi_type","support_progressive",b"support_progressive","thumb_download_flag",b"thumb_download_flag","thumb_file_md5",b"thumb_file_md5","thumb_file_size",b"thumb_file_size","thumb_file_urls",b"thumb_file_urls","thumb_height",b"thumb_height","thumb_width",b"thumb_width","to_chat_type",b"to_chat_type","video_attr",b"video_attr","video_download_flag",b"video_download_flag","video_file_urls",b"video_file_urls"]) -> None: ...
 
 class WorkflowNotifyMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     EXT_MSG_FIELD_NUMBER: int
     CREATE_UIN_FIELD_NUMBER: int
-    ext_msg: bytes = ...
-    create_uin: int = ...
-
+    ext_msg: bytes
+    create_uin: int
     def __init__(self,
         *,
-        ext_msg : Optional[bytes] = ...,
-        create_uin : Optional[int] = ...,
+        ext_msg: Optional[bytes] = ...,
+        create_uin: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"create_uin",b"create_uin",u"ext_msg",b"ext_msg"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"create_uin",b"create_uin",u"ext_msg",b"ext_msg"]) -> None: ...
+    def HasField(self, field_name: Literal["create_uin",b"create_uin","ext_msg",b"ext_msg"]) -> bool: ...
+    def ClearField(self, field_name: Literal["create_uin",b"create_uin","ext_msg",b"ext_msg"]) -> None: ...
 
 class LocationInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     LONGITUDE_FIELD_NUMBER: int
     LATITUDE_FIELD_NUMBER: int
     DESC_FIELD_NUMBER: int
-    longitude: float = ...
-    latitude: float = ...
-    desc: bytes = ...
-
+    longitude: float
+    latitude: float
+    desc: bytes
     def __init__(self,
         *,
-        longitude : Optional[float] = ...,
-        latitude : Optional[float] = ...,
-        desc : Optional[bytes] = ...,
+        longitude: Optional[float] = ...,
+        latitude: Optional[float] = ...,
+        desc: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"desc",b"desc",u"latitude",b"latitude",u"longitude",b"longitude"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"desc",b"desc",u"latitude",b"latitude",u"longitude",b"longitude"]) -> None: ...
+    def HasField(self, field_name: Literal["desc",b"desc","latitude",b"latitude","longitude",b"longitude"]) -> bool: ...
+    def ClearField(self, field_name: Literal["desc",b"desc","latitude",b"latitude","longitude",b"longitude"]) -> None: ...

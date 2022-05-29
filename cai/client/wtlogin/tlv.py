@@ -12,15 +12,12 @@ import time
 import random
 import struct
 from hashlib import md5
-from typing import Any, Dict, List, Union
+from typing import Any, Dict, List, Union, Optional
 
 from rtea import qqtea_decrypt, qqtea_encrypt
 
 from cai.utils.binary import Packet
 from cai.pb.wtlogin import DeviceReport
-from cai.settings.device import get_device
-
-DEVICE = get_device()
 
 
 class TlvEncoder:
@@ -608,6 +605,7 @@ class TlvDecoder:
     def decode(
         cls,
         data: Union[bytes, bytearray],
+        tgtgt: Optional[bytes] = None,
         offset: int = 0,
         tag_size: int = 2,
     ) -> Dict[int, Any]:
@@ -639,7 +637,9 @@ class TlvDecoder:
             value = data.read_bytes(length, offset)
             offset += length
             futher_decode = getattr(cls, f"t{tag:x}", None)
-            if futher_decode:
+            if futher_decode and tag == 0x119:
+                value = futher_decode(value, tgtgt)
+            elif futher_decode:
                 value = futher_decode(value)
             result[tag] = value
 
@@ -658,7 +658,7 @@ class TlvDecoder:
         return {"uin": struct.unpack_from(">I", data)[0]}
 
     @classmethod
-    def t119(cls, data: bytes) -> Dict[int, Any]:
+    def t119(cls, data: bytes, tgtgt: bytes) -> Dict[int, Any]:
         """Tea decrypt tlv 119 data.
 
         Tlv list:
@@ -712,7 +712,7 @@ class TlvDecoder:
         Note:
             Source: oicq.wlogin_sdk.request.oicq_request.d
         """
-        data = qqtea_decrypt(data, DEVICE.tgtgt)
+        data = qqtea_decrypt(data, tgtgt)
         result = cls.decode(data, offset=2)
         return result
 

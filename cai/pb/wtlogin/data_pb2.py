@@ -3,6 +3,7 @@
 # source: cai/pb/wtlogin/data.proto
 """Generated protocol buffer code."""
 from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
@@ -13,183 +14,12 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor.FileDescriptor(
-  name='cai/pb/wtlogin/data.proto',
-  package='wtlogin',
-  syntax='proto2',
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x19\x63\x61i/pb/wtlogin/data.proto\x12\x07wtlogin\"\xc3\x01\n\x0c\x44\x65viceReport\x12\x12\n\nbootloader\x18\x01 \x01(\t\x12\x14\n\x0cproc_version\x18\x02 \x01(\t\x12\x10\n\x08\x63odename\x18\x03 \x01(\t\x12\x13\n\x0bincremental\x18\x04 \x01(\t\x12\x13\n\x0b\x66ingerprint\x18\x05 \x01(\t\x12\x0f\n\x07\x62oot_id\x18\x06 \x01(\t\x12\x12\n\nandroid_id\x18\x07 \x01(\t\x12\x11\n\tbase_band\x18\x08 \x01(\t\x12\x15\n\rinner_version\x18\t \x01(\t\"\x98\x01\n\x0cSecTransInfo\x12\x13\n\x0bphone_brand\x18\x01 \x01(\t\x12\x12\n\nmodel_type\x18\x02 \x01(\t\x12\x10\n\x08wifi_mac\x18\x03 \x01(\t\x12\r\n\x05\x62ssid\x18\x04 \x01(\t\x12\x13\n\x0bos_language\x18\x05 \x01(\t\x12\x13\n\x0bqq_language\x18\x06 \x01(\r\x12\x14\n\x0cgps_location\x18\x07 \x01(\t'
-)
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x19\x63\x61i/pb/wtlogin/data.proto\x12\x07wtlogin\"\xc3\x01\n\x0c\x44\x65viceReport\x12\x12\n\nbootloader\x18\x01 \x01(\t\x12\x14\n\x0cproc_version\x18\x02 \x01(\t\x12\x10\n\x08\x63odename\x18\x03 \x01(\t\x12\x13\n\x0bincremental\x18\x04 \x01(\t\x12\x13\n\x0b\x66ingerprint\x18\x05 \x01(\t\x12\x0f\n\x07\x62oot_id\x18\x06 \x01(\t\x12\x12\n\nandroid_id\x18\x07 \x01(\t\x12\x11\n\tbase_band\x18\x08 \x01(\t\x12\x15\n\rinner_version\x18\t \x01(\t\"\x98\x01\n\x0cSecTransInfo\x12\x13\n\x0bphone_brand\x18\x01 \x01(\t\x12\x12\n\nmodel_type\x18\x02 \x01(\t\x12\x10\n\x08wifi_mac\x18\x03 \x01(\t\x12\r\n\x05\x62ssid\x18\x04 \x01(\t\x12\x13\n\x0bos_language\x18\x05 \x01(\t\x12\x13\n\x0bqq_language\x18\x06 \x01(\r\x12\x14\n\x0cgps_location\x18\x07 \x01(\t')
 
 
 
-
-_DEVICEREPORT = _descriptor.Descriptor(
-  name='DeviceReport',
-  full_name='wtlogin.DeviceReport',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='bootloader', full_name='wtlogin.DeviceReport.bootloader', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='proc_version', full_name='wtlogin.DeviceReport.proc_version', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='codename', full_name='wtlogin.DeviceReport.codename', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='incremental', full_name='wtlogin.DeviceReport.incremental', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='fingerprint', full_name='wtlogin.DeviceReport.fingerprint', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='boot_id', full_name='wtlogin.DeviceReport.boot_id', index=5,
-      number=6, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='android_id', full_name='wtlogin.DeviceReport.android_id', index=6,
-      number=7, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='base_band', full_name='wtlogin.DeviceReport.base_band', index=7,
-      number=8, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='inner_version', full_name='wtlogin.DeviceReport.inner_version', index=8,
-      number=9, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=39,
-  serialized_end=234,
-)
-
-
-_SECTRANSINFO = _descriptor.Descriptor(
-  name='SecTransInfo',
-  full_name='wtlogin.SecTransInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='phone_brand', full_name='wtlogin.SecTransInfo.phone_brand', index=0,
-      number=1, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='model_type', full_name='wtlogin.SecTransInfo.model_type', index=1,
-      number=2, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='wifi_mac', full_name='wtlogin.SecTransInfo.wifi_mac', index=2,
-      number=3, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='bssid', full_name='wtlogin.SecTransInfo.bssid', index=3,
-      number=4, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='os_language', full_name='wtlogin.SecTransInfo.os_language', index=4,
-      number=5, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='qq_language', full_name='wtlogin.SecTransInfo.qq_language', index=5,
-      number=6, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='gps_location', full_name='wtlogin.SecTransInfo.gps_location', index=6,
-      number=7, type=9, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"".decode('utf-8'),
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=237,
-  serialized_end=389,
-)
-
-DESCRIPTOR.message_types_by_name['DeviceReport'] = _DEVICEREPORT
-DESCRIPTOR.message_types_by_name['SecTransInfo'] = _SECTRANSINFO
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
+_DEVICEREPORT = DESCRIPTOR.message_types_by_name['DeviceReport']
+_SECTRANSINFO = DESCRIPTOR.message_types_by_name['SecTransInfo']
 DeviceReport = _reflection.GeneratedProtocolMessageType('DeviceReport', (_message.Message,), {
   'DESCRIPTOR' : _DEVICEREPORT,
   '__module__' : 'cai.pb.wtlogin.data_pb2'
@@ -204,5 +34,11 @@ SecTransInfo = _reflection.GeneratedProtocolMessageType('SecTransInfo', (_messag
   })
 _sym_db.RegisterMessage(SecTransInfo)
 
+if _descriptor._USE_C_DESCRIPTORS == False:
 
+  DESCRIPTOR._options = None
+  _DEVICEREPORT._serialized_start=39
+  _DEVICEREPORT._serialized_end=234
+  _SECTRANSINFO._serialized_start=237
+  _SECTRANSINFO._serialized_end=389
 # @@protoc_insertion_point(module_scope)

@@ -17,6 +17,7 @@ from typing import (
     Set,
     Dict,
     List,
+    Tuple,
     Union,
     Callable,
     Optional,
@@ -26,12 +27,13 @@ from typing import (
 
 from cachetools import TTLCache
 
-from cai.log import logger
+from cai import log
 from cai.utils.binary import Packet
+from cai.client.events.base import Event
 from cai.utils.future import FutureStore
-from cai.settings.device import get_device
+from cai.settings.protocol import ApkInfo
+from cai.settings.device import DeviceInfo
 from cai.connection import Connection, connect
-from cai.settings.protocol import get_protocol
 from cai.exceptions import (
     LoginException,
     ApiResponseError,
@@ -46,14 +48,14 @@ from cai.exceptions import (
     GroupMemberListException,
 )
 
-from .event import Event
-from .packet import IncomingPacket
+from .packet import UniPacket, IncomingPacket
 from .command import Command, _packet_to_command
 from .sso_server import SsoServer, get_sso_server
-from .online_push import handle_c2c_sync, handle_push_msg
+from .multi_msg.long_msg import _handle_multi_resp_body
 from .heartbeat import Heartbeat, encode_heartbeat, handle_heartbeat
 from .models import Group, Friend, SigInfo, FriendGroup, GroupMember
 from .config_push import FileServerPushList, handle_config_push_request
+from .online_push import handle_c2c_sync, handle_push_msg, handle_req_push
 from .message_service import (
     SyncFlag,
     GetMessageCommand,
@@ -112,8 +114,6 @@ from .wtlogin import (
 HT = Callable[["Client", IncomingPacket], Awaitable[Command]]
 LT = Callable[["Client", Event], Awaitable[None]]
 
-DEVICE = get_device()
-APK_INFO = get_protocol()
 HANDLERS: Dict[str, HT] = {
     "wtlogin.login": handle_oicq_response,
     "wtlogin.exchange_emp": handle_oicq_response,
@@ -133,13 +133,28 @@ HANDLERS: Dict[str, HT] = {
     "OnlinePush.PbC2CMsgSync": handle_c2c_sync,
     "OnlinePush.PbPushC2CMsg": handle_push_msg,
     # "OnlinePush.PbPushBindUinGroupMsg": handle_push_msg,  # sub account
+    "MultiMsg.ApplyUp": _handle_multi_resp_body,
+    "OnlinePush.ReqPush": handle_req_push,
 }
 
 
 class Client:
     LISTENERS: Set[LT] = set()
 
-    def __init__(self, uin: int, password_md5: bytes):
+    def __init__(
+        self,
+        uin: int,
+        password_md5: bytes,
+        device: DeviceInfo,
+        apk_info: ApkInfo,
+        *,
+        auto_reconnect: bool = True,
+        max_reconnections: int = 3,
+    ):
+        # client info
+        self._device: DeviceInfo = device
+        self._apk_info: ApkInfo = apk_info
+
         # account info
         self._uin: int = uin
         self._password_md5: bytes = password_md5
@@ -163,7 +178,7 @@ class Client:
         self._file_storage_info: Optional[FileServerPushList] = None
 
         self._ip_address: bytes = bytes()
-        self._ksid: bytes = f"|{DEVICE.imei}|A8.2.7.27f6ea96".encode()
+        self._ksid: bytes = f"|{device.imei}|A8.2.7.27f6ea96".encode()
         self._pwd_flag: bool = False
         self._rollback_sig: bytes = bytes()
 
@@ -181,10 +196,33 @@ class Client:
         self._sync_cookie: bytes = bytes()
         self._pubaccount_cookie: bytes = bytes()
         self._msg_cache: TTLCache = TTLCache(maxsize=1024, ttl=3600)
+        self._online_push_cache: TTLCache = TTLCache(maxsize=1024, ttl=3600)
         self._receive_store: FutureStore[int, Command] = FutureStore()
 
+        # connection info
+        self._reconnect: bool = auto_reconnect
+        self._reconnect_times: int = 0
+        self._max_reconnections: int = max_reconnections
+        self._closed: asyncio.Event = asyncio.Event()
+
     def __str__(self) -> str:
-        return f"<cai client object for {self.uin}>"
+        return f"<cai client object {self.uin}(connected={self.connected})>"
+
+    @property
+    def device(self) -> DeviceInfo:
+        """
+        Returns:
+            DeviceInfo: client device info
+        """
+        return self._device
+
+    @property
+    def apk_info(self) -> ApkInfo:
+        """
+        Returns:
+            ApkInfo: client apk(protocol) info
+        """
+        return self._apk_info
 
     @property
     def uin(self) -> int:
@@ -254,6 +292,13 @@ class Client:
         """
         return bool(self._connection and not self._connection.closed)
 
+    @property
+    def closed(self) -> bool:
+        return self._closed.is_set()
+
+    async def wait_closed(self):
+        await self._closed.wait()
+
     async def connect(self, server: Optional[SsoServer] = None) -> None:
         """Connect to the server.
 
@@ -268,14 +313,16 @@ class Client:
         """
         if self.connected:
             raise RuntimeError("Already connected to the server")
-
+        if self.closed:
+            raise RuntimeError("Client is closed")
+        log.network.debug("Getting Sso server")
         _server = server or await get_sso_server()
-        logger.info(f"Connecting to server: {_server.host}:{_server.port}")
+        log.logger.info(f"Connecting to server: {_server.host}:{_server.port}")
         try:
             self._connection = await connect(
                 _server.host, _server.port, ssl=False, timeout=3.0
             )
-            asyncio.create_task(self.receive())
+            self._start_receiver()
         except ConnectionError as e:
             raise
         except Exception as e:
@@ -283,6 +330,29 @@ class Client:
                 "An error occurred while connecting to "
                 f"server({_server.host}:{_server.port}): " + repr(e)
             )
+
+    def _start_receiver(self):
+        task = asyncio.create_task(self.receive())
+        task.add_done_callback(self._recv_done_cb)
+
+    def _recv_done_cb(self, task: asyncio.Task):
+        if self._reconnect:
+            if (
+                self._max_reconnections
+                and self._reconnect_times >= self._max_reconnections
+            ):
+                log.network.warning(
+                    "Max reconnections reached, stop reconnecting"
+                )
+                asyncio.create_task(self.disconnect())
+            else:
+                log.network.warning("receiver stopped, try to reconnect")
+                self._reconnect_times += 1
+                asyncio.create_task(self.reconnect_and_login())
+        else:
+            log.network.warning("receiver stopped")
+            asyncio.create_task(self.close())
+        task.cancel()
 
     async def disconnect(self) -> None:
         """Disconnect if already connected to the server."""
@@ -300,8 +370,12 @@ class Client:
             change_server (bool, optional): True if you want to change the server. Defaults to False.
             server (Optional[SsoServer], optional): Which server you want to connect to. Defaults to None.
         """
+
         if not change_server and self._connection:
+            log.network.warning("reconnecting...")
             await self._connection.reconnect()
+            self._start_receiver()
+            log.network.info("reconnected")
             return
 
         exclude = (
@@ -315,16 +389,36 @@ class Client:
         await self.disconnect()
         await self.connect(_server)
 
+    async def reconnect_and_login(
+        self, change_server: bool = False, server: Optional[SsoServer] = None
+    ) -> None:
+        await self.reconnect(change_server=change_server, server=server)
+        # FIXME: register reason msfByNetChange?
+        try:
+            await self._init(drop_offline_msg=False)
+        except asyncio.TimeoutError:
+            log.network.warning("register failed, trying to re-login")
+            await self.reconnect(change_server=True, server=server)
+            await self.login()
+
     async def close(self) -> None:
         """Close the client and logout."""
+        log.logger.warning("closing client")
+        # disable reconnection
+        self._reconnect = False
+        # logout
         if (
             self.connected
             and self.status
             and self.status != OnlineStatus.Offline
         ):
             await self.register(OnlineStatus.Offline)
+
+        # clear waiting packet
         self._receive_store.cancel_all()
+        # disconnect server
         await self.disconnect()
+        self._closed.set()
 
     @property
     def seq(self) -> int:
@@ -356,7 +450,7 @@ class Client:
         Returns:
             None.
         """
-        logger.debug(f"--> {seq}: {command_name}")
+        log.network.debug(f"(send: {seq}): {command_name}")
         await self.connection.awrite(packet)
 
     async def send_and_wait(
@@ -380,6 +474,27 @@ class Client:
         await self.send(seq, command_name, packet)
         return await self._receive_store.fetch(seq, timeout)
 
+    # FIXME
+    async def send_unipkg_and_wait(
+        self, command_name: str, enc_packet: bytes, seq=-1, timeout=10.0
+    ):
+        if seq == -1:
+            seq = self.next_seq()
+        return await self.send_and_wait(
+            seq,
+            command_name,
+            UniPacket.build(
+                self.uin,
+                seq,
+                command_name,
+                self._session_id,
+                1,
+                enc_packet,
+                self._siginfo.d2key,
+            ),
+            timeout,
+        )
+
     async def _handle_incoming_packet(self, in_packet: IncomingPacket) -> None:
         try:
             handler = HANDLERS.get(in_packet.command_name, _packet_to_command)
@@ -387,7 +502,7 @@ class Client:
             self._receive_store.store_result(packet.seq, packet)
         except Exception as e:
             # TODO: handle exception
-            logger.exception(e)
+            log.logger.exception(e)
 
     async def receive(self):
         """Receive data from connection reader and store it in sequence future.
@@ -402,22 +517,26 @@ class Client:
                     - 4
                 )
                 # FIXME: length < 0 ?
+
                 data = await self.connection.read_bytes(length)
+            except ConnectionError as e:
+                log.logger.error(f"{self.uin} connection lost: {str(e)}")
+                break
+
+            try:
                 packet = IncomingPacket.parse(
                     data,
                     self._key,
                     self._siginfo.d2key,
                     self._siginfo.wt_session_ticket_key,
                 )
-                logger.debug(
-                    f"<-- {packet.seq} ({packet.ret_code}): {packet.command_name}"
+                log.network.debug(
+                    f"(receive: {packet.seq}): {packet.command_name}"
                 )
                 # do not block receive
                 asyncio.create_task(self._handle_incoming_packet(packet))
-            except ConnectionAbortedError:
-                logger.debug(f"Client {self.uin} connection closed")
             except Exception as e:
-                logger.exception(e)
+                log.logger.exception("Unexpected error raised")
 
     @property
     def listeners(self) -> Set[LT]:
@@ -427,9 +546,11 @@ class Client:
         try:
             await listener(self, event)
         except Exception as e:
-            logger.exception(e)
+            log.logger.exception(e)
 
     def dispatch_event(self, event: Event) -> None:
+        if event.type not in ("group_message", "private_message"):  # log filter
+            log.logger.debug(f"Event {event.type} was triggered")
         for listener in self.listeners:
             asyncio.create_task(self._run_listener(listener, event))
 
@@ -456,15 +577,15 @@ class Client:
             )
 
         if isinstance(response, LoginSuccess):
-            logger.info(f"{self.nick}({self.uin}) 登录成功！")
+            log.logger.info(f"{self.nick}({self.uin}) 登录成功！")
             await self._init()
             return response
         elif isinstance(response, NeedCaptcha):
             if response.verify_url:
-                logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
+                log.logger.info(f"登录失败！请前往 {response.verify_url} 获取 ticket")
                 raise LoginSliderNeeded(response.uin, response.verify_url)
             elif response.captcha_image:
-                logger.info(f"登录失败！需要根据图片输入验证码")
+                log.logger.info(f"登录失败！需要根据图片输入验证码")
                 raise LoginCaptchaNeeded(
                     response.uin, response.captcha_image, response.captcha_sign
                 )
@@ -475,7 +596,7 @@ class Client:
                     "Cannot get verify_url or captcha_image from the response!",
                 )
         elif isinstance(response, AccountFrozen):
-            logger.info("账号已被冻结！")
+            log.logger.info("账号已被冻结！")
             raise LoginAccountFrozen(response.uin)
         elif isinstance(response, DeviceLocked):
             msg = "账号已开启设备锁！"
@@ -483,7 +604,7 @@ class Client:
                 msg += f"向手机{response.sms_phone}发送验证码"
             if response.verify_url:
                 msg += f"或前往 {response.verify_url} 扫码验证"
-            logger.info(msg + "。" + str(response.message))
+            log.logger.info(msg + "。" + str(response.message))
 
             raise LoginDeviceLocked(
                 response.uin,
@@ -492,7 +613,7 @@ class Client:
                 response.message,
             )
         elif isinstance(response, TooManySMSRequest):
-            logger.info("验证码发送频繁！")
+            log.logger.info("验证码发送过于频繁！")
             raise LoginSMSRequestError(response.uin)
         elif isinstance(response, DeviceLockLogin):
             if try_times:
@@ -505,6 +626,8 @@ class Client:
                     self.uin,
                     self._t104,
                     self._siginfo.g,
+                    self.device.imei,
+                    self.apk_info,
                 )
                 response = await self.send_and_wait(
                     seq, "wtlogin.login", packet
@@ -529,18 +652,22 @@ class Client:
                 msg = packet_.start(2).string(2).execute()[0]
             else:
                 msg = ""
-            logger.info(f"未知的登录返回码 {response.status}! {msg}")
+            log.logger.info(f"未知的登录返回码 {response.status}! {msg}")
             raise LoginException(
                 response.uin, response.status, "Unknown login status."
             )
 
-    async def _init(self) -> None:
-        if not self.connected or self.status == OnlineStatus.Offline:
-            raise RuntimeError("Client is offline.")
+    async def _init(self, drop_offline_msg: bool = True) -> None:
+        if not self.connected:
+            raise RuntimeError("Client not connected.")
 
-        self._init_flag = True
+        self._init_flag = drop_offline_msg
+
+        previous_status = self._status or OnlineStatus.Online
+        if previous_status in (OnlineStatus.Offline, OnlineStatus.Unknown):
+            previous_status = OnlineStatus.Online
         # register client online status
-        await self.register()
+        await self.register(status=previous_status)
         # force refresh group list
         await self._refresh_group_list()
         # force refresh friend list
@@ -575,6 +702,8 @@ class Client:
             self._ksid,
             self.uin,
             self._password_md5,
+            self.device,
+            self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -609,6 +738,8 @@ class Client:
             captcha,
             captcha_sign,
             self._t104,
+            self.device.imei,
+            self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -640,6 +771,8 @@ class Client:
             self.uin,
             ticket,
             self._t104,
+            self.device.imei,
+            self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -671,6 +804,8 @@ class Client:
             self.uin,
             self._t104,
             self._t174,
+            self.device.imei,
+            self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
 
@@ -711,6 +846,8 @@ class Client:
             self._t104,
             self._t174,
             self._siginfo.g,
+            self.device.imei,
+            self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.login", packet)
         return await self._handle_login_response(response)
@@ -749,6 +886,8 @@ class Client:
                     self.uin,
                     self._t104,
                     self._siginfo.g,
+                    self.device.imei,
+                    self.apk_info,
                 )
                 response = await self.send_and_wait(
                     seq, "wtlogin.login", packet
@@ -795,6 +934,8 @@ class Client:
             self._siginfo.rand_seed,
             self._siginfo.wt_session_ticket,
             self._siginfo.wt_session_ticket_key,
+            self.device,
+            self.apk_info,
         )
         response = await self.send_and_wait(seq, "wtlogin.exchange_emp", packet)
 
@@ -833,6 +974,8 @@ class Client:
             self._siginfo.d2key,
             status,
             register_reason,
+            self.apk_info.sub_app_id,
+            self.device,
         )
         response = await self.send_and_wait(seq, "StatSvc.register", packet)
 
@@ -864,8 +1007,6 @@ class Client:
         Args:
             status (OnlineStatus, optional): Client status. Defaults to
                 :attr:`~cai.client.status_service.OnlineStatus.Online`.
-            register_reason (RegPushReason, optional): Register reason. Defaults to
-                :attr:`~cai.client.status_service.RegPushReason.AppRegister`.
             battery_status (Optional[int], optional): Battery capacity.
                 Only works when status is :obj:`.OnlineStatus.Battery`. Defaults to None.
             is_power_connected (bool, optional): Is power connected to phone.
@@ -884,6 +1025,7 @@ class Client:
             self._session_id,
             self.uin,
             self._siginfo.d2key,
+            self.device,
             status,
             battery_status,
             is_power_connected,
@@ -927,7 +1069,12 @@ class Client:
         while self._heartbeat_enabled and self.connected:
             seq = self.next_seq()
             packet = encode_heartbeat(
-                seq, self._session_id, self._ksid, self.uin
+                seq,
+                self._session_id,
+                self.device.imei,
+                self._ksid,
+                self.uin,
+                self.apk_info.sub_app_id,
             )
             try:
                 response = await self.send_and_wait(
@@ -935,11 +1082,12 @@ class Client:
                 )
                 if not isinstance(response, Heartbeat):
                     raise RuntimeError("Invalid heartbeat response type!")
-            except Exception:
-                logger.exception("Heartbeat.Alive: Failed")
+            except (ConnectionError, TimeoutError) as e:
+                log.network.error(f"Heartbeat.Alive: failed by {str(e)}")
                 break
             await asyncio.sleep(self._heartbeat_interval)
 
+        log.network.debug("heartbeat stopped")
         self._heartbeat_enabled = False
 
     async def _refresh_friend_list(self):

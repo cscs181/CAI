@@ -14,13 +14,13 @@ import struct
 import secrets
 import ipaddress
 from hashlib import md5
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Tuple
 
 from rtea import qqtea_decrypt
 
 from cai.utils.binary import Packet
-from cai.settings.device import get_device
-from cai.settings.protocol import get_protocol
+from cai.settings.protocol import ApkInfo
+from cai.settings.device import DeviceInfo
 from cai.utils.crypto import ECDH, EncryptSession
 from cai.client.packet import (
     UniPacket,
@@ -45,9 +45,6 @@ from .oicq import (
 if TYPE_CHECKING:
     from cai.client import Client
 
-DEVICE = get_device()
-APK_INFO = get_protocol()
-
 
 # submit captcha
 def encode_login_request2_captcha(
@@ -59,6 +56,8 @@ def encode_login_request2_captcha(
     captcha: str,
     sign: bytes,
     t104: bytes,
+    imei: str,
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build submit captcha request packet.
 
@@ -82,6 +81,8 @@ def encode_login_request2_captcha(
         captcha (str): Captcha image result.
         sign (bytes): Signature of the captcha.
         t104 (bytes): TLV 104 data.
+        apk_info (ApkInfo): ApkInfo
+        imei (str): device imei
 
     Returns:
         Packet: Login packet.
@@ -90,9 +91,9 @@ def encode_login_request2_captcha(
     SUB_COMMAND_ID = 2
     COMMAND_NAME = "wtlogin.login"
 
-    SUB_APP_ID = APK_INFO.sub_app_id
-    BITMAP = APK_INFO.bitmap
-    SUB_SIGMAP = APK_INFO.sub_sigmap
+    SUB_APP_ID = apk_info.sub_app_id
+    BITMAP = apk_info.bitmap
+    SUB_SIGMAP = apk_info.sub_sigmap
 
     LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
 
@@ -110,7 +111,7 @@ def encode_login_request2_captcha(
         seq,
         SUB_APP_ID,
         COMMAND_NAME,
-        DEVICE.imei,
+        imei,
         session_id,
         ksid,
         oicq_packet,
@@ -129,6 +130,8 @@ def encode_login_request2_slider(
     uin: int,
     ticket: str,
     t104: bytes,
+    imei: str,
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build slider ticket request packet.
 
@@ -151,6 +154,8 @@ def encode_login_request2_slider(
         uin (int): User QQ number.
         ticket (str): Captcha image result.
         t104 (bytes): TLV 104 data.
+        apk_info (ApkInfo): ApkInfo
+        imei (str): device imei
 
     Returns:
         Packet: Login packet.
@@ -159,9 +164,9 @@ def encode_login_request2_slider(
     SUB_COMMAND_ID = 2
     COMMAND_NAME = "wtlogin.login"
 
-    SUB_APP_ID = APK_INFO.sub_app_id
-    BITMAP = APK_INFO.bitmap
-    SUB_SIGMAP = APK_INFO.sub_sigmap
+    SUB_APP_ID = apk_info.sub_app_id
+    BITMAP = apk_info.bitmap
+    SUB_SIGMAP = apk_info.sub_sigmap
 
     LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
 
@@ -179,7 +184,7 @@ def encode_login_request2_slider(
         seq,
         SUB_APP_ID,
         COMMAND_NAME,
-        DEVICE.imei,
+        imei,
         session_id,
         ksid,
         oicq_packet,
@@ -200,6 +205,8 @@ def encode_login_request7(
     t104: bytes,
     t174: bytes,
     g: bytes,
+    imei: str,
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build sms submit packet.
 
@@ -224,6 +231,8 @@ def encode_login_request7(
         t104 (bytes): TLV 104 data.
         t174 (bytes): TLV 174 data.
         g (bytes): G data of client.
+        apk_info (ApkInfo): ApkInfo
+        imei (str): device imei
 
     Returns:
         Packet: Login packet.
@@ -232,9 +241,9 @@ def encode_login_request7(
     SUB_COMMAND_ID = 7
     COMMAND_NAME = "wtlogin.login"
 
-    SUB_APP_ID = APK_INFO.sub_app_id
-    BITMAP = APK_INFO.bitmap
-    SUB_SIGMAP = APK_INFO.sub_sigmap
+    SUB_APP_ID = apk_info.sub_app_id
+    BITMAP = apk_info.bitmap
+    SUB_SIGMAP = apk_info.sub_sigmap
 
     GUID_SRC = 1
     GUID_CHANGE = 0
@@ -260,7 +269,7 @@ def encode_login_request7(
         seq,
         SUB_APP_ID,
         COMMAND_NAME,
-        DEVICE.imei,
+        imei,
         session_id,
         ksid,
         oicq_packet,
@@ -279,6 +288,8 @@ def encode_login_request8(
     uin: int,
     t104: bytes,
     t174: bytes,
+    imei: str,
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build sms request packet.
 
@@ -301,6 +312,8 @@ def encode_login_request8(
         uin (int): User QQ number.
         t104 (bytes): TLV 104 data.
         t174 (bytes): TLV 174 data.
+        apk_info (ApkInfo): ApkInfo
+        imei (str): device imei
 
     Returns:
         Packet: Login packet.
@@ -310,9 +323,9 @@ def encode_login_request8(
     COMMAND_NAME = "wtlogin.login"
 
     SMS_APP_ID = 9
-    SUB_APP_ID = APK_INFO.sub_app_id
-    BITMAP = APK_INFO.bitmap
-    SUB_SIGMAP = APK_INFO.sub_sigmap
+    SUB_APP_ID = apk_info.sub_app_id
+    BITMAP = apk_info.bitmap
+    SUB_SIGMAP = apk_info.sub_sigmap
 
     GUID_SRC = 1
     GUID_CHANGE = 0
@@ -337,7 +350,7 @@ def encode_login_request8(
         seq,
         SUB_APP_ID,
         COMMAND_NAME,
-        DEVICE.imei,
+        imei,
         session_id,
         ksid,
         oicq_packet,
@@ -355,6 +368,8 @@ def encode_login_request9(
     ksid: bytes,
     uin: int,
     password_md5: bytes,
+    device: DeviceInfo,
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build main login request packet.
 
@@ -376,6 +391,8 @@ def encode_login_request9(
         ksid (bytes): KSID of client.
         uin (int): User QQ number.
         password_md5 (bytes): User QQ password md5 hash.
+        device (DeviceInfo): your device info
+        apk_info (ApkInfo): ApkInfo
 
     Returns:
         Packet: Login packet.
@@ -384,18 +401,18 @@ def encode_login_request9(
     SUB_COMMAND_ID = 9
     COMMAND_NAME = "wtlogin.login"
 
-    APK_ID = APK_INFO.apk_id
-    APK_VERSION = APK_INFO.version
-    APK_SIGN = APK_INFO.apk_sign
-    APK_BUILD_TIME = APK_INFO.build_time
-    APP_ID = APK_INFO.app_id
-    SUB_APP_ID = APK_INFO.sub_app_id
+    APK_ID = apk_info.apk_id
+    APK_VERSION = apk_info.version
+    APK_SIGN = apk_info.apk_sign
+    APK_BUILD_TIME = apk_info.build_time
+    APP_ID = apk_info.app_id
+    SUB_APP_ID = apk_info.sub_app_id
     APP_CLIENT_VERSION = 0
-    SDK_VERSION = APK_INFO.sdk_version
-    SSO_VERSION = APK_INFO.sso_version
-    BITMAP = APK_INFO.bitmap
-    MAIN_SIGMAP = APK_INFO.main_sigmap
-    SUB_SIGMAP = APK_INFO.sub_sigmap
+    SDK_VERSION = apk_info.sdk_version
+    SSO_VERSION = apk_info.sso_version
+    BITMAP = apk_info.bitmap
+    MAIN_SIGMAP = apk_info.main_sigmap
+    SUB_SIGMAP = apk_info.sub_sigmap
 
     GUID_SRC = 1
     GUID_CHANGE = 0
@@ -404,8 +421,8 @@ def encode_login_request9(
     GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
     CAN_WEB_VERIFY = 130  # oicq.wlogin_sdk.request.k.K
     LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
-    IP_BYTES: bytes = ipaddress.ip_address(DEVICE.ip_address).packed
-    NETWORK_TYPE = (DEVICE.apn == "wifi") + 1
+    IP_BYTES: bytes = ipaddress.ip_address(device.ip_address).packed
+    NETWORK_TYPE = (device.apn == "wifi") + 1
 
     data = Packet.build(
         struct.pack(">HH", SUB_COMMAND_ID, 23),  # packet num
@@ -419,8 +436,8 @@ def encode_login_request9(
             uin,
             0,
             password_md5,
-            DEVICE.guid,
-            DEVICE.tgtgt,
+            device.guid,
+            device.tgtgt,
         ),
         TlvEncoder.t116(BITMAP, SUB_SIGMAP),
         TlvEncoder.t100(
@@ -431,36 +448,36 @@ def encode_login_request9(
         # TlvEncoder.t104(),
         TlvEncoder.t142(APK_ID),
         TlvEncoder.t144(
-            DEVICE.imei.encode(),
-            DEVICE.bootloader,
-            DEVICE.proc_version,
-            DEVICE.version.codename,
-            DEVICE.version.incremental,
-            DEVICE.fingerprint,
-            DEVICE.boot_id,
-            DEVICE.android_id,
-            DEVICE.baseband,
-            DEVICE.version.incremental,
-            DEVICE.os_type.encode(),
-            DEVICE.version.release.encode(),
+            device.imei.encode(),
+            device.bootloader,
+            device.proc_version,
+            device.version.codename,
+            device.version.incremental,
+            device.fingerprint,
+            device.boot_id,
+            device.android_id,
+            device.baseband,
+            device.version.incremental,
+            device.os_type.encode(),
+            device.version.release.encode(),
             NETWORK_TYPE,
-            DEVICE.sim.encode(),
-            DEVICE.apn.encode(),
+            device.sim.encode(),
+            device.apn.encode(),
             False,
             True,
             False,
             GUID_FLAG,
-            DEVICE.model.encode(),
-            DEVICE.guid,
-            DEVICE.brand.encode(),
-            DEVICE.tgtgt,
+            device.model.encode(),
+            device.guid,
+            device.brand.encode(),
+            device.tgtgt,
         ),
-        TlvEncoder.t145(DEVICE.guid),
+        TlvEncoder.t145(device.guid),
         TlvEncoder.t147(APP_ID, APK_VERSION.encode(), APK_SIGN),
         # TlvEncoder.t166(1),
         # TlvEncoder.t16a(),
         TlvEncoder.t154(seq),
-        TlvEncoder.t141(DEVICE.sim.encode(), NETWORK_TYPE, DEVICE.apn.encode()),
+        TlvEncoder.t141(device.sim.encode(), NETWORK_TYPE, device.apn.encode()),
         TlvEncoder.t8(LOCAL_ID),
         TlvEncoder.t511(
             [
@@ -483,12 +500,12 @@ def encode_login_request9(
         # TlvEncoder.t172(),
         # TlvEncoder.t185(1),  # when sms login, is_password_login == 3
         # TlvEncoder.t400(),  # null when first time login
-        TlvEncoder.t187(DEVICE.mac_address.encode()),
-        TlvEncoder.t188(DEVICE.android_id.encode()),
-        TlvEncoder.t194(DEVICE.imsi_md5) if DEVICE.imsi_md5 else b"",
+        TlvEncoder.t187(device.mac_address.encode()),
+        TlvEncoder.t188(device.android_id.encode()),
+        TlvEncoder.t194(device.imsi_md5) if device.imsi_md5 else b"",
         TlvEncoder.t191(CAN_WEB_VERIFY),
         # TlvEncoder.t201(),
-        TlvEncoder.t202(DEVICE.wifi_bssid.encode(), DEVICE.wifi_ssid.encode()),
+        TlvEncoder.t202(device.wifi_bssid.encode(), device.wifi_ssid.encode()),
         TlvEncoder.t177(APK_BUILD_TIME, SDK_VERSION),
         TlvEncoder.t516(),
         TlvEncoder.t521(),
@@ -502,7 +519,7 @@ def encode_login_request9(
         seq,
         SUB_APP_ID,
         COMMAND_NAME,
-        DEVICE.imei,
+        device.imei,
         session_id,
         ksid,
         oicq_packet,
@@ -521,6 +538,8 @@ def encode_login_request20(
     uin: int,
     t104: bytes,
     g: bytes,
+    imei: str,
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build device lock login request packet.
 
@@ -543,6 +562,8 @@ def encode_login_request20(
         uin (int): User QQ number.
         t104 (bytes): T104 response data.
         g (bytes): md5 of (guid + dpwd + t402).
+        imei (str): device imei
+        apk_info (ApkInfo): ApkInfo
 
     Returns:
         Packet: Login packet.
@@ -551,9 +572,9 @@ def encode_login_request20(
     SUB_COMMAND_ID = 20
     COMMAND_NAME = "wtlogin.login"
 
-    SUB_APP_ID = APK_INFO.sub_app_id
-    BITMAP = APK_INFO.bitmap
-    SUB_SIGMAP = APK_INFO.sub_sigmap
+    SUB_APP_ID = apk_info.sub_app_id
+    BITMAP = apk_info.bitmap
+    SUB_SIGMAP = apk_info.sub_sigmap
 
     LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
 
@@ -571,7 +592,7 @@ def encode_login_request20(
         seq,
         SUB_APP_ID,
         COMMAND_NAME,
-        DEVICE.imei,
+        imei,
         session_id,
         ksid,
         oicq_packet,
@@ -599,6 +620,8 @@ def encode_exchange_emp_15(
     rand_seed: bytes,
     wt_session_ticket: bytes,
     wt_session_ticket_key: bytes,
+    device: DeviceInfo,
+    apk_info: ApkInfo,
 ) -> Packet:
     """Build exchange emp request packet.
 
@@ -623,6 +646,8 @@ def encode_exchange_emp_15(
         rand_seed (bytes): Siginfo random seed.
         wt_session_ticket (bytes): Siginfo session ticket.
         wt_session_ticket_key (bytes): Siginfo session ticket key.
+        device (DeviceInfo): your device info
+        apk_info (ApkInfo): ApkInfo
 
     Returns:
         Packet: Exchange emp packet.
@@ -631,28 +656,28 @@ def encode_exchange_emp_15(
     SUB_COMMAND_ID = 15
     COMMAND_NAME = "wtlogin.exchange_emp"
 
-    APK_ID = APK_INFO.apk_id
-    APK_VERSION = APK_INFO.version
-    APK_SIGN = APK_INFO.apk_sign
-    APK_BUILD_TIME = APK_INFO.build_time
-    APP_ID = APK_INFO.app_id
-    SUB_APP_ID = APK_INFO.sub_app_id
+    APK_ID = apk_info.apk_id
+    APK_VERSION = apk_info.version
+    APK_SIGN = apk_info.apk_sign
+    APK_BUILD_TIME = apk_info.build_time
+    APP_ID = apk_info.app_id
+    SUB_APP_ID = apk_info.sub_app_id
     APP_CLIENT_VERSION = 0
-    SDK_VERSION = APK_INFO.sdk_version
-    SSO_VERSION = APK_INFO.sso_version
-    BITMAP = APK_INFO.bitmap
-    MAIN_SIGMAP = APK_INFO.main_sigmap
-    SUB_SIGMAP = APK_INFO.sub_sigmap
+    SDK_VERSION = apk_info.sdk_version
+    SSO_VERSION = apk_info.sso_version
+    BITMAP = apk_info.bitmap
+    MAIN_SIGMAP = apk_info.main_sigmap
+    SUB_SIGMAP = apk_info.sub_sigmap
 
-    GUID = DEVICE.guid
+    GUID = device.guid
     GUID_SRC = 1
     GUID_CHANGE = 0
     GUID_FLAG = 0
     GUID_FLAG |= GUID_SRC << 24 & 0xFF000000
     GUID_FLAG |= GUID_CHANGE << 8 & 0xFF00
     LOCAL_ID = 2052  # oicq.wlogin_sdk.request.t.v
-    IP_BYTES: bytes = ipaddress.ip_address(DEVICE.ip_address).packed
-    NETWORK_TYPE = (DEVICE.apn == "wifi") + 1
+    IP_BYTES: bytes = ipaddress.ip_address(device.ip_address).packed
+    NETWORK_TYPE = (device.apn == "wifi") + 1
 
     data = Packet.build(
         struct.pack(">HH", SUB_COMMAND_ID, 24),
@@ -666,37 +691,37 @@ def encode_exchange_emp_15(
         TlvEncoder.t107(),
         # TlvEncoder.t108(KSID),  # null when first time login
         TlvEncoder.t144(
-            DEVICE.imei.encode(),
-            DEVICE.bootloader,
-            DEVICE.proc_version,
-            DEVICE.version.codename,
-            DEVICE.version.incremental,
-            DEVICE.fingerprint,
-            DEVICE.boot_id,
-            DEVICE.android_id,
-            DEVICE.baseband,
-            DEVICE.version.incremental,
-            DEVICE.os_type.encode(),
-            DEVICE.version.release.encode(),
+            device.imei.encode(),
+            device.bootloader,
+            device.proc_version,
+            device.version.codename,
+            device.version.incremental,
+            device.fingerprint,
+            device.boot_id,
+            device.android_id,
+            device.baseband,
+            device.version.incremental,
+            device.os_type.encode(),
+            device.version.release.encode(),
             NETWORK_TYPE,
-            DEVICE.sim.encode(),
-            DEVICE.apn.encode(),
+            device.sim.encode(),
+            device.apn.encode(),
             False,
             True,
             False,
             GUID_FLAG,
-            DEVICE.model.encode(),
-            DEVICE.guid,
-            DEVICE.brand.encode(),
-            DEVICE.tgtgt,
+            device.model.encode(),
+            device.guid,
+            device.brand.encode(),
+            device.tgtgt,
         ),
         TlvEncoder.t142(APK_ID),
         # TlvEncoder.t112(),
-        TlvEncoder.t145(DEVICE.guid),
+        TlvEncoder.t145(device.guid),
         # TlvEncoder.t166(1),
         TlvEncoder.t16a(no_pic_sig),
         TlvEncoder.t154(seq),
-        TlvEncoder.t141(DEVICE.sim.encode(), NETWORK_TYPE, DEVICE.apn.encode()),
+        TlvEncoder.t141(device.sim.encode(), NETWORK_TYPE, device.apn.encode()),
         TlvEncoder.t8(LOCAL_ID),
         TlvEncoder.t511(
             [
@@ -720,11 +745,11 @@ def encode_exchange_emp_15(
         # TlvEncoder.t172(),
         TlvEncoder.t177(APK_BUILD_TIME, SDK_VERSION),
         TlvEncoder.t400(g, uin, GUID, dpwd, 1, APP_ID, rand_seed),
-        TlvEncoder.t187(DEVICE.mac_address.encode()),
-        TlvEncoder.t188(DEVICE.android_id.encode()),
-        TlvEncoder.t194(DEVICE.imsi_md5) if DEVICE.imsi_md5 else b"",
+        TlvEncoder.t187(device.mac_address.encode()),
+        TlvEncoder.t188(device.android_id.encode()),
+        TlvEncoder.t194(device.imsi_md5) if device.imsi_md5 else b"",
         # TlvEncoder.t201(),
-        TlvEncoder.t202(DEVICE.wifi_bssid.encode(), DEVICE.wifi_ssid.encode()),
+        TlvEncoder.t202(device.wifi_bssid.encode(), device.wifi_ssid.encode()),
         TlvEncoder.t516(),
         TlvEncoder.t521(),
         TlvEncoder.t525(TlvEncoder.t536([])),
@@ -751,6 +776,7 @@ async def handle_oicq_response(
         packet.ret_code,
         packet.command_name,
         packet.data,
+        client.device.tgtgt,
     )
     if not isinstance(response, UnknownLoginStatus):
         return response
@@ -764,7 +790,7 @@ async def handle_oicq_response(
         ).encode()
         client._t402 = response.t402
         client._siginfo.g = md5(
-            DEVICE.guid + client._siginfo.dpwd + client._t402
+            client.device.guid + client._siginfo.dpwd + client._t402
         ).digest()
 
     if isinstance(response, LoginSuccess):
@@ -821,7 +847,7 @@ async def handle_oicq_response(
             client._password_md5 + bytes(4) + struct.pack(">I", client._uin)
         ).digest()
         decrypted = qqtea_decrypt(response.encrypted_a1, key)
-        DEVICE.tgtgt = decrypted[51:67]
+        client.device.tgtgt = decrypted[51:67]
     elif isinstance(response, NeedCaptcha):
         client._t104 = response.t104 or client._t104
     elif isinstance(response, DeviceLocked):

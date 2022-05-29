@@ -13,7 +13,7 @@ from typing import TYPE_CHECKING
 
 from jce import types
 
-from cai.log import logger
+from cai import log
 from cai.utils.binary import Packet
 from cai.utils.jce import RequestPacketVersion3
 from cai.client.packet import UniPacket, IncomingPacket
@@ -85,7 +85,7 @@ async def handle_config_push_request(
         packet.data,
     )
     if isinstance(command, SsoServerPushCommand):
-        logger.debug(f"ConfigPush: Got new server addresses.")
+        log.network.debug(f"ConfigPush: Got new server addresses.")
     elif isinstance(command, FileServerPushCommand):
         client._file_storage_info = command.list
 

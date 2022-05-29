@@ -12,14 +12,14 @@ This module is used to build and handle message service related packet.
 from enum import IntEnum
 from typing import TYPE_CHECKING, List, Union, Optional
 
-from cai.log import logger
+from cai import log
 from cai.utils.binary import Packet
 from cai.client.status_service import OnlineStatus
 from cai.client.packet import UniPacket, IncomingPacket
 from cai.pb.msf.msg.svc import PbGetMsgReq, PbDeleteMsgReq
 
 from .decoders import MESSAGE_DECODERS
-from .models import GroupMessage, PrivateMessage
+from ..message.models import GroupMessage, PrivateMessage
 from .command import (
     PushNotify,
     GetMessageFail,
@@ -155,12 +155,15 @@ async def handle_get_message(
 
                 key = (
                     f"{message.head.from_uin}"
-                    f"{message.head.type}"
-                    f"{message.head.time}"
+                    f"{message.head.to_uin}"
+                    f"{message.head.seq}"
+                    f"{message.head.uid}"
                 )
-                if key in client._msg_cache:
-                    continue
+                # refresh key ttl first
+                should_skip = key in client._msg_cache
                 client._msg_cache[key] = None
+                if should_skip:
+                    continue
 
                 # drop messages when init
                 if client._init_flag:
@@ -169,7 +172,7 @@ async def handle_get_message(
                 msg_type = message.head.type
                 Decoder = MESSAGE_DECODERS.get(msg_type, None)
                 if not Decoder:
-                    logger.debug(
+                    log.network.debug(
                         "MessageSvc.PbGetMsg: "
                         f"Received unknown message type {msg_type}."
                     )
@@ -307,7 +310,8 @@ async def handle_force_offline(
     client: "Client", packet: IncomingPacket
 ) -> PushForceOfflineCommand:
     client._status = OnlineStatus.Offline
-    await client.close()
+    client._reconnect = False
+    await client.disconnect()
     request = PushForceOfflineCommand.decode_response(
         packet.uin,
         packet.seq,
@@ -315,7 +319,7 @@ async def handle_force_offline(
         packet.command_name,
         packet.data,
     )
-    logger.error(
+    log.network.error(
         f"Client {client.uin} force offline: " + request.request.tips
         if isinstance(request, PushForceOffline)
         else "Unknown reason."

@@ -3,6 +3,7 @@
 # source: cai/pb/msf/msg/ctrl/ctrl.proto
 """Generated protocol buffer code."""
 from google.protobuf import descriptor as _descriptor
+from google.protobuf import descriptor_pool as _descriptor_pool
 from google.protobuf import message as _message
 from google.protobuf import reflection as _reflection
 from google.protobuf import symbol_database as _symbol_database
@@ -13,142 +14,12 @@ _sym_db = _symbol_database.Default()
 
 
 
-DESCRIPTOR = _descriptor.FileDescriptor(
-  name='cai/pb/msf/msg/ctrl/ctrl.proto',
-  package='msf.msg.ctrl',
-  syntax='proto2',
-  serialized_options=None,
-  create_key=_descriptor._internal_create_key,
-  serialized_pb=b'\n\x1e\x63\x61i/pb/msf/msg/ctrl/ctrl.proto\x12\x0cmsf.msg.ctrl\"K\n\x07MsgCtrl\x12\x0c\n\x04\x66lag\x18\x01 \x01(\r\x12\x32\n\x0eresv_resv_info\x18\x02 \x01(\x0b\x32\x1a.msf.msg.ctrl.ResvResvInfo\"\x9e\x01\n\x0cResvResvInfo\x12\x0c\n\x04\x66lag\x18\x01 \x01(\r\x12\x0f\n\x07reserv1\x18\x02 \x01(\x0c\x12\x0f\n\x07reserv2\x18\x03 \x01(\x04\x12\x0f\n\x07reserv3\x18\x04 \x01(\x04\x12\x13\n\x0b\x63reate_time\x18\x05 \x01(\r\x12\x12\n\npic_height\x18\x06 \x01(\r\x12\x11\n\tpic_width\x18\x07 \x01(\r\x12\x11\n\tresv_flag\x18\x08 \x01(\r'
-)
+DESCRIPTOR = _descriptor_pool.Default().AddSerializedFile(b'\n\x1e\x63\x61i/pb/msf/msg/ctrl/ctrl.proto\x12\x0cmsf.msg.ctrl\"K\n\x07MsgCtrl\x12\x0c\n\x04\x66lag\x18\x01 \x01(\r\x12\x32\n\x0eresv_resv_info\x18\x02 \x01(\x0b\x32\x1a.msf.msg.ctrl.ResvResvInfo\"\x9e\x01\n\x0cResvResvInfo\x12\x0c\n\x04\x66lag\x18\x01 \x01(\r\x12\x0f\n\x07reserv1\x18\x02 \x01(\x0c\x12\x0f\n\x07reserv2\x18\x03 \x01(\x04\x12\x0f\n\x07reserv3\x18\x04 \x01(\x04\x12\x13\n\x0b\x63reate_time\x18\x05 \x01(\r\x12\x12\n\npic_height\x18\x06 \x01(\r\x12\x11\n\tpic_width\x18\x07 \x01(\r\x12\x11\n\tresv_flag\x18\x08 \x01(\r')
 
 
 
-
-_MSGCTRL = _descriptor.Descriptor(
-  name='MsgCtrl',
-  full_name='msf.msg.ctrl.MsgCtrl',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='flag', full_name='msf.msg.ctrl.MsgCtrl.flag', index=0,
-      number=1, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='resv_resv_info', full_name='msf.msg.ctrl.MsgCtrl.resv_resv_info', index=1,
-      number=2, type=11, cpp_type=10, label=1,
-      has_default_value=False, default_value=None,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=48,
-  serialized_end=123,
-)
-
-
-_RESVRESVINFO = _descriptor.Descriptor(
-  name='ResvResvInfo',
-  full_name='msf.msg.ctrl.ResvResvInfo',
-  filename=None,
-  file=DESCRIPTOR,
-  containing_type=None,
-  create_key=_descriptor._internal_create_key,
-  fields=[
-    _descriptor.FieldDescriptor(
-      name='flag', full_name='msf.msg.ctrl.ResvResvInfo.flag', index=0,
-      number=1, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='reserv1', full_name='msf.msg.ctrl.ResvResvInfo.reserv1', index=1,
-      number=2, type=12, cpp_type=9, label=1,
-      has_default_value=False, default_value=b"",
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='reserv2', full_name='msf.msg.ctrl.ResvResvInfo.reserv2', index=2,
-      number=3, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='reserv3', full_name='msf.msg.ctrl.ResvResvInfo.reserv3', index=3,
-      number=4, type=4, cpp_type=4, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='create_time', full_name='msf.msg.ctrl.ResvResvInfo.create_time', index=4,
-      number=5, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='pic_height', full_name='msf.msg.ctrl.ResvResvInfo.pic_height', index=5,
-      number=6, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='pic_width', full_name='msf.msg.ctrl.ResvResvInfo.pic_width', index=6,
-      number=7, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-    _descriptor.FieldDescriptor(
-      name='resv_flag', full_name='msf.msg.ctrl.ResvResvInfo.resv_flag', index=7,
-      number=8, type=13, cpp_type=3, label=1,
-      has_default_value=False, default_value=0,
-      message_type=None, enum_type=None, containing_type=None,
-      is_extension=False, extension_scope=None,
-      serialized_options=None, file=DESCRIPTOR,  create_key=_descriptor._internal_create_key),
-  ],
-  extensions=[
-  ],
-  nested_types=[],
-  enum_types=[
-  ],
-  serialized_options=None,
-  is_extendable=False,
-  syntax='proto2',
-  extension_ranges=[],
-  oneofs=[
-  ],
-  serialized_start=126,
-  serialized_end=284,
-)
-
-_MSGCTRL.fields_by_name['resv_resv_info'].message_type = _RESVRESVINFO
-DESCRIPTOR.message_types_by_name['MsgCtrl'] = _MSGCTRL
-DESCRIPTOR.message_types_by_name['ResvResvInfo'] = _RESVRESVINFO
-_sym_db.RegisterFileDescriptor(DESCRIPTOR)
-
+_MSGCTRL = DESCRIPTOR.message_types_by_name['MsgCtrl']
+_RESVRESVINFO = DESCRIPTOR.message_types_by_name['ResvResvInfo']
 MsgCtrl = _reflection.GeneratedProtocolMessageType('MsgCtrl', (_message.Message,), {
   'DESCRIPTOR' : _MSGCTRL,
   '__module__' : 'cai.pb.msf.msg.ctrl.ctrl_pb2'
@@ -163,5 +34,11 @@ ResvResvInfo = _reflection.GeneratedProtocolMessageType('ResvResvInfo', (_messag
   })
 _sym_db.RegisterMessage(ResvResvInfo)
 
+if _descriptor._USE_C_DESCRIPTORS == False:
 
+  DESCRIPTOR._options = None
+  _MSGCTRL._serialized_start=48
+  _MSGCTRL._serialized_end=123
+  _RESVRESVINFO._serialized_start=126
+  _RESVRESVINFO._serialized_end=284
 # @@protoc_insertion_point(module_scope)

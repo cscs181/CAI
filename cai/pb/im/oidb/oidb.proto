@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+
+message OidbSsoPacket {
+  int32 command = 1;
+  int32 service_type = 2;
+  optional int32 result = 3;
+  bytes body = 4;
+  optional string error_msg = 5;
+  string client_version = 6;
+}
+
+message DED3ReqBody {
+  int64 to_uin = 1;
+  int64 group_code = 2;
+  int32 msg_seq = 3;
+  int32 msg_rand = 4;
+  int64 from_uin = 5;
+}

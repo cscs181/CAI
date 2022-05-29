@@ -32,10 +32,13 @@ from typing_extensions import (
 )
 
 
-DESCRIPTOR: FileDescriptor = ...
+DESCRIPTOR: FileDescriptor
 
 class C2CHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    """tencent/im/msg/im_msg_head.java
+
+    """
+    DESCRIPTOR: Descriptor
     TO_UIN_FIELD_NUMBER: int
     FROM_UIN_FIELD_NUMBER: int
     CC_TYPE_FIELD_NUMBER: int
@@ -47,37 +50,36 @@ class C2CHead(Message):
     CLIENT_TIME_FIELD_NUMBER: int
     RAND_FIELD_NUMBER: int
     PHONE_NUMBER_FIELD_NUMBER: int
-    to_uin: int = ...
-    from_uin: int = ...
-    cc_type: int = ...
-    cc_cmd: int = ...
-    auth_pic_sig: bytes = ...
-    auth_sig: bytes = ...
-    auth_buf: bytes = ...
-    server_time: int = ...
-    client_time: int = ...
-    rand: int = ...
-    phone_number: Text = ...
-
+    to_uin: int
+    from_uin: int
+    cc_type: int
+    cc_cmd: int
+    auth_pic_sig: bytes
+    auth_sig: bytes
+    auth_buf: bytes
+    server_time: int
+    client_time: int
+    rand: int
+    phone_number: Text
     def __init__(self,
         *,
-        to_uin : Optional[int] = ...,
-        from_uin : Optional[int] = ...,
-        cc_type : Optional[int] = ...,
-        cc_cmd : Optional[int] = ...,
-        auth_pic_sig : Optional[bytes] = ...,
-        auth_sig : Optional[bytes] = ...,
-        auth_buf : Optional[bytes] = ...,
-        server_time : Optional[int] = ...,
-        client_time : Optional[int] = ...,
-        rand : Optional[int] = ...,
-        phone_number : Optional[Text] = ...,
+        to_uin: Optional[int] = ...,
+        from_uin: Optional[int] = ...,
+        cc_type: Optional[int] = ...,
+        cc_cmd: Optional[int] = ...,
+        auth_pic_sig: Optional[bytes] = ...,
+        auth_sig: Optional[bytes] = ...,
+        auth_buf: Optional[bytes] = ...,
+        server_time: Optional[int] = ...,
+        client_time: Optional[int] = ...,
+        rand: Optional[int] = ...,
+        phone_number: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"auth_buf",b"auth_buf",u"auth_pic_sig",b"auth_pic_sig",u"auth_sig",b"auth_sig",u"cc_cmd",b"cc_cmd",u"cc_type",b"cc_type",u"client_time",b"client_time",u"from_uin",b"from_uin",u"phone_number",b"phone_number",u"rand",b"rand",u"server_time",b"server_time",u"to_uin",b"to_uin"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"auth_buf",b"auth_buf",u"auth_pic_sig",b"auth_pic_sig",u"auth_sig",b"auth_sig",u"cc_cmd",b"cc_cmd",u"cc_type",b"cc_type",u"client_time",b"client_time",u"from_uin",b"from_uin",u"phone_number",b"phone_number",u"rand",b"rand",u"server_time",b"server_time",u"to_uin",b"to_uin"]) -> None: ...
+    def HasField(self, field_name: Literal["auth_buf",b"auth_buf","auth_pic_sig",b"auth_pic_sig","auth_sig",b"auth_sig","cc_cmd",b"cc_cmd","cc_type",b"cc_type","client_time",b"client_time","from_uin",b"from_uin","phone_number",b"phone_number","rand",b"rand","server_time",b"server_time","to_uin",b"to_uin"]) -> bool: ...
+    def ClearField(self, field_name: Literal["auth_buf",b"auth_buf","auth_pic_sig",b"auth_pic_sig","auth_sig",b"auth_sig","cc_cmd",b"cc_cmd","cc_type",b"cc_type","client_time",b"client_time","from_uin",b"from_uin","phone_number",b"phone_number","rand",b"rand","server_time",b"server_time","to_uin",b"to_uin"]) -> None: ...
 
 class CSHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     UIN_FIELD_NUMBER: int
     COMMAND_FIELD_NUMBER: int
     SEQ_FIELD_NUMBER: int
@@ -102,63 +104,62 @@ class CSHead(Message):
     INSTANCE_ID_FIELD_NUMBER: int
     SESSION_ID_FIELD_NUMBER: int
     IDC_ID_FIELD_NUMBER: int
-    uin: int = ...
-    command: int = ...
-    seq: int = ...
-    version: int = ...
-    retry_times: int = ...
-    client_type: int = ...
-    pubno: int = ...
-    localid: int = ...
-    timezone: int = ...
-    client_ip: int = ...
-    client_port: int = ...
-    conn_ip: int = ...
-    conn_port: int = ...
-    interface_ip: int = ...
-    interface_port: int = ...
-    actual_ip: int = ...
-    flag: int = ...
-    timestamp: int = ...
-    subcmd: int = ...
-    result: int = ...
-    app_id: int = ...
-    instance_id: int = ...
-    session_id: int = ...
-    idc_id: int = ...
-
+    uin: int
+    command: int
+    seq: int
+    version: int
+    retry_times: int
+    client_type: int
+    pubno: int
+    localid: int
+    timezone: int
+    client_ip: int
+    client_port: int
+    conn_ip: int
+    conn_port: int
+    interface_ip: int
+    interface_port: int
+    actual_ip: int
+    flag: int
+    timestamp: int
+    subcmd: int
+    result: int
+    app_id: int
+    instance_id: int
+    session_id: int
+    idc_id: int
     def __init__(self,
         *,
-        uin : Optional[int] = ...,
-        command : Optional[int] = ...,
-        seq : Optional[int] = ...,
-        version : Optional[int] = ...,
-        retry_times : Optional[int] = ...,
-        client_type : Optional[int] = ...,
-        pubno : Optional[int] = ...,
-        localid : Optional[int] = ...,
-        timezone : Optional[int] = ...,
-        client_ip : Optional[int] = ...,
-        client_port : Optional[int] = ...,
-        conn_ip : Optional[int] = ...,
-        conn_port : Optional[int] = ...,
-        interface_ip : Optional[int] = ...,
-        interface_port : Optional[int] = ...,
-        actual_ip : Optional[int] = ...,
-        flag : Optional[int] = ...,
-        timestamp : Optional[int] = ...,
-        subcmd : Optional[int] = ...,
-        result : Optional[int] = ...,
-        app_id : Optional[int] = ...,
-        instance_id : Optional[int] = ...,
-        session_id : Optional[int] = ...,
-        idc_id : Optional[int] = ...,
+        uin: Optional[int] = ...,
+        command: Optional[int] = ...,
+        seq: Optional[int] = ...,
+        version: Optional[int] = ...,
+        retry_times: Optional[int] = ...,
+        client_type: Optional[int] = ...,
+        pubno: Optional[int] = ...,
+        localid: Optional[int] = ...,
+        timezone: Optional[int] = ...,
+        client_ip: Optional[int] = ...,
+        client_port: Optional[int] = ...,
+        conn_ip: Optional[int] = ...,
+        conn_port: Optional[int] = ...,
+        interface_ip: Optional[int] = ...,
+        interface_port: Optional[int] = ...,
+        actual_ip: Optional[int] = ...,
+        flag: Optional[int] = ...,
+        timestamp: Optional[int] = ...,
+        subcmd: Optional[int] = ...,
+        result: Optional[int] = ...,
+        app_id: Optional[int] = ...,
+        instance_id: Optional[int] = ...,
+        session_id: Optional[int] = ...,
+        idc_id: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"actual_ip",b"actual_ip",u"app_id",b"app_id",u"client_ip",b"client_ip",u"client_port",b"client_port",u"client_type",b"client_type",u"command",b"command",u"conn_ip",b"conn_ip",u"conn_port",b"conn_port",u"flag",b"flag",u"idc_id",b"idc_id",u"instance_id",b"instance_id",u"interface_ip",b"interface_ip",u"interface_port",b"interface_port",u"localid",b"localid",u"pubno",b"pubno",u"result",b"result",u"retry_times",b"retry_times",u"seq",b"seq",u"session_id",b"session_id",u"subcmd",b"subcmd",u"timestamp",b"timestamp",u"timezone",b"timezone",u"uin",b"uin",u"version",b"version"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"actual_ip",b"actual_ip",u"app_id",b"app_id",u"client_ip",b"client_ip",u"client_port",b"client_port",u"client_type",b"client_type",u"command",b"command",u"conn_ip",b"conn_ip",u"conn_port",b"conn_port",u"flag",b"flag",u"idc_id",b"idc_id",u"instance_id",b"instance_id",u"interface_ip",b"interface_ip",u"interface_port",b"interface_port",u"localid",b"localid",u"pubno",b"pubno",u"result",b"result",u"retry_times",b"retry_times",u"seq",b"seq",u"session_id",b"session_id",u"subcmd",b"subcmd",u"timestamp",b"timestamp",u"timezone",b"timezone",u"uin",b"uin",u"version",b"version"]) -> None: ...
+    def HasField(self, field_name: Literal["actual_ip",b"actual_ip","app_id",b"app_id","client_ip",b"client_ip","client_port",b"client_port","client_type",b"client_type","command",b"command","conn_ip",b"conn_ip","conn_port",b"conn_port","flag",b"flag","idc_id",b"idc_id","instance_id",b"instance_id","interface_ip",b"interface_ip","interface_port",b"interface_port","localid",b"localid","pubno",b"pubno","result",b"result","retry_times",b"retry_times","seq",b"seq","session_id",b"session_id","subcmd",b"subcmd","timestamp",b"timestamp","timezone",b"timezone","uin",b"uin","version",b"version"]) -> bool: ...
+    def ClearField(self, field_name: Literal["actual_ip",b"actual_ip","app_id",b"app_id","client_ip",b"client_ip","client_port",b"client_port","client_type",b"client_type","command",b"command","conn_ip",b"conn_ip","conn_port",b"conn_port","flag",b"flag","idc_id",b"idc_id","instance_id",b"instance_id","interface_ip",b"interface_ip","interface_port",b"interface_port","localid",b"localid","pubno",b"pubno","result",b"result","retry_times",b"retry_times","seq",b"seq","session_id",b"session_id","subcmd",b"subcmd","timestamp",b"timestamp","timezone",b"timezone","uin",b"uin","version",b"version"]) -> None: ...
 
 class DeltaHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     TOTAL_LEN_FIELD_NUMBER: int
     OFFSET_FIELD_NUMBER: int
     ACK_OFFSET_FIELD_NUMBER: int
@@ -166,29 +167,28 @@ class DeltaHead(Message):
     ACK_COOKIE_FIELD_NUMBER: int
     RESULT_FIELD_NUMBER: int
     FLAGS_FIELD_NUMBER: int
-    total_len: int = ...
-    offset: int = ...
-    ack_offset: int = ...
-    cookie: bytes = ...
-    ack_cookie: bytes = ...
-    result: int = ...
-    flags: int = ...
-
+    total_len: int
+    offset: int
+    ack_offset: int
+    cookie: bytes
+    ack_cookie: bytes
+    result: int
+    flags: int
     def __init__(self,
         *,
-        total_len : Optional[int] = ...,
-        offset : Optional[int] = ...,
-        ack_offset : Optional[int] = ...,
-        cookie : Optional[bytes] = ...,
-        ack_cookie : Optional[bytes] = ...,
-        result : Optional[int] = ...,
-        flags : Optional[int] = ...,
+        total_len: Optional[int] = ...,
+        offset: Optional[int] = ...,
+        ack_offset: Optional[int] = ...,
+        cookie: Optional[bytes] = ...,
+        ack_cookie: Optional[bytes] = ...,
+        result: Optional[int] = ...,
+        flags: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"ack_cookie",b"ack_cookie",u"ack_offset",b"ack_offset",u"cookie",b"cookie",u"flags",b"flags",u"offset",b"offset",u"result",b"result",u"total_len",b"total_len"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"ack_cookie",b"ack_cookie",u"ack_offset",b"ack_offset",u"cookie",b"cookie",u"flags",b"flags",u"offset",b"offset",u"result",b"result",u"total_len",b"total_len"]) -> None: ...
+    def HasField(self, field_name: Literal["ack_cookie",b"ack_cookie","ack_offset",b"ack_offset","cookie",b"cookie","flags",b"flags","offset",b"offset","result",b"result","total_len",b"total_len"]) -> bool: ...
+    def ClearField(self, field_name: Literal["ack_cookie",b"ack_cookie","ack_offset",b"ack_offset","cookie",b"cookie","flags",b"flags","offset",b"offset","result",b"result","total_len",b"total_len"]) -> None: ...
 
 class Head(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     HEAD_TYPE_FIELD_NUMBER: int
     CS_HEAD_FIELD_NUMBER: int
     S2C_HEAD_FIELD_NUMBER: int
@@ -199,51 +199,42 @@ class Head(Message):
     C2C_HEAD_FIELD_NUMBER: int
     SCONN_HEAD_FIELD_NUMBER: int
     INST_CTRL_FIELD_NUMBER: int
-    head_type: int = ...
-    paint_flag: int = ...
-
+    head_type: int
     @property
     def cs_head(self) -> CSHead: ...
-
     @property
     def s2c_head(self) -> S2CHead: ...
-
     @property
     def httpconn_head(self) -> HttpConnHead: ...
-
+    paint_flag: int
     @property
     def login_sig(self) -> LoginSig: ...
-
     @property
     def delta_head(self) -> DeltaHead: ...
-
     @property
     def c2c_head(self) -> C2CHead: ...
-
     @property
     def sconn_head(self) -> SConnHead: ...
-
     @property
     def inst_ctrl(self) -> InstCtrl: ...
-
     def __init__(self,
         *,
-        head_type : Optional[int] = ...,
-        cs_head : Optional[CSHead] = ...,
-        s2c_head : Optional[S2CHead] = ...,
-        httpconn_head : Optional[HttpConnHead] = ...,
-        paint_flag : Optional[int] = ...,
-        login_sig : Optional[LoginSig] = ...,
-        delta_head : Optional[DeltaHead] = ...,
-        c2c_head : Optional[C2CHead] = ...,
-        sconn_head : Optional[SConnHead] = ...,
-        inst_ctrl : Optional[InstCtrl] = ...,
+        head_type: Optional[int] = ...,
+        cs_head: Optional[CSHead] = ...,
+        s2c_head: Optional[S2CHead] = ...,
+        httpconn_head: Optional[HttpConnHead] = ...,
+        paint_flag: Optional[int] = ...,
+        login_sig: Optional[LoginSig] = ...,
+        delta_head: Optional[DeltaHead] = ...,
+        c2c_head: Optional[C2CHead] = ...,
+        sconn_head: Optional[SConnHead] = ...,
+        inst_ctrl: Optional[InstCtrl] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"c2c_head",b"c2c_head",u"cs_head",b"cs_head",u"delta_head",b"delta_head",u"head_type",b"head_type",u"httpconn_head",b"httpconn_head",u"inst_ctrl",b"inst_ctrl",u"login_sig",b"login_sig",u"paint_flag",b"paint_flag",u"s2c_head",b"s2c_head",u"sconn_head",b"sconn_head"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"c2c_head",b"c2c_head",u"cs_head",b"cs_head",u"delta_head",b"delta_head",u"head_type",b"head_type",u"httpconn_head",b"httpconn_head",u"inst_ctrl",b"inst_ctrl",u"login_sig",b"login_sig",u"paint_flag",b"paint_flag",u"s2c_head",b"s2c_head",u"sconn_head",b"sconn_head"]) -> None: ...
+    def HasField(self, field_name: Literal["c2c_head",b"c2c_head","cs_head",b"cs_head","delta_head",b"delta_head","head_type",b"head_type","httpconn_head",b"httpconn_head","inst_ctrl",b"inst_ctrl","login_sig",b"login_sig","paint_flag",b"paint_flag","s2c_head",b"s2c_head","sconn_head",b"sconn_head"]) -> bool: ...
+    def ClearField(self, field_name: Literal["c2c_head",b"c2c_head","cs_head",b"cs_head","delta_head",b"delta_head","head_type",b"head_type","httpconn_head",b"httpconn_head","inst_ctrl",b"inst_ctrl","login_sig",b"login_sig","paint_flag",b"paint_flag","s2c_head",b"s2c_head","sconn_head",b"sconn_head"]) -> None: ...
 
 class HttpConnHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     UIN_FIELD_NUMBER: int
     COMMAND_FIELD_NUMBER: int
     SUB_COMMAND_FIELD_NUMBER: int
@@ -269,153 +260,143 @@ class HttpConnHead(Message):
     COMMAND_ID_FIELD_NUMBER: int
     SERVICE_CMDID_FIELD_NUMBER: int
     OIDBHEAD_FIELD_NUMBER: int
-    uin: int = ...
-    command: int = ...
-    sub_command: int = ...
-    seq: int = ...
-    version: int = ...
-    retry_times: int = ...
-    client_type: int = ...
-    pub_no: int = ...
-    local_id: int = ...
-    time_zone: int = ...
-    client_ip: int = ...
-    client_port: int = ...
-    qzhttp_ip: int = ...
-    qzhttp_port: int = ...
-    spp_ip: int = ...
-    spp_port: int = ...
-    flag: int = ...
-    key: bytes = ...
-    compress_type: int = ...
-    origin_size: int = ...
-    error_code: int = ...
-    command_id: int = ...
-    service_cmdid: int = ...
-
+    uin: int
+    command: int
+    sub_command: int
+    seq: int
+    version: int
+    retry_times: int
+    client_type: int
+    pub_no: int
+    local_id: int
+    time_zone: int
+    client_ip: int
+    client_port: int
+    qzhttp_ip: int
+    qzhttp_port: int
+    spp_ip: int
+    spp_port: int
+    flag: int
+    key: bytes
+    compress_type: int
+    origin_size: int
+    error_code: int
     @property
     def redirect(self) -> RedirectMsg: ...
-
+    command_id: int
+    service_cmdid: int
     @property
     def oidbhead(self) -> TransOidbHead: ...
-
     def __init__(self,
         *,
-        uin : Optional[int] = ...,
-        command : Optional[int] = ...,
-        sub_command : Optional[int] = ...,
-        seq : Optional[int] = ...,
-        version : Optional[int] = ...,
-        retry_times : Optional[int] = ...,
-        client_type : Optional[int] = ...,
-        pub_no : Optional[int] = ...,
-        local_id : Optional[int] = ...,
-        time_zone : Optional[int] = ...,
-        client_ip : Optional[int] = ...,
-        client_port : Optional[int] = ...,
-        qzhttp_ip : Optional[int] = ...,
-        qzhttp_port : Optional[int] = ...,
-        spp_ip : Optional[int] = ...,
-        spp_port : Optional[int] = ...,
-        flag : Optional[int] = ...,
-        key : Optional[bytes] = ...,
-        compress_type : Optional[int] = ...,
-        origin_size : Optional[int] = ...,
-        error_code : Optional[int] = ...,
-        redirect : Optional[RedirectMsg] = ...,
-        command_id : Optional[int] = ...,
-        service_cmdid : Optional[int] = ...,
-        oidbhead : Optional[TransOidbHead] = ...,
+        uin: Optional[int] = ...,
+        command: Optional[int] = ...,
+        sub_command: Optional[int] = ...,
+        seq: Optional[int] = ...,
+        version: Optional[int] = ...,
+        retry_times: Optional[int] = ...,
+        client_type: Optional[int] = ...,
+        pub_no: Optional[int] = ...,
+        local_id: Optional[int] = ...,
+        time_zone: Optional[int] = ...,
+        client_ip: Optional[int] = ...,
+        client_port: Optional[int] = ...,
+        qzhttp_ip: Optional[int] = ...,
+        qzhttp_port: Optional[int] = ...,
+        spp_ip: Optional[int] = ...,
+        spp_port: Optional[int] = ...,
+        flag: Optional[int] = ...,
+        key: Optional[bytes] = ...,
+        compress_type: Optional[int] = ...,
+        origin_size: Optional[int] = ...,
+        error_code: Optional[int] = ...,
+        redirect: Optional[RedirectMsg] = ...,
+        command_id: Optional[int] = ...,
+        service_cmdid: Optional[int] = ...,
+        oidbhead: Optional[TransOidbHead] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"client_ip",b"client_ip",u"client_port",b"client_port",u"client_type",b"client_type",u"command",b"command",u"command_id",b"command_id",u"compress_type",b"compress_type",u"error_code",b"error_code",u"flag",b"flag",u"key",b"key",u"local_id",b"local_id",u"oidbhead",b"oidbhead",u"origin_size",b"origin_size",u"pub_no",b"pub_no",u"qzhttp_ip",b"qzhttp_ip",u"qzhttp_port",b"qzhttp_port",u"redirect",b"redirect",u"retry_times",b"retry_times",u"seq",b"seq",u"service_cmdid",b"service_cmdid",u"spp_ip",b"spp_ip",u"spp_port",b"spp_port",u"sub_command",b"sub_command",u"time_zone",b"time_zone",u"uin",b"uin",u"version",b"version"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"client_ip",b"client_ip",u"client_port",b"client_port",u"client_type",b"client_type",u"command",b"command",u"command_id",b"command_id",u"compress_type",b"compress_type",u"error_code",b"error_code",u"flag",b"flag",u"key",b"key",u"local_id",b"local_id",u"oidbhead",b"oidbhead",u"origin_size",b"origin_size",u"pub_no",b"pub_no",u"qzhttp_ip",b"qzhttp_ip",u"qzhttp_port",b"qzhttp_port",u"redirect",b"redirect",u"retry_times",b"retry_times",u"seq",b"seq",u"service_cmdid",b"service_cmdid",u"spp_ip",b"spp_ip",u"spp_port",b"spp_port",u"sub_command",b"sub_command",u"time_zone",b"time_zone",u"uin",b"uin",u"version",b"version"]) -> None: ...
+    def HasField(self, field_name: Literal["client_ip",b"client_ip","client_port",b"client_port","client_type",b"client_type","command",b"command","command_id",b"command_id","compress_type",b"compress_type","error_code",b"error_code","flag",b"flag","key",b"key","local_id",b"local_id","oidbhead",b"oidbhead","origin_size",b"origin_size","pub_no",b"pub_no","qzhttp_ip",b"qzhttp_ip","qzhttp_port",b"qzhttp_port","redirect",b"redirect","retry_times",b"retry_times","seq",b"seq","service_cmdid",b"service_cmdid","spp_ip",b"spp_ip","spp_port",b"spp_port","sub_command",b"sub_command","time_zone",b"time_zone","uin",b"uin","version",b"version"]) -> bool: ...
+    def ClearField(self, field_name: Literal["client_ip",b"client_ip","client_port",b"client_port","client_type",b"client_type","command",b"command","command_id",b"command_id","compress_type",b"compress_type","error_code",b"error_code","flag",b"flag","key",b"key","local_id",b"local_id","oidbhead",b"oidbhead","origin_size",b"origin_size","pub_no",b"pub_no","qzhttp_ip",b"qzhttp_ip","qzhttp_port",b"qzhttp_port","redirect",b"redirect","retry_times",b"retry_times","seq",b"seq","service_cmdid",b"service_cmdid","spp_ip",b"spp_ip","spp_port",b"spp_port","sub_command",b"sub_command","time_zone",b"time_zone","uin",b"uin","version",b"version"]) -> None: ...
 
 class InstCtrl(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     SEND_TO_INST_FIELD_NUMBER: int
     EXCLUDE_INST_FIELD_NUMBER: int
     FROM_INST_FIELD_NUMBER: int
-
     @property
     def send_to_inst(self) -> RepeatedCompositeFieldContainer[InstInfo]: ...
-
     @property
     def exclude_inst(self) -> RepeatedCompositeFieldContainer[InstInfo]: ...
-
     @property
     def from_inst(self) -> InstInfo: ...
-
     def __init__(self,
         *,
-        send_to_inst : Optional[Iterable[InstInfo]] = ...,
-        exclude_inst : Optional[Iterable[InstInfo]] = ...,
-        from_inst : Optional[InstInfo] = ...,
+        send_to_inst: Optional[Iterable[InstInfo]] = ...,
+        exclude_inst: Optional[Iterable[InstInfo]] = ...,
+        from_inst: Optional[InstInfo] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"from_inst",b"from_inst"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"exclude_inst",b"exclude_inst",u"from_inst",b"from_inst",u"send_to_inst",b"send_to_inst"]) -> None: ...
+    def HasField(self, field_name: Literal["from_inst",b"from_inst"]) -> bool: ...
+    def ClearField(self, field_name: Literal["exclude_inst",b"exclude_inst","from_inst",b"from_inst","send_to_inst",b"send_to_inst"]) -> None: ...
 
 class InstInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     APPPID_FIELD_NUMBER: int
     INSTID_FIELD_NUMBER: int
     PLATFORM_FIELD_NUMBER: int
     ENUM_DEVICE_TYPE_FIELD_NUMBER: int
-    apppid: int = ...
-    instid: int = ...
-    platform: int = ...
-    enum_device_type: int = ...
-
+    apppid: int
+    instid: int
+    platform: int
+    enum_device_type: int
     def __init__(self,
         *,
-        apppid : Optional[int] = ...,
-        instid : Optional[int] = ...,
-        platform : Optional[int] = ...,
-        enum_device_type : Optional[int] = ...,
+        apppid: Optional[int] = ...,
+        instid: Optional[int] = ...,
+        platform: Optional[int] = ...,
+        enum_device_type: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"apppid",b"apppid",u"enum_device_type",b"enum_device_type",u"instid",b"instid",u"platform",b"platform"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"apppid",b"apppid",u"enum_device_type",b"enum_device_type",u"instid",b"instid",u"platform",b"platform"]) -> None: ...
+    def HasField(self, field_name: Literal["apppid",b"apppid","enum_device_type",b"enum_device_type","instid",b"instid","platform",b"platform"]) -> bool: ...
+    def ClearField(self, field_name: Literal["apppid",b"apppid","enum_device_type",b"enum_device_type","instid",b"instid","platform",b"platform"]) -> None: ...
 
 class LoginSig(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     TYPE_FIELD_NUMBER: int
     SIG_FIELD_NUMBER: int
-    type: int = ...
-    sig: bytes = ...
-
+    type: int
+    sig: bytes
     def __init__(self,
         *,
-        type : Optional[int] = ...,
-        sig : Optional[bytes] = ...,
+        type: Optional[int] = ...,
+        sig: Optional[bytes] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"sig",b"sig",u"type",b"type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"sig",b"sig",u"type",b"type"]) -> None: ...
+    def HasField(self, field_name: Literal["sig",b"sig","type",b"type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["sig",b"sig","type",b"type"]) -> None: ...
 
 class RedirectMsg(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     LAST_REDIRECT_IP_FIELD_NUMBER: int
     LAST_REDIRECT_PORT_FIELD_NUMBER: int
     REDIRECT_IP_FIELD_NUMBER: int
     REDIRECT_PORT_FIELD_NUMBER: int
     REDIRECT_COUNT_FIELD_NUMBER: int
-    last_redirect_ip: int = ...
-    last_redirect_port: int = ...
-    redirect_ip: int = ...
-    redirect_port: int = ...
-    redirect_count: int = ...
-
+    last_redirect_ip: int
+    last_redirect_port: int
+    redirect_ip: int
+    redirect_port: int
+    redirect_count: int
     def __init__(self,
         *,
-        last_redirect_ip : Optional[int] = ...,
-        last_redirect_port : Optional[int] = ...,
-        redirect_ip : Optional[int] = ...,
-        redirect_port : Optional[int] = ...,
-        redirect_count : Optional[int] = ...,
+        last_redirect_ip: Optional[int] = ...,
+        last_redirect_port: Optional[int] = ...,
+        redirect_ip: Optional[int] = ...,
+        redirect_port: Optional[int] = ...,
+        redirect_count: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"last_redirect_ip",b"last_redirect_ip",u"last_redirect_port",b"last_redirect_port",u"redirect_count",b"redirect_count",u"redirect_ip",b"redirect_ip",u"redirect_port",b"redirect_port"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"last_redirect_ip",b"last_redirect_ip",u"last_redirect_port",b"last_redirect_port",u"redirect_count",b"redirect_count",u"redirect_ip",b"redirect_ip",u"redirect_port",b"redirect_port"]) -> None: ...
+    def HasField(self, field_name: Literal["last_redirect_ip",b"last_redirect_ip","last_redirect_port",b"last_redirect_port","redirect_count",b"redirect_count","redirect_ip",b"redirect_ip","redirect_port",b"redirect_port"]) -> bool: ...
+    def ClearField(self, field_name: Literal["last_redirect_ip",b"last_redirect_ip","last_redirect_port",b"last_redirect_port","redirect_count",b"redirect_count","redirect_ip",b"redirect_ip","redirect_port",b"redirect_port"]) -> None: ...
 
 class S2CHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     SUB_MSGTYPE_FIELD_NUMBER: int
     MSG_TYPE_FIELD_NUMBER: int
     FROM_UIN_FIELD_NUMBER: int
@@ -423,50 +404,47 @@ class S2CHead(Message):
     RELAY_IP_FIELD_NUMBER: int
     RELAY_PORT_FIELD_NUMBER: int
     TO_UIN_FIELD_NUMBER: int
-    sub_msgtype: int = ...
-    msg_type: int = ...
-    from_uin: int = ...
-    msg_id: int = ...
-    relay_ip: int = ...
-    relay_port: int = ...
-    to_uin: int = ...
-
+    sub_msgtype: int
+    msg_type: int
+    from_uin: int
+    msg_id: int
+    relay_ip: int
+    relay_port: int
+    to_uin: int
     def __init__(self,
         *,
-        sub_msgtype : Optional[int] = ...,
-        msg_type : Optional[int] = ...,
-        from_uin : Optional[int] = ...,
-        msg_id : Optional[int] = ...,
-        relay_ip : Optional[int] = ...,
-        relay_port : Optional[int] = ...,
-        to_uin : Optional[int] = ...,
+        sub_msgtype: Optional[int] = ...,
+        msg_type: Optional[int] = ...,
+        from_uin: Optional[int] = ...,
+        msg_id: Optional[int] = ...,
+        relay_ip: Optional[int] = ...,
+        relay_port: Optional[int] = ...,
+        to_uin: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"from_uin",b"from_uin",u"msg_id",b"msg_id",u"msg_type",b"msg_type",u"relay_ip",b"relay_ip",u"relay_port",b"relay_port",u"sub_msgtype",b"sub_msgtype",u"to_uin",b"to_uin"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"from_uin",b"from_uin",u"msg_id",b"msg_id",u"msg_type",b"msg_type",u"relay_ip",b"relay_ip",u"relay_port",b"relay_port",u"sub_msgtype",b"sub_msgtype",u"to_uin",b"to_uin"]) -> None: ...
+    def HasField(self, field_name: Literal["from_uin",b"from_uin","msg_id",b"msg_id","msg_type",b"msg_type","relay_ip",b"relay_ip","relay_port",b"relay_port","sub_msgtype",b"sub_msgtype","to_uin",b"to_uin"]) -> bool: ...
+    def ClearField(self, field_name: Literal["from_uin",b"from_uin","msg_id",b"msg_id","msg_type",b"msg_type","relay_ip",b"relay_ip","relay_port",b"relay_port","sub_msgtype",b"sub_msgtype","to_uin",b"to_uin"]) -> None: ...
 
 class SConnHead(Message):
-    DESCRIPTOR: Descriptor = ...
-
+    DESCRIPTOR: Descriptor
     def __init__(self,
         ) -> None: ...
 
 class TransOidbHead(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     COMMAND_FIELD_NUMBER: int
     SERVICE_TYPE_FIELD_NUMBER: int
     RESULT_FIELD_NUMBER: int
     ERROR_MSG_FIELD_NUMBER: int
-    command: int = ...
-    service_type: int = ...
-    result: int = ...
-    error_msg: Text = ...
-
+    command: int
+    service_type: int
+    result: int
+    error_msg: Text
     def __init__(self,
         *,
-        command : Optional[int] = ...,
-        service_type : Optional[int] = ...,
-        result : Optional[int] = ...,
-        error_msg : Optional[Text] = ...,
+        command: Optional[int] = ...,
+        service_type: Optional[int] = ...,
+        result: Optional[int] = ...,
+        error_msg: Optional[Text] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"command",b"command",u"error_msg",b"error_msg",u"result",b"result",u"service_type",b"service_type"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"command",b"command",u"error_msg",b"error_msg",u"result",b"result",u"service_type",b"service_type"]) -> None: ...
+    def HasField(self, field_name: Literal["command",b"command","error_msg",b"error_msg","result",b"result","service_type",b"service_type"]) -> bool: ...
+    def ClearField(self, field_name: Literal["command",b"command","error_msg",b"error_msg","result",b"result","service_type",b"service_type"]) -> None: ...

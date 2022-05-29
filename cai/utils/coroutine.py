@@ -42,7 +42,7 @@ class ContextManager(Coroutine, Generic[TY, TS, TR]):
         return self._coro.close()
 
     def __next__(self):
-        return self.send(None)
+        raise StopIteration
 
     def __iter__(self):
         return self._coro.__await__()

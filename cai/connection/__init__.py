@@ -27,6 +27,7 @@ class Connection:
         self._host = host
         self._port = port
         self._ssl = ssl
+        self._closed = asyncio.Event()
         self.timeout = timeout
 
         self._reader: Optional[asyncio.StreamReader] = None
@@ -58,7 +59,11 @@ class Connection:
 
     @property
     def closed(self) -> bool:
-        return self._writer is None
+        # return self._writer is None
+        return self._closed.is_set()
+
+    async def wait_closed(self):
+        await self._closed.wait()
 
     async def __aenter__(self):
         await self._connect()
@@ -87,13 +92,14 @@ class Connection:
             raise ConnectionError(
                 f"Open connection to {self._host}:{self._port} failed"
             ) from e
+        self._closed.clear()
 
     async def close(self):
         if self._writer:
             self._writer.close()
-            await self._writer.wait_closed()
         self._writer = None
         self._reader = None
+        self._closed.set()
 
     async def reconnect(self) -> None:
         await self.close()

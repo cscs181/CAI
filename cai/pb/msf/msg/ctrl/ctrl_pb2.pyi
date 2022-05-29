@@ -26,27 +26,28 @@ from typing_extensions import (
 )
 
 
-DESCRIPTOR: FileDescriptor = ...
+DESCRIPTOR: FileDescriptor
 
 class MsgCtrl(Message):
-    DESCRIPTOR: Descriptor = ...
+    """msf/msgsvc/msg_ctrl.java
+
+    """
+    DESCRIPTOR: Descriptor
     FLAG_FIELD_NUMBER: int
     RESV_RESV_INFO_FIELD_NUMBER: int
-    flag: int = ...
-
+    flag: int
     @property
     def resv_resv_info(self) -> ResvResvInfo: ...
-
     def __init__(self,
         *,
-        flag : Optional[int] = ...,
-        resv_resv_info : Optional[ResvResvInfo] = ...,
+        flag: Optional[int] = ...,
+        resv_resv_info: Optional[ResvResvInfo] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"flag",b"flag",u"resv_resv_info",b"resv_resv_info"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"flag",b"flag",u"resv_resv_info",b"resv_resv_info"]) -> None: ...
+    def HasField(self, field_name: Literal["flag",b"flag","resv_resv_info",b"resv_resv_info"]) -> bool: ...
+    def ClearField(self, field_name: Literal["flag",b"flag","resv_resv_info",b"resv_resv_info"]) -> None: ...
 
 class ResvResvInfo(Message):
-    DESCRIPTOR: Descriptor = ...
+    DESCRIPTOR: Descriptor
     FLAG_FIELD_NUMBER: int
     RESERV1_FIELD_NUMBER: int
     RESERV2_FIELD_NUMBER: int
@@ -55,25 +56,24 @@ class ResvResvInfo(Message):
     PIC_HEIGHT_FIELD_NUMBER: int
     PIC_WIDTH_FIELD_NUMBER: int
     RESV_FLAG_FIELD_NUMBER: int
-    flag: int = ...
-    reserv1: bytes = ...
-    reserv2: int = ...
-    reserv3: int = ...
-    create_time: int = ...
-    pic_height: int = ...
-    pic_width: int = ...
-    resv_flag: int = ...
-
+    flag: int
+    reserv1: bytes
+    reserv2: int
+    reserv3: int
+    create_time: int
+    pic_height: int
+    pic_width: int
+    resv_flag: int
     def __init__(self,
         *,
-        flag : Optional[int] = ...,
-        reserv1 : Optional[bytes] = ...,
-        reserv2 : Optional[int] = ...,
-        reserv3 : Optional[int] = ...,
-        create_time : Optional[int] = ...,
-        pic_height : Optional[int] = ...,
-        pic_width : Optional[int] = ...,
-        resv_flag : Optional[int] = ...,
+        flag: Optional[int] = ...,
+        reserv1: Optional[bytes] = ...,
+        reserv2: Optional[int] = ...,
+        reserv3: Optional[int] = ...,
+        create_time: Optional[int] = ...,
+        pic_height: Optional[int] = ...,
+        pic_width: Optional[int] = ...,
+        resv_flag: Optional[int] = ...,
         ) -> None: ...
-    def HasField(self, field_name: Literal[u"create_time",b"create_time",u"flag",b"flag",u"pic_height",b"pic_height",u"pic_width",b"pic_width",u"reserv1",b"reserv1",u"reserv2",b"reserv2",u"reserv3",b"reserv3",u"resv_flag",b"resv_flag"]) -> bool: ...
-    def ClearField(self, field_name: Literal[u"create_time",b"create_time",u"flag",b"flag",u"pic_height",b"pic_height",u"pic_width",b"pic_width",u"reserv1",b"reserv1",u"reserv2",b"reserv2",u"reserv3",b"reserv3",u"resv_flag",b"resv_flag"]) -> None: ...
+    def HasField(self, field_name: Literal["create_time",b"create_time","flag",b"flag","pic_height",b"pic_height","pic_width",b"pic_width","reserv1",b"reserv1","reserv2",b"reserv2","reserv3",b"reserv3","resv_flag",b"resv_flag"]) -> bool: ...
+    def ClearField(self, field_name: Literal["create_time",b"create_time","flag",b"flag","pic_height",b"pic_height","pic_width",b"pic_width","reserv1",b"reserv1","reserv2",b"reserv2","reserv3",b"reserv3","resv_flag",b"resv_flag"]) -> None: ...

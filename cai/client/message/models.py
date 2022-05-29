@@ -28,39 +28,6 @@ class PokeType(IntEnum):
     FangDaZhao = 6
 
 
-@dataclass
-class PrivateMessage(Event):
-    _msg: Msg
-    seq: int
-    time: int
-    auto_reply: bool
-    from_uin: int
-    from_nick: str
-    to_uin: int
-    message: List["Element"]
-
-    @property
-    def type(self) -> str:
-        return "private_message"
-
-
-@dataclass
-class GroupMessage(Event):
-    _msg: Msg
-    seq: int
-    time: int
-    group_id: int
-    group_name: str
-    group_level: int
-    from_uin: int
-    from_group_card: str
-    message: List["Element"]
-
-    @property
-    def type(self) -> str:
-        return "group_message"
-
-
 class Element(abc.ABC):
     @property
     @abc.abstractmethod
@@ -156,11 +123,10 @@ class FlashImageElement(ImageElement):
 class VoiceElement(Element):
     file_name: str
     file_type: int
-    from_uin: int
-    md5: bytes
-    size: int
-    group_file_key: bytes
-    url: str = None
+    file_size: int
+    file_uuid: bytes
+    file_md5: bytes
+    url: str
 
     @property
     def type(self) -> str:
@@ -170,16 +136,16 @@ class VoiceElement(Element):
     def _pb_reserve(self) -> bytes:
         return bytes([8, 0, 40, 0, 56, 0])
 
-    def to_ptt(self) -> Ptt:
-        return Ptt(
-            file_type=self.file_type,
-            src_uin=self.from_uin,
-            file_md5=self.md5,
-            file_name=self.file_name.encode(),
-            file_size=self.size,
-            pb_reserve=self._pb_reserve,
-            valid=True,
-        )
+    # def to_ptt(self) -> Ptt:
+    #     return Ptt(
+    #         file_type=self.file_type,
+    #         src_uin=self.from_uin,
+    #         file_md5=self.md5,
+    #         file_name=self.file_name.encode(),
+    #         file_size=self.size,
+    #         pb_reserve=self._pb_reserve,
+    #         valid=True,
+    #     )
 
 
 @dataclass

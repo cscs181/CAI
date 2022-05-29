@@ -18,7 +18,7 @@ from cai.pb.msf.msg.svc import PbSendMsgResp
 from cai.client.highway import HighWaySession
 from cai.settings.protocol import get_protocol
 from cai.client.message_service.encoders import build_msg, make_group_msg_pkg
-from cai.client.message_service.models import (
+from cai.client.message.models import (
     Element,
     ImageElement,
     VoiceElement,

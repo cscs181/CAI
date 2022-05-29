@@ -18,7 +18,7 @@ from io import BytesIO
 from PIL import Image
 
 from cai.api import Client, make_client
-from cai.client.message_service.models import TextElement
+from cai.client.message.models import TextElement
 from cai.client import Event, GroupMessage, OnlineStatus, PrivateMessage
 from cai.exceptions import (
     LoginException,

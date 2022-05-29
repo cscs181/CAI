@@ -1,12 +1,28 @@
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
+from cai.pb.msf.msg.comm import Msg
+from cai.client.message import Element
+
 from .base import Event
 
 
 @dataclass
 class GroupEvent(Event):
     group_id: int
+
+
+# online push push msg
+@dataclass
+class GroupMessageEvent(GroupEvent):
+    _msg: Msg
+    seq: int
+    time: int
+    group_name: str
+    group_level: int
+    from_uin: int
+    from_group_card: str
+    message: List[Element]
 
 
 # online push graytip

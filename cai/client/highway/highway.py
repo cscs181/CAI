@@ -9,7 +9,7 @@ from cai.pb.highway.protocol.highway_head_pb2 import highway_head
 from .encoders import encode_upload_img_req, encode_upload_voice_req
 from .frame import read_frame, write_frame
 from .utils import to_id, timeit, calc_file_md5_and_length
-from ..message_service.models import ImageElement, VoiceElement
+from ..message.models import ImageElement, VoiceElement
 from .decoders import decode_upload_ptt_resp, decode_upload_image_resp
 
 if TYPE_CHECKING:
